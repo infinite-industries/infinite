@@ -1,0 +1,4 @@
+.config
+.glitch-assets
+node_modules
+.env
