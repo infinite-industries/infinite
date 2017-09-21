@@ -47,7 +47,7 @@ app.get("/event/:id", function(req, res){
 })
 
 
-var appPort = process.env.PORT || '3030';
+var appPort = process.env.PORT || '7779';
 
 app.listen(appPort, function () {
     console.log("Magic on port %d", appPort);
