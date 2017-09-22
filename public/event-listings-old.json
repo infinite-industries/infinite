@@ -1,0 +1,39 @@
+[
+  {
+    "id":"abqr1",
+    "title": "193 Sound+WRFL Present Rafael Toral/Ryan Jewell Duo",
+    "slug": "toral_jewell",
+    "when": "September 19, 2017 7-9pm",
+    "time_start": "2017-09-19 19:00:00",
+    "time_end":"2017-09-19 21:00:00",
+    "image":"https://cdn.glitch.com/4922e00a-4d1b-474b-9c5e-e81247c80b40%2Ftoral_jewel.jpg?1505793367140",
+    "website":"",
+    "venues": [ "WRFL 88.1 FM Radio Free Lexington", "Institute 193"],
+    "map_link": "https://goo.gl/maps/PXBsHGVauTB2",
+    "facebook_event_link":"https://www.facebook.com/events/348028825631813/",
+    "brief_description":"Rafael Toral is a Lisbon based electronic musician who has been actively performing for guitar and customized electronic instruments since the early 90's. Ryan Jewell is an experimental percussionist and composer from Columbus, Ohio",
+    "description":"<p>Institute 193 and WRFL 88.1 FM Radio Free Lexington are pleased to present an ongoing series of experimental music performances, curated and organized by Robert Beatty</p><p>Rafael Toral is a Lisbon based electronic musician who has been actively performing for guitar and customized electronic instruments since the early 90's. Some of his numerous collaborators include Sonic Youth, Alvin Lucier, Tatsuya Nakatani, and Christian Marclay.</p><p>Ryan Jewell is an experimental percussionist and composer from Columbus, Ohio who displays an extremely diverse range of techniques and appraoches. Aside from playing solo he has been a member of the bands Psychedelic Horseshit and Mosses and has recently served as percussionist for Weyes Blood, Ryley Walker, Circuit Des Yeux, and Cian Nugent.</p>",
+    "links": ["http://rafaeltoral.net/","http://freemusicarchive.org/music/Ryan_Jewell/"],
+    "fb_event_link":"none",
+    "tags": ["sound", "show"]
+  },
+
+  {
+    "id":"abqrr",
+    "title": "Howard Finster: Prophecy on Plywood",
+    "slug": "howard_finster",
+    "when": "September 14, 2017 6pm-8pm",
+    "time_start": "2017-09-14 18:00:00",
+    "time_end":"2017-09-14 20:00:00",
+    "website":"",
+    "image":"https://cdn.glitch.com/4922e00a-4d1b-474b-9c5e-e81247c80b40%2Ffinster.jpg?1505793359539",
+    "venues": ["Institute 193"],
+    "map_link": "https://goo.gl/maps/PXBsHGVauTB2",
+    "facebook_event_link":"",
+    "brief_description":"Please join us for the opening reception of Howard Finster: Prophecy on plywood",
+    "description":"<p>Please join us for the opening reception of Howard Finster: Prophecy on plywood.</p><p>Howard Finster produced over 46,000 works over the course of his lifetime,but his cutouts make up the bulk of his output. Cheap and reasonably weather resistant, plywood offered a flat surface that could endure the seasons, especially when covered in oil-based tractor enamel. When asked about the use of this particular paint, Finster declared it 'the best paint in the world.' He had painted his tractor with it and after years of heat and humidity, it'still look good.'</p><p>Howard Finster's artistic career developed alongside his activities as a preacher and work as a builder and handyman. His first combinations of words and images, called 'chalk work', came in the form of blackboard diagrams that he made while teaching Sunday school. Essential to Finster's visual language is his intermixing of biblical references and American pop culture. Henry Ford,Albert Einstein, Elvis Presley and other iconic celebrities are represented for their accomplishments that are 'biblical' in scale, appearing with archangels, dinosaurs, Siamese Twins, and Coca-Cola bottles. Finster saw the existence of these men and objects as the fulfillment of biblical prophecy.</p><p>This exhibition was made possible in part thanks to a grant from Visit LEX.</p>",
+    "links":[],
+    "fb_event_link":"none",
+    "tags": ["opening", "art"]
+  }
+]
