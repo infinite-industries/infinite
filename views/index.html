@@ -8,10 +8,12 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://unpkg.com/vuetify/dist/vuetify.min.css" rel="stylesheet">
+
     <link href="/style.css" rel="stylesheet">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
 
   </head>
   <body>
@@ -84,6 +86,17 @@
 
                       <v-card-actions>
                         <v-btn flat class="orange--text" @click.stop="ShowEvent(event.id)">More Info</v-btn>
+                        <span class="addtocalendar atc-style-blue">
+                            <var class="atc_event">
+                                <var class="atc_date_start">{{event.time_start}}</var>
+                                <var class="atc_date_end">{{event.time_end}}</var>
+                                <var class="atc_timezone">America/Detroit</var>
+                                <var class="atc_title">{{event.title}}</var>
+                                <var class="atc_description">{{event.brief_description}}</var>
+                                <var class="atc_ical_filename">{{event.slug}}</var>
+                                <var class="atc_location">{{event.venues[0]}}</var>
+                            </var>
+                        </span>
                       </v-card-actions>
                     </v-card>
                   </v-flex>
@@ -113,6 +126,15 @@
               .then(function (response) {
                 console.log(response.data);
                 self.events = response.data;
+
+                if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
+                if (window.ifaddtocalendar == undefined) {
+                  window.ifaddtocalendar = 1;
+                  var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+                  s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
+                  s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
+                  var h = d[g]('body')[0];h.appendChild(s);
+                }
 
               })
               .catch(function (error) {
