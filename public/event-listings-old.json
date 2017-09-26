@@ -35,5 +35,41 @@
     "links":[],
     "fb_event_link":"none",
     "tags": ["opening", "art"]
+  },
+  {
+    "id":"abqrf",
+    "title": "Y'Art Sale",
+    "slug": "yart_sale",
+    "when":"September 23, 8am-2pm",
+    "time_start": "2017-09-23 8:00:00",
+    "time_end":"2017-09-23 14:00:00",
+    "website":"",
+    "image":"https://cdn.glitch.com/4922e00a-4d1b-474b-9c5e-e81247c80b40%2Fyart_sale.jpg?1505793375874",
+    "venues": ["UK Art Museum"],
+    "map_link": "https://drive.google.com/open?id=1EIu-alNZ9T5ThGfwKZJoqWC8af0&usp=sharing",
+    "facebook_event_link":"https://www.facebook.com/events/518143135187659",
+    "brief_description":"The UK Art Museum in collaboration with Robbie Morgan present Y’ART SALE, a city-wide outdoor event",
+    "description":"<p>The UK Art Museum in collaboration with Robbie Morgan present Y’ART SALE, a city-wide outdoor event on Saturday, September 23, from 8am – 2 pm, rain or shine. Participants include notable artists, educators, and patrons around Lexington.</p><p>Featuring traditional and unusual yard sale items: furniture, collectibles, appliances, bric-a-brac, electronics, kid's items, fashions, etc., alongside original works of art, art supplies, etc.</p><p>We love the idea of art enthusiasts and bargain hunters driving around town, engaging with creative individuals and finding things they just can’t live without.</p>",
+    "links":[],
+    "fb_event_link":"none",
+    "tags": ["yard sale", "art", "fundraiser"]
+  },
+  {
+    "id":"1bb0f89f-fec6-4643-9a01-cf15cc07375c",
+    "title": "Horse's Mouth Storytelling Night: 'Anniversary!'",
+    "slug": "horse_mouth_anniversary",
+    "when":"Sunday, September 24th at 6:30 PM - 8:30 PM",
+    "time_start": "2017-09-24 18:30:00",
+    "time_end":"2017-09-24 20:30:00",
+    "website":"",
+    "image":"/images/horses_mouth.jpg",
+    "venues": ["West Sixth Brewery"],
+    "organizers":["Horse's Mouth Storytelling Night"],
+    "map_link": "https://goo.gl/maps/LCJNxcQxJSQ2",
+    "brief_description":"This month's theme is 'Anniversary.' Six storytellers will tell true, live stories about anniversaries. . . the good, the bad, and the ugly.",
+    "description":"This month's theme is 'Anniversary.' Six storytellers will tell true, live stories about anniversaries. . . the good, the bad, and the ugly.",
+    "links":[],
+    "fb_event_link":"https://www.facebook.com/events/444309119284742",
+    "tags": ["storytelling"]
   }
 ]
