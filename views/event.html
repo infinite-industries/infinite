@@ -1,20 +1,91 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <title>rrRt Portal Prototype: Event</title>
-  <meta charset="utf-8">
+  <title>Infinite Industries: Event - {{event.title}}</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-    <link href="https://addtocalendar.com/atc/1.5/atc-style-blue.css" rel="stylesheet" type="text/css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  
 
-    <link href="/style.css" rel="stylesheet">
+  <meta property="og:title" content="{{event.title}}" />
+  <meta property="og:url" content="https://infinite.industries/event/{{event.id}}" />
+  <meta property="og:type" content="website" />
+  <meta property="og:description" content="{{event.brief_description}}" />
+  <!-- <meta property="og:image" content="https://infinite.industries/images/og_image_big.png" /> -->
 
-  </head>
-  <body>
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@1nfinite_1" />
+  <meta name="twitter:title" content="{{event.title}}" />
+  <meta name="twitter:description" content="{{event.brief_description}}" />
+  <!-- <meta name="twitter:image" content="http://infinite.industries/public/images/infinite_logo_open_graph.png" /> -->
+
+
+
+  <link rel="canonical" href="https://medium.com/the-controllers/virtual-realities-9bb47a438c50">
+
+  <meta name="title" content="Virtual Realities – The Controllers – Medium">
+  <meta name="referrer" content="unsafe-url">
+
+  <meta name="description" content="VR is a promise of another world. One that is right in front of us yet hidden away — a fantasy wonderland mediated by electronic devices. The child sits on the floor of the performance space wearing…">
+
+  <meta name="theme-color" content="#000000">
+
+  <meta property="og:title" content="Virtual Realities – The Controllers – Medium">
+
+  <meta property="og:url" content="https://medium.com/the-controllers/virtual-realities-9bb47a438c50">
+
+  <meta property="og:image" content="https://cdn-images-1.medium.com/max/1200/1*Q6fU0a9KjMGb0Vnpd_Lc2A.jpeg">
+
+  og:image:alt
+
+  article:published_time - datetime - When the article was first published.
+  article:modified_time - datetime - When the article was last changed.
+  article:expiration_time - datetime - When the article is out of date after.
+
+  <meta property="og:description" content="VR is a promise of another world. One that is right in front of us yet hidden away — a fantasy wonderland mediated by electronic devices.">
+  <meta name="twitter:description" content="VR is a promise of another world. One that is right in front of us yet hidden away — a fantasy wonderland mediated by electronic devices.">
+  <meta name="twitter:image:src" content="https://cdn-images-1.medium.com/max/1200/1*Q6fU0a9KjMGb0Vnpd_Lc2A.jpeg">
+  <link rel="publisher" href="https://plus.google.com/103654360130207659246">
+  <link rel="author" href="https://medium.com/@dima_strakovsky">
+  <meta property="author" content="dmitry strakovsky">
+  <meta property="og:type" content="article">
+
+  <meta name="twitter:card" content="summary_large_image">
+
+  <meta property="article:publisher" content="https://www.facebook.com/medium">
+  <meta property="article:author" content="https://medium.com/@dima_strakovsky">
+
+  <meta name="robots" content="index, noarchive, nocache">
+  <meta property="article:published_time" content="2017-09-18T20:19:41.486Z">
+
+  <meta name="twitter:creator" content="@dima_strakovsky">
+  <meta name="twitter:site" content="@Medium">
+  <meta property="og:site_name" content="Medium">
+  <meta name="twitter:label1" value="Reading time">
+  <meta name="twitter:data1" value="2 min read">
+  <meta name="twitter:app:name:iphone" content="Medium">
+  <meta name="twitter:app:id:iphone" content="828256236">
+  <meta name="twitter:app:url:iphone" content="medium://p/9bb47a438c50">
+
+
+
+
+
+
+
+
+
+
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+  <link href="https://addtocalendar.com/atc/1.5/atc-style-blue.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link href="/style.css" rel="stylesheet">
+
+</head>
+<body>
     <div class="container event-heading">
       <div class="row">
         <div class="col s10">
