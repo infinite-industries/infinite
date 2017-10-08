@@ -4,4 +4,3 @@ node_modules
 .env
 notes.local
 .DS_Store
-# public/js/dist.js
