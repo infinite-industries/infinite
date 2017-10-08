@@ -24,8 +24,8 @@ ssh $USER@$SERVER << EOF
   echo 'Installing npm packages'
   npm install
   echo 'Restarting'
-  npm run server-build
-  echo 'Building frontend js'
+  #npm run server-build
+  #echo 'Building frontend js'
   forever stop mvp
   rm /home/$USER/.forever/mvp.log
   forever start --uid mvp server.js
