@@ -8,6 +8,7 @@
         "time_end": "2017-10-04 19:00:00",
         "website": "",
         "image": "/images/director_tour.jpg",
+        "social_image": "/images/social/director_tour.jpg",
         "venues": ["UK Art Museum"],
         "organizers": ["UK Art Museum"],
         "map_link": "https://goo.gl/maps/oCBNB86MgAJ2",
@@ -15,6 +16,7 @@
         "description": "<p>Join Art Museum Director Stuart Horodner for a 'Members-Only Directors Tour' addressing the importance of diversity in exhibition-making, and connections between art and activism. Horodner has a long and distinguished career as a curator working with prominent artists of color, including Mel Edwards, Simone Leigh, Clifford Owens, William Pope.L, and Jack Whitten, among others. Not a member? Join today at<a href='http://finearts.uky.edu/art-museum/members' target='_blank' rel='noopener nofollow' data-lynx-mode='async' data-lynx-uri='https://l.facebook.com/l.php?u=http%3A%2F%2Ffinearts.uky.edu%2Fart-museum%2Fmembers&amp;h=ATOk_13BEY_mq4DvCAIHURQM-fNnwTvGZ6izyC4EhEVhAq8P4xywMyVHEpq65fo3aHxr7vl-OAUlBga8EpdpcUpcevfUzgyAIKQaoKL72POwwMzitCYELFtZe-qOmKa9oXKyfp4qxBQRzSmuJfYSccpx8VbecOcxGLhNX9uE5CuyFBQOxXEU'>http://finearts.uky.edu/<wbr />art-museum/members</a><br /><br />Prior to coming to UK, Horodner held positions as artistic director of the Atlanta Contemporary Art Center; visual arts curator at the Portland Institute for Contemporary Art, Portland, OR (2001-2004); director of the Bucknell University Art Gallery, Lewisburg, PA (1998-2001); and was co-owner of the Horodner Romley Gallery, New York, NY (1992-1996). He has contributed to journals and magazines, including Art Issues, Art Lies, Art on Paper, Bomb, Dazed &amp; Confused, Sculpture and Surface. He received his BFA from The Cooper Union, New York, NY, and his MFA from the Mason Gross School of the Arts at Rutgers University, New Brunswick, NJ.</p>",
         "links": [],
         "fb_event_link": "https://www.facebook.com/events/128386634572477",
+        "bitly_link":"http://www.google.com",
         "tags": ["art", "tour"]
   },
   {

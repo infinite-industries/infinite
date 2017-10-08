@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link rel="canonical" href="https://infinite.industries/event/{{event.id}}">
+  <link rel="me" href="https://twitter.com/1nfinite_1">
 
   <meta name="title" content="Infinite Industries: Event - {{event.title}}">
   <meta name="referrer" content="unsafe-url">
@@ -18,11 +19,11 @@
   <meta property="article:author" content="https://medium.com/@dima_strakovsky">
 
   <meta property="og:title" content="{{event.title}}" />
-    <meta property="og:site_name" content="Infinite Industries">
+  <meta property="og:site_name" content="Infinite Industries">
   <meta property="og:url" content="https://infinite.industries/event/{{event.id}}" />
   <meta property="og:type" content="article" />
   <meta property="og:description" content="{{event.brief_description | safe}}" />
-  <!-- <meta property="og:image" content="https://infinite.industries/images/og_image_big.png" /> -->
+
   <meta property="og:image:alt" content="Check out {{event.title}}" />
 
   <meta name="twitter:card" content="summary_large_image" />
@@ -30,7 +31,17 @@
   <meta name="twitter:creator" content="@1nfinite_1">
   <meta name="twitter:title" content="{{event.title}}" />
   <meta name="twitter:description" content="{{event.brief_description | safe}}" />
-  <!-- <meta name="twitter:image:src" content="http://infinite.industries/public/images/infinite_logo_open_graph.png" /> -->
+
+  {% if event.hasOwnProperty(social_image) and event.social_image!='none' %}
+    <meta property="og:image" content="{{site_url}}{{event.social_image}}" />
+
+    <meta name="twitter:image:src" content="{{site_url}}{{event.social_image}}" />
+    {% else %}
+    <meta property="og:image" content="{{site_url}}/images/social/default.jpg" />
+
+    <meta name="twitter:image:src" content="{{site_url}}/images/social/default.jpg" />
+  {% endif %}
+
 
   <!-- article:published_time - datetime - When the article was first published.
   article:modified_time - datetime - When the article was last changed.
@@ -43,7 +54,9 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
   <link href="https://addtocalendar.com/atc/1.5/atc-style-blue.css" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://use.fontawesome.com/9929e77eb0.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
 
   <link href="/css/style.css" rel="stylesheet">
 
@@ -68,6 +81,12 @@
     <div class="container event-description">
       <div class="row">
         <div class="col s12" style="text-align:right;">
+          <span class="social-media-links">
+            <div class="fb-share-button" data-href="https://infininte.industries/{{event.id}}" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{event.id}}">Share</a></div>
+            <a href="https://twitter.com/intent/tweet?text=Check%20out%20this%20event%20" class="twitter-share-button" data-show-count="false" data-size="large">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+            <button class="btn" data-clipboard-text="{{event.bitly_link}}"><i class="fa fa-link fa-3x" aria-hidden="true"></i>Copy Link</button>
+          </span>
           <span class="atc-style-blue">
             <a href="{{event.map_link}}" class="event-map-button" target="_new">Event Map</a>
           </span>
@@ -89,18 +108,59 @@
           {{event.description | safe}}
         </div>
       </div>
+      <div class="row">
+        {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="none" %}
+
+          <div class="col s12">
+            <a href="{{event.fb_event_link}}" target="_new">Facebook Event Link</a>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="row">
+        {% if event.hasOwnProperty('eventbrite_link') and event.eventbrite_link!="none" %}
+
+          <div class="col s12">
+            <a href="{{event.eventbright_link}}" target="_new">Eventbright Link</a>
+          </div>
+        {% endif %}
+      </div>
 
     </div>
 
+
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=510767252621911";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
     <script type="text/javascript">(function () {
-            if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
-            if (window.ifaddtocalendar == undefined) { window.ifaddtocalendar = 1;
-                var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
-                s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
-                s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
-                var h = d[g]('body')[0];h.appendChild(s); }})();
+      if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
+      if (window.ifaddtocalendar == undefined) { window.ifaddtocalendar = 1;
+          var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+          s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
+          s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
+          var h = d[g]('body')[0];h.appendChild(s); }})();
+
+
+      var clipboard = new Clipboard('.btn');
+
+      clipboard.on('success', function(e) {
+          // console.info('Action:', e.action);
+          console.info('URL:', e.text);
+          window.alert("Copied the URL. Now you can paste it into emails, tweets or any other announcements. Enjoy!")
+          // console.info('Trigger:', e.trigger);
+
+      });
+
+      clipboard.on('error', function(e) {
+          console.error('Action:', e.action);
+          console.error('Trigger:', e.trigger);
+      });
     </script>
-
-
   </body>
 </html>
