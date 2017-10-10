@@ -80,18 +80,21 @@
     </div>
     <div class="container event-description">
       <div class="row">
-        <div class="col s12" style="text-align:right;">
+        <div class="col m12 l6 social-and-link">
           <span class="social-media-links">
             <div class="fb-share-button" data-href="https://infininte.industries/{{event.id}}" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{event.id}}">Share</a></div>
             <a href="https://twitter.com/intent/tweet?text=Check%20out%20this%20event%20" class="twitter-share-button" data-show-count="false" data-size="large">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
             <button class="btn" data-clipboard-text="{{event.bitly_link}}"><i class="fa fa-link fa-3x" aria-hidden="true"></i>Copy Link</button>
           </span>
-          <span class="atc-style-blue">
-            <a href="{{event.map_link}}" class="event-map-button" target="_new">Event Map</a>
-          </span>
-          <span class="addtocalendar atc-style-blue">
-              <var class="atc_event">
+          </div>
+          <div class="col l1 hide-on-med-and-down"></div>
+          <div class="col m12 l5 map-and-calendar">
+            <span class="atc-style-blue">
+              <a href="{{event.map_link}}" class="event-map-button" target="_new">Event Map</a>
+            </span>
+            <span class="addtocalendar atc-style-blue">
+                <var class="atc_event">
                   <var class="atc_date_start">{{event.time_start}}</var>
                   <var class="atc_date_end">{{event.time_end}}</var>
                   <var class="atc_timezone">America/Detroit</var>
@@ -99,14 +102,23 @@
                   <var class="atc_description">{{event.brief_description}}</var>
                   <var class="atc_ical_filename">{{event.slug}}</var>
                   <var class="atc_location">{{event.venues[0]}}</var>
-              </var>
-          </span>
+                </var>
+            </span>
         </div>
       </div>
       <div class="row">
         <div class="col s12">
           {{event.description | safe}}
         </div>
+      </div>
+
+      <div class="row">
+        {% if event.hasOwnProperty('website') and event.website!="none" %}
+
+          <div class="col s12">
+            <a href="{{event.website}}" target="_new">Event Website</a>
+          </div>
+        {% endif %}
       </div>
       <div class="row">
         {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="none" %}
