@@ -92,6 +92,9 @@ vertical-align:middle !important;
 .map-and-calendar{
   text-align: right;
 }
+main{
+  margin-top: 10px;
+}
 
 @media only screen and (max-width: 992px) {
   .map-and-calendar{
