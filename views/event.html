@@ -83,7 +83,9 @@
       <div class="row">
         <div class="col m12 l6 social-and-link">
           <span class="social-media-links">
-            <div class="fb-share-button" data-href="https://infininte.industries/event/{{event.id}}" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{event.id}}">Share</a></div>
+            {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="none" %}
+              <div class="fb-share-button" data-href="https://infinite.industries/event/{{event.id}}" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{event.id}}">Share</a></div>
+            <% endif %>
             <a href="https://twitter.com/intent/tweet?text=Check%20out%20this%20event%20" class="twitter-share-button" data-show-count="false" data-size="large">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
             {% if event.hasOwnProperty('bitly_link') and event.bitly_link!="none" %}
