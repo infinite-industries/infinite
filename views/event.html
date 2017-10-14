@@ -83,10 +83,13 @@
       <div class="row">
         <div class="col m12 l6 social-and-link">
           <span class="social-media-links">
-            <div class="fb-share-button" data-href="https://infininte.industries/{{event.id}}" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{event.id}}">Share</a></div>
+            <div class="fb-share-button" data-href="https://infininte.industries/event/{{event.id}}" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{event.id}}">Share</a></div>
             <a href="https://twitter.com/intent/tweet?text=Check%20out%20this%20event%20" class="twitter-share-button" data-show-count="false" data-size="large">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+            {% if event.hasOwnProperty('bitly_link') and event.bitly_link!="none" %}
             <button class="btn" data-clipboard-text="{{event.bitly_link}}" style="padding-right:18px"><i class="fa fa-link fa-3x" aria-hidden="true"></i>Copy Link</button>
+            {% endif %}
+
           </span>
           </div>
           <div class="col l1 hide-on-med-and-down"></div>
