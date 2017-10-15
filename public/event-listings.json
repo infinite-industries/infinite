@@ -8,7 +8,7 @@
     "time_end": "2017-10-22 21:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/reckoning.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/reckoning.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/reckoning.jpg",
     "venues": ["21C Lexington"],
     "organizers": ["Lexington Film League"],
     "map_link": "https://goo.gl/maps/aqKX3Aj2PG22",
@@ -59,7 +59,7 @@
     "time_start": "2017-10-21 12:00:00",
     "time_end": "2017-10-21 13:00:00",
     "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/family_day_museum_1.jpg",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/family_day_museum_1.jpg",
     "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/family_day_museum_1.jpg",
     "venues": [
       "UK Art Museum"
@@ -88,7 +88,7 @@
     "time_end": "2017-10-18 23:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/kitten_1.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/kitten_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/kitten_1.jpg",
     "venues": [
       "UK School of Art and Visual Studies"
     ],
@@ -117,7 +117,7 @@
     "time_end": "2017-10-23 20:30:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/klimt_1.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/klimt_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/klimt_1.jpg",
     "venues": [
       "Lussi Brown Coffee Bar"
     ],
@@ -145,7 +145,7 @@
     "time_end": "2017-10-28 2:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/girlpool_1.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/girlpool_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/girlpool_1.jpg",
     "venues": [
       "The Burl"
     ],
@@ -173,7 +173,7 @@
     "time_end": "2017-10-27 24:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/prhbtn_7.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/prhbtn_7.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/prhbtn_7.jpg",
     "venues": [
       "Lexington Art League"
     ],
@@ -201,7 +201,7 @@
     "time_end": "2017-10-30 21:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/halloween-show.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/halloween-show.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/halloween-show.jpg",
     "venues": ["21C Lexington"],
     "organizers": ["Lexington Film League"],
     "map_link": "https://goo.gl/maps/aqKX3Aj2PG22",
@@ -223,7 +223,7 @@
     "time_end": "2017-10-29 21:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/thriller_2017.jpg",
-    "social_image": "insert-new-manually",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/thriller_2017.jpg",
     "venues": ["Downtown Lexington"],
     "organizers": ["Mecca Live Studio And Gallery","Lexington KY Parks & Recreation","WRFL 88.1 FM Radio Free Lexington","City of Lexington, KY"],
     "map_link": "https://goo.gl/maps/vcygcHUdQ212",
@@ -245,7 +245,7 @@
     "time_end": "2017-11-04 22:30:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/italian_beaches_1.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/italian_beaches_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/italian_beaches_1.jpg",
     "venues": ["The Burl"],
     "organizers": ["Italian Beaches"],
     "map_link": "https://goo.gl/maps/MerUrvdgk9u",
