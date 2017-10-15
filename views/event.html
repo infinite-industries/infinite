@@ -68,6 +68,7 @@
         <div class="col s10">
           <h1>{{event.title}}</h1>
           <h3>{{event.when}}</h3>
+          <h3>{{event.venues[0]}}</h3>
         </div>
         <div class="col s2 event-close">
           <a href="{{site_url}}"><i class="medium material-icons">close</i></a>
@@ -118,31 +119,38 @@
         </div>
       </div>
 
-      <div class="row">
-        {% if event.hasOwnProperty('website') and event.website!="none" %}
-
+      {% if event.hasOwnProperty('website') and event.website!="none" %}
+        <div class="row">
           <div class="col s12">
             <a href="{{event.website}}" target="_new">Event Website</a>
           </div>
-        {% endif %}
-      </div>
-      <div class="row">
-        {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="none" %}
+        </div>
+      {% endif %}
 
+      {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="none" %}
+        <div class="row">
           <div class="col s12">
             <a href="{{event.fb_event_link}}" target="_new">Facebook Event Link</a>
           </div>
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
 
-      <div class="row">
-        {% if event.hasOwnProperty('eventbrite_link') and event.eventbrite_link!="none" %}
 
+      {% if event.hasOwnProperty('eventbrite_link') and event.eventbrite_link!="none" %}
+        <div class="row">
           <div class="col s12">
             <a href="{{event.eventbright_link}}" target="_new">Eventbright Link</a>
           </div>
-        {% endif %}
-      </div>
+        </div>
+      {% endif %}
+
+      {% if event.hasOwnProperty('ticket_link') and event.ticket_link!="none" %}
+        <div class="row">
+            <div class="col s12">
+              <a href="{{event.ticket_link}}" target="_new">Buy Tickets</a>
+            </div>
+        </div>
+      {% endif %}
 
     </div>
 

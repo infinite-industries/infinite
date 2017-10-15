@@ -29,6 +29,16 @@ h2, h3{
   max-width: 900px;
 }
 
+.event-venue{
+  font-weight: bold;
+  padding-top: 5px;
+}
+
+.event-date{
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+
 .event-heading{
   margin-top: 0px;
   padding: 24px;

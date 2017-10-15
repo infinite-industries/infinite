@@ -57,7 +57,10 @@
                 <v-card-title primary-title>
                   <div>
                     <h3 class="headline mb-0">{{event.title}}</h3>
-                    <div style="font-weight: bold">
+                    <div class="event-venue">
+                      {{event.venues[0]}}
+                    </div>
+                    <div class="event-date">
                       {{event.when}}
                     </div>
                     <div>{{event.brief_description}}...</div>

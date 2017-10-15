@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-ROOT='/home/ubuntu/new_mvp'
 USER='ubuntu'
 
 SERVER=''
 if [[ "production" = $1 ]]; then
+  ROOT='/home/ubuntu/app/new_mvp'
   SERVER='infinite.industries'
 elif [[ "staging" = $1 ]]; then
+  ROOT='/home/ubuntu/new_mvp'
   SERVER='staging.infinite.industries'
 else
   echo Please specify environment to deploy to.

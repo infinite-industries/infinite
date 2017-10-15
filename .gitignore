@@ -4,3 +4,4 @@ node_modules
 .env
 notes.local
 .DS_Store
+./prep
