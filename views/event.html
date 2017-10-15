@@ -33,7 +33,7 @@
   <meta name="twitter:title" content="{{event.title}}" />
   <meta name="twitter:description" content="{{event.brief_description | safe}}" />
 
-  {% if event.hasOwnProperty(social_image) and event.social_image!='none' %}
+  {% if event.hasOwnProperty('social_image') and event.social_image!='none' %}
     <meta property="og:image" content="{{site_url}}{{event.social_image}}" />
 
     <meta name="twitter:image:src" content="{{site_url}}{{event.social_image}}" />
