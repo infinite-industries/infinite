@@ -27,8 +27,8 @@
     "title": "Annual Fund Launch Party",
     "slug": "uk_annual_fund_launch_party_1",
     "when": "Friday, October 20th 2017, 5:30pm-7:00pm",
-    "time_start": "2017-10-20 05:30:00",
-    "time_end": "2017-10-20 07:00:00",
+    "time_start": "2017-10-20 17:30:00",
+    "time_end": "2017-10-20 19:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uk_museum_membership_drive.jpg",
     "social_image": "insert-new-manually",
@@ -45,7 +45,7 @@
     "ticket_link": "none",
     "fb_event_link": "https://www.facebook.com/events/137568746884637",
     "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2ga7Aqd",
+    "bitly_link": "http://bit.ly/2yksmhH",
     "tags": [
       "fundraiser"
     ]
@@ -57,7 +57,7 @@
     "slug": "family_day_workshop_1",
     "when": "Saturday, October 21st 2017, 12:00pm-1:00pm",
     "time_start": "2017-10-21 12:00:00",
-    "time_end": "2017-10-21 01:00:00",
+    "time_end": "2017-10-21 13:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/family_day_museum_1.jpg",
     "social_image": "insert-new-manually",
@@ -84,8 +84,8 @@
     "title": "WRFL Presents: Kitten Forever with Cartwheels and Angie Willcutt",
     "slug": "wrfl_presents:_kitten_forever_with_cartwheels_and_angie_willcutt",
     "when": "Wednesday, October 18th 2017, 8:00pm-11:00pm",
-    "time_start": "2017-10-18 08:00:00",
-    "time_end": "2017-10-18 11:00:00",
+    "time_start": "2017-10-18 20:00:00",
+    "time_end": "2017-10-18 23:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/kitten_1.jpg",
     "social_image": "insert-new-manually",
@@ -103,7 +103,7 @@
     "ticket_link": "none",
     "fb_event_link": "https://www.facebook.com/events/1942135609375075",
     "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2xHc9Ua",
+    "bitly_link": "http://bit.ly/2gku1gq",
     "tags": [
       "music", "show"
     ]
@@ -113,8 +113,8 @@
     "title": "Klimt at Lussi Brown",
     "slug": "klimt_at_lussi_brown",
     "when": "Monday, October 23rd 2017, 6:45pm-8:30pm",
-    "time_start": "2017-10-23 06:45:00",
-    "time_end": "2017-10-23 08:30:00",
+    "time_start": "2017-10-23 18:45:00",
+    "time_end": "2017-10-23 20:30:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/klimt_1.jpg",
     "social_image": "insert-new-manually",
@@ -131,7 +131,7 @@
     "ticket_link": "none",
     "fb_event_link": "https://www.facebook.com/events/132895517351952",
     "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2gjooPc",
+    "bitly_link": "http://bit.ly/2gHlK2W",
     "tags": [
       "art", "art club"
     ]
@@ -140,9 +140,9 @@
     "id": "9456d4b0-b109-11e7-90c5-bdff0fdccac4",
     "title": "WRFL presents: Girlpool at The Burl",
     "slug": "girlpool_at_the_burl",
-    "when": "Friday, October 27th 2017, 9:00pm-2:00pm",
-    "time_start": "2017-10-27 09:00:00",
-    "time_end": "2017-10-14 02:00:35",
+    "when": "Friday, October 27th 2017, 9:00pm-2:00am",
+    "time_start": "2017-10-27 21:00:00",
+    "time_end": "2017-10-28 2:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/girlpool_1.jpg",
     "social_image": "insert-new-manually",
@@ -159,7 +159,7 @@
     "ticket_link": "https://ukytickets.universitytickets.com/w/event.aspx?id=1332&cid=165&p=1",
     "fb_event_link": "https://www.facebook.com/events/1640043479362741",
     "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2kPztJx",
+    "bitly_link": "http://bit.ly/2ypSk2J",
     "tags": [
       "insert-new-manually"
     ]
@@ -168,9 +168,9 @@
     "id": "f40379e0-b109-11e7-a953-b30816cc5d1d",
     "title": "Prhbtn 7 Fourth Friday Opening and Afterparty",
     "slug": "prhbtn_7_fourth_friday_opening_and_afterparty",
-    "when": "Friday, October 27th 2017, 6:00pm-2:03pm",
-    "time_start": "2017-10-27 06:00:00",
-    "time_end": "2017-10-14 02:03:16",
+    "when": "Friday, October 27th 2017, 6:00pm-midnight",
+    "time_start": "2017-10-27 18:00:00",
+    "time_end": "2017-10-27 24:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/prhbtn_7.jpg",
     "social_image": "insert-new-manually",
@@ -187,7 +187,7 @@
     "ticket_link": "none",
     "fb_event_link": "https://www.facebook.com/events/285853668581250",
     "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2xFRekC",
+    "bitly_link": "http://bit.ly/2hIxxxp",
     "tags": [
       "street art", "party"
     ]
@@ -196,7 +196,7 @@
     "id": "3c54bac9-a1b5-4e70-8df8-d7764c6617d6",
     "title": "Halloween Show!: At Midnight I’ll Take Your Soul (1964)",
     "slug": "halloween-show",
-    "when": "Monday, October 30 at 7 PM - 9 PM",
+    "when": "Monday, October 30 at 7pm - 9pm",
     "time_start": "2017-10-30 19:00:00",
     "time_end": "2017-10-30 21:00:00",
     "website": "none",
@@ -219,8 +219,8 @@
     "title": "Thriller - Halloween parade and Wicked Wonders Market",
     "slug": "thriller_halloween_parade",
     "when": "Sunday, October 29th 2017, 2:00pm-9:00pm",
-    "time_start": "2017-10-29 02:00:00",
-    "time_end": "2017-10-29 09:00:00",
+    "time_start": "2017-10-29 14:00:00",
+    "time_end": "2017-10-29 21:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/thriller_2017.jpg",
     "social_image": "insert-new-manually",
@@ -240,9 +240,9 @@
     "id": "2558a270-a7e3-11e7-b55d-5d50c0e4c8ed",
     "title": "Italian Beaches Album Release (Two Sets)",
     "slug": "italian_beaches_album_release",
-    "when": "Saturday, November 4th 2017, 8:00pm-10:32pm",
-    "time_start": "2017-11-04 08:00:00",
-    "time_end": "2017-10-02 10:32:48",
+    "when": "Saturday, November 4th 2017, 8:00pm-10:30pm",
+    "time_start": "2017-11-04 20:00:00",
+    "time_end": "2017-11-04 22:30:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/italian_beaches_1.jpg",
     "social_image": "insert-new-manually",
