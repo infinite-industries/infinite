@@ -192,6 +192,34 @@
       "street art", "party"
     ]
   },
+{
+  "id": "d97b7a00-b208-11e7-abd2-0fd6f7e289d5",
+  "title": "Disconnect",
+  "slug": "disconnect",
+  "when": "Friday, October 27th 2017, 9:59pm-2:22am",
+  "time_start": "2017-10-27 21:59:00",
+  "time_end": "2017-10-28 02:22:00",
+  "website": "",
+  "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/disconnect_1.jpg",
+  "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/disconnect_1.jpg",
+  "venues": [
+    "Bluegrass Connections"
+  ],
+  "organizers": [
+    "Thank you for Comming to Our Parties"
+  ],
+  "map_link": "https://www.google.com/maps/place/Bluegrass+Connections/@38.041772,-84.468422",
+  "brief_description": "Disco bloodbath do dress up if you can",
+  "description": "Disco bloodbath<br />do dress up if you can",
+  "links": [],
+  "ticket_link": "none",
+  "fb_event_link": "https://www.facebook.com/events/1506386982781409",
+  "eventbright_link": "none",
+  "bitly_link": "http://bit.ly/2xH5A4h",
+  "tags": [
+    "disco", "dance"
+  ]
+},
   {
     "id": "3c54bac9-a1b5-4e70-8df8-d7764c6617d6",
     "title": "Halloween Show!: At Midnight I’ll Take Your Soul (1964)",
