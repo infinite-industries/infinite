@@ -1,28 +1,5 @@
 [
   {
-    "id": "8e5ad135-9fcc-11e7-abc4-cec278b6b50a",
-    "title": "Kent Lambert: Reckoning",
-    "slug": "reckoning",
-    "when": "Sunday, October 22 at 7pm-9pm",
-    "time_start": "2017-10-22 19:00:00",
-    "time_end": "2017-10-22 21:00:00",
-    "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/reckoning.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/reckoning.jpg",
-    "venues": ["21C Lexington"],
-    "organizers": ["Lexington Film League"],
-    "map_link": "https://goo.gl/maps/aqKX3Aj2PG22",
-    "brief_description": "Kent Lambert (Chicago) presents a selection of his videos, including the new Reckoning 4.",
-    "description": "<p>Kent Lambert (Chicago) presents a selection of his videos, including the new Reckoning 4.</p><p>'In my music and video work, I search for intersections between 1) meditative interrogation of society and self 2) textural and tonal intrigue and beauty 3) absurdist and/or humanist humor and 4) cathartic emotional expression. A primary underlying motivation of my video work is to reflect, critique and ultimately transcend American zeitgeists and my own consumption within them.'</p>",
-    "links": [],
-    "bitly_link":"none",
-    "ticket_link": "none",
-    "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2xIoQyh",
-    "fb_event_link": "https://www.facebook.com/events/172297916668853",
-    "tags": ["film", "screening"]
-  },
-  {
     "id": "9c994320-b11c-11e7-8ee7-bdaec97f4292",
     "title": "Annual Fund Launch Party",
     "slug": "uk_annual_fund_launch_party_1",
@@ -137,6 +114,35 @@
     ]
   },
   {
+    "id": "b8237b41-b0e2-12e7-a0db-b739e115793a",
+    "title": "Sound of Ceres with Plume Varia, Big Fresh, Robert Beatty",
+    "slug": "sound_of_ceres_1",
+    "when": "Wednesday, October 25 2017, 7:00pm",
+    "time_start": "2017-10-25 19:00:00",
+    "time_end": "2017-10-25 24:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/ceres_1.png",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/ceres_1.png",
+    "venues": [
+      "The Burl"
+    ],
+    "organizers": [
+      "The Burl"
+    ],
+    "map_link": "https://goo.gl/maps/MerUrvdgk9u",
+    "brief_description": " ",
+    "description": " ",
+    "links": [],
+    "ticket_link": "http://www.ticketfly.com/purchase/event/1552097",
+    "fb_event_link": "https://www.facebook.com/events/199377800600898/",
+    "eventbright_link": "none",
+    "bitly_link": "grr",
+    "tags": [
+      "music", "show"
+    ]
+  },
+
+  {
     "id": "9456d4b0-b109-11e7-90c5-bdff0fdccac4",
     "title": "WRFL presents: Girlpool at The Burl",
     "slug": "girlpool_at_the_burl",
@@ -161,7 +167,7 @@
     "eventbright_link": "none",
     "bitly_link": "http://bit.ly/2ypSk2J",
     "tags": [
-      "insert-new-manually"
+      "music", "show"
     ]
   },
   {
@@ -285,6 +291,145 @@
     "bitly_link": "http://bit.ly/2yL6DQD",
     "fb_event_link": "https://www.facebook.com/events/119551415382329",
     "tags": ["music","band", "record release"]
+  },
+  {
+    "id": "e4793430-b0e4-11e7-836d-2d12421bc717",
+    "title": "R. C. May Photography Lecture: Lori Nix & Kathleen Gerber",
+    "slug": "r_c_may_photography_lecture_lori_nix_kathleen_gerber",
+    "when": "Friday, November 10th 2017, 4:00pm-5:00pm",
+    "time_start": "2017-11-10 16:00:00",
+    "time_end": "2017-11-10 17:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/lori_nix.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/lori_nix.jpg",
+    "venues": [
+      "Gatton College of Business and Economics at the University of Kentucky"
+    ],
+    "organizers": [
+      "UK Art Museum"
+    ],
+    "map_link": "https://goo.gl/maps/5nBR2BAa8KQ2",
+    "brief_description": "The first artist in the 2017-18 R.C. May Photography Lecture Series,  photographers Lori Nix and Kathleen Gerber discuss their collaborative images of constructed environments",
+    "description": "The first artist in the 2017-18 R.C. May Photography Lecture Series,  photographers Lori Nix and Kathleen Gerber discuss their collaborative images of constructed environments. Lecture will be in the Gatton Business College, Kincaid Auditorium. Admission is FREE and open to the public. An exhibition of their photographs is on view from October 7-December 3, 2017. For more information about their work visit http://finearts.uky.edu/art-museum",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/177608359467175",
+    "eventbright_link": "none",
+    "bitly_link": "grr",
+    "tags": [
+      "lecture", "art"
+    ]
+  },
+  {
+    "id": "82f05c50-b0e1-11e7-9027-c7e82a32b1fb",
+    "title": "Captured! By Robots / No Witness",
+    "slug": "captured_by_robots_no_witness",
+    "when": "Thursday, November 9th 2017, 10:00pm-1:00am",
+    "time_start": "2017-11-09 22:00:00",
+    "time_end": "2017-11-10 01:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/captured_by_robots.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/captured_by_robots.jpg",
+    "venues": [
+      "Cosmic Charlie's"
+    ],
+    "organizers": [
+      "Cosmic Charlie's"
+    ],
+    "map_link": "https://goo.gl/maps/DRBPSQwjpYu",
+    "brief_description": "",
+    "description": "",
+    "links": [],
+    "fb_event_link": "https://www.facebook.com/events/117119855632777",
+    "eventbright_link": "none",
+    "ticket_link": "http://www.ticketfly.com/purchase/event/1567541",
+    "bitly_link": "grr",
+    "tags": [
+      "music", "show"
+    ]
+  },
+  {
+    "id": "36d2aa10-b0e3-11e7-995a-0159d4e90802",
+    "title": "Higher",
+    "slug": "higher",
+    "when": "Saturday, November 25th 2017, 10:00pm-2:23am",
+    "time_start": "2017-11-25 22:00:00",
+    "time_end": "2017-11-26 02:23:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/higher_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/higher_1.jpg",
+    "venues": [
+      "The Bar Complex"
+    ],
+    "organizers": [
+      "Thank you for Comming to Our Parties"
+    ],
+    "map_link": "https://goo.gl/maps/M6UzW6vArW82",
+    "brief_description": "You know this is the best place to dance to disco in the country right?",
+    "description": "You know this is the best place to dance to disco in the country right? We will turn the lights off, turn the volume up, and forget the outside world and its troubles. We do hope that you’ll join us.",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/2009253242644080",
+    "eventbright_link": "none",
+    "bitly_link": "http://bit.ly/2gi5PLC",
+    "tags": [
+      "music", "show"
+    ]
+  },
+  {
+    "id": "773f27c0-b0e0-11e7-98e8-892a9e586881",
+    "title": "Tinderbox Circus Sideshow / Ford Theatre Reunion / io Ravine",
+    "slug": "tinderbox_circus_sideshow_1",
+    "when": "Friday, December 1st 2017, 8:00pm-1:00am",
+    "time_start": "2017-12-01 20:00:00",
+    "time_end": "2017-12-02 01:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/tinderbox_circus_sideshow_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/tinderbox_circus_sideshow_1.jpg",
+    "venues": [
+      "Cosmic Charlie's"
+    ],
+    "organizers": [
+      "Cosmic Charlie's"
+    ],
+    "map_link": "https://goo.gl/maps/DRBPSQwjpYu",
+    "brief_description": "Tinderbox Circus Sideshow will be dragging their butts back off the road and taking over Cosmic Charlie’s for a variety-filled smorgasbord of ridiculousness",
+    "description": "Ages 18+<br />$8 ADV<br />$10 at the door<br /><br />Hey Lexington, get ready for a DOUBLE FEATURE!<br />On December 1st, Tinderbox Circus Sideshow will be dragging their butts back off the road and taking over Cosmic Charlie’s for a variety-filled smorgasbord of ridiculousness starting at 8:00pm! That’s right! You read it! We’ll have nonstop entertainment from our friends and loved ones filling your eye and ear holes from 8:00pm into the wee hours of the night!<br /><br />*SIDESHOW!* *LIVE MUSIC!* *RAFFLE PRIZES!*<br /><br />Come and be awed and amazed by our wide array of performers from coast to coast bringing you the best and most glorious stunts and feats from the world of SIDESHOW! <br />...BUT IT DOESN’T STOP THERE!<br /><br />Come and get your mind blown by local music from io Ravinevine and heavy hitters Ford Theatre Reunion!!<br /><br />**Stay tuned for the official schedule for the evening, raffle prize tiers, and performer announcements in the coming weeks, but until then...gear up and buy those tickets! <br />Because they’re available NOW! Save $2 NOW by purchasing your tickets by clicking the link above!**<br /><br />Part of this event’s proceeds go to the first ever work convention for sideshow professionals, The Southern Sideshow Hootenanny! For more information, visit their Facebook page or the website at http://www.southernsideshowhootenanny.com/",
+    "links": [],
+    "fb_event_link": "https://www.facebook.com/events/508780462805028",
+    "eventbright_link": "none",
+    "bitly_link": "grr",
+    "ticket_link": "http://www.ticketfly.com/purchase/event/1562372",
+    "tags": [
+      "circus", "show"
+    ]
+  },
+  {
+    "id": "b8237b40-b0e2-11e7-a0db-b739e115793a",
+    "title": "R.C. May Photography Lecture: Teju Cole",
+    "slug": "rc_may_photography_lecture_teju_cole",
+    "when": "Friday, December 1st 2017, 4:00pm-5:00pm",
+    "time_start": "2017-12-01 16:00:00",
+    "time_end": "2017-12-01 17:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/teju_cole.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/teju_cole.jpg",
+    "venues": [
+      "UK Art Museum"
+    ],
+    "organizers": [
+      "UK Art Museum"
+    ],
+    "map_link": "https://goo.gl/maps/EHxtV646uRD2",
+    "brief_description": "The 2017-18 R.C. May Photography Lecture Series continues with a lecture by acclaimed photographer, writer, and art historian, Teju Cole",
+    "description": "The 2017-18 R.C. May Photography Lecture Series continues with a lecture by acclaimed photographer, writer, and art historian, Teju Cole. Lecture will be in the Gatton Business College, Kincaid Auditorium. Admission is FREE and open to the public. An exhibition of his photographs is on view from October 7-December 3, 2017 in the Art Museum. For more information about his work visit http://finearts.uky.edu/art-museum<br /><br />Cole is the photography critic of the \"New York Times Magazine\" and an award-winning novelist (\"Open City\") and essay writer (\"Known and Strange Things\"). These works have earned a variety of honors including the PEN/Hemingway Award, the New York City Book Award for Fiction, the Focus Award from the Griffin Museum of Photography, and the Windham Campbell Prize for fiction from Yale University. Raised in Nigeria, Cole currently resides in Brooklyn.",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/1937542976496299",
+    "eventbright_link": "none",
+    "bitly_link": "grr",
+    "tags": [
+      "art", "lecture"
+    ]
   }
-
 ]
