@@ -114,6 +114,34 @@
     ]
   },
   {
+    "id": "01f1afd0-b471-11e7-a9c3-f32cfb7be026",
+    "title": "Linefork - a documentary about Lee and Opal Sexton",
+    "slug": "linefork_a_documentary_about_lee_and_opal_sexton",
+    "when": "Tuesday, October 24th 2017, 7:30pm-10:30pm",
+    "time_start": "2017-10-24 19:30:00",
+    "time_end": "2017-10-24 22:30:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/sexton_doc_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/sexton_doc_1.jpg",
+    "venues": [
+      "Niles Center at Lucille Caudill Little Fine Arts Library"
+    ],
+    "organizers": [
+      "The Niles Center"
+    ],
+    "map_link": "https://goo.gl/maps/pp3fZj9spfL2",
+    "brief_description": "The Niles Center is pleased to host an exclusive screening of \"Linefork,\" a documentary about traditional banjo master, Lee Sexton, his wife Opal, and their lives in Eastern Kentucky.",
+    "description": "The Niles Center is pleased to host an exclusive screening of \"Linefork,\" a documentary about traditional banjo master, Lee Sexton, his wife Opal, and their lives in Eastern Kentucky. The screening will be followed by a Q&A with the filmmakers moderated by Niles Center director emeritus, Ron Pen.<br /><br />An immersive meditation on the passage of time and the persistent resonance of place, Linefork follows the daily rituals of an elderly couple living in Kentucky's Appalachian Mountains. Now well into his eighties, Lee Sexton is the last living link to the distant past of a regional American music. A retired coal miner with black lung, Lee and his wife, Opal, continue to farm the land where he was born. Together they face encroaching health concerns and stark economic realities. Recorded over three years, Linefork is an observational film documenting their marriage, their community, their resilience, and the raw yet delicate music of an unheralded banjo legend, linked to the past yet immediately present.",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/534060856947083",
+    "eventbright_link": "none",
+    "bitly_link": "http://bit.ly/2zz37Gc",
+    "tags": [
+      "documentary", "music"
+    ]
+  },
+  {
     "id": "b8237b41-b0e2-12e7-a0db-b739e115793a",
     "title": "Sound of Ceres with Plume Varia, Big Fresh, Robert Beatty",
     "slug": "sound_of_ceres_1",
