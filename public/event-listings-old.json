@@ -1,27 +1,5 @@
 [
-  {
-    "id": "8e5ad135-9fcc-11e7-abc4-cec278b6b50a",
-    "title": "Kent Lambert: Reckoning",
-    "slug": "reckoning",
-    "when": "Sunday, October 22 at 7pm-9pm",
-    "time_start": "2017-10-22 19:00:00",
-    "time_end": "2017-10-22 21:00:00",
-    "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/reckoning.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/reckoning.jpg",
-    "venues": ["21C Lexington"],
-    "organizers": ["Lexington Film League"],
-    "map_link": "https://goo.gl/maps/aqKX3Aj2PG22",
-    "brief_description": "Kent Lambert (Chicago) presents a selection of his videos, including the new Reckoning 4.",
-    "description": "<p>Kent Lambert (Chicago) presents a selection of his videos, including the new Reckoning 4.</p><p>'In my music and video work, I search for intersections between 1) meditative interrogation of society and self 2) textural and tonal intrigue and beauty 3) absurdist and/or humanist humor and 4) cathartic emotional expression. A primary underlying motivation of my video work is to reflect, critique and ultimately transcend American zeitgeists and my own consumption within them.'</p>",
-    "links": [],
-    "bitly_link":"none",
-    "ticket_link": "none",
-    "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2xIoQyh",
-    "fb_event_link": "https://www.facebook.com/events/172297916668853",
-    "tags": ["film", "screening"]
-  },
+
   {
       "id": "8e5ac5b0-9fcc-11e7-abc4-cec278b6b50a",
       "title": "Funeral Parade of Roses",
