@@ -1,47 +1,31 @@
 [
   {
-    "id": "3c54bac9-a1b5-4e70-8df8-d7764c6617d6",
-    "title": "Halloween Show!: At Midnight I’ll Take Your Soul (1964)",
-    "slug": "halloween-show",
-    "when": "Monday, October 30 at 7pm - 9pm",
-    "time_start": "2017-10-30 19:00:00",
-    "time_end": "2017-10-30 21:00:00",
+    "id": "e9ea8c30-c259-11e7-a1f8-15f612fb5929",
+    "title": "A Reading by Frank X Walker",
+    "slug": "a_reading_by_frank_x_walker",
+    "when": "Tuesday, November 7th 2017, 6:30pm-7:30pm",
+    "time_start": "2017-11-07 18:30:00",
+    "time_end": "2017-11-07 19:30:00",
     "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/halloween-show.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/halloween-show.jpg",
-    "venues": ["21C Lexington"],
-    "organizers": ["Lexington Film League"],
-    "map_link": "https://goo.gl/maps/aqKX3Aj2PG22",
-    "brief_description": "On 'Devil's Night,' the Lexington Film League Showcase at 21c presents a special Halloween screening of At Midnight I'll Take Your Soul (1964), a Brazilian horror film directed by José Mojica Marins, better known as 'Coffin Joe.'",
-    "description": "<p>On 'Devil's Night,' the Lexington Film League Showcase at 21c presents a special Halloween screening of At Midnight I'll Take Your Soul (1964), a Brazilian horror film directed by Jos&eacute; Mojica Marins, better known as 'Coffin Joe.' The film was programmed by Phill Kisling, who will introduce the show.<br /><br />At Midnight I&rsquo;ll Take Your Soul is a 1964 Brazilian horror film that is the first instance of the character known as Z&eacute; do Caix&atilde;o or translated to english Coffin Joe. The film starts with an old witch telling us to not watch this evil film, to turn away but together we will not heed her superstitious ramblings! Together we will witness the horrific acts of Z&eacute; do Caix&atilde;o as he searches for the perfect woman to carry on his evil bloodline, in attempt to defy God himself!</p>",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/frank_x_w_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/frank_x_w_1.jpg",
+    "venues": [
+      "Brier Books"
+    ],
+    "organizers": [
+      "Brier Books"
+    ],
+    "map_link": "https://www.google.com/maps/place/Brier+Books/@38.0310935,-84.4904127",
+    "brief_description": "Brier Books is excited to host Affrilachian author Frank X Walker",
+    "description": "Brier Books is excited to host Affrilachian author Frank X Walker. He will read from his newest collection Ink Stains & Water Marks: New and Uncollected Poems, which was recently released by Duncan Hill Press.",
     "links": [],
     "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/331311907338359",
     "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2ylaQax",
-    "fb_event_link": "https://www.facebook.com/events/146989615899848",
-    "tags": ["film", "horror film", "art film"]
-  },
-  {
-    "id": "2558a270-a7e3-11e7-b55d-5d50c0e4c8ed",
-    "title": "Italian Beaches Album Release (Two Sets)",
-    "slug": "italian_beaches_album_release",
-    "when": "Saturday, November 4th 2017, 8:00pm-10:30pm",
-    "time_start": "2017-11-04 20:00:00",
-    "time_end": "2017-11-04 22:30:00",
-    "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/italian_beaches_1.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/social/italian_beaches_1.jpg",
-    "venues": ["The Burl"],
-    "organizers": ["Italian Beaches"],
-    "map_link": "https://goo.gl/maps/MerUrvdgk9u",
-    "brief_description": "Italian Beaches Album Release (Two Sets) at The Burl.",
-    "description": "Italian Beaches Album Release (Two Sets) at The Burl. The band will be playing an early and a late set. Early set will start promptly at 8pm. Late set will start a little less promptly at 10pm with Emily Hagihara and Her Sounds of Fire. Come to one or all.",
-    "links": [],
-    "ticket_link": "none",
-    "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2yL6DQD",
-    "fb_event_link": "https://www.facebook.com/events/119551415382329",
-    "tags": ["music","band", "record release"]
+    "bitly_link": "http://bit.ly/2Aal7WJ",
+    "tags": [
+      "poetry", "reading"
+    ]
   },
   {
     "id": "e4793430-b0e4-11e7-836d-2d12421bc717",
@@ -100,6 +84,34 @@
     ]
   },
   {
+    "id": "0f43d990-c1ac-11e7-89a1-8fa94f9ab591",
+    "title": "Transgender Day of Remembrance Vigil",
+    "slug": "transgender_day_of_remembrance_vigil",
+    "when": "Monday, November 20th 2017, 7:00pm-9:00pm",
+    "time_start": "2017-11-20 19:00:00",
+    "time_end": "2017-11-20 21:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/transgender_vigil_2017.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/transgender_vigil_2017.jpg",
+    "venues": [
+      "Main Building (University of Kentucky)"
+    ],
+    "organizers": [
+      "The Office of LGBTQ Resources at the University of Kentucky"
+    ],
+    "map_link": "https://goo.gl/maps/kxitKmHSQ3z",
+    "brief_description": "Join LBGTQ* Resources in reflection honoring the trans lives lost to violence during 2017",
+    "description": "Join LBGTQ* Resources in reflection honoring the trans lives lost to violence during 2017. RAIN LOCATION: Holmes Hall, Studio, 111 Avenue of Champions, Lexington, KY 40506",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/507516866273579",
+    "eventbright_link": "none",
+    "bitly_link": "http://bit.ly/2hI5yPA",
+    "tags": [
+      "vigil"
+    ]
+  },
+  {
     "id": "36d2aa10-b0e3-11e7-995a-0159d4e90802",
     "title": "Higher",
     "slug": "higher",
@@ -125,6 +137,34 @@
     "bitly_link": "http://bit.ly/2zxRY8H",
     "tags": [
       "music", "show"
+    ]
+  },
+  {
+    "id": "8206d890-c1a9-11e7-93f5-51d16f1914a8",
+    "title": "Oxford American’s 2017 KY Music Issue Launch",
+    "slug": "oxford_american_2017_ky_music_issue_launch_commonwealt",
+    "when": "Tuesday, November 28th 2017, 7:00pm-10:00pm",
+    "time_start": "2017-11-28 19:00:00",
+    "time_end": "2017-11-28 22:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/oxford_american_2017.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/oxford_american_2017.jpg",
+    "venues": [
+      "The Burl"
+    ],
+    "organizers": [
+      "Oxford American Magazine"
+    ],
+    "map_link": "https://goo.gl/maps/MerUrvdgk9u",
+    "brief_description": "Join us as we salute the musicians of the Commonwealth in celebration of Oxford American Magazine’s 2017 Kentucky music issue",
+    "description": "Join us as we salute the musicians of the Commonwealth in celebration of Oxford American Magazine’s 2017 Kentucky music issue. The evening will feature an eclectic lineup of Kentucky musicians and performers spanning genres from bluegrass to blues rock and everything in between. Each act will perform a handful of songs, paying tribute to the musical trailblazers that paved the way for Kentucky’s rich musical heritage.<br /><br />Featured artists for the evening are:<br /><br />Joan Shelley | http://www.joanshelley.net <br />Based out of Louisville, Kentucky, singer/songwriter Joan Shelley's warm and mellifluous voice evokes both the deep south and west coast, drawing from both old-time country and '60s folk. A talented songwriter and prolific performer, Shelley splits her time between solo outings and collaborations with other area musicians like Daniel Martin Moore and Joe Manning, with whom she issued the albums Farthest Field (2012) and Outside Stay Outside (2014), respectively, and with the old-timey music trio Maiden Radio, which also features the talents of Julia Purcell and Cheyenne Mize. Shelley released her solo debut Ginko in 2012, followed by the No Quarter-issued Electric Ursa in 2014, the latter of which saw her working alongside fleet-fingered guitarist Nathan Salsburg. 2015's Over and Even found Shelley and Salsburg delivering an evocative set of country-folk originals that flirted with English and Irish traditional music. For her eponymous fifth studio LP, Shelley, Salsburg, and James Elkington headed up to Chicago to record with Wilco's Jeff Tweedy behind the board.<br /><br />The Wooks | http://www.wookoutamerica.com<br />Energetically honoring the sound of traditional bluegrass and mountain music, with threads of singer-songwriter, rock and jam band music woven throughout, The Wooks are as at home on a festival stage as they are in a barn in the heart of Kentucky's horse country. The Wooks are CJ Cain (guitar), Galen Green (mandolin), Arthur Hancock (banjo), Roddy Puckett (bass) and Jesse Wells (fiddle). Inspired by legends and trailblazers like Crowe, Whitley, Simpson, Bush, Stapleton and Rice who cut their teeth on stages throughout the bluegrass region, The Wooks translate the sights and sounds of the people, hills, bars, roads and creeks around them into songs and shows that captivate. With both respect for their heritage and innovative originality, The Wooks are the natural evolution of a sound that has always been there.<br /><br />Jecorey “1200” Arthur | http://1200llc.com<br />1200’s performances are known for being uncategorizable, featuring something everyone will love. Whether performing as a DJ, full band or piano soloist, no genre is off the table. Jecorey \"1200\" Arthur is an award-winning educator, composer, performer and curator from Louisville, Kentucky. His performances range from Forecastle Festival to the 92nd Street Y Musical Introduction Series, to collaborations with the Louisville Orchestra, Indianapolis Symphony and Pittsburgh Symphony. Arthur dedicates his work to community as an event curator for City Collaborative, Speed Art Museum, Louisville Downtown Partnership and many more organizations. He is currently the music specialist at Hite Elementary where he teaches general music and directs performance ensembles. Through his 1200 performances, he is breaking down barriers in music education both on and off stage.<br /><br />Tee Dee Young | http://www.teedeeyoung.com<br />Tee Dee Young, a blues legend in his own time, definitely has the blues and loves “firing down on that guitar.” While playing his own unique style of the blues, his dynamic stage presence, exciting harmony and energy will put you in the mood for dancing. Young’s playing and singing are authentic to the genre but oblivious to current industry trends. His guitar is a weapon, wielded with total authority, assailing the listener with his sheer virtuosity. He writes and performs his own music, while covering music written by other artists. A native of Lexington, Kentucky, Young has been performing and playing for audiences for years and has opened up for and performed with legendary and acclaimed blues and R&B musicians such as Johnny Rawls, Guitar Shorty, Big Bill Morganfield, Albert King, Lil “Howling ” Wolf, Sir “Mack” Rice, Eddie Floyd, Malina Moye, Al Green, Denise LaSalle, Aretha Franklin, Cameo, Lakeside, James Brown, Alexander O’Neal, Vesta Williams, Miki Howard and many others. <br /><br />Brett Ratliff | http://brettratliff.net<br />Brett Ratliff's home place is Van Lear, Kentucky, the historic coal camp that gave birth to Loretta Lynn. Having been mentored by the masters of the area—George Gibson, Rich Kirby, Paul David Smith, Lee Sexton, and Jamie Wells among them—Ratliff is often the traditionally trained musician on stage with country, acid honk-a-tonk and cow punk. He has toured the region and the world with groups such as Clack Mountain String Band, Dirk Powell Band, Giant Rooster Sideshow and Rich & the Po’ Folk, and has played alongside the likes of Woody Pines, Chris Stapleton, Foghorn Stringband, Jean Ritchie, Mike Seeger and Art Stamper. Today Ratliff teaches traditional Kentucky repertoire at The Festival of American Fiddle Tunes in Port Townsend, Washington, Swannanoa Gathering in Swannanoa, North Carolina, Sore Fingers Week in Oxfordshire, England, Augusta Heritage's Early Country Music Week in Elkins, West Virginia, Cowan Creek Mountain Music School in Letcher County, Kentucky and elsewhere.<br /><br /><br />Johnny Conqueroo | http://www.johnnyconqueroo.com<br />Johnny Conqueroo is a highly kinetic blues/psych-rock trio from Lexington, Kentucky. Members include Grant Curless (guitar, vocals, keys), Wils Quinn (drums, vocals, percussion), and Shawn Reynolds (bass, keys). The band is touring in support of their second release, the new LP “Washed Up.\" After releasing their first EP in 2015, the band’s raw sound and energy drew the attention of local and regional audiences, with selection to play several 2016 festivals such as Moonshiners Ball, Beaux Arts Ball, Great Day, Moontower and Patchwork. As word spread, and EPs changed hands, eventually even Rock & Roll Hall of Famer Billy Gibbons took notice. Building on the momentum and grassroots support, Johnny Conqueroo released their genre bending LP “Washed Up” in December 2016, and is currently touring in support of “Washed Up”.",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/2029221603979122",
+    "eventbright_link": "none",
+    "bitly_link": "http://bit.ly/2hFCDvt",
+    "tags": [
+      "music", "magazine", "release", "party"
     ]
   },
   {
@@ -181,6 +221,34 @@
     "bitly_link": "http://bit.ly/2ghmI5b",
     "tags": [
       "art", "lecture"
+    ]
+  },
+  {
+    "id": "522479a0-c1ab-11e7-910d-794911741001",
+    "title": "World AIDS Day Screening: It's My Party",
+    "slug": "world_aids_day_screening:_it's_my_party",
+    "when": "Friday, December 1st 2017, 7:00pm-9:00pm",
+    "time_start": "2017-12-01 19:00:00",
+    "time_end": "2017-12-01 21:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/world_aids_day_screening_2017.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/world_aids_day_screening_2017.jpg",
+    "venues": [
+      "The James Eads How Memorial Cinema"
+    ],
+    "organizers": [
+      "The James Eads How Memorial Cinema"
+    ],
+    "map_link": "https://goo.gl/maps/WPuriJumD772",
+    "brief_description": "Save the date! We will be hosting another World AIDS Day screening",
+    "description": "Save the date! We will be hosting another World AIDS Day screening on Friday, December 1 -- IT'S MY PARTY at 7pm. Snacks, drinks, and tissues provided.",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/496353264055850",
+    "eventbright_link": "none",
+    "bitly_link": "http://bit.ly/2A7OkS8",
+    "tags": [
+      "screening", "film"
     ]
   }
 ]
