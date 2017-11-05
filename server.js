@@ -18,6 +18,20 @@ app.get("/", function (request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
 
+app.get('/event-listings', function(req, res){
+  axios.get(process.env.API_URL+'/events')
+  .then(function (response) {
+    console.log(response.data);
+
+    res.json(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+    res.status(500).json({"status":"error"})
+  });
+})
+
+
 app.get("/event/:id", function(req, res){
     console.log("got it");
     var self = this;

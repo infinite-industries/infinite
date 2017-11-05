@@ -106,10 +106,10 @@ export default {
   },
   mounted: function(){
     var self = this;
-    Axios.get('/event-listings.json')
+    Axios.get('/event-listings')
       .then(function (response) {
-        console.log(response.data);
-        self.events = response.data;
+        console.log(response.data.events);
+        self.events = response.data.events;
 
         if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
         if (window.ifaddtocalendar == undefined) {
