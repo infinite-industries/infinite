@@ -30,7 +30,7 @@ app.get('/event-listings', function(req, res){
   })
   .catch(function (error) {
     console.log(error);
-    res.status(500).json({"status":"error"})
+    res.status(500).json({"error": "error retreiving events: " + error})
   });
 })
 
