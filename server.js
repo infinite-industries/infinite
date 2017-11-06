@@ -19,8 +19,11 @@ app.get("/", function (request, response) {
 });
 
 app.get('/event-listings', function(req, res){
-  axios.get(process.env.API_URL+'/events')
+  axios.get(process.env.API_URL+'/events?sort_field=time_start')
   .then(function (response) {
+    // JSON.stringify.map(obj){
+    //   console.log(obj.title);
+    // }
     console.log(response.data);
 
     res.json(response.data);
