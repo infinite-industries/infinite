@@ -47,7 +47,7 @@ app.get("/event/:id", function(req, res){
       //  })
 
        let event = response.data;
-       console.log(event);
+       // console.log(event);
        //errors!!!! handle them
 
         res.send(nunjucks.render(
