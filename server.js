@@ -38,14 +38,15 @@ app.get('/event-listings', function(req, res){
 app.get("/event/:id", function(req, res){
     console.log("got it");
     var self = this;
-    axios.get(process.env.SITE_URL+'/event-listings.json')
+    axios.get(process.env.API_URL+'/events/find/'+req.params.id+"?apikey="+process.env.API_KEY)
     .then(function (response) {
-      //console.log(response.data);
-      //self.events = response.data;
-       var event = response.data.find(function(event){
-        return event.id === req.params.id;
-       })
+      // console.log("yoooooo ",response.data);
+      // //self.events = response.data;
+      //  var event = response.data.find(function(event){
+      //   return event.id === req.params.id;
+      //  })
 
+       let event = response.data;
        console.log(event);
        //errors!!!! handle them
 
@@ -53,7 +54,6 @@ app.get("/event/:id", function(req, res){
           'views/event.html',
           {id:req.params.id, event: event, site_url:process.env.SITE_URL}
         ));
-
 
     })
     .catch(function (error) {
