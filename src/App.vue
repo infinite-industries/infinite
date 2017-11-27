@@ -44,6 +44,8 @@
     <v-toolbar class="indigo" dark fixed>
       <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
       <v-toolbar-title>Infinite Industries</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn outline class="indigo lighten-2" @click.stop="OpenEventSubmitter()">Submit Your Event</v-btn>
     </v-toolbar>
     <main>
       <v-container fluid>
@@ -60,9 +62,7 @@
                     <div class="event-venue">
                       {{event.venues[0]}}
                     </div>
-                    <div class="event-date">
-                      {{event.when}}
-                    </div>
+                    <div class="event-date" v-html="event.when"></div>
                     <div>{{event.brief_description}}...</div>
                   </div>
                 </v-card-title>
@@ -108,7 +108,7 @@ export default {
     var self = this;
     Axios.get('/event-listings')
       .then(function (response) {
-        console.log(response.data.events);
+        console.log("data from server: ",response.data.events);
         self.events = response.data.events;
 
         if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
@@ -129,6 +129,9 @@ export default {
     ShowEvent: function(event_id){
       console.log(event_id);
       window.location.assign('/event/'+ event_id);
+    },
+    OpenEventSubmitter: function(){
+      window.location.assign('https://event-add.glitch.me/');
     }
   }
 }

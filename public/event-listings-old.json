@@ -1,5 +1,145 @@
 [
   {
+    "id": "e9ea8c30-c259-11e7-a1f8-15f612fb5929",
+    "title": "A Reading by Frank X Walker",
+    "slug": "a_reading_by_frank_x_walker",
+    "when": "Tuesday, November 7th 2017, 6:30pm-7:30pm",
+    "time_start": "2017-11-07 18:30:00",
+    "time_end": "2017-11-07 19:30:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/frank_x_w_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/frank_x_w_1.jpg",
+    "venues": [
+      "Brier Books"
+    ],
+    "organizers": [
+      "Brier Books"
+    ],
+    "map_link": "https://www.google.com/maps/place/Brier+Books/@38.0310935,-84.4904127",
+    "brief_description": "Brier Books is excited to host Affrilachian author Frank X Walker",
+    "description": "Brier Books is excited to host Affrilachian author Frank X Walker. He will read from his newest collection Ink Stains & Water Marks: New and Uncollected Poems, which was recently released by Duncan Hill Press.",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/331311907338359",
+    "eventbright_link": "none",
+    "bitly_link": "http://bit.ly/2Aal7WJ",
+    "tags": [
+      "poetry", "reading"
+    ]
+  },
+  {
+    "id": "e4793430-b0e4-11e7-836d-2d12421bc717",
+    "title": "R. C. May Photography Lecture: Lori Nix & Kathleen Gerber",
+    "slug": "r_c_may_photography_lecture_lori_nix_kathleen_gerber",
+    "when": "Friday, November 10th 2017, 4:00pm-5:00pm",
+    "time_start": "2017-11-10 16:00:00",
+    "time_end": "2017-11-10 17:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/lori_nix.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/lori_nix.jpg",
+    "venues": [
+      "Gatton College of Business and Economics at the University of Kentucky"
+    ],
+    "organizers": [
+      "UK Art Museum"
+    ],
+    "map_link": "https://goo.gl/maps/5nBR2BAa8KQ2",
+    "brief_description": "The first artist in the 2017-18 R.C. May Photography Lecture Series,  photographers Lori Nix and Kathleen Gerber discuss their collaborative images of constructed environments",
+    "description": "The first artist in the 2017-18 R.C. May Photography Lecture Series,  photographers Lori Nix and Kathleen Gerber discuss their collaborative images of constructed environments. Lecture will be in the Gatton Business College, Kincaid Auditorium. Admission is FREE and open to the public. An exhibition of their photographs is on view from October 7-December 3, 2017. For more information about their work visit http://finearts.uky.edu/art-museum",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/177608359467175",
+    "eventbright_link": "none",
+    "bitly_link": "http://bit.ly/2xP5eIC",
+    "tags": [
+      "lecture", "art"
+    ]
+  },
+  {
+    "id": "82f05c50-b0e1-11e7-9027-c7e82a32b1fb",
+    "title": "Captured! By Robots / No Witness",
+    "slug": "captured_by_robots_no_witness",
+    "when": "Thursday, November 9th 2017, 10:00pm-1:00am",
+    "time_start": "2017-11-09 22:00:00",
+    "time_end": "2017-11-10 01:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/captured_by_robots.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/captured_by_robots.jpg",
+    "venues": [
+      "Cosmic Charlie's"
+    ],
+    "organizers": [
+      "Cosmic Charlie's"
+    ],
+    "map_link": "https://goo.gl/maps/DRBPSQwjpYu",
+    "brief_description": "",
+    "description": "",
+    "links": [],
+    "fb_event_link": "https://www.facebook.com/events/117119855632777",
+    "eventbright_link": "none",
+    "ticket_link": "http://www.ticketfly.com/purchase/event/1567541",
+    "bitly_link": "http://bit.ly/2ijAJnq",
+    "tags": [
+      "music", "show"
+    ]
+  },
+  {
+    "id": "0f43d990-c1ac-11e7-89a1-8fa94f9ab591",
+    "title": "Transgender Day of Remembrance Vigil",
+    "slug": "transgender_day_of_remembrance_vigil",
+    "when": "Monday, November 20th 2017, 7:00pm-9:00pm",
+    "time_start": "2017-11-20 19:00:00",
+    "time_end": "2017-11-20 21:00:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/transgender_vigil_2017.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/transgender_vigil_2017.jpg",
+    "venues": [
+      "Main Building (University of Kentucky)"
+    ],
+    "organizers": [
+      "The Office of LGBTQ Resources at the University of Kentucky"
+    ],
+    "map_link": "https://goo.gl/maps/kxitKmHSQ3z",
+    "brief_description": "Join LBGTQ* Resources in reflection honoring the trans lives lost to violence during 2017",
+    "description": "Join LBGTQ* Resources in reflection honoring the trans lives lost to violence during 2017. RAIN LOCATION: Holmes Hall, Studio, 111 Avenue of Champions, Lexington, KY 40506",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/507516866273579",
+    "eventbright_link": "none",
+    "bitly_link": "http://bit.ly/2hI5yPA",
+    "tags": [
+      "vigil"
+    ]
+  },
+  {
+    "id": "36d2aa10-b0e3-11e7-995a-0159d4e90802",
+    "title": "Higher",
+    "slug": "higher",
+    "when": "Saturday, November 25th 2017, 10:00pm-2:23am",
+    "time_start": "2017-11-25 22:00:00",
+    "time_end": "2017-11-26 02:23:00",
+    "website": "none",
+    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/higher_1.jpg",
+    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/higher_1.jpg",
+    "venues": [
+      "The Bar Complex"
+    ],
+    "organizers": [
+      "Thank you for Comming to Our Parties"
+    ],
+    "map_link": "https://goo.gl/maps/M6UzW6vArW82",
+    "brief_description": "You know this is the best place to dance to disco in the country right?",
+    "description": "You know this is the best place to dance to disco in the country right? We will turn the lights off, turn the volume up, and forget the outside world and its troubles. We do hope that you’ll join us.",
+    "links": [],
+    "ticket_link": "none",
+    "fb_event_link": "https://www.facebook.com/events/2009253242644080",
+    "eventbright_link": "none",
+    "bitly_link": "http://bit.ly/2zxRY8H",
+    "tags": [
+      "music", "show"
+    ]
+  },
+  {
     "id": "2558a270-a7e3-11e7-b55d-5d50c0e4c8ed",
     "title": "Italian Beaches Album Release (Two Sets)",
     "slug": "italian_beaches_album_release",

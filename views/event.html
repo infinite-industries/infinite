@@ -67,7 +67,7 @@
       <div class="row">
         <div class="col s10">
           <h1>{{event.title}}</h1>
-          <h3>{{event.when}}</h3>
+          <h3>{{event.when | safe}}</h3>
           <h3>{{event.venues[0]}}</h3>
         </div>
         <div class="col s2 event-close">
@@ -139,7 +139,7 @@
       {% if event.hasOwnProperty('eventbrite_link') and event.eventbrite_link!="none" %}
         <div class="row">
           <div class="col s12">
-            <a href="{{event.eventbright_link}}" target="_new">Eventbright Link</a>
+            <a href="{{event.eventbrite_link}}" target="_new">Eventbrite Link</a>
           </div>
         </div>
       {% endif %}

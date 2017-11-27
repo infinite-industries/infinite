@@ -1,149 +1,10 @@
 [
-  {
-    "id": "e9ea8c30-c259-11e7-a1f8-15f612fb5929",
-    "title": "A Reading by Frank X Walker",
-    "slug": "a_reading_by_frank_x_walker",
-    "when": "Tuesday, November 7th 2017, 6:30pm-7:30pm",
-    "time_start": "2017-11-07 18:30:00",
-    "time_end": "2017-11-07 19:30:00",
-    "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/frank_x_w_1.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/frank_x_w_1.jpg",
-    "venues": [
-      "Brier Books"
-    ],
-    "organizers": [
-      "Brier Books"
-    ],
-    "map_link": "https://www.google.com/maps/place/Brier+Books/@38.0310935,-84.4904127",
-    "brief_description": "Brier Books is excited to host Affrilachian author Frank X Walker",
-    "description": "Brier Books is excited to host Affrilachian author Frank X Walker. He will read from his newest collection Ink Stains & Water Marks: New and Uncollected Poems, which was recently released by Duncan Hill Press.",
-    "links": [],
-    "ticket_link": "none",
-    "fb_event_link": "https://www.facebook.com/events/331311907338359",
-    "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2Aal7WJ",
-    "tags": [
-      "poetry", "reading"
-    ]
-  },
-  {
-    "id": "e4793430-b0e4-11e7-836d-2d12421bc717",
-    "title": "R. C. May Photography Lecture: Lori Nix & Kathleen Gerber",
-    "slug": "r_c_may_photography_lecture_lori_nix_kathleen_gerber",
-    "when": "Friday, November 10th 2017, 4:00pm-5:00pm",
-    "time_start": "2017-11-10 16:00:00",
-    "time_end": "2017-11-10 17:00:00",
-    "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/lori_nix.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/lori_nix.jpg",
-    "venues": [
-      "Gatton College of Business and Economics at the University of Kentucky"
-    ],
-    "organizers": [
-      "UK Art Museum"
-    ],
-    "map_link": "https://goo.gl/maps/5nBR2BAa8KQ2",
-    "brief_description": "The first artist in the 2017-18 R.C. May Photography Lecture Series,  photographers Lori Nix and Kathleen Gerber discuss their collaborative images of constructed environments",
-    "description": "The first artist in the 2017-18 R.C. May Photography Lecture Series,  photographers Lori Nix and Kathleen Gerber discuss their collaborative images of constructed environments. Lecture will be in the Gatton Business College, Kincaid Auditorium. Admission is FREE and open to the public. An exhibition of their photographs is on view from October 7-December 3, 2017. For more information about their work visit http://finearts.uky.edu/art-museum",
-    "links": [],
-    "ticket_link": "none",
-    "fb_event_link": "https://www.facebook.com/events/177608359467175",
-    "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2xP5eIC",
-    "tags": [
-      "lecture", "art"
-    ]
-  },
-  {
-    "id": "82f05c50-b0e1-11e7-9027-c7e82a32b1fb",
-    "title": "Captured! By Robots / No Witness",
-    "slug": "captured_by_robots_no_witness",
-    "when": "Thursday, November 9th 2017, 10:00pm-1:00am",
-    "time_start": "2017-11-09 22:00:00",
-    "time_end": "2017-11-10 01:00:00",
-    "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/captured_by_robots.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/captured_by_robots.jpg",
-    "venues": [
-      "Cosmic Charlie's"
-    ],
-    "organizers": [
-      "Cosmic Charlie's"
-    ],
-    "map_link": "https://goo.gl/maps/DRBPSQwjpYu",
-    "brief_description": "",
-    "description": "",
-    "links": [],
-    "fb_event_link": "https://www.facebook.com/events/117119855632777",
-    "eventbright_link": "none",
-    "ticket_link": "http://www.ticketfly.com/purchase/event/1567541",
-    "bitly_link": "http://bit.ly/2ijAJnq",
-    "tags": [
-      "music", "show"
-    ]
-  },
-  {
-    "id": "0f43d990-c1ac-11e7-89a1-8fa94f9ab591",
-    "title": "Transgender Day of Remembrance Vigil",
-    "slug": "transgender_day_of_remembrance_vigil",
-    "when": "Monday, November 20th 2017, 7:00pm-9:00pm",
-    "time_start": "2017-11-20 19:00:00",
-    "time_end": "2017-11-20 21:00:00",
-    "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/transgender_vigil_2017.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/transgender_vigil_2017.jpg",
-    "venues": [
-      "Main Building (University of Kentucky)"
-    ],
-    "organizers": [
-      "The Office of LGBTQ Resources at the University of Kentucky"
-    ],
-    "map_link": "https://goo.gl/maps/kxitKmHSQ3z",
-    "brief_description": "Join LBGTQ* Resources in reflection honoring the trans lives lost to violence during 2017",
-    "description": "Join LBGTQ* Resources in reflection honoring the trans lives lost to violence during 2017. RAIN LOCATION: Holmes Hall, Studio, 111 Avenue of Champions, Lexington, KY 40506",
-    "links": [],
-    "ticket_link": "none",
-    "fb_event_link": "https://www.facebook.com/events/507516866273579",
-    "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2hI5yPA",
-    "tags": [
-      "vigil"
-    ]
-  },
-  {
-    "id": "36d2aa10-b0e3-11e7-995a-0159d4e90802",
-    "title": "Higher",
-    "slug": "higher",
-    "when": "Saturday, November 25th 2017, 10:00pm-2:23am",
-    "time_start": "2017-11-25 22:00:00",
-    "time_end": "2017-11-26 02:23:00",
-    "website": "none",
-    "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/higher_1.jpg",
-    "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/higher_1.jpg",
-    "venues": [
-      "The Bar Complex"
-    ],
-    "organizers": [
-      "Thank you for Comming to Our Parties"
-    ],
-    "map_link": "https://goo.gl/maps/M6UzW6vArW82",
-    "brief_description": "You know this is the best place to dance to disco in the country right?",
-    "description": "You know this is the best place to dance to disco in the country right? We will turn the lights off, turn the volume up, and forget the outside world and its troubles. We do hope that you’ll join us.",
-    "links": [],
-    "ticket_link": "none",
-    "fb_event_link": "https://www.facebook.com/events/2009253242644080",
-    "eventbright_link": "none",
-    "bitly_link": "http://bit.ly/2zxRY8H",
-    "tags": [
-      "music", "show"
-    ]
-  },
+
   {
     "id": "8206d890-c1a9-11e7-93f5-51d16f1914a8",
     "title": "Oxford American’s 2017 KY Music Issue Launch",
     "slug": "oxford_american_2017_ky_music_issue_launch",
-    "when": "Tuesday, November 28th 2017, 7:00pm-10:00pm",
+    "when": "Tuesday, November 28th, 2017 <br /> 7:00pm-10:00pm",
     "time_start": "2017-11-28 19:00:00",
     "time_end": "2017-11-28 22:00:00",
     "website": "none",
@@ -159,7 +20,8 @@
     "brief_description": "Join us as we salute the musicians of the Commonwealth in celebration of Oxford American Magazine’s 2017 Kentucky music issue",
     "description": "Join us as we salute the musicians of the Commonwealth in celebration of Oxford American Magazine’s 2017 Kentucky music issue. The evening will feature an eclectic lineup of Kentucky musicians and performers spanning genres from bluegrass to blues rock and everything in between. Each act will perform a handful of songs, paying tribute to the musical trailblazers that paved the way for Kentucky’s rich musical heritage.<br /><br />Featured artists for the evening are:<br /><br />Joan Shelley | http://www.joanshelley.net <br />Based out of Louisville, Kentucky, singer/songwriter Joan Shelley's warm and mellifluous voice evokes both the deep south and west coast, drawing from both old-time country and '60s folk. A talented songwriter and prolific performer, Shelley splits her time between solo outings and collaborations with other area musicians like Daniel Martin Moore and Joe Manning, with whom she issued the albums Farthest Field (2012) and Outside Stay Outside (2014), respectively, and with the old-timey music trio Maiden Radio, which also features the talents of Julia Purcell and Cheyenne Mize. Shelley released her solo debut Ginko in 2012, followed by the No Quarter-issued Electric Ursa in 2014, the latter of which saw her working alongside fleet-fingered guitarist Nathan Salsburg. 2015's Over and Even found Shelley and Salsburg delivering an evocative set of country-folk originals that flirted with English and Irish traditional music. For her eponymous fifth studio LP, Shelley, Salsburg, and James Elkington headed up to Chicago to record with Wilco's Jeff Tweedy behind the board.<br /><br />The Wooks | http://www.wookoutamerica.com<br />Energetically honoring the sound of traditional bluegrass and mountain music, with threads of singer-songwriter, rock and jam band music woven throughout, The Wooks are as at home on a festival stage as they are in a barn in the heart of Kentucky's horse country. The Wooks are CJ Cain (guitar), Galen Green (mandolin), Arthur Hancock (banjo), Roddy Puckett (bass) and Jesse Wells (fiddle). Inspired by legends and trailblazers like Crowe, Whitley, Simpson, Bush, Stapleton and Rice who cut their teeth on stages throughout the bluegrass region, The Wooks translate the sights and sounds of the people, hills, bars, roads and creeks around them into songs and shows that captivate. With both respect for their heritage and innovative originality, The Wooks are the natural evolution of a sound that has always been there.<br /><br />Jecorey “1200” Arthur | http://1200llc.com<br />1200’s performances are known for being uncategorizable, featuring something everyone will love. Whether performing as a DJ, full band or piano soloist, no genre is off the table. Jecorey \"1200\" Arthur is an award-winning educator, composer, performer and curator from Louisville, Kentucky. His performances range from Forecastle Festival to the 92nd Street Y Musical Introduction Series, to collaborations with the Louisville Orchestra, Indianapolis Symphony and Pittsburgh Symphony. Arthur dedicates his work to community as an event curator for City Collaborative, Speed Art Museum, Louisville Downtown Partnership and many more organizations. He is currently the music specialist at Hite Elementary where he teaches general music and directs performance ensembles. Through his 1200 performances, he is breaking down barriers in music education both on and off stage.<br /><br />Tee Dee Young | http://www.teedeeyoung.com<br />Tee Dee Young, a blues legend in his own time, definitely has the blues and loves “firing down on that guitar.” While playing his own unique style of the blues, his dynamic stage presence, exciting harmony and energy will put you in the mood for dancing. Young’s playing and singing are authentic to the genre but oblivious to current industry trends. His guitar is a weapon, wielded with total authority, assailing the listener with his sheer virtuosity. He writes and performs his own music, while covering music written by other artists. A native of Lexington, Kentucky, Young has been performing and playing for audiences for years and has opened up for and performed with legendary and acclaimed blues and R&B musicians such as Johnny Rawls, Guitar Shorty, Big Bill Morganfield, Albert King, Lil “Howling ” Wolf, Sir “Mack” Rice, Eddie Floyd, Malina Moye, Al Green, Denise LaSalle, Aretha Franklin, Cameo, Lakeside, James Brown, Alexander O’Neal, Vesta Williams, Miki Howard and many others. <br /><br />Brett Ratliff | http://brettratliff.net<br />Brett Ratliff's home place is Van Lear, Kentucky, the historic coal camp that gave birth to Loretta Lynn. Having been mentored by the masters of the area—George Gibson, Rich Kirby, Paul David Smith, Lee Sexton, and Jamie Wells among them—Ratliff is often the traditionally trained musician on stage with country, acid honk-a-tonk and cow punk. He has toured the region and the world with groups such as Clack Mountain String Band, Dirk Powell Band, Giant Rooster Sideshow and Rich & the Po’ Folk, and has played alongside the likes of Woody Pines, Chris Stapleton, Foghorn Stringband, Jean Ritchie, Mike Seeger and Art Stamper. Today Ratliff teaches traditional Kentucky repertoire at The Festival of American Fiddle Tunes in Port Townsend, Washington, Swannanoa Gathering in Swannanoa, North Carolina, Sore Fingers Week in Oxfordshire, England, Augusta Heritage's Early Country Music Week in Elkins, West Virginia, Cowan Creek Mountain Music School in Letcher County, Kentucky and elsewhere.<br /><br /><br />Johnny Conqueroo | http://www.johnnyconqueroo.com<br />Johnny Conqueroo is a highly kinetic blues/psych-rock trio from Lexington, Kentucky. Members include Grant Curless (guitar, vocals, keys), Wils Quinn (drums, vocals, percussion), and Shawn Reynolds (bass, keys). The band is touring in support of their second release, the new LP “Washed Up.\" After releasing their first EP in 2015, the band’s raw sound and energy drew the attention of local and regional audiences, with selection to play several 2016 festivals such as Moonshiners Ball, Beaux Arts Ball, Great Day, Moontower and Patchwork. As word spread, and EPs changed hands, eventually even Rock & Roll Hall of Famer Billy Gibbons took notice. Building on the momentum and grassroots support, Johnny Conqueroo released their genre bending LP “Washed Up” in December 2016, and is currently touring in support of “Washed Up”.",
     "links": [],
-    "ticket_link": "none",
+    "admission_fee":"$10",
+    "ticket_link": "https://www.ticketfly.com/purchase/event/1587003",
     "fb_event_link": "https://www.facebook.com/events/2029221603979122",
     "eventbright_link": "none",
     "bitly_link": "http://bit.ly/2hFCDvt",
@@ -168,10 +30,34 @@
     ]
   },
   {
+       "id":"093ce220-d332-11e7-91e3-950893290294",
+       "title":"24th Annual Open Studio + Carey Ellis & Where We Are Exhibitions",
+       "slug":"24th-annual-open-studio-+-carey-ellis-&-where-we-are-exhibitions",
+       "when":"Friday, December 1st, 2017 <br /> 6:00pm - 9:00pm",
+       "time_start":"2017-12-01 18:00:00",
+       "time_end": "2017-12-01 21:00:00",
+       "website": "none",
+       "image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/093ce220-d332-11e7-91e3-950893290294.jpg",
+       "social_image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/093ce220-d332-11e7-91e3-950893290294.jpg",
+       "venues":["Bolivar Art Gallery - UK School of Art"],
+       "admission_fee": "none",
+       "address": "236 Bolivar St, Lexington, KY 40508",
+       "organizers":["UK School of Art"],
+       "map_link":"https://goo.gl/maps/cFTbFbb7TmS2",
+       "brief_description":"Open Studio is an annual event organized by the Art Graduate Student Association of UK's School of Art & Visual Studies. ",
+       "description":"<p>Open Studio is an annual event organized by the Art Graduate Student Association of UK's School of Art &amp; Visual Studies. Since 1993, the school has opened its doors to the community on the first Friday of December to showcase the work of the Master of Fine Arts candidates. During the event, the MFAs and BFAs have their studios open for viewing and there are various demonstrations on view throughout the building. The Carey Ellis juried student exhibition is a chance for students to not only show their artwork but receive scholarships for their hard work. Open Studio is also an opportunity to buy unique, hand-made holiday gifts from local emerging artists and to see first hand the facilities in which they were created.</p><p><br></p><p>This event is free and open to the public, with refreshments! Invite your friends and family!</p>",
+       "links":["none"],
+       "ticket_link":"none",
+       "fb_event_link":"https://www.facebook.com/events/365823423843955",
+       "eventbrite_link":"none",
+       "bitly_link":"http://bit.ly/2k3j6ZK",
+       "tags":["not-yet-implemented"]
+     },
+  {
     "id": "773f27c0-b0e0-11e7-98e8-892a9e586881",
     "title": "Tinderbox Circus Sideshow / Ford Theatre Reunion / io Ravine",
     "slug": "tinderbox_circus_sideshow_1",
-    "when": "Friday, December 1st 2017, 8:00pm-1:00am",
+    "when": "Friday, December 1st, 2017 <br /> 8:00pm-1:00am",
     "time_start": "2017-12-01 20:00:00",
     "time_end": "2017-12-02 01:00:00",
     "website": "none",
@@ -199,19 +85,19 @@
     "id": "b8237b40-b0e2-11e7-a0db-b739e115793a",
     "title": "R.C. May Photography Lecture: Teju Cole",
     "slug": "rc_may_photography_lecture_teju_cole",
-    "when": "Friday, December 1st 2017, 4:00pm-5:00pm",
+    "when": "Friday, December 1st, 2017 <br /> 4:00pm-5:00pm",
     "time_start": "2017-12-01 16:00:00",
     "time_end": "2017-12-01 17:00:00",
     "website": "none",
     "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/teju_cole.jpg",
     "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/teju_cole.jpg",
     "venues": [
-      "UK Art Museum"
+      "UK Gatton Business College"
     ],
     "organizers": [
       "UK Art Museum"
     ],
-    "map_link": "https://goo.gl/maps/EHxtV646uRD2",
+    "map_link": "https://goo.gl/maps/J7Evqq43QjF2",
     "brief_description": "The 2017-18 R.C. May Photography Lecture Series continues with a lecture by acclaimed photographer, writer, and art historian, Teju Cole",
     "description": "The 2017-18 R.C. May Photography Lecture Series continues with a lecture by acclaimed photographer, writer, and art historian, Teju Cole. Lecture will be in the Gatton Business College, Kincaid Auditorium. Admission is FREE and open to the public. An exhibition of his photographs is on view from October 7-December 3, 2017 in the Art Museum. For more information about his work visit http://finearts.uky.edu/art-museum<br /><br />Cole is the photography critic of the \"New York Times Magazine\" and an award-winning novelist (\"Open City\") and essay writer (\"Known and Strange Things\"). These works have earned a variety of honors including the PEN/Hemingway Award, the New York City Book Award for Fiction, the Focus Award from the Griffin Museum of Photography, and the Windham Campbell Prize for fiction from Yale University. Raised in Nigeria, Cole currently resides in Brooklyn.",
     "links": [],
@@ -227,7 +113,7 @@
     "id": "522479a0-c1ab-11e7-910d-794911741001",
     "title": "World AIDS Day Screening: It's My Party",
     "slug": "world_aids_day_screening:_it's_my_party",
-    "when": "Friday, December 1st 2017, 7:00pm-9:00pm",
+    "when": "Friday, December 1st, 2017 <br /> 7:00pm-9:00pm",
     "time_start": "2017-12-01 19:00:00",
     "time_end": "2017-12-01 21:00:00",
     "website": "none",
@@ -250,5 +136,149 @@
     "tags": [
       "screening", "film"
     ]
-  }
+  },
+  {
+       "id":"84b98530-d2af-11e7-9e9f-d3ccbb4bb3fc",
+       "title":"Whiskey Bear Live with David Austin",
+       "slug":"whiskey-bear-live-with-david-austin",
+       "when":"Saturday, December 2nd, 2017 <br /> 9:00pm - 12:00am",
+       "time_start":"2017-12-02 21:00:00",
+       "time_end": "2018-12-02 24:00:00",
+       "website": "none",
+       "image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/5895df20-d2b5-11e7-94fa-bd64cbc443de.jpg",
+       "social_image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/5895df20-d2b5-11e7-94fa-bd64cbc443de.jpg",
+       "venues":["Whiskey Bear"],
+       "admission_fee": "none",
+       "address": "119 Marion, Suite 170, Lexington, Kentucky",
+       "organizers":["Whiskey Bear"],
+       "map_link":"https://goo.gl/maps/7qSyqTGRyZU2",
+       "brief_description":"We're excited to bring some of Lexington's favorite artists for the launch of Whiskey Bear Live. Join us every Saturday, grab dinner from one of your favorite local restaurants, enjoy a drink with us and settle in for an evening full of great live music. ",
+       "description":"<p>We're excited to bring some of Lexington's favorite artists for the launch of Whiskey Bear Live. Join us every Saturday, grab dinner from one of your favorite local restaurants, enjoy a drink with us and settle in for an evening full of great live music. </p><p><br></p><p>David Austin is a local artist, musician and DJ. As part of Thank You for Coming to Our Parties, he's helped re-ignite Lexington's love of dancing with parties such as Higher.</p><p><br></p><p>Holidays 2017</p><p>11/11 - Maggie Lander</p><p>11/18 - Thirsty Boots</p><p>11/25 - Kelly Richey</p><p>12/02 - David Austin</p><p>12/09 - Maggie Lander</p><p>12/16 - Thirsty Boots</p><p>12/23 - Kelly Richey</p><p>12/30 - The Sway</p><p><br></p><p>Winter 2018</p><p>01/06 - David Austin </p><p>01/13 - Maggie Lander</p><p>01/20 - Thirsty Boots</p><p>01/27 - Kelly Richey</p><p>02/03 - The Sway</p><p>02/10 - Kelly Richey</p><p>02/17 - Maggie Lander</p><p>02/24 - Thirsty BootsThe opening reception for State of Time is open to the public. During the reception, there will also be an artist symposium and open discussion with participating artists. </p><p><br></p><p>'State of Time', located in the Wilson Gallery on the Georgetown College campus, is part of an annual exhibition series, State of Fine Arts, that features multi-media works from art faculty from universities and colleges across Kentucky. This year's theme is 'time', and the work featured will be varied artistic interpretations of this enigmatic concept. The exhibition will include University of Kentucky, University of Louisville, Transylvania University, Centre College, Eastern Kentucky University, Morehead State University, Bluegrass Community and Technical College, Western Kentucky University, and more.</p>",
+       "links":["none"],
+       "ticket_link":"none",
+       "fb_event_link":"https://www.facebook.com/events/865636846931274",
+       "eventbright_link":"none",
+       "bitly_link":"",
+       "tags":["not-implemented-yet"]
+     },
+     {
+       "id":"7bece710-d2bb-11e7-94fa-bd64cbc443de",
+       "title":"Small Batch, Englishman",
+       "slug":"small-batch,-englishman-at-the-burl",
+       "when":"Thursday, December 7th, 2017 <br /> 9:00pm",
+       "time_start":"2017-12-07 21:00:00",
+       "time_end": "2017-12-07 24:00:00",
+       "website": "none",
+       "image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/7bece710-d2bb-11e7-94fa-bd64cbc443de.jpg",
+       "social_image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/7bece710-d2bb-11e7-94fa-bd64cbc443de.jpg",
+       "venues":["The Burl"],
+       "admission_fee": "$ 7",
+       "address": "375 Thompson Rd, Lexington, KY 40508",
+       "organizers":["The Burl"],
+       "map_link":"https://goo.gl/maps/MerUrvdgk9u",
+       "brief_description":"Small Batch, Englishman at The Burl",
+       "description":"<p>Small Batch, Englishman at The Burl</p>",
+       "links":["none"],
+       "ticket_link":"https://www.ticketfly.com/purchase/event/1595818",
+       "fb_event_link":"https://www.facebook.com/events/374927322930829",
+       "eventbright_link":"none",
+       "bitly_link":"http://bit.ly/2i7i6Dw",
+       "tags":["not-yet-implemented"]
+     },
+     {
+       "id":"18a65a30-d327-11e7-971c-b1be48721fc2",
+       "title":"Vandaveer",
+       "slug":"vandaveer",
+       "when":"Friday, December 29th, 2017 <br /> 8:00pm - 12:00am",
+       "time_start":"2017-12-29 20:00:00",
+       "time_end": "2017-12-29 24:00:00",
+       "website": "none",
+       "image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/18a65a30-d327-11e7-971c-b1be48721fc2.jpg",
+       "social_image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/18a65a30-d327-11e7-971c-b1be48721fc2.jpg",
+       "venues":["The Burl"],
+       "admission_fee": "$10",
+       "address": "375 Thompson Rd, Lexington, KY 40508",
+       "organizers":["The Burl"],
+       "map_link":"https://goo.gl/maps/MerUrvdgk9u",
+       "brief_description":"The stars finally aligned and just in time for the Holidays: the wonderfully talented Vandaveer is coming to The Burl",
+       "description":"<p>The stars finally aligned and just in time for the Holidays: the wonderfully talented Vandaveer is coming to The Burl</p><p><br></p><p>Support by Bendigo Fletcher</p><p><br></p><p>21+ </p><p>$10</p><p>Doors at 8 </p><p>Show at 9pm</p>",
+       "links":["none"],
+       "ticket_link":"https://www.ticketfly.com/purchase/event/1588161",
+       "fb_event_link":"https://www.facebook.com/events/124508951554177",
+       "eventbright_link":"none",
+       "bitly_link":"http://bit.ly/2A77TgS",
+       "tags":["not-yet-implemented"]
+     },
+     {
+          "id":"84b98530-d2af-11e7-9e9f-d3ccbb4bb3fc",
+          "title":"Whiskey Bear Live with David Austin",
+          "slug":"whiskey-bear-live-with-david-austin",
+          "when":"Saturday, January 7th, 2018 <br /> 9:00pm - 12:00am",
+          "time_start":"2017-01-07 21:00:00",
+          "time_end": "2018-01-07 24:00:00",
+          "website": "none",
+          "image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/5895df20-d2b5-11e7-94fa-bd64cbc443de.jpg",
+          "social_image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/5895df20-d2b5-11e7-94fa-bd64cbc443de.jpg",
+          "venues":["Whiskey Bear"],
+          "admission_fee": "none",
+          "address": "119 Marion, Suite 170, Lexington, Kentucky",
+          "organizers":["Whiskey Bear"],
+          "map_link":"https://goo.gl/maps/7qSyqTGRyZU2",
+          "brief_description":"We're excited to bring some of Lexington's favorite artists for the launch of Whiskey Bear Live. Join us every Saturday, grab dinner from one of your favorite local restaurants, enjoy a drink with us and settle in for an evening full of great live music. ",
+          "description":"<p>We're excited to bring some of Lexington's favorite artists for the launch of Whiskey Bear Live. Join us every Saturday, grab dinner from one of your favorite local restaurants, enjoy a drink with us and settle in for an evening full of great live music. </p><p><br></p><p>David Austin is a local artist, musician and DJ. As part of Thank You for Coming to Our Parties, he's helped re-ignite Lexington's love of dancing with parties such as Higher.</p><p><br></p><p>Holidays 2017</p><p>11/11 - Maggie Lander</p><p>11/18 - Thirsty Boots</p><p>11/25 - Kelly Richey</p><p>12/02 - David Austin</p><p>12/09 - Maggie Lander</p><p>12/16 - Thirsty Boots</p><p>12/23 - Kelly Richey</p><p>12/30 - The Sway</p><p><br></p><p>Winter 2018</p><p>01/06 - David Austin </p><p>01/13 - Maggie Lander</p><p>01/20 - Thirsty Boots</p><p>01/27 - Kelly Richey</p><p>02/03 - The Sway</p><p>02/10 - Kelly Richey</p><p>02/17 - Maggie Lander</p><p>02/24 - Thirsty BootsThe opening reception for State of Time is open to the public. During the reception, there will also be an artist symposium and open discussion with participating artists. </p><p><br></p><p>'State of Time', located in the Wilson Gallery on the Georgetown College campus, is part of an annual exhibition series, State of Fine Arts, that features multi-media works from art faculty from universities and colleges across Kentucky. This year's theme is 'time', and the work featured will be varied artistic interpretations of this enigmatic concept. The exhibition will include University of Kentucky, University of Louisville, Transylvania University, Centre College, Eastern Kentucky University, Morehead State University, Bluegrass Community and Technical College, Western Kentucky University, and more.</p>",
+          "links":["none"],
+          "ticket_link":"none",
+          "fb_event_link":"https://www.facebook.com/events/865636846931274",
+          "eventbright_link":"none",
+          "bitly_link":"",
+          "tags":["not-implemented-yet"]
+        },
+        {
+          "id":"7592f1d0-d323-11e7-94fa-bd64cbc443de",
+          "title":"WRFL & The Burl Present: San Fermin",
+          "slug":"wrfl-&-the-burl-present:-san-fermin",
+          "when":"Tuesday, January 30th, 2018 <br /> 8:00pm - 12:00am",
+          "time_start":"2018-01-30 20:00:00",
+          "time_end": "2018-01-31 24:00:00",
+          "website": "none",
+          "image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/7592f1d0-d323-11e7-94fa-bd64cbc443de.jpg",
+          "social_image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/7592f1d0-d323-11e7-94fa-bd64cbc443de.jpg",
+          "venues":["The Burl"],
+          "admission_fee": "$13 - $15",
+          "address": "375 Thompson Rd, Lexington, KY 40508",
+          "organizers":["WRFL", "The Burl"],
+          "map_link":"https://goo.gl/maps/MerUrvdgk9u",
+          "brief_description":"",
+          "description":"<p><span style=&#34;color: rgb(16, 16, 16);&#34;>Doors: 7:00 PM&nbsp;</span></p><p><span style=&#34;color: rgb(16, 16, 16);&#34;>Show: 8:00 PM</span></p>",
+          "links":["none"],
+          "ticket_link":"https://www.ticketfly.com/purchase/event/1583433",
+          "fb_event_link":"https://www.facebook.com/events/100963057338671",
+          "eventbright_link":"none",
+          "bitly_link":"http://bit.ly/2n57HJY",
+          "tags":["not-yet-implemented"]
+        },
+    {
+       "id":"0cc2d160-d32e-11e7-8655-edddf9cc7e7b",
+       "title":"The Lexington Gathering",
+       "slug":"the-lexington-gathering",
+       "when":"Thursday, February 8th, 2018 at 5:00pm to <br />Monday, February 11th, 2018 at 12:00am",
+       "time_start":"2018-02-08 17:00:00",
+       "time_end": "2018-02-12 24:00:00",
+       "website": "none",
+       "image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/0cc2d160-d32e-11e7-8655-edddf9cc7e7b.jpg",
+       "social_image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/0cc2d160-d32e-11e7-8655-edddf9cc7e7b.jpg",
+       "venues":["ArtsPlace"],
+       "admission_fee": "$37.92",
+       "address": "161 N. Mill St, Lexington, Kentucky 40507",
+       "organizers":["Lexington Old-Time Music Gathering"],
+       "map_link":"https://goo.gl/maps/aYqqE5CjPN82",
+       "brief_description":"Lexington Old-Time Music Gathering is a four-day winter music festival bringing Kentucky's traditional arts to the Commonwealth's largest epicenter.",
+       "description":"<p>Lexington Old-Time Music Gathering is a four-day winter music festival bringing Kentucky's traditional arts to the Commonwealth's largest epicenter. We welcome hundreds of visitors from across the country into this bucolic, walkable downtown for a weekend featuring the “old masters” of traditional mountain music; dance callers from throughout the state; performances by accomplished and emerging string bands; youth workshops and performances; academic presentations; jamming for all skill levels; dance, singing, and instrument workshops; literary readings; instrument and art vendors; and some of our finest farm-to-table eating experiences.</p><p><br></p><p>Featured performers and dance bands include:</p><p>Maiden Radio, The Local Honeys, Sue Massek, Karen Jones and Beverly Futrell, Joan Brannon, Carla Gover, John Haywood, Brett Ratliff, Nathan Blake Lynn, Sam Gleaves and Tyler Hughes, Sarah Wood, Stephanie Jeter, KarlyDawn &amp; The HillFolk, Kentucky Wild Horse, The Pine Mountain Railsplitters, The Paw Paw Pickers, The Kentucky Round-Ups, &amp; others!</p><p><br></p><p>Featured Dance Callers:</p><p>Randy Wilson, Alexander Udis, Johanna Sims, Tyler Hughes, Joe Burdock, &amp; Abigail Huggins.</p><p><br></p><p>Featured Conversations Include:</p><p>&#34;Mary Wheeler: Paducah's Songcatcher&#34; w/Nathan Blake Lynn; &#34;Understanding and Reimagining The Murder Ballad&#34; w/Richard Underwood and Poet Bianca Spriggs; &#34;Black Kentucky Fiddlers and the History of Jug Band Music&#34; w/John Harrod and Michael Jones.</p><p><br></p><p>Workshops Include:</p><p>Kentucky Fiddle Tunes; Kentucky Banjo Styles; Shape-note Singing; Songs of the Shakers; Appalachian Flatfoot &amp; Clogging; African Drumming; and more. </p><p><br></p><p>Special Events: </p><p>Kid's Day Activities; Wet-Plate Collodion Photography w/Lisa Elmaleh; KSEC Coffee Parlor Open Mic; Benefit for Be Bold; Benefit for Kentucky Natural Lands Trust; and more.</p><p><br></p><p>Vendors:</p><p>Kentucky for Kentucky; James E. Webb Musical Repair and Sales; Joe Burdock’s Violin and Bow Restoration; Food by Ouita Michel; Drinks by West Sixth Brewing; June Appal Recordings; Emperor Records Country; and Kentucky Music Hall of Fame Museum. </p><p><br></p><p>Sponsors: </p><p>WUKY, Kentucky for Kentucky, Kentucky Center for Traditional Music, West Sixth Brewing, Ouita Michel Restaurants, WMMT (Appalshop), The Parlor Room Fine Art and Tattoo</p><br><p>Weekend Pass - Single (Friday+Saturday) (12 and under-free) $37.92</p><p>Weekend Pass - Chosen Family Rate (any 4 adults) (Friday+Saturday) $106.49</p><p>Friday (12 and under-free) $16.82</p><p>Saturday (12 and under-free) $27.37</p>",
+       "links":["none"],
+       "ticket_link":"none",
+       "fb_event_link":"https://www.facebook.com/events/140702149895481",
+       "eventbrite_link":"https://www.eventbrite.com/e/the-lexington-gathering-tickets-38731437773",
+       "bitly_link":"http://bit.ly/2k1GuXN",
+       "tags":["not-yet-implemented"]
+     }
 ]
