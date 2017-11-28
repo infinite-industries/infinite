@@ -5,3 +5,4 @@ node_modules
 notes.local
 .DS_Store
 prep.txt
+public/js/*

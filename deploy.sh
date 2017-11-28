@@ -16,6 +16,8 @@ else
   exit
 fi
 
+npm run production-build
+
 ssh $USER@$SERVER << EOF
   cd $ROOT
   echo 'Updating sources'
@@ -23,7 +25,7 @@ ssh $USER@$SERVER << EOF
   git checkout master
   git pull
   echo 'Installing npm packages'
-  npm install
+  npm install --production
   echo 'Restarting'
   #npm run server-build
   #echo 'Building frontend js'
@@ -32,3 +34,5 @@ ssh $USER@$SERVER << EOF
   forever start --uid mvp server.js
   echo 'Done!'
 EOF
+
+scp public/js/dist.js $USER@$SERVER:$ROOT/public/js

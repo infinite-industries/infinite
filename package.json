@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "watchify": "watchify -vd -p browserify -e ./src/main.js -o ./public/js/dist.js",
-    "server-build": "browserify -e ./src/main.js -o ./public/js/dist.js",
+    "production-build": "browserify -e ./src/main.js -o ./public/js/dist.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "browserify": {
