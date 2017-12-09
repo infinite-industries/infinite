@@ -106,7 +106,7 @@ export default {
   },
   mounted: function(){
     var self = this;
-    Axios.get('/event-listings')
+    Axios.get('/events/listings')
       .then(function (response) {
         console.log("data from server: ",response.data.events);
         self.events = response.data.events;
@@ -128,7 +128,7 @@ export default {
   methods: {
     ShowEvent: function(event_id){
       console.log(event_id);
-      window.location.assign('/event/'+ event_id);
+      window.location.assign('/events/'+ event_id);
     },
     OpenEventSubmitter: function(){
       window.location.assign('https://event-add.glitch.me/');

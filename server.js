@@ -1,10 +1,10 @@
 // init project
-var express = require('express');
-var app = express();
-var nunjucks = require('nunjucks');
-var bodyParser = require('body-parser');
-var axios = require('axios');
-var dotenv = require('dotenv');
+const express = require('express');
+const app = express();
+const path = require('path');
+const nunjucks = require('nunjucks');
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
 dotenv.load(); //get configuration file from .env
 
@@ -12,96 +12,33 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.use(express.static('public'));
-
-app.get("/", function (request, response) {
-  response.sendFile(__dirname + '/views/index.html');
+//Configure Nunjucks
+var PATH_TO_TEMPLATES = 'views';
+nunjucks.configure(PATH_TO_TEMPLATES, {
+    autoescape: true,
+    express: app
 });
 
-app.get('/event-listings', function(req, res){
-  axios.get(process.env.SITE_URL+'/event-listings.json')
-    .then(function(response){
-
-      res.json({"status":"success", "events":response.data});
-      // console.log(response.data);
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.status(500).json({"error": "error retreiving events: " + error})
-    });
-})
-
-app.get("/event/:id", function(req, res){
-    console.log("got it");
-    var self = this;
-    axios.get(process.env.SITE_URL+'/event-listings.json')
-    .then(function (response) {
-      // console.log("yoooooo ",response.data);
-      //self.events = response.data;
-       var event = response.data.find(function(event){
-        return event.id === req.params.id;
-       })
-
-       // let event = response.data;
-       // console.log(event);
-       // errors!!!! handle them
-
-        res.send(nunjucks.render(
-          'views/event.html',
-          {id:req.params.id, event: event, site_url:process.env.SITE_URL}
-        ));
-
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-})
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
 
 
-// app.get('/event-listings', function(req, res){
-//   axios.get(process.env.API_URL+'/events?sort_field=time_start&verified=true')
-//   .then(function (response) {
-//     // JSON.stringify.map(obj){
-//     //   console.log(obj.title);
-//     // }
-//     console.log(response.data);
-//
-//     res.json(response.data);
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//     res.status(500).json({"error": "error retreiving events: " + error})
-//   });
-// })
+const routes = require('./routes/index');
+const admin = require('./routes/admin');
+const events = require('./routes/events');
+const lists = require('./routes/lists');
+const users = require('./routes/users');
+
+app.use(express.static('public'));
+app.use('/', routes);
+app.use('/admin', admin);
+app.use('/events', events);
+app.use('/lists', lists);
+app.use('/users', users);
 
 
-// app.get("/event/:id", function(req, res){
-//     console.log("got it");
-//     var self = this;
-//     axios.get(process.env.API_URL+'/events/find/'+req.params.id+"?apikey="+process.env.API_KEY)
-//     .then(function (response) {
-//       // console.log("yoooooo ",response.data);
-//       // //self.events = response.data;
-//       //  var event = response.data.find(function(event){
-//       //   return event.id === req.params.id;
-//       //  })
-//
-//        let event = response.data;
-//        // console.log(event);
-//        //errors!!!! handle them
-//
-//         res.send(nunjucks.render(
-//           'views/event.html',
-//           {id:req.params.id, event: event, site_url:process.env.SITE_URL}
-//         ));
-//
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//     });
-// })
-
-var appPort = process.env.PORT || '7779';
+const appPort = process.env.PORT || '7779';
 
 app.listen(appPort, function () {
     console.log("Magic on port %d", appPort);
