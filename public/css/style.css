@@ -87,7 +87,7 @@ vertical-align:middle !important;
 .btn{
   height:28px;
   font-size: 12px;
-  padding-left: 10px;
+  /*padding-left: 10px;*/
 
   line-height: normal;
 }
@@ -249,4 +249,8 @@ main{
 .atc-style-blue .atcb-item.hover,
 .atc-style-blue .atcb-item:hover {
     background: rgb(66,129,244);
+}
+
+#content-wrapper{
+  padding-top: 20px;
 }

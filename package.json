@@ -24,6 +24,7 @@
     "moment": "^2.18.1",
     "nunjucks": "^3.0.1",
     "vue": "^2.4.4",
+    "vue-router": "^3.0.1",
     "vuetify": "^0.15.7"
   },
   "devDependencies": {

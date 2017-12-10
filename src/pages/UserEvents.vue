@@ -1,11 +1,11 @@
-// About.vue
+// UserEvents.vue
 <template>
   <v-container fluid>
     <v-layout row wrap>
     <v-flex 12xs>
       <v-card >
         <v-card-text>
-          <h4>About About About</h4>
+          <h4>All the Events Chosen by the Viewer</h4>
         </v-card-text>
       </v-card>
     </v-flex>
