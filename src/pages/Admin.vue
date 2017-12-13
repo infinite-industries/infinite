@@ -1,21 +1,39 @@
 // Admin.vue
 <template>
   <v-container fluid>
-    <v-layout row wrap>
-    <v-flex 12xs>
-      <v-card >
-        <v-card-text>
-          <h4>Admin Stuff here</h4>
-        </v-card-text>
-      </v-card>
-    </v-flex>
-
-    </v-layout>
+    <h3>Unverified Events</h3>
+    <admin-events-list :events="events"></admin-events-list>
+    <h3>Active Events</h3>
+    <admin-events-list :events="events"></admin-events-list>
   </v-container>
 </template>
 
 <script>
+import Axios from 'axios';
+import AdminEventsList from '../components/AdminEventsList.vue'
+
 export default {
-    // empty
+  data: function () {
+    return {
+      events: [],
+      events_verified: [],
+      events_UN_verified: []
+    }
+  },
+  mounted: function(){
+    const _self=this;
+    Axios.get('/events/listings')
+      .then(function (response) {
+        console.log("data from server: ",response.data.events);
+
+        _self.events=response.data.events;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  },
+  components:{
+      'admin-events-list': AdminEventsList
+  }
 }
 </script>

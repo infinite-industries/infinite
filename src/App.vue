@@ -10,7 +10,7 @@
           <v-icon>account_circle</v-icon>
         </v-btn>
         <v-list>
-          <v-list-tile v-for="item in nav_items" :key="item.title" @click="RouteTo(item.route)">
+          <v-list-tile v-for="item in nav_items" :key="item.title" @click.stop="RouteTo(item.route)">
             <v-list-tile-title>{{ item.title }}</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -27,7 +27,6 @@
 export default {
   data () {
     return {
-      drawer: false,
       nav_items: [
         { title: 'Home', route:'/'},
         { title: 'Login', route: '/login'},

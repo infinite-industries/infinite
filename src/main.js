@@ -3,6 +3,8 @@ import VueRouter from 'vue-router';
 import Axios from 'axios';
 import Moment from 'moment';
 import Vuetify from 'vuetify';
+import VueLocalForage from '../node_modules/vlf/index.js'
+
 
 
 import App from './App.vue';
@@ -10,7 +12,7 @@ import App from './App.vue';
 import Home from './pages/Home.vue';
 import About from './pages/About.vue';
 import Admin from './pages/Admin.vue';
-import AdminEditEvent from './pages/AdminEditEvent.vue';
+import AdminEventEdit from './pages/AdminEventEdit.vue';
 import Contact from './pages/Contact.vue';
 import UserEvents from './pages/UserEvents.vue';
 import UserSettings from './pages/UserSettings.vue';
@@ -18,6 +20,7 @@ import Logout from './pages/Logout.vue';
 
 Vue.use(VueRouter);
 Vue.use(Vuetify);
+Vue.use(VueLocalForage);
 
 const router = new VueRouter({
     routes: [
@@ -39,7 +42,7 @@ const router = new VueRouter({
       {
         path: '/admin-event-edit',
         name: 'admin_event_edit',
-        component: AdminEditEvent
+        component: AdminEventEdit
       },
       {
         path: '/contact',
