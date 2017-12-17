@@ -254,6 +254,11 @@ main{
 #content-wrapper{
   padding-top: 20px;
 }
+#static-page-wrapper{
+  padding-top: 20px;
+  padding-left: 25px;
+  padding-right: 25px;
+}
 
 .admin-table{
   border-collapse: collapse;
@@ -266,4 +271,15 @@ main{
 .admin-table tr{
   border: 1px solid black;
   min-width: 200px;
+}
+
+.admin-value-to-edit{
+  border: 2px solid black;
+  padding: 4px;
+  min-width: 400px;
+}
+
+.user-events-item{
+  border: 1px solid black;
+  margin: 5px;
 }

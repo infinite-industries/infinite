@@ -24,6 +24,8 @@
 
 <script>
 
+import EventBus from './helpers/EventBus.js';
+
 export default {
   data () {
     return {
@@ -38,6 +40,65 @@ export default {
         { title: 'Logout', route: '/logout'},
       ]
     }
+  },
+  mounted: function(){
+
+    // -------------- EVENT BUS --------------
+
+    // Add event card to my events list
+    EventBus.$on('ADD_EVENT_TO_MY_LIST', function(event_id){
+
+    })
+
+    // Remove event card from my events list
+    EventBus.$on('REMOVE_EVENT_FROM_MY_LIST', function(event_id){
+
+    })
+
+    // Create a new list
+    EventBus.$on('CREATE_NEW_LIST', function(list_id){
+
+    })
+
+    // Add list to the List of Lists I follow
+    EventBus.$on('ADD_LIST', function(list_id){
+
+    })
+
+    // Remove list from the List of Lists I follow
+    EventBus.$on('REMOVE_LIST', function(list_id){
+
+    })
+
+    // Invite another user to my list
+    EventBus.$on('INVITE_TO_LIST', function(list_id){
+
+    })
+
+    // Follow List
+    EventBus.$on('FOLLOW_LIST', function(list_id){
+
+    })
+
+    // Create event
+    EventBus.$on('CREATE_EVENT', function(_event){
+
+    })
+
+    // Update event
+    EventBus.$on('UPDATE_EVENT', function(payload){
+      window.alert("event updated:"+payload._event.id)
+    })
+
+    // Delete event
+    EventBus.$on('DELETE_EVENT', function(payload){
+      window.alert("event deleted:"+payload._id)
+    })
+
+    // Verify event
+    EventBus.$on('VERIFY_EVENT', function(payload){
+      window.alert("event verified:"+payload._id)
+    })
   },
   methods: {
     OpenEventSubmitter: function(){

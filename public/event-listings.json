@@ -19,7 +19,7 @@
         "links":["none"],
         "ticket_link":"https://www.ticketfly.com/purchase/event/1595818",
         "fb_event_link":"https://www.facebook.com/events/374927322930829",
-        "eventbright_link":"none",
+        "eventbrite_link":"none",
         "bitly_link":"http://bit.ly/2i7i6Dw",
         "tags":["not-yet-implemented"]
       },
@@ -211,7 +211,7 @@
        "links":["none"],
        "ticket_link":"https://www.ticketfly.com/purchase/event/1588161",
        "fb_event_link":"https://www.facebook.com/events/124508951554177",
-       "eventbright_link":"none",
+       "eventbrite_link":"none",
        "bitly_link":"http://bit.ly/2A77TgS",
        "tags":["not-yet-implemented"]
      },
@@ -283,7 +283,7 @@
           "links":["none"],
           "ticket_link":"none",
           "fb_event_link":"https://www.facebook.com/events/865636846931274",
-          "eventbright_link":"none",
+          "eventbrite_link":"none",
           "bitly_link":"",
           "tags":["not-implemented-yet"]
         },
@@ -331,7 +331,7 @@
           "links":["none"],
           "ticket_link":"https://www.ticketfly.com/purchase/event/1583433",
           "fb_event_link":"https://www.facebook.com/events/100963057338671",
-          "eventbright_link":"none",
+          "eventbrite_link":"none",
           "bitly_link":"http://bit.ly/2n57HJY",
           "tags":["not-yet-implemented"]
         },

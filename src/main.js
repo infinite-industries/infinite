@@ -29,6 +29,7 @@ const router = new VueRouter({
         name: 'home',
         component: Home
       },
+
       {
         path: '/about',
         name: 'about',
@@ -40,9 +41,10 @@ const router = new VueRouter({
         component: Admin
       },
       {
-        path: '/admin-event-edit',
+        path: '/admin-event-edit/:id',
         name: 'admin_event_edit',
-        component: AdminEventEdit
+        component: AdminEventEdit,
+        props: true
       },
       {
         path: '/contact',

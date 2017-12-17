@@ -18,15 +18,25 @@
   export default {
     name:'AdminEventsList',
     props: ['events'],
-    data () {
+    data: function() {
       return {
-        //
+        
       }
     },
     methods:{
       EditEvent: function(event_to_edit){
-        //window.alert("Edit"+id)
-        this.$router.push({ path: '/admin-event-edit/:id', props: { id: 'dog' }})
+        const event_id = event_to_edit.id
+
+        this.$vlf.setItem(event_id, event_to_edit)
+          .then((result) => {
+            this.$router.push({ path: `/admin-event-edit/${event_id}` })
+          })
+          .catch((err) => {
+            window.alert("Unable to edit event! Holler at the bugs department on the contact page.")
+            console.log(err);
+          })
+
+
 
       },
       When: function(event_string){
