@@ -26,6 +26,8 @@
 
 import EventBus from './helpers/EventBus.js';
 
+import Axios from 'axios';
+
 export default {
   data () {
     return {
@@ -46,43 +48,50 @@ export default {
     // -------------- EVENT BUS --------------
 
     // Add event card to my events list
-    EventBus.$on('ADD_EVENT_TO_MY_LIST', function(event_id){
-
+    EventBus.$on('ADD_EVENT_TO_MY_LIST', function(payload){
+      window.alert("event:"+payload._event.id+" added to list:"+payload._list.id)
     })
 
     // Remove event card from my events list
-    EventBus.$on('REMOVE_EVENT_FROM_MY_LIST', function(event_id){
-
+    EventBus.$on('REMOVE_EVENT_FROM_MY_LIST', function(payload){
+      window.alert("event:"+payload._event.id+" removed to list:"+payload._list.id)
     })
+
+
 
     // Create a new list
-    EventBus.$on('CREATE_NEW_LIST', function(list_id){
+    EventBus.$on('CREATE_NEW_LIST', function(){
 
-    })
-
-    // Add list to the List of Lists I follow
-    EventBus.$on('ADD_LIST', function(list_id){
-
-    })
-
-    // Remove list from the List of Lists I follow
-    EventBus.$on('REMOVE_LIST', function(list_id){
-
-    })
-
-    // Invite another user to my list
-    EventBus.$on('INVITE_TO_LIST', function(list_id){
-
+      Axios.post('/lists/create-new', {eventList: {name: 'sample name'}})
+        .then(function (_response) {
+          let _list={id:"new list ID - wll get from server"}
+          window.alert("Created a list with ID: "+_response.data.id)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     })
 
     // Follow List
-    EventBus.$on('FOLLOW_LIST', function(list_id){
-
+    EventBus.$on('FOLLOW_LIST', function(payload){
+      window.alert("Followed List:"+payload._id)
     })
 
-    // Create event
-    EventBus.$on('CREATE_EVENT', function(_event){
+    // Unfollow list from the List of Lists I follow
+    EventBus.$on('UNFOLLOW_LIST', function(payload){
+      window.alert("Unfollowed List:"+payload._id)
+    })
 
+    // Invite another user to my list
+    EventBus.$on('INVITE_TO_LIST', function(payload){
+      window.alert("Invite Another User to List:"+payload._list.id)
+    })
+
+
+
+    // Create event
+    EventBus.$on('CREATE_EVENT', function(payload){
+      window.alert("event updated:"+payload._event.id)
     })
 
     // Update event
