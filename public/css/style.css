@@ -251,6 +251,8 @@ main{
     background: rgb(66,129,244);
 }
 
+/* ---- General Stuff ----- */
+
 #content-wrapper{
   padding-top: 20px;
 }
@@ -259,6 +261,15 @@ main{
   padding-left: 25px;
   padding-right: 25px;
 }
+
+.toolbar__content {
+    height: 44px;
+}
+
+.alert {
+  background-color: #9c27b0c7;
+}
+/* ------- ADMIN ------------ */
 
 .admin-table{
   border-collapse: collapse;

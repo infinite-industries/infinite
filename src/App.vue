@@ -1,13 +1,14 @@
 <template>
   <v-app id="infinite-industries">
-    <v-toolbar class="indigo" dark fixed>
+    <v-toolbar class="purple" dark fixed>
       <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
       <v-toolbar-title>Infinite Industries</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn outline class="indigo lighten-2" @click.stop="OpenEventSubmitter()">Submit Your Event</v-btn>
+      <v-btn outline @click.stop="OpenEventSubmitter()">Submit Your Event</v-btn>
       <nav-menu></nav-menu>
     </v-toolbar>
     <main id="content-wrapper">
+      <notify-user :notification="notification"></notify-user>
       <router-view></router-view>
     </main>
   </v-app>
@@ -15,20 +16,42 @@
 
 <script>
 
-import EventBus from './helpers/EventBus.js';
+import EventBus from './helpers/EventBus.js'
+import GlobalUserValues from './helpers/GlobalUserValuesDataStore.js'
 
-import Axios from 'axios';
+import Axios from 'axios'
 
 import NavMenu from './components/NavMenu.vue'
+import NotifyUser from './components/NotifyUser.vue'
 
 export default {
   data () {
     return {
-      //
+      notification: {
+        visible: false,
+        type: '',
+        message: '',
+        timeout: false
+      }
     }
   },
   mounted: function(){
 
+    console.log("Logged In State:", GlobalUserValues.$data.logged_in)
+    if(GlobalUserValues.$data.logged_in===false){
+      this.notification = {
+        visible: true,
+        type: 'info',
+        message: "Welcome! Check out the local events. Please log in to start saving and sharing event lists. Submit an event if we accidently missed something cool and cultural in your area.",
+      }
+      // const _self=this
+      // setTimeout(function () {
+      //   console.log("bye bye");
+      //   _self.notification = {
+      //     visible: false
+      //   }
+      // }, 3000);
+    }
     // -------------- EVENT BUS --------------
 
     // Add event card to my events list
@@ -40,8 +63,6 @@ export default {
     EventBus.$on('REMOVE_EVENT_FROM_MY_LIST', function(payload){
       window.alert("event:"+payload._event.id+" removed to list:"+payload._list.id)
     })
-
-
 
     // Create a new list
     EventBus.$on('CREATE_NEW_LIST', function(){
@@ -100,7 +121,8 @@ export default {
     }
   },
   components: {
-    'nav-menu': NavMenu
+    'nav-menu': NavMenu,
+    'notify-user': NotifyUser
   }
 }
 </script>

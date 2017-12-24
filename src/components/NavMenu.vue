@@ -1,7 +1,7 @@
 // NavMenu.vue
 <template>
   <v-menu class="main-nav" absolute bottom :nudge-top="40">
-    <v-btn outline class="indigo lighten-2" offset-y slot="activator">
+    <v-btn outline offset-y slot="activator">
       <v-icon>account_circle</v-icon>
     </v-btn>
     <v-list style="background-color: white;">

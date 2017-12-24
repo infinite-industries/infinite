@@ -5,8 +5,6 @@ import Moment from 'moment';
 import Vuetify from 'vuetify';
 import VueLocalForage from '../node_modules/vlf/index.js'
 
-
-
 import App from './App.vue';
 
 import Home from './pages/Home.vue';
@@ -17,6 +15,8 @@ import Contact from './pages/Contact.vue';
 import UserEvents from './pages/UserEvents.vue';
 import UserSettings from './pages/UserSettings.vue';
 import Logout from './pages/Logout.vue';
+
+import GlobalUserValues from './helpers/GlobalUserValuesDataStore.js';
 
 Vue.use(VueRouter);
 Vue.use(Vuetify);
@@ -77,5 +77,6 @@ const app = new Vue({
     beforeCreate: function(){
       console.log("started app");
       // can inhale user data here
+      GlobalUserValues.$data.logged_in = false;
     }
 }).$mount('#App')
