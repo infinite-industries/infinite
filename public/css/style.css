@@ -83,14 +83,14 @@ vertical-align: middle;
 .social-media-links div span {
 vertical-align:middle !important;
 }
-
+/*
 .btn{
   height:28px;
   font-size: 12px;
   /*padding-left: 10px;*/
 
   line-height: normal;
-}
+}*/
 
 .btn .fa{
   padding-right: 5px;
@@ -198,7 +198,7 @@ main{
     outline: none;
     line-height: 20px;
     vertical-align: middle;
-    background: rgb(66,129,244);
+    background: #9c27b0;
     box-shadow: 0 0 40px rgba(0, 0, 0, .13) inset;
     border-radius: 4px;
     zoom: 1;
@@ -293,4 +293,35 @@ main{
 .user-events-item{
   border: 1px solid black;
   margin: 5px;
+}
+
+
+/* --- Shims that might break a few things in the long run --- */
+
+.speed-dial__list{
+  top: 90px;
+  z-index: 12;
+}
+
+.event-add-wrapper{
+  background-color: purple;
+  margin-top: 50px;
+  margin-left: 200px;
+  padding: 5px;
+  border-radius: 3px;
+}
+.event-add-to-list{
+  padding-bottom: 10px;
+  color: white;
+  min-width: 120px;
+}
+
+.event-favorite{
+  position: absolute;
+  top:80px;
+  left: 20px;
+  
+}
+.event-favorite-icon{
+  position: absolute;
 }

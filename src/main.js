@@ -14,6 +14,7 @@ import AdminEventEdit from './pages/AdminEventEdit.vue';
 import Contact from './pages/Contact.vue';
 import UserEvents from './pages/UserEvents.vue';
 import UserSettings from './pages/UserSettings.vue';
+import ListViewer from './pages/ListViewer.vue'
 import Logout from './pages/Logout.vue';
 
 import GlobalUserValues from './helpers/GlobalUserValuesDataStore.js';
@@ -60,6 +61,11 @@ const router = new VueRouter({
         path: '/your-settings',      //slightly more user-friendly naming might need to change later for clarity
         name: 'user_settings',
         component: UserSettings
+      },
+      {
+        path: '/list-viewer',
+        name: 'list_viewer',
+        component: ListViewer
       },
       {
         path: '/logout',

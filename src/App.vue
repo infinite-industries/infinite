@@ -1,6 +1,6 @@
 <template>
   <v-app id="infinite-industries">
-    <v-toolbar class="purple" dark fixed>
+    <v-toolbar class="deep-purple" dark fixed>
       <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
       <v-toolbar-title>Infinite Industries</v-toolbar-title>
       <v-spacer></v-spacer>
