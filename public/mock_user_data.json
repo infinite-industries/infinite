@@ -1,0 +1,149 @@
+{
+  "settings":{
+    "fist_name": "Dima",
+    "last_name": "Strakovsky",
+    "user_name": "Digi-D",
+    "contact_email":"shifting.planes@gmail",
+    "home_event_area": "kentucky_lexington",
+    "facebook":"fb link",
+    "twitter":"twitter link",
+    "instagram": "none"
+  },
+  "permissions":{
+    "can_post_as_venues":[
+      {"venue_id":"infinite"}
+    ],
+    "can_edit_lists":[
+      {"list_id":"sd1234"},
+      {"list_id":"sd1234"}
+    ]
+  },
+  "lists":{
+    "my_lists":[
+      { "list_id":"Grd1534",
+        "list_name":"Art Dude's Dudarium",
+        "events":[
+          {
+            "id":"8c0141d0-d6a5-11e7-9ed5-1778e928e048",
+            "title":"Iron Harvest of Zone Rogue: a photography exhibition",
+            "slug":"iron-harvest-of-zone-rogue:-a-photography-exhibition",
+            "when":"Friday, December 15th, 2017 <br /> 6:00pm - 8:00pm",
+            "time_start":"2017-12-15 18:00:00",
+            "time_end": "2017-12-15 20:00:00",
+            "website": "none",
+            "image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/458838c0-d6a6-11e7-9ed5-1778e928e048.jpg",
+            "social_image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/458838c0-d6a6-11e7-9ed5-1778e928e048.jpg",
+            "venues":["Pivot Brewing"],
+            "admission_fee": "none",
+            "address": "1400 Delaware Ave, Lexington, Kentucky 40505",
+            "organizers":["Andru Stone"],
+            "map_link":"https://goo.gl/maps/qbsW6Lqnq692",
+            "brief_description":"Please join UK photography students for a night of art and beer. ",
+            "description":"<p>Please join UK photography students for a night of art and beer. </p><p><br></p><p>Including work by: </p><p>Leah Haley</p><p>Arais Meteyard</p><p>Lauren Morehead</p><p>Hayla Ragland</p><p>Emily Schulz</p><p>Andru Stone</p>",
+            "links":["none"],
+            "ticket_link":"none",
+            "fb_event_link":"https://www.facebook.com/events/156477325102284",
+            "eventbrite_link":"none",
+            "bitly_link":"http://bit.ly/2zHmfSd",
+            "tags":["not-yet-implemented"]
+          },
+          {
+            "id": "b8237b40-b0e2-11e7-a0db-b739e115793a",
+            "title": "R.C. May Photography Lecture: Teju Cole",
+            "slug": "rc_may_photography_lecture_teju_cole",
+            "when": "Friday, December 1st, 2017 <br /> 4:00pm-5:00pm",
+            "time_start": "2017-12-01 16:00:00",
+            "time_end": "2017-12-01 17:00:00",
+            "website": "none",
+            "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/teju_cole.jpg",
+            "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/teju_cole.jpg",
+            "venues": [
+              "UK Gatton Business College"
+            ],
+            "organizers": [
+              "UK Art Museum"
+            ],
+            "map_link": "https://goo.gl/maps/J7Evqq43QjF2",
+            "brief_description": "The 2017-18 R.C. May Photography Lecture Series continues with a lecture by acclaimed photographer, writer, and art historian, Teju Cole",
+            "description": "The 2017-18 R.C. May Photography Lecture Series continues with a lecture by acclaimed photographer, writer, and art historian, Teju Cole. Lecture will be in the Gatton Business College, Kincaid Auditorium. Admission is FREE and open to the public. An exhibition of his photographs is on view from October 7-December 3, 2017 in the Art Museum. For more information about his work visit http://finearts.uky.edu/art-museum<br /><br />Cole is the photography critic of the \"New York Times Magazine\" and an award-winning novelist (\"Open City\") and essay writer (\"Known and Strange Things\"). These works have earned a variety of honors including the PEN/Hemingway Award, the New York City Book Award for Fiction, the Focus Award from the Griffin Museum of Photography, and the Windham Campbell Prize for fiction from Yale University. Raised in Nigeria, Cole currently resides in Brooklyn.",
+            "links": [],
+            "ticket_link": "none",
+            "fb_event_link": "https://www.facebook.com/events/1937542976496299",
+            "eventbrite_link": "none",
+            "bitly_link": "http://bit.ly/2ghmI5b",
+            "tags": [
+              "art", "lecture"
+            ]
+          }
+        ]
+      },
+      { "list_id":"Zxd1534",
+        "list_name":"Awesome Music Performances in Lexington",
+        "events":[
+          {
+            "id":"7bece710-d2bb-11e7-94fa-bd64cbc443de",
+            "title":"Small Batch, Englishman",
+            "slug":"small-batch,-englishman-at-the-burl",
+            "when":"Thursday, December 7th, 2017 <br /> 9:00pm",
+            "time_start":"2017-12-07 21:00:00",
+            "time_end": "2017-12-07 24:00:00",
+            "website": "none",
+            "image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/7bece710-d2bb-11e7-94fa-bd64cbc443de.jpg",
+            "social_image":"https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/7bece710-d2bb-11e7-94fa-bd64cbc443de.jpg",
+            "venues":["The Burl"],
+            "admission_fee": "$ 7",
+            "address": "375 Thompson Rd, Lexington, KY 40508",
+            "organizers":["The Burl"],
+            "map_link":"https://goo.gl/maps/MerUrvdgk9u",
+            "brief_description":"Small Batch, Englishman at The Burl",
+            "description":"<p>Small Batch, Englishman at The Burl</p>",
+            "links":["none"],
+            "ticket_link":"https://www.ticketfly.com/purchase/event/1595818",
+            "fb_event_link":"https://www.facebook.com/events/374927322930829",
+            "eventbrite_link":"none",
+            "bitly_link":"http://bit.ly/2i7i6Dw",
+            "tags":["not-yet-implemented"]
+          },
+          {
+            "id": "82f05c50-b0e1-11e7-9027-c7e82a32b1fb",
+            "title": "Captured! By Robots / No Witness",
+            "slug": "captured_by_robots_no_witness",
+            "when": "Thursday, November 9th 2017, 10:00pm-1:00am",
+            "time_start": "2017-11-09 22:00:00",
+            "time_end": "2017-11-10 01:00:00",
+            "website": "none",
+            "image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/captured_by_robots.jpg",
+            "social_image": "https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/captured_by_robots.jpg",
+            "venues": [
+              "Cosmic Charlie's"
+            ],
+            "organizers": [
+              "Cosmic Charlie's"
+            ],
+            "map_link": "https://goo.gl/maps/DRBPSQwjpYu",
+            "brief_description": "",
+            "description": "",
+            "links": [],
+            "fb_event_link": "https://www.facebook.com/events/117119855632777",
+            "eventbrite_link": "none",
+            "ticket_link": "http://www.ticketfly.com/purchase/event/1567541",
+            "bitly_link": "http://bit.ly/2ijAJnq",
+            "tags": [
+              "music", "show"
+            ]
+          }
+        ]
+      }
+
+    ],
+    "lists_i_follow":[
+      { "list_id":"gd1534",
+        "list_name":"Heavy Metal Paradice"
+      },
+      { "list_id":"ad1234",
+        "list_name":"Lexington Gallery Guide"
+      }
+    ]
+  }
+
+}
