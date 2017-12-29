@@ -24,6 +24,7 @@
     "localforage": "^1.5.5",
     "moment": "^2.18.1",
     "nunjucks": "^3.0.1",
+    "slack-notify": "^0.1.6",
     "vlf": "^1.0.3",
     "vue": "^2.4.4",
     "vue-router": "^3.0.1",

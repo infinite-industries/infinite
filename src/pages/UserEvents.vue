@@ -44,6 +44,7 @@
 </template>
 
 <script>
+  import GlobalUserValues from '../helpers/GlobalUserValuesDataStore.js'
   import EventBus from '../helpers/EventBus.js';
 
   export default {

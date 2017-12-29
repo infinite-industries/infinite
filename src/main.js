@@ -83,6 +83,6 @@ const app = new Vue({
     beforeCreate: function(){
       console.log("started app");
       // can inhale user data here
-      GlobalUserValues.$data.logged_in = false;
+      GlobalUserValues.$data.logged_in = true;
     }
 }).$mount('#App')

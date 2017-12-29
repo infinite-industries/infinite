@@ -37,8 +37,9 @@ export default {
   },
   mounted: function(){
 
-    console.log("Logged In State:", GlobalUserValues.$data.logged_in)
-    if(GlobalUserValues.$data.logged_in===false){
+    const _self = this
+
+    if(GlobalUserValues.$data.logged_in===true){
       this.notification = {
         visible: true,
         type: 'info',
@@ -51,7 +52,24 @@ export default {
       //     visible: false
       //   }
       // }, 3000);
+
+
+      Axios.get('/users/1234556')
+        .then(function (_response) {
+          GlobalUserValues.$data.user_data = _response.data
+        })
+        .catch(function (error) {
+          console.log(error);
+          _self.notification = {
+            visible: true,
+            type: 'info',
+            message: "Hrrmm... unable to get your data. Please contact us and we will figure out what went wrong.",
+          }
+        });
     }
+
+    console.log("Logged In State:", GlobalUserValues.$data)
+
     // -------------- EVENT BUS --------------
 
     // Add event card to my events list
@@ -111,6 +129,19 @@ export default {
     EventBus.$on('VERIFY_EVENT', function(payload){
       window.alert("event verified:"+payload._id)
     })
+
+    // Show Notification
+    EventBus.$on('SHOW_NOTIFICATION', function(payload){
+      _self.notification = payload
+    })
+
+    // Close Notification
+    EventBus.$on('CLOSE_NOTIFICATION', function(){
+      this.notification = {
+           visible: false
+         }
+    })
+
   },
   methods: {
     OpenEventSubmitter: function(){

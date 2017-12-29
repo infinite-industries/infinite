@@ -15,7 +15,10 @@
 </template>
 
 <script>
-export default {
-    // empty
-}
+  import GlobalUserValues from '../helpers/GlobalUserValuesDataStore.js'
+  import EventBus from '../helpers/EventBus.js';
+
+  export default {
+      // empty
+  }
 </script>
