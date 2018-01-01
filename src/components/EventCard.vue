@@ -57,8 +57,6 @@
 
 <script>
 
-  import EventBus from '../helpers/EventBus.js'
-
   export default {
     name:'EventCard',
     props: ['event'],
@@ -74,7 +72,8 @@
         window.location.assign('/events/'+ event_id)
       },
       AddToList: function(which_event, which_list){
-        EventBus.$emit('ADD_EVENT_TO_MY_LIST', {_event:{id:which_event}, _list:{id:which_list}})
+        // DISPATCH to vuex
+        // EventBus.$emit('ADD_EVENT_TO_MY_LIST', {_event:{id:which_event}, _list:{id:which_list}})
         this.added_to_list=true
       }
     },

@@ -36,9 +36,6 @@
 
   import Axios from 'axios'
 
-  import EventBus from '../helpers/EventBus.js'
-
-
   export default {
       data: function() {
         return {
@@ -63,11 +60,11 @@
           const _self = this
           Axios.post('/contact', {name:_self.name, email:_self.email, comment:_self.comment})
             .then(function (_response) {
-              EventBus.$emit('SHOW_NOTIFICATION',{
-                visible: true,
-                type: 'info',
-                message: "Message sent. Thank you!",
-              })
+              // EventBus.$emit('SHOW_NOTIFICATION',{
+              //   visible: true,
+              //   type: 'info',
+              //   message: "Message sent. Thank you!",
+              // })
 
               _self.nameRules = []      // UGLY UGLY UGLY UGLY will try something slightly nicer laters
               _self.emailRules = []
@@ -78,11 +75,11 @@
             })
             .catch(function (error) {
               console.log(error);
-              EventBus.$emit('SHOW_NOTIFICATION',{
-                visible: true,
-                type: 'info',
-                message: "Hrrmm... unable to send your data. Email us directly at info@infinite.industries and we will look into this asap.",
-              })
+              // EventBus.$emit('SHOW_NOTIFICATION',{
+              //   visible: true,
+              //   type: 'info',
+              //   message: "Hrrmm... unable to send your data. Email us directly at info@infinite.industries and we will look into this asap.",
+              // })
             });
         }
       }

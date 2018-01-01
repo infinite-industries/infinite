@@ -14,9 +14,7 @@
 
 
 <script>
-  import EventBus from '../helpers/EventBus.js';
-
-  import Axios from 'axios';
+  // import Axios from 'axios';
 
   export default {
     name:'NavMenu',

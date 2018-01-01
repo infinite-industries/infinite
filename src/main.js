@@ -17,11 +17,15 @@ import UserSettings from './pages/UserSettings.vue';
 import ListViewer from './pages/ListViewer.vue'
 import Logout from './pages/Logout.vue';
 
-import GlobalUserValues from './helpers/GlobalUserValuesDataStore.js';
+import GlobalEventBus from './helpers/GlobalEventBus.js'
+
+import { store } from './store/store.js'
+
 
 Vue.use(VueRouter);
 Vue.use(Vuetify);
 Vue.use(VueLocalForage);
+Vue.use(GlobalEventBus);
 
 const router = new VueRouter({
     routes: [
@@ -78,11 +82,14 @@ const router = new VueRouter({
 
 
 const app = new Vue({
-    router,
+    router: router,
+    store: store,
     render: createEle => createEle(App),
     beforeCreate: function(){
       console.log("started app");
       // can inhale user data here
-      GlobalUserValues.$data.logged_in = true;
+      // DISPATCH to vuex
+      // GlobalUserValues.$data.logged_in = true;
+
     }
 }).$mount('#App')

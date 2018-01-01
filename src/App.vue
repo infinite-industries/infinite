@@ -8,18 +8,13 @@
       <nav-menu></nav-menu>
     </v-toolbar>
     <main id="content-wrapper">
-      <notify-user :notification="notification"></notify-user>
+      <notify-user></notify-user>
       <router-view></router-view>
     </main>
   </v-app>
 </template>
 
 <script>
-
-import EventBus from './helpers/EventBus.js'
-import GlobalUserValues from './helpers/GlobalUserValuesDataStore.js'
-
-import Axios from 'axios'
 
 import NavMenu from './components/NavMenu.vue'
 import NotifyUser from './components/NotifyUser.vue'
@@ -43,7 +38,7 @@ export default {
       this.notification = {
         visible: true,
         type: 'info',
-        message: "Welcome! Check out the local events. Please log in to start saving and sharing event lists. Submit an event if we accidently missed something cool and cultural in your area.",
+        message: "Welcome! Check out the local events. Please log in to start saving and sharing event lists. Submit your own events if we accidently missed something cool and cultural in your area.",
       }
       // const _self=this
       // setTimeout(function () {
@@ -70,77 +65,6 @@ export default {
 
     console.log("Logged In State:", GlobalUserValues.$data)
 
-    // -------------- EVENT BUS --------------
-
-    // Add event card to my events list
-    EventBus.$on('ADD_EVENT_TO_MY_LIST', function(payload){
-      window.alert("event:"+payload._event.id+" added to list:"+payload._list.id)
-    })
-
-    // Remove event card from my events list
-    EventBus.$on('REMOVE_EVENT_FROM_MY_LIST', function(payload){
-      window.alert("event:"+payload._event.id+" removed to list:"+payload._list.id)
-    })
-
-    // Create a new list
-    EventBus.$on('CREATE_NEW_LIST', function(){
-
-      Axios.post('/lists/create-new', {eventList: {name: 'sample name'}})
-        .then(function (_response) {
-          let _list={id:"new list ID - wll get from server"}
-          window.alert("Created a list with ID: "+_response.data.id)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    })
-
-    // Follow List
-    EventBus.$on('FOLLOW_LIST', function(payload){
-      window.alert("Followed List:"+payload._id)
-    })
-
-    // Unfollow list from the List of Lists I follow
-    EventBus.$on('UNFOLLOW_LIST', function(payload){
-      window.alert("Unfollowed List:"+payload._id)
-    })
-
-    // Invite another user to my list
-    EventBus.$on('INVITE_TO_LIST', function(payload){
-      window.alert("Invite Another User to List:"+payload._list.id)
-    })
-
-    // Create event
-    EventBus.$on('CREATE_EVENT', function(payload){
-      window.alert("event updated:"+payload._event.id)
-    })
-
-    // Update event
-    EventBus.$on('UPDATE_EVENT', function(payload){
-      window.alert("event updated:"+payload._event.id)
-    })
-
-    // Delete event
-    EventBus.$on('DELETE_EVENT', function(payload){
-      window.alert("event deleted:"+payload._id)
-    })
-
-    // Verify event
-    EventBus.$on('VERIFY_EVENT', function(payload){
-      window.alert("event verified:"+payload._id)
-    })
-
-    // Show Notification
-    EventBus.$on('SHOW_NOTIFICATION', function(payload){
-      _self.notification = payload
-    })
-
-    // Close Notification
-    EventBus.$on('CLOSE_NOTIFICATION', function(){
-      this.notification = {
-           visible: false
-         }
-    })
 
   },
   methods: {
@@ -149,7 +73,17 @@ export default {
     },
     RouteTo: function(route_to_page){
       this.$router.push({ path: route_to_page })
+    },
+    ConfirmAction: function(action_confirmation_message){
+      // DISPATCH vuex
+      // EventBus.$emit(action_confirmation_message);
+      // this.notification = {
+      //   visible: true,
+      //   type: 'info',
+      //   message: action_confirmation_message
+      // }
     }
+
   },
   components: {
     'nav-menu': NavMenu,

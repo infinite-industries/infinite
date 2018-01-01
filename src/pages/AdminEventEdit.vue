@@ -89,7 +89,7 @@
 </template>
 
 <script>
-  import EventBus from '../helpers/EventBus.js';
+
 
   export default {
       data: function(){
@@ -107,13 +107,16 @@
       },
       methods: {
         UpdateEvent: function(){
-          EventBus.$emit('UPDATE_EVENT', {_event:this.values_to_edit});
+          // DISPATCH vuex
+          //EventBus.$emit('UPDATE_EVENT', {_event:this.values_to_edit});
         },
         DeleteEvent: function(){
-          EventBus.$emit('DELETE_EVENT', {_id:this.values_to_edit.id});
+          // DISPATCH vuex
+          //EventBus.$emit('DELETE_EVENT', {_id:this.values_to_edit.id});
         },
         VerifyEvent: function(){
-          EventBus.$emit('VERIFY_EVENT', {_id:this.values_to_edit.id});
+          // DISPATCH vuex
+          //EventBus.$emit('VERIFY_EVENT', {_id:this.values_to_edit.id});
         }
       }
   }

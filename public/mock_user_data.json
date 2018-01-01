@@ -22,6 +22,7 @@
     "my_lists":[
       { "list_id":"Grd1534",
         "list_name":"Art Dude's Dudarium",
+        "description":"These are a few of my favorite things",
         "events":[
           {
             "id":"8c0141d0-d6a5-11e7-9ed5-1778e928e048",
@@ -138,10 +139,12 @@
     ],
     "lists_i_follow":[
       { "list_id":"gd1534",
-        "list_name":"Heavy Metal Paradice"
+        "list_name":"Heavy Metal Paradice",
+        "description":"Heavy list of heavy objects."
       },
       { "list_id":"ad1234",
-        "list_name":"Lexington Gallery Guide"
+        "list_name":"Lexington Gallery Guide",
+        "description":"Some Stuff from the galleries..."
       }
     ]
   }

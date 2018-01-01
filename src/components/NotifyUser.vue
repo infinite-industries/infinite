@@ -7,14 +7,23 @@
 
 <script>
 
+import NotificationEventBus from '../helpers/NotificationEventBus.js'
+
   export default {
     name:'NotifyUser',
-    props: ['notification'],
     data: function() {
       return {
-        //
+        notification: {
+          visible: false,
+          message: ''
+        }
       }
     },
-
+    mounted: function() {
+      
+      NotificationEventBus.$on('test-event', function(payload){
+        window.alert("interesteing")
+      })
+    }
   }
 </script>
