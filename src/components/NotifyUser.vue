@@ -20,9 +20,17 @@ import NotificationEventBus from '../helpers/NotificationEventBus.js'
       }
     },
     mounted: function() {
-      
-      NotificationEventBus.$on('test-event', function(payload){
-        window.alert("interesteing")
+      const _self = this
+      NotificationEventBus.$on('SHOW_ALERT', function(payload){
+        //change color!!!
+        _self.notification.visible = true
+        _self.notification.message = payload.message
+      })
+
+      NotificationEventBus.$on('SHOW_INFO', function(payload){
+        //change color!!!
+        _self.notification.visible = true
+        _self.notification.message = payload.message
       })
     }
   }

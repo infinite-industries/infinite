@@ -33,38 +33,8 @@ export default {
   mounted: function(){
 
     const _self = this
-
-    if(GlobalUserValues.$data.logged_in===true){
-      this.notification = {
-        visible: true,
-        type: 'info',
-        message: "Welcome! Check out the local events. Please log in to start saving and sharing event lists. Submit your own events if we accidently missed something cool and cultural in your area.",
-      }
-      // const _self=this
-      // setTimeout(function () {
-      //   console.log("bye bye");
-      //   _self.notification = {
-      //     visible: false
-      //   }
-      // }, 3000);
-
-
-      Axios.get('/users/1234556')
-        .then(function (_response) {
-          GlobalUserValues.$data.user_data = _response.data
-        })
-        .catch(function (error) {
-          console.log(error);
-          _self.notification = {
-            visible: true,
-            type: 'info',
-            message: "Hrrmm... unable to get your data. Please contact us and we will figure out what went wrong.",
-          }
-        });
-    }
-
-    console.log("Logged In State:", GlobalUserValues.$data)
-
+    // Inhale mock user data
+    this.$store.dispatch('LoadUserData')
 
   },
   methods: {

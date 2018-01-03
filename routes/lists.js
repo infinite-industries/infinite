@@ -5,8 +5,17 @@ const router = express.Router();
 
 router.use(bodyParser.json());
 
-router.get('/', function(req, res){
-  //
+router.get('/:id', function(req, res){
+  // get the list
+  console.log(req.params.id);
+  axios.get(process.env.SITE_URL+'/mock_another_user_list_1.json')
+  .then(function (_response) {
+    res.json(_response.data)
+  })
+  .catch(function (error) {
+    console.log(error);
+    res.json({"status":"error getting user data"})
+  });
 })
 
 router.post('/create-new', function(req, res){

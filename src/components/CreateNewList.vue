@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <div>
+    <div style="padding-left:10px; padding-right:10px;">
       <v-form v-model="valid" lazy-validation>
 
       <v-text-field
@@ -39,16 +39,12 @@
         ]
       }
     },
-    // $bus: {
-    //   'my-event': function(arg) {
-    //     console.log(arg)
-    //     window.alert("YOYO")
-    //   }
-    // },
     methods:{
       CreateList: function(){
-      // DISPATCH to vuex
-      //  EventBus.$emit('CREATE_NEW_LIST', {_list:{name:this.list_name, description:this.list_description}})
+        this.$store.dispatch('CreateNewList',{
+          list_name:this.list_name,
+          list_description: this.list_description
+        })
         this.list_name = "..."
         this.list_description = "..."
         this.$emit("close")

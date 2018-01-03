@@ -67,9 +67,10 @@ const router = new VueRouter({
         component: UserSettings
       },
       {
-        path: '/list-viewer',
+        path: '/list-viewer/:id/:type',
         name: 'list_viewer',
-        component: ListViewer
+        component: ListViewer,
+        props: true
       },
       {
         path: '/logout',
@@ -78,7 +79,6 @@ const router = new VueRouter({
       }
     ]
 })
-
 
 
 const app = new Vue({
