@@ -5,6 +5,10 @@ const router = express.Router();
 
 router.use(bodyParser.json());
 
+router.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 router.get('/:id', function(req, res){
   // get the list
   console.log(req.params.id);

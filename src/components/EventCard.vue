@@ -4,7 +4,7 @@
   <v-card style="margin-bottom: 10px; min-height: 100%;" >
     <v-card-media :src="event.image" height="200px">
       <v-speed-dial v-model="fab" :top="true" :right="true" :direction="right">
-      <v-btn slot="activator" class="purple lighten-3" dark fab hover v-model="fab">
+      <v-btn slot="activator" class="deep-purple lighten-1" dark fab hover v-model="fab" @click="OpenOptionsDialog()">
         <v-icon>add_circle_outline</v-icon>
         <v-icon>close</v-icon>
       </v-btn>
@@ -67,6 +67,9 @@
       }
     },
     methods: {
+      OpenOptionsDialog: function(){
+        this.$emit('options')
+      },
       ShowEvent: function(event_id){
         console.log(event_id);
         window.location.assign('/events/'+ event_id)

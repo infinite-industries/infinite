@@ -7,6 +7,7 @@
         <p>
           mission here
         </p>
+        <a href="/calendar"><button>Test Cal</button></a>
         <p>
           <h2>Dima</h2>
           <p class="brief-bio">
@@ -35,7 +36,7 @@
           </p>
         </p>
         <p>
-          Many awesome peoples form the past. 
+          Many awesome peoples form the past.
         </p>
         <p>
           On org level please like and follow us on the social media of your choice.
@@ -55,6 +56,10 @@
 
 <script>
 export default {
-    // empty
+  methods: {
+    TestCal: function(){
+
+    }
+  }
 }
 </script>
