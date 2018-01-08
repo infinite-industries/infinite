@@ -2,12 +2,12 @@
 <template>
   <v-container grid-list-xs id="static-page-wrapper">
 
-        <h1>About</h1>
+        <h4>About</h4>
 
         <p>
           mission here
         </p>
-        <a href="/calendar"><button>Test Cal</button></a>
+        <a href="/calendar/?name=test-cal-event"><button>Test Cal</button></a>
         <p>
           <h2>Dima</h2>
           <p class="brief-bio">

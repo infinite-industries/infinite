@@ -34,7 +34,7 @@ export default {
 
     const _self = this
     // Inhale mock user data
-    this.$store.dispatch('LoadUserData')
+    this.$store.dispatch('LoadAllUserData')
 
   },
   methods: {

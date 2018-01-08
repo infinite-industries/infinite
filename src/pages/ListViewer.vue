@@ -1,9 +1,9 @@
 // ListViewer.vue
 // Preview individual lists before
 <template>
-  <v-container grid-list-xs id="static-page-wrapper">
-    <h2>{{title}}</h2>
-    <h4>{{description}}</h4>
+  <v-container fluid>
+    <h4>{{list_metadata.list_name}}</h4>
+    <p>{{list_metadata.description}}</p>
    <!--
    List name
    Description
@@ -12,7 +12,7 @@
    follow option if "clean"
    Contact options if public
   -->
-  <events-list :events="events"></events-list>
+  <events-list :id="id" :type="type"></events-list>
 
   </v-container>
 </template>
@@ -26,34 +26,26 @@ import EventsList from '../components/EventsList.vue'
     props:['id','type'],
     data: function () {
       return {
-        title:'',
-        description: '',
-        events: []
+        //
+      }
+    },
+    computed:{
+      list_metadata: function(){
+        return this.$store.getters.GetCurrentList
       }
     },
     mounted: function(){
-      const _self = this;
-      const req_url = "/lists/"+this.id
-      Axios.get(req_url)
-        .then(function (_response) {
-          // console.log("data from server: ",response.data.events);
-          _self.title = _response.data.list_name
-          _self.description = _response.data.description
-          _self.events = _response.data.events
 
-          if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
-          if (window.ifaddtocalendar == undefined) {
-            window.ifaddtocalendar = 1;
-            var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
-            s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
-            s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
-            var h = d[g]('body')[0];h.appendChild(s);
-          }
+      this.$store.dispatch('LoadListData',this.id)
 
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
+      if (window.ifaddtocalendar == undefined) {
+        window.ifaddtocalendar = 1;
+        var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
+        s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
+        s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
+        var h = d[g]('body')[0];h.appendChild(s);
+      }
     },
     components:{
       'events-list': EventsList

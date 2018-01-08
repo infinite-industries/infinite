@@ -42,8 +42,8 @@
     methods:{
       CreateList: function(){
         this.$store.dispatch('CreateNewList',{
-          list_name:this.list_name,
-          list_description: this.list_description
+          name:this.list_name,
+          description: this.list_description
         })
         this.list_name = "..."
         this.list_description = "..."

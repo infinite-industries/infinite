@@ -26,7 +26,7 @@
           { title: 'Admin', route: '/admin'},
           { title: 'About', route: '/about'},
           { title: 'Your Events', route: '/your-events'},
-          { title: 'Your Settings', route: '/your-settings'},
+          // { title: 'Your Settings', route: '/your-settings'},
           { title: 'Contact', route: '/contact'},
           { title: 'Logout', route: '/logout'},
         ]

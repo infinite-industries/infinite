@@ -9,11 +9,14 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state:{
+    loaded_from_api: false,
     user_settings:{
       logged_in: false,
       admin_role: false
     },
-    user_lists:[]
+    current_list:{},
+    user_lists:[],
+    all_local_events:[]
   },
   getters:{
     GetMyLists: state => {
@@ -23,19 +26,24 @@ export const store = new Vuex.Store({
     GetListsIFollow: state => {
       return state.user_lists.lists_i_follow
     },
-
-    GetList: (state, payload) => {
-      // TODO
+    GetAllLocalEvents: state => {
+      return state.all_local_events
     },
 
-    GetSettings: (state, payload) => {
+    GetCurrentList: state => {
+      return state.current_list
+    },
+
+    GetSettings: state => {
       // TODO
     }
   },
   mutations:{
-    AddAllUserData: (state, user_data) => {
+     UpdateAllUserData: (state, user_data) => {
       state.user_settings = _.merge({},state.user_settings,user_data.settings, user_data.permissions)
       state.user_lists = user_data.lists
+
+      state.loaded_from_api = true
 
       //Greet users who are not logged in
       if(state.user_settings.logged_in === false){
@@ -44,14 +52,39 @@ export const store = new Vuex.Store({
         })
       }
     },
+    UpdateAllLocalEvents: (state, payload) => {
+      state.all_local_events = payload
+    },
     PushNewList: (state, payload) => {
       state.user_lists.my_lists.push(payload)
+    },
+    PopulateCurrentList: (state, payload) =>{
+      state.current_list = payload
     }
   },
   actions:{
+
     CreateNewList: (context, payload) => {
+      const _self = this
       // Hit API to create a list
-      context.commit('PushNewList', payload)
+      Axios.post('/lists/create-new',{name:payload.name, description:payload.description})
+        .then(function (_response) {
+
+          const empty_list = {
+            list_id: _response.data.id,
+            list_name: payload.name,
+            description: payload.description,
+            events:[]
+          }
+          context.commit('PushNewList', empty_list)
+        })
+        .catch(function (error) {
+          console.log(error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "Hrrmm... unable add this event to your list. Please contact us and we will figure out what went wrong."
+          })
+
+        });
     },
     FollowList: (context, payload) => {
       // TODO
@@ -60,16 +93,31 @@ export const store = new Vuex.Store({
       // TODO
     },
     AddEventToList: (context, payload) => {
-      // TODO
+      const _self = this
+      Axios.post('/events/add',{event_id:EVENT_ID, list_id:LIST_ID})
+        .then(function (_response) {
+          context.commit('UpdateListData', _response.data)
+        })
+        .catch(function (error) {
+          console.log(error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "Hrrmm... unable add this event to your list. Please contact us and we will figure out what went wrong."
+          })
+
+        });
     },
     RemoveEventFromList: (context, payload) => {
       // TODO
+      console.log("remove " + payload.event +" from "+ payload.list);
     },
-    LoadUserData: (context) => {
+
+    //==========================================
+
+    LoadAllUserData: (context) => {
       const _self = this
       Axios.get('/users/1234556')
         .then(function (_response) {
-          context.commit('AddAllUserData', _response.data)
+          context.commit('UpdateAllUserData', _response.data)
         })
         .catch(function (error) {
           console.log(error);
@@ -78,7 +126,36 @@ export const store = new Vuex.Store({
           })
 
         });
+    },
+    LoadAllLocalEventData: (context, payload) => {
+      const _self = this
+      Axios.get('/lists/all')
+        .then(function (_response) {
+          context.commit('UpdateAllLocalEvents', _response.data.events)
+        })
+        .catch(function (error) {
+          console.log(error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong."
+          })
+
+        });
+    },
+
+    LoadListData:(context, payload) => {
+      // set current_list that we will be operating on
+      const req_url = "/lists/"+payload.id
+
+      Axios.get(req_url)
+        .then(function (_response) {
+          // console.log("data from server: ",response.data.events);
+          context.commit('PopulateCurrentList', _response.data)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
 
     }
+
   }
 })
