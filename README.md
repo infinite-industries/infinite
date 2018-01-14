@@ -21,3 +21,8 @@ Lists can be in two states:
 Lists can be:
 1. Public -- viewed by everyone
 2. Private -- viewed by the author only
+
+
+TODO:
+
+add vue-router to the project

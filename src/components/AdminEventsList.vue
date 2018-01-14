@@ -20,7 +20,7 @@
     props: ['events'],
     data: function() {
       return {
-        
+
       }
     },
     methods:{
@@ -35,8 +35,6 @@
             window.alert("Unable to edit event! Holler at the bugs department on the contact page.")
             console.log(err);
           })
-
-
 
       },
       When: function(event_string){

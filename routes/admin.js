@@ -41,21 +41,21 @@ router.get('/show-event', function(req, res){
 router.post('/update-event', function(req, res){
   //
   let event_id = req.body.event_id
-  res.json({"status":"success", "event":event_id})
+  res.json({"status":"success", "id":event_id})
 })
 
 // Delete specific event
 router.post('/delete-event', function(req, res){
   //
   let event_id = req.body.event_id
-  res.json({"status":"success", "event":event_id})
+  res.json({"status":"success", "id":event_id})
 })
 
 // Verify specific event
 router.post('/verify-event', function(req, res){
   //
   let event_id = req.body.event_id
-  res.json({"status":"success", "event":event_id})
+  res.json({"status":"success", "id":event_id})
 })
 
 module.exports = router;
