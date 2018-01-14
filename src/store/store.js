@@ -18,7 +18,9 @@ export const store = new Vuex.Store({
     user_lists:[],
       lists_my:[],
       lists_follow:[],
-    all_local_events:[]
+    all_local_events:[],
+    unverified_events:[],    // events stay here before review and verification
+    editable_event: {}
   },
   getters:{
     GetMyLists: state => {
@@ -61,9 +63,17 @@ export const store = new Vuex.Store({
     PushNewList: (state, payload) => {
       state.lists_my.push(payload)
     },
+    PushNewEventToMyList: (state, payload) => {
+      let list_index = state.user_lists.my_lists.findIndex(list => list.list_id === payload.list_id)
+      state.user_lists.my_lists[list_index].push(payload.event_data)
+    },
     PopulateCurrentList: (state, payload) =>{
       state.current_list = payload
-    }
+    },
+    RemoveFromCurrentList: (state, payload) =>{
+      console.log("MY CURRENT LIST:", state.current_list)
+      state.current_list.events = state.current_list.events.filter(event => event.id !== payload.id)
+    },
   },
   actions:{
 
@@ -72,21 +82,26 @@ export const store = new Vuex.Store({
       // Hit API to create a list
       Axios.post('/lists/create-new',{name:payload.name, description:payload.description})
         .then(function (_response) {
-
-          const empty_list = {
-            list_id: _response.data.id,
-            list_name: payload.name,
-            description: payload.description,
-            events:[]
+          if(_response.data.status === "success"){
+            const empty_list = {
+              list_id: _response.data.id,
+              list_name: payload.name,
+              description: payload.description,
+              events:[]
+            }
+            context.commit('PushNewList', empty_list)
           }
-          context.commit('PushNewList', empty_list)
+          else{
+            NotificationEventBus.$emit('SHOW_ALERT', {
+              message: "Hrrmm... unable create an new list. Please contact us and we will figure out what went wrong. Code: #00447"
+            })
+          }
         })
         .catch(function (error) {
           console.log(error);
           NotificationEventBus.$emit('SHOW_ALERT', {
-            message: "Hrrmm... unable add this event to your list. Please contact us and we will figure out what went wrong."
+            message: "Hrrmm... unable create an new list. Please contact us and we will figure out what went wrong. Code: #00347"
           })
-
         });
     },
     FollowList: (context, payload) => {
@@ -95,23 +110,48 @@ export const store = new Vuex.Store({
     UnFollowList: (context, payload) => {
       // TODO
     },
-    AddEventToList: (context, payload) => {
+    AddEventToMyList: (context, payload) => {
       const _self = this
-      Axios.post('/events/add',{event_id:EVENT_ID, list_id:LIST_ID})
+      Axios.post('/events/add',{event_id:payload.event_data.id, list_id:payload.list_id})
         .then(function (_response) {
-          context.commit('UpdateListData', _response.data)
+          if(_response.data.status === "success"){
+             context.commit('PushNewEventToMyList', {list_id:payload.list_id, event_data:payload.event_data})
+            // need to get back the full list
+          }
+          else{
+            NotificationEventBus.$emit('SHOW_ALERT', {
+              message: "Hrrmm... unable add this event to your list. Please contact us and we will figure out what went wrong. Code: #33347"
+            })
+          }
         })
         .catch(function (error) {
           console.log(error);
           NotificationEventBus.$emit('SHOW_ALERT', {
-            message: "Hrrmm... unable add this event to your list. Please contact us and we will figure out what went wrong."
+            message: "Hrrmm... unable add this event to your list. Please contact us and we will figure out what went wrong. Code: #23997"
           })
 
         });
     },
     RemoveEventFromList: (context, payload) => {
-      // TODO
-      console.log("remove " + payload.event +" from "+ payload.list);
+      const _self = this
+      Axios.post('/events/remove',{event_id:payload.event_id, list_id:payload.list_id})
+        .then(function (_response) {
+          if(_response.data.status === "success"){
+            context.commit('RemoveFromCurrentList', _response.data)
+          }
+          else{
+            NotificationEventBus.$emit('SHOW_ALERT', {
+              message: "Hrrmm... unable to remove this event from your list. Please contact us and we will figure out what went wrong. Code: #2347"
+            })
+          }
+        })
+        .catch(function (error) {
+          console.log("error mesg:", error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "Hrrmm... unable to remove this event from your list. Please contact us and we will figure out what went wrong. Code: #2647"
+          })
+
+        });
     },
 
     //==========================================
@@ -147,15 +187,136 @@ export const store = new Vuex.Store({
       // set current_list that we will be operating on
       const req_url = "/lists/" + id;
 
+      console.log('!!! id: ' + id);
       Axios.get(req_url)
         .then(function (_response) {
           // console.log("data from server: ",response.data.events);
-          context.commit('PopulateCurrentList', _response.data)
+          if(_response.data.status === "success"){
+            context.commit('PopulateCurrentList', _response.data.eventList)
+          }
+          else{
+            NotificationEventBus.$emit('SHOW_ALERT', {
+              message: "Hrrmm... unable to get list data. Please contact us and we will figure out what went wrong. Code: #11647"
+            })
+          }
         })
         .catch(function (error) {
           console.log(error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "Hrrmm... unable to get list data. Please contact us and we will figure out what went wrong. Code: #11007"
+          })
         });
+    },
 
+    //================= ADMIN =====================
+
+    LoadUnverifiedEvents:(context, payload) => {
+
+      Axios.get('/admin/list-unverified')
+        .then(function (_response) {
+          // console.log("data from server: ",response.data.events);
+          if(_response.data.status === "success"){
+            context.commit('PopulateUnverifiedList', _response.data)
+          }
+          else{
+            NotificationEventBus.$emit('SHOW_ALERT', {
+              message: "Was not able to find unverified events."
+            })
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "API connection bit the dust. FiX!"
+          })
+        });
+    },
+    ShowUnverifiedEvent:(context, payload) => {
+
+      Axios.post('/admin/show-event', {id:payload.event_id})
+        .then(function (_response) {
+          // console.log("data from server: ",response.data.events);
+          if(_response.data.status === "success"){
+            context.commit('PopulateCurrentList', _response.data)
+          }
+          else{
+            NotificationEventBus.$emit('SHOW_ALERT', {
+              message: "Hrrmm... unable to get list data. Please contact us and we will figure out what went wrong. Code: #11647"
+            })
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "API connection bit the dust. FiX!"
+          })
+        });
+    },
+
+    VerifyEvent:(context, payload) => {
+
+      Axios.post('/admin/verify-event', {id:payload.event_id})
+        .then(function (_response) {
+          // console.log("data from server: ",response.data.events);
+          if(_response.data.status === "success"){
+            context.commit('PopulateCurrentList', _response.data)
+          }
+          else{
+            NotificationEventBus.$emit('SHOW_ALERT', {
+              message: "Unable to verify the event"
+            })
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "API connection bit the dust. FiX!"
+          })
+        });
+    },
+
+    UpdateEvent:(context, payload) => {
+
+      Axios.post('/admin/update-event', {id:payload.event_id})
+        .then(function (_response) {
+          // console.log("data from server: ",response.data.events);
+          if(_response.data.status === "success"){
+            context.commit('PopulateCurrentList', _response.data)
+          }
+          else{
+            NotificationEventBus.$emit('SHOW_ALERT', {
+              message:"Unable to update event :("
+            })
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "API connection bit the dust. FiX!"
+          })
+        });
+    },
+
+    DeleteEvent:(context, payload) => {
+
+      Axios.post('/admin/delete-event', {id:payload.event_id})
+        .then(function (_response) {
+          // console.log("data from server: ",response.data.events);
+          if(_response.data.status === "success"){
+            context.commit('PopulateCurrentList', _response.data)
+          }
+          else{
+            NotificationEventBus.$emit('SHOW_ALERT', {
+              message: "Unable to delete the event"
+            })
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          NotificationEventBus.$emit('SHOW_ALERT', {
+            message: "API connection bit the dust. FiX!"
+          })
+        });
     }
 
   }

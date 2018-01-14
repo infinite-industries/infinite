@@ -65,7 +65,7 @@
     },
     methods: {
       OpenOptionsDialog: function(){
-        this.$bus.$emit('OPEN_OPTIONS_DIALOG', {calling_event:this.event.id})
+        this.$bus.$emit('OPEN_OPTIONS_DIALOG', {calling_event:this.event})
         //call EventsList to open a dialog to add event to another list or remove from current
       },
       ShowEvent: function(event_id){
@@ -74,7 +74,7 @@
       }
     },
     mounted: function(){
-      
+
       const event_id = this.event.id
       const _self = this
       this.$bus.$on(event_id, function(payload) {

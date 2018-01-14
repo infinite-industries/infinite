@@ -10,7 +10,7 @@
 
       <div class="user-events-item">
         <list-of-lists
-          title = "Your Lists"
+          title = "You have created the following lists:"
           type="mine"
           :lists="my_lists"
         ></list-of-lists>
@@ -23,13 +23,13 @@
         ></create-new-list>
       </div>
 
-      <div class="user-events-item">
+      <!-- <div class="user-events-item">
         <list-of-lists
           title = "Lists You Follow"
           type="following"
           :lists="lists_i_follow"
         ></list-of-lists>
-      </div>
+      </div> -->
 
       <div class="user-events-item">
         Browse around for some new <a href="#">events in your area</a>

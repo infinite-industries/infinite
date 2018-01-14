@@ -1,6 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { makeAPICall } = require('./utils/requestHelper');
+const bodyParser = require('body-parser')
+
+router.use(bodyParser.json())
+
+router.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 
 router.get("/:id", function(req, res) {
     const id = req.params.id;
@@ -20,9 +28,13 @@ router.get("/:id", function(req, res) {
 })
 
 router.post("/add", function(req,res){
-  res.json({"got":"it"})
+  console.log("Data recieved: list - "+req.body.list_id+" event - "+req.body.event_id);
+  res.json({"status":"success", "id":req.body.event_id})
 })
 
-
+router.post("/remove", function(req,res){
+  console.log("Data recieved: list - "+req.body.list_id+" event - "+req.body.event_id);
+  res.json({"status":"success", "id":req.body.event_id})
+})
 
 module.exports = router;

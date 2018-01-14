@@ -3,10 +3,10 @@
 
 <template>
   <v-list>
-    <v-list-tile-title>{{title}}</v-list-tile-title>
+    <v-list-tile-title v-html="title" style="padding-left:10px; font-size: 15px;"></v-list-tile-title>
      <v-list-tile v-for= "list in lists">
        <v-list-tile-content>
-         <v-list-tile-title>{{list.list_name}}</v-list-tile-title>
+         <v-list-tile-title v-html="list.list_name"></v-list-tile-title>
        </v-list-tile-content>
        <v-list-tile-action>
          <v-btn class="deep-purple white--text" @click="ShowList(list.id)">View</v-btn>

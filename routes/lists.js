@@ -32,7 +32,7 @@ router.get('/:id', function(req, res){
         if (err) {
             console.warn(err);
         } else {
-            res.json(resAPI.data.eventList);
+            res.json(resAPI.data);
         }
     });
 })
@@ -56,7 +56,7 @@ router.get('/:id', function(req, res){
 router.post('/create-new', function(req, res){
   console.log(req.body)
 
-  res.json({"id":uuid()})
+  res.json({"status":"success","id":uuid()})
 })
 
 

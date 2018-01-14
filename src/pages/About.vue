@@ -7,7 +7,9 @@
         <p>
           mission here
         </p>
-        <a href="/calendar/?name=test-cal-event"><button>Test Cal</button></a>
+        <a href="/calendar/?name=test-cal-event"><button>Test Cal ICS Gen</button></a>
+        \\\
+        <a href="/calendar/?name=test-cal-event"><button>Test Cal Google Cal</button></a>
         <p>
           <h2>Dima</h2>
           <p class="brief-bio">

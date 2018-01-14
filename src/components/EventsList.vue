@@ -11,7 +11,7 @@
       </v-flex>
     </v-layout>
 
-    <v-dialog v-model="dialog" persistent max-width="400">
+    <v-dialog v-model="dialog" persistent max-width="360">
       <v-card>
         <v-toolbar class="deep-purple">
          <v-toolbar-title style="color:white">Event Options</v-toolbar-title>
@@ -21,8 +21,14 @@
           You can add this event to the following lists:
         <v-list>
           <template v-for="list in my_other_lists">
-            <v-list-tile @click="">
-              {{list.list_name}}
+            <v-list-tile avatar @click="">
+              <v-list-tile-avatar>
+                <v-icon v-show="AlreadyOnTheList(list.id)">check_circle</v-icon>
+                <v-icon v-show="!AlreadyOnTheList(list.id)">panorama_fish_eye</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+                <v-list-tile-title v-html = "list.list_name"></v-list-tile-title>
+              </v-list-tile-content>
             </v-list-tile>
           </template>
         </v-list>
@@ -58,12 +64,23 @@ import EventCard from './EventCard.vue'
 
         // this.$bus.$emit(event_id, {action:'hide'})
       },
+      AddEventToList: function(list_id){
+        this.$store.dispatch('AddEventToList', {list_id:list_id, event_data:active_event})
+      },
       RemoveEventFromList: function(){
         this.dialog = false
-        // this.events = this.events.filter(list => list.id !== this.active_event)
-        this.$bus.$emit(this.active_event, {action:'hide'})
-      }
 
+        // this.events = this.events.filter(list => list.id !== this.active_event)
+        // this.$bus.$emit(this.active_event, {action:'hide'})
+        this.$store.dispatch('RemoveEventFromList', {list_id:this.id, event_id:this.active_event.id})
+      },
+
+      AlreadyOnTheList: function(list_id){
+        const selected_list = this.$store.getters.GetMyLists.filter(list => list.list_id === list_id)
+        // TODO complete this feature
+        // selected_list this.active_event
+        return false
+      }
     },
     computed:{
       events_from_current_list: function(){
