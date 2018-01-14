@@ -60,7 +60,7 @@ import EventCard from './EventCard.vue'
       },
       RemoveEventFromList: function(){
         this.dialog = false
-        // this.events = this.events.filter(list => list.list_id !== this.active_event)
+        // this.events = this.events.filter(list => list.id !== this.active_event)
         this.$bus.$emit(this.active_event, {action:'hide'})
       }
 
@@ -70,12 +70,12 @@ import EventCard from './EventCard.vue'
         if(this.$store.state.loaded_from_api){
           if(this.type === 'mine'){
             // let my_lists = this.$store.getters.GetMyLists
-            // return my_lists.filter(list => list.list_id === this.id)
+            // return my_lists.filter(list => list.id === this.id)
             return this.$store.getters.GetCurrentList.events
           }
           else if(this.type === 'following'){
             // let followed_lists = this.$store.getters.GetListsIFollow
-            // return followed_lists.filter(list => list.list_id === this.id)
+            // return followed_lists.filter(list => list.id === this.id)
             return this.$store.getters.GetCurrentList.events
           }
           else {
@@ -91,7 +91,7 @@ import EventCard from './EventCard.vue'
       // This list excludes current active list
         if(this.$store.state.loaded_from_api){
           const all_lists = this.$store.getters.GetMyLists
-          return all_lists.filter(list => list.list_id !== this.id)
+          return all_lists.filter(list => list.id !== this.id)
         }
         else{
           return this.$store.getters.GetMyLists

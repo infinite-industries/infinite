@@ -9,7 +9,7 @@
          <v-list-tile-title>{{list.list_name}}</v-list-tile-title>
        </v-list-tile-content>
        <v-list-tile-action>
-         <v-btn class="deep-purple white--text" @click="ShowList(list.list_id)">View</v-btn>
+         <v-btn class="deep-purple white--text" @click="ShowList(list.id)">View</v-btn>
        </v-list-tile-action>
        <v-list-tile-action v-if="ShowIfType('following')">
          <v-btn @click="UnFollowList('b1e857b2-60f1-495c-8f15-94d34701619c')">Unfollow</v-btn>
@@ -31,7 +31,9 @@
 
        }
      },
-
+        mounted: function(){
+         console.log(this.lists)
+        },
      methods: {
        ShowIfType: function(type){
          return this.type===type ? true : false

@@ -16,15 +16,17 @@ export const store = new Vuex.Store({
     },
     current_list:{},
     user_lists:[],
+      lists_my:[],
+      lists_follow:[],
     all_local_events:[]
   },
   getters:{
     GetMyLists: state => {
-      return state.user_lists.my_lists
+      return state.lists_my;
     },
 
     GetListsIFollow: state => {
-      return state.user_lists.lists_i_follow
+      return state.lists_follow;
     },
     GetAllLocalEvents: state => {
       return state.all_local_events
@@ -41,7 +43,8 @@ export const store = new Vuex.Store({
   mutations:{
      UpdateAllUserData: (state, user_data) => {
       state.user_settings = _.merge({},state.user_settings,user_data.settings, user_data.permissions)
-      state.user_lists = user_data.lists
+      state.lists_my = user_data.lists_my;
+       state.lists_follow = user_data.lists_follow;
 
       state.loaded_from_api = true
 
@@ -56,7 +59,7 @@ export const store = new Vuex.Store({
       state.all_local_events = payload
     },
     PushNewList: (state, payload) => {
-      state.user_lists.my_lists.push(payload)
+      state.lists_my.push(payload)
     },
     PopulateCurrentList: (state, payload) =>{
       state.current_list = payload
@@ -114,7 +117,6 @@ export const store = new Vuex.Store({
     //==========================================
 
     LoadAllUserData: (context) => {
-      const _self = this
       Axios.get('/users/1234556')
         .then(function (_response) {
           context.commit('UpdateAllUserData', _response.data)
@@ -128,7 +130,6 @@ export const store = new Vuex.Store({
         });
     },
     LoadAllLocalEventData: (context, payload) => {
-      const _self = this
       Axios.get('/lists/all')
         .then(function (_response) {
           context.commit('UpdateAllLocalEvents', _response.data.events)
@@ -142,9 +143,9 @@ export const store = new Vuex.Store({
         });
     },
 
-    LoadListData:(context, payload) => {
+    LoadListData:(context, id) => {
       // set current_list that we will be operating on
-      const req_url = "/lists/"+payload.id
+      const req_url = "/lists/" + id;
 
       Axios.get(req_url)
         .then(function (_response) {

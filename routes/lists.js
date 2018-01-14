@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const axios = require('axios')
 const uuid = require('uuid/v4')
 const router = express.Router()
+const { makeAPICall } = require('./utils/requestHelper');
 
 router.use(bodyParser.json())
 
@@ -10,32 +11,30 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
-router.get('/all', function(req, res){
-  // general event listings for the user's area
-  axios.get(process.env.SITE_URL+'/event-listings.json')
-    .then(function(response){
-
-      res.json({"status":"success", "events":response.data});
-      // console.log(response.data);
-    })
-    .catch(function (error) {
-      console.log(error)
-      res.status(500).json({"error": "error retreiving events: " + error})
-    });
+router.get('/all', function(req, res) {
+  makeAPICall('get','events', null, (err, apiRes) => {
+    if (err) {
+        console.warn('error retrieving events:' + err);
+        res.status(500).json({"error": "error retrieving events: " + err})
+    } else {
+        console.info('success: ' + req.url);
+        res.json({"status":"success", "events": apiRes.data.events });
+    }
+  });
 })
 
 
 router.get('/:id', function(req, res){
-  // get the list
-  console.log(req.params.id)
-  axios.get(process.env.SITE_URL+'/mock_another_user_list_1.json')
-  .then(function (_response) {
-    res.json(_response.data)
-  })
-  .catch(function (error) {
-    console.log(error);
-    res.json({"status":"error getting user data"})
-  });
+    // get the list
+    const id = req.params.id;
+    console.info('getting user_list: ' +  id);
+    makeAPICall('get', 'event-lists/' + id, null, (err, resAPI) => {
+        if (err) {
+            console.warn(err);
+        } else {
+            res.json(resAPI.data.eventList);
+        }
+    });
 })
 
 // router.post('/create-new', function(req, res){
