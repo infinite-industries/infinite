@@ -97,8 +97,9 @@ export const store = new Vuex.Store({
     CreateNewList: (context, payload) => {
       const _self = this
       // Hit API to create a list
-      Axios.post('/lists/create-new',{name:payload.name, description:payload.description})
+      Axios.post('/lists/create-new',{list_name:payload.name, description:payload.description})
         .then(function (_response) {
+          console.log(_response.data);
           if(_response.data.status === "success"){
             const empty_list = {
               list_id: _response.data.id,
