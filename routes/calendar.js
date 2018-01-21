@@ -12,34 +12,34 @@ router.get('/', function(req, res){
   // generate an ICS file for iCal and Outlook
   // https://www.npmjs.com/package/ics
   const calendar_entry = ''
-  const title = req.query.name
-  const file_name = req.query.name + ".ics"
+  const title = req.query.title
+  const file_name = req.query.title + ".ics"
+  const location = req.query.location
   const description = req.query.description       // TODO sanitize
-  const start_time =  moment(req.query.start_time).toArray().slice(0, 5)
-  const end_time = moment(req.query.end_time).toArray().slice(0, 5)
+  const time_start =  moment(req.query.time_start).toArray().slice(0, 5)
+  const time_end = moment(req.query.time_end).toArray().slice(0, 5)
 
   // bump month by one since moment represents months 0-11 and ics 1-12
-  start_time[1] = start_time[1]+1
-  end_time[1] = end_time[1]+1
-
-  console.log("start:"+start_time+" end:"+end_time)
+  time_start[1] = time_start[1]+1
+  time_end[1] = time_end[1]+1
 
   ics.createEvent({
     title: title,
     description: description,
-    start: start_time ,
-    end: end_time,
+    location: location,
+    start: time_start,
+    end: time_end,
   }, (error, value) => {
     if (error) {
       console.log(error)
       res.json({"status":"error", "reason":"Unable to generate a calendar file"})
+    } else {
+      res.setHeader('Content-disposition', 'attachment; filename="'+ file_name + '"')
+      res.setHeader('Content-type', 'text/plain')
+      res.charset = 'UTF-8'
+      res.write(value)
+      res.end()
     }
-    res.setHeader('Content-disposition', 'attachment; filename='+ file_name)
-    res.setHeader('Content-type', 'text/plain')
-    res.charset = 'UTF-8'
-    res.write(value)
-    res.end()
-
   })
 
 
