@@ -14,7 +14,7 @@ router.get("/:id", function(req, res) {
     const id = req.params.id;
 
     console.info('event request for "%s"', id);
-    makeAPICall('get', 'events/' + id, null, (err, apiResp) => {
+    makeAPICall('get', 'events/' + id, {}, null, (err, apiResp) => {
         if (err) {
             console.warn('error getting event (%s): %s', id, err);
             res.status(500).send('error getting event');

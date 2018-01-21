@@ -10,7 +10,7 @@ router.use(bodyParser.urlencoded({
 router.get('/:id', function(req, res) {
   const fakeUserID = '99af7550-f3e6-11e7-8279-f30c6795f584';
   console.info('handling request for user data "%s"', fakeUserID);
-  makeAPICall('get', 'users/' + fakeUserID, process.env.API_KEY, (err,apiResp) => {
+  makeAPICall('get', 'users/' + fakeUserID, {}, process.env.API_KEY, (err,apiResp) => {
     if (err) {
       console.warn(err);
       res.status(500).json({ status: 'error getting user data'});
