@@ -82,9 +82,19 @@
         </table>
         <v-btn @click="UpdateEvent()">Save</v-btn>
         <v-btn @click="VerifyEvent()">Verify</v-btn>
-        <v-btn @click="DeleteEvent()">Delete</v-btn>
+        <v-btn @click="ConfirmDeleteEvent()">Delete</v-btn>
       </v-flex>
     </v-layout>
+    <v-dialog v-model="dialog" persistent max-width="300">
+      <v-card>
+        <v-card-title class="headline">U shure you wanna kill it?</v-card-title>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" flat="flat" @click.native="dialog = false">Cancel</v-btn>
+          <v-btn color="green darken-1" flat="flat" @click.native="DeleteEvent()">Kill</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -94,7 +104,8 @@
   export default {
       data: function(){
         return{
-          values_to_edit: {}
+          values_to_edit: {},
+          dialog: false
         }
       },
       props:['id'],
@@ -106,17 +117,24 @@
           })
       },
       methods: {
+        RouteTo: function(route_to_page){
+          this.$router.push({ path: route_to_page })
+        },
         UpdateEvent: function(){
-          // DISPATCH vuex
-          //EventBus.$emit('UPDATE_EVENT', {_event:this.values_to_edit});
+          this.$store.dispatch('UpdateEvent', {id:this.values_to_edit.id, event_data:this.values_to_edit})
+        },
+        ConfirmDeleteEvent: function(){
+          this.dialog = true
         },
         DeleteEvent: function(){
-          // DISPATCH vuex
-          //EventBus.$emit('DELETE_EVENT', {_id:this.values_to_edit.id});
+          this.dialog = false
+          this.$store.dispatch('DeleteEvent', {id:this.values_to_edit.id})
+          this.RouteTo('/admin')
         },
         VerifyEvent: function(){
           // DISPATCH vuex
           //EventBus.$emit('VERIFY_EVENT', {_id:this.values_to_edit.id});
+          this.$store.dispatch('VerifyEvent', {id:this.values_to_edit.id})
         }
       }
   }

@@ -46,8 +46,7 @@ router.post('/update-event', function(req, res){
 
 // Delete specific event
 router.post('/delete-event', function(req, res){
-  //
-  let event_id = req.body.event_id
+  let event_id = req.body.id
   res.json({"status":"success", "id":event_id})
 })
 

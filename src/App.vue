@@ -19,6 +19,8 @@
 import NavMenu from './components/NavMenu.vue'
 import NotifyUser from './components/NotifyUser.vue'
 
+import EventsFromStore from './helpers/NotificationEventBus.js'
+
 export default {
   data () {
     return {
@@ -35,6 +37,18 @@ export default {
     const _self = this
     // Inhale mock user data
     this.$store.dispatch('LoadAllUserData')
+
+    // Clean up localForage if admin pannel deletes an event
+    EventsFromStore.$on('CALENDAR_EVENT_DELETED', function(data){
+      console.log("Delete the Event ", data.id);
+      this.$vlf.removeItem(data.id)
+    })
+
+    // Clean up localForage if admin verifies the event
+    EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
+      console.log("Remove Verified Event", data.id);
+      this.$vlf.removeItem(data.id)
+    })
 
   },
   methods: {

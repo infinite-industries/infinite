@@ -15,12 +15,12 @@ export const store = new Vuex.Store({
       admin_role: false
     },
     current_list:{},
-    user_lists:[],
+    user_lists:[],          // not used ???
       lists_my:[],
       lists_follow:[],
     all_local_events:[],
     unverified_events:[],    // events stay here before review and verification
-    editable_event: {}
+    editable_event: {},      // currently unused
   },
   getters:{
     GetMyLists: state => {
@@ -45,7 +45,7 @@ export const store = new Vuex.Store({
     }
   },
   mutations:{
-     UpdateAllUserData: (state, user_data) => {
+     UPDATE_USER_DATA: (state, user_data) => {
       state.user_settings = _.merge({},state.user_settings,user_data.settings, user_data.permissions)
       state.lists_my = user_data.lists_my;
        state.lists_follow = user_data.lists_follow;
@@ -55,33 +55,41 @@ export const store = new Vuex.Store({
       //Greet users who are not logged in
       if(state.user_settings.logged_in === false){
         NotificationEventBus.$emit('SHOW_INFO', {
-          message: "Welcome! Check out the local events. Please log in to start saving and sharing event lists. Submit your own events if we accidently missed something cool and cultural in your area."
+          message: "Welcome! Check out the local cultural awesomeness! Please log in to start saving and sharing event lists. If we accidently missed something cool and cultural in your area, feel free to submit your own event via submissions page."
         })
       }
     },
-    UpdateAllLocalEvents: (state, payload) => {
+    UPDATE_LOCALIZED_EVENTS: (state, payload) => {
       state.all_local_events = payload
     },
-    PushNewList: (state, payload) => {
+    PUSH_NEW_LIST: (state, payload) => {
       state.lists_my.push(payload)
     },
-    PushNewEventToMyList: (state, payload) => {
-      let list_index = state.user_lists.my_lists.findIndex(list => list.list_id === payload.list_id)
-      state.user_lists.my_lists[list_index].push(payload.event_data)
+    PUSH_NEW_EVENT_TO_MY_LIST: (state, payload) => {
+
+      let list_index = state.lists_my.findIndex(list => {
+        console.log(list.id + " ---" + payload.list_id);
+        return list.id === payload.list_id
+      })
+
+      console.log("index now is", list_index);
+
+      state.lists_my[list_index].events.push(payload.event_data)
     },
-    PopulateCurrentList: (state, payload) =>{
+    POPULATE_CURRENT_LIST: (state, payload) =>{
       state.current_list = payload
     },
-    PopulateUnverifiedList: (state, payload) =>{
+    POPULATE_UNVERIFIED_LIST: (state, payload) =>{
       state.unverified_events = payload
     },
-    RemoveFromCurrentList: (state, payload) =>{
+    REMOVE_FROM_CURRENT_LIST: (state, payload) =>{
       console.log("MY CURRENT LIST:", state.current_list)
       state.current_list.events = state.current_list.events.filter(event => event.id !== payload.id)
     },
-    VerifyEventById: (state, payload) =>{
+    CHANGE_STATE_TO_VERIFIED: (state, payload) =>{
+      console.log(state.unverified_events.find(event => event.id === payload.id));
+      state.all_local_events.push(state.unverified_events.find(event => event.id === payload.id))
       state.unverified_events = state.unverified_events.filter(event => event.id !== payload.id)
-      state.all_local_events.push(payload.event_data)
     }
   },
   actions:{
@@ -98,7 +106,7 @@ export const store = new Vuex.Store({
               description: payload.description,
               events:[]
             }
-            context.commit('PushNewList', empty_list)
+            context.commit('PUSH_NEW_LIST', empty_list)
           }
           else{
             NotificationEventBus.$emit('SHOW_ALERT', {
@@ -124,7 +132,7 @@ export const store = new Vuex.Store({
       Axios.post('/events/add',{event_id:payload.event_data.id, list_id:payload.list_id})
         .then(function (_response) {
           if(_response.data.status === "success"){
-             context.commit('PushNewEventToMyList', {list_id:payload.list_id, event_data:payload.event_data})
+             context.commit('PUSH_NEW_EVENT_TO_MY_LIST', {list_id:payload.list_id, event_data:payload.event_data})
             // need to get back the full list
           }
           else{
@@ -146,7 +154,7 @@ export const store = new Vuex.Store({
       Axios.post('/events/remove',{event_id:payload.event_id, list_id:payload.list_id})
         .then(function (_response) {
           if(_response.data.status === "success"){
-            context.commit('RemoveFromCurrentList', _response.data)
+            context.commit('REMOVE_FROM_CURRENT_LIST', _response.data)
           }
           else{
             NotificationEventBus.$emit('SHOW_ALERT', {
@@ -168,7 +176,7 @@ export const store = new Vuex.Store({
     LoadAllUserData: (context) => {
       Axios.get('/users/1234556')
         .then(function (_response) {
-          context.commit('UpdateAllUserData', _response.data)
+          context.commit('UPDATE_USER_DATA', _response.data)
         })
         .catch(function (error) {
           console.log(error);
@@ -181,7 +189,7 @@ export const store = new Vuex.Store({
     LoadAllLocalEventData: (context, payload) => {
       Axios.get('/lists/all')
         .then(function (_response) {
-          context.commit('UpdateAllLocalEvents', _response.data.events)
+          context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
         })
         .catch(function (error) {
           console.log(error);
@@ -201,7 +209,7 @@ export const store = new Vuex.Store({
         .then(function (_response) {
           // console.log("data from server: ",response.data.events);
           if(_response.data.status === "success"){
-            context.commit('PopulateCurrentList', _response.data.eventList)
+            context.commit('POPULATE_CURRENT_LIST', _response.data.eventList)
           }
           else{
             NotificationEventBus.$emit('SHOW_ALERT', {
@@ -225,7 +233,7 @@ export const store = new Vuex.Store({
         .then(function (_response) {
           // console.log("data from server: ",response.data.events);
           if(_response.data.status === "success"){
-            context.commit('PopulateUnverifiedList', _response.data.events)
+            context.commit('POPULATE_UNVERIFIED_LIST', _response.data.events)
           }
           else{
             NotificationEventBus.$emit('SHOW_ALERT', {
@@ -240,35 +248,15 @@ export const store = new Vuex.Store({
           })
         });
     },
-    ShowUnverifiedEvent:(context, payload) => {
-    // NOTE currently unused
-      Axios.post('/admin/show-event', {id:payload.event_id})
-        .then(function (_response) {
-          // console.log("data from server: ",response.data.events);
-          if(_response.data.status === "success"){
-            context.commit('PopulateCurrentList', _response.data)
-          }
-          else{
-            NotificationEventBus.$emit('SHOW_ALERT', {
-              message: "Hrrmm... unable to get list data. Please contact us and we will figure out what went wrong. Code: #11647"
-            })
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
-            message: "API connection bit the dust. FiX!"
-          })
-        });
-    },
-
     VerifyEvent:(context, payload) => {
 
-      Axios.post('/admin/verify-event', {id:payload.event_id})
+      Axios.post('/admin/verify-event', payload)
         .then(function (_response) {
           // console.log("data from server: ",response.data.events);
           if(_response.data.status === "success"){
-            context.commit('VerifyEventById', _response.data)
+            context.commit('CHANGE_STATE_TO_VERIFIED', payload)
+
+            NotificationEventBus.$emit('CALENDAR_EVENT_VERIFIED', payload)
 
             NotificationEventBus.$emit('SHOW_INFO', {
               message: "Success! Event verified."
@@ -290,11 +278,14 @@ export const store = new Vuex.Store({
 
     UpdateEvent:(context, payload) => {
 
-      Axios.post('/admin/update-event', {id:payload.event_id, data: payload.event_data})
+      Axios.post('/admin/update-event', {id:payload.id, data: payload.event_data})
         .then(function (_response) {
           // console.log("data from server: ",response.data.events);
           if(_response.data.status === "success"){
-            context.commit('PopulateCurrentList', _response.data)
+            console.log("yo");
+            NotificationEventBus.$emit('SHOW_INFO', {
+              message:"Event Successfully Updated"
+            })
           }
           else{
             NotificationEventBus.$emit('SHOW_ALERT', {
@@ -312,11 +303,12 @@ export const store = new Vuex.Store({
 
     DeleteEvent:(context, payload) => {
 
-      Axios.post('/admin/delete-event', {id:payload.event_id})
+      Axios.post('/admin/delete-event', {id:payload.id})
         .then(function (_response) {
           // console.log("data from server: ",response.data.events);
           if(_response.data.status === "success"){
-            context.commit('PopulateCurrentList', _response.data)
+            // context.commit('POPULATE_CURRENT_LIST', _response.data)
+            NotificationEventBus.$emit('CALENDAR_EVENT_DELETED', {id:_response.data.id})
           }
           else{
             NotificationEventBus.$emit('SHOW_ALERT', {

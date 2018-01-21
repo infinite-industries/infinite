@@ -21,7 +21,7 @@
           You can add this event to the following lists:
         <v-list>
           <template v-for="list in my_other_lists">
-            <v-list-tile avatar @click="">
+            <v-list-tile avatar @click="AddEventToMyList(list.id)">
               <v-list-tile-avatar>
                 <v-icon v-show="AlreadyOnTheList(list.id)">check_circle</v-icon>
                 <v-icon v-show="!AlreadyOnTheList(list.id)">panorama_fish_eye</v-icon>
@@ -51,7 +51,7 @@ import EventCard from './EventCard.vue'
     data: function() {
       return {
         dialog: false,
-        active_event:''
+        active_event:{}
       }
     },
     mounted: function(){
@@ -64,8 +64,9 @@ import EventCard from './EventCard.vue'
 
         // this.$bus.$emit(event_id, {action:'hide'})
       },
-      AddEventToList: function(list_id){
-        this.$store.dispatch('AddEventToList', {list_id:list_id, event_data:active_event})
+      AddEventToMyList: function(list_id){
+        this.$store.dispatch('AddEventToMyList', {list_id:list_id, event_data:this.active_event})
+        this.dialog = false
       },
       RemoveEventFromList: function(){
         this.dialog = false

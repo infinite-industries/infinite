@@ -32,7 +32,7 @@
       </div> -->
 
       <div class="user-events-item">
-        Browse around for some new <a href="#">events in your area</a>
+        Browse around for some new <a href="#" @click.stop="RouteTo('/')">events in your area</a>
       </div>
 
     </v-container>
@@ -58,6 +58,11 @@
       },
       lists_i_follow: function(){
         return this.$store.getters.GetListsIFollow
+      }
+    },
+    methods: {
+      RouteTo: function(route_to_page){
+        this.$router.push({ path: route_to_page })
       }
     },
     components:{

@@ -22,6 +22,7 @@ export default {
   },
   mounted: function(){
     this.$store.dispatch('LoadAllLocalEventData')
+    console.log("TEST HOME");
 
     if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
     if (window.ifaddtocalendar == undefined) {

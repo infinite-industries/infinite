@@ -2,7 +2,6 @@
   <v-alert class="deep-purple lighten-1" icon="info" dismissible v-model="notification.visible" transition="slide-y-transition">
     {{ notification.message }}
   </v-alert>
-
 </template>
 
 <script>
