@@ -30,7 +30,7 @@
           {{event.venues[0]}}
         </div>
         <div class="event-date" v-html="event.when"></div>
-        <div>{{event.brief_description}}...</div>
+        <div>{{trimmedDescription}}</div>
       </div>
     </v-card-title>
 
@@ -83,6 +83,15 @@
           var time_end_formatted = moment(this.event.time_end).format('YYYYMMDDTHHmmss');
 
           window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.event.title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(this.event.brief_description)}&location=${encodeURIComponent(this.event.address)}`);
+        }
+      }
+    },
+    computed: {
+      trimmedDescription: function() {
+        if (this.event.brief_description.length > 200) {
+          return this.event.brief_description.substring(0, 200) + "...";
+        } else {
+          return this.event.brief_description;
         }
       }
     },

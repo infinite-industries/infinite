@@ -152,6 +152,15 @@
           </script>
         </div>
       </div>
+
+      {% if event.hasOwnProperty('admission_fee') and event.admission_fee!="none" %}
+       <div class="row">
+         <div class="col s12">
+           <em>Admission Fee: {{event.admission_fee}}</em>
+         </div>
+       </div>
+     {% endif %}
+
       <div class="row">
         <div class="col s12">
           {{event.description | safe}}
