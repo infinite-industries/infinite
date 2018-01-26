@@ -16,6 +16,7 @@ import UserEvents from './pages/UserEvents.vue';
 import UserSettings from './pages/UserSettings.vue';
 import ListViewer from './pages/ListViewer.vue'
 import Logout from './pages/Logout.vue';
+import SubmitEvent from './pages/SubmitEvent.vue'
 
 import GlobalEventBus from './helpers/GlobalEventBus.js'
 
@@ -76,6 +77,11 @@ const router = new VueRouter({
         path: '/logout',
         name: 'logout',
         component: Logout
+      },
+      {
+        path:'/submit-event',
+        name: 'submit_event',
+        component: SubmitEvent
       }
     ]
 })
