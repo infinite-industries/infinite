@@ -5,6 +5,9 @@
 
     <vue-editor v-model="content"></vue-editor>
 
+    <v-btn @click.stop="TestSlack()">Test Slack</v-btn>
+    <v-btn @click.stop="TestMail()">Test Mailer</v-btn>
+
   </v-container>
 </template>
 
@@ -16,6 +19,20 @@
     data: function () {
       return {
         content: "yo!"
+      }
+    },
+    methods: {
+      TestMail: function(){
+
+      },
+      TestSlack: function(){
+        Axios.post('/events/submit-new', {"test":"me"})
+          .then(function(_response) {
+            console.log(_response.data)
+          })
+          .catch(function(error) {
+            console.log(error)
+          })
       }
     },
     mounted: function(){
