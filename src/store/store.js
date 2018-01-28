@@ -3,11 +3,15 @@ import Vuex from 'vuex'
 import Axios from 'axios'
 import _ from 'lodash'
 
-import NotificationEventBus from '../helpers/NotificationEventBus.js'
+import ComponentEventBus from '../helpers/ComponentEventBus'
+import Admin from './modules/admin'
 
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
+  modules:{
+    admin: Admin
+  },
   state:{
     loaded_from_api: false,
     user_settings:{
@@ -15,11 +19,13 @@ export const store = new Vuex.Store({
       admin_role: false
     },
     current_list:{},
-    user_lists:[],          // not used ???
-      lists_my:[],
-      lists_follow:[],
+
+    lists_my:[],
+    lists_follow:[],
+
     all_local_events:[],
     unverified_events:[],    // events stay here before review and verification
+
     editable_event: {},      // currently unused
   },
   getters:{
@@ -37,9 +43,7 @@ export const store = new Vuex.Store({
     GetCurrentList: state => {
       return state.current_list
     },
-    GetUnverifiedEvents: state =>{
-      return state.unverified_events
-    },
+
     GetSettings: state => {
       // TODO
     }
@@ -54,7 +58,7 @@ export const store = new Vuex.Store({
 
       //Greet users who are not logged in
       if(state.user_settings.logged_in === false){
-        NotificationEventBus.$emit('SHOW_INFO', {
+        ComponentEventBus.$emit('SHOW_INFO', {
           message: "Welcome! Check out the local cultural awesomeness! Please log in to start saving and sharing event lists. If we accidently missed something cool and cultural in your area, feel free to submit your own event via submissions page."
         })
       }
@@ -79,18 +83,21 @@ export const store = new Vuex.Store({
     POPULATE_CURRENT_LIST: (state, payload) =>{
       state.current_list = payload
     },
-    POPULATE_UNVERIFIED_LIST: (state, payload) =>{
-      state.unverified_events = payload
-    },
+
     REMOVE_FROM_CURRENT_LIST: (state, payload) =>{
       console.log("MY CURRENT LIST:", state.current_list)
       state.current_list.events = state.current_list.events.filter(event => event.id !== payload.id)
+    },
+
+    POPULATE_UNVERIFIED_LIST: (state, payload) =>{
+      state.unverified_events = payload
     },
     CHANGE_STATE_TO_VERIFIED: (state, payload) =>{
       console.log(state.unverified_events.find(event => event.id === payload.id));
       state.all_local_events.push(state.unverified_events.find(event => event.id === payload.id))
       state.unverified_events = state.unverified_events.filter(event => event.id !== payload.id)
     }
+
   },
   actions:{
 
@@ -110,14 +117,14 @@ export const store = new Vuex.Store({
             context.commit('PUSH_NEW_LIST', empty_list)
           }
           else{
-            NotificationEventBus.$emit('SHOW_ALERT', {
+            ComponentEventBus.$emit('SHOW_ALERT', {
               message: "Hrrmm... unable create an new list. Please contact us and we will figure out what went wrong. Code: #00447"
             })
           }
         })
         .catch(function (error) {
           console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
+          ComponentEventBus.$emit('SHOW_ALERT', {
             message: "Hrrmm... unable create an new list. Please contact us and we will figure out what went wrong. Code: #00347"
           })
         });
@@ -137,14 +144,14 @@ export const store = new Vuex.Store({
             // need to get back the full list
           }
           else{
-            NotificationEventBus.$emit('SHOW_ALERT', {
+            ComponentEventBus.$emit('SHOW_ALERT', {
               message: "Hrrmm... unable add this event to your list. Please contact us and we will figure out what went wrong. Code: #33347"
             })
           }
         })
         .catch(function (error) {
           console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
+          ComponentEventBus.$emit('SHOW_ALERT', {
             message: "Hrrmm... unable add this event to your list. Please contact us and we will figure out what went wrong. Code: #23997"
           })
 
@@ -158,21 +165,19 @@ export const store = new Vuex.Store({
             context.commit('REMOVE_FROM_CURRENT_LIST', _response.data)
           }
           else{
-            NotificationEventBus.$emit('SHOW_ALERT', {
+            ComponentEventBus.$emit('SHOW_ALERT', {
               message: "Hrrmm... unable to remove this event from your list. Please contact us and we will figure out what went wrong. Code: #2347"
             })
           }
         })
         .catch(function (error) {
           console.log("error mesg:", error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
+          ComponentEventBus.$emit('SHOW_ALERT', {
             message: "Hrrmm... unable to remove this event from your list. Please contact us and we will figure out what went wrong. Code: #2647"
           })
 
         });
     },
-
-    //==========================================
 
     LoadAllUserData: (context) => {
       Axios.get('/users/1234556')
@@ -181,7 +186,7 @@ export const store = new Vuex.Store({
         })
         .catch(function (error) {
           console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
+          ComponentEventBus.$emit('SHOW_ALERT', {
             message: "Hrrmm... unable to get your data. Please contact us and we will figure out what went wrong."
           })
 
@@ -194,7 +199,7 @@ export const store = new Vuex.Store({
         })
         .catch(function (error) {
           console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
+          ComponentEventBus.$emit('SHOW_ALERT', {
             message: "Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong."
           })
 
@@ -213,117 +218,19 @@ export const store = new Vuex.Store({
             context.commit('POPULATE_CURRENT_LIST', _response.data.eventList)
           }
           else{
-            NotificationEventBus.$emit('SHOW_ALERT', {
+            ComponentEventBus.$emit('SHOW_ALERT', {
               message: "Hrrmm... unable to get list data. Please contact us and we will figure out what went wrong. Code: #11647"
             })
           }
         })
         .catch(function (error) {
           console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
+          ComponentEventBus.$emit('SHOW_ALERT', {
             message: "Hrrmm... unable to get list data. Please contact us and we will figure out what went wrong. Code: #11007"
           })
         });
-    },
-
-    //================= ADMIN =====================
-
-    LoadUnverifiedEvents:(context, payload) => {
-
-      Axios.get('/admin/list-unverified')
-        .then(function (_response) {
-          // console.log("data from server: ",response.data.events);
-          if(_response.data.status === "success"){
-            context.commit('POPULATE_UNVERIFIED_LIST', _response.data.events)
-          }
-          else{
-            NotificationEventBus.$emit('SHOW_ALERT', {
-              message: "Was not able to find unverified events."
-            })
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
-            message: "API connection bit the dust. FiX!"
-          })
-        });
-    },
-    VerifyEvent:(context, payload) => {
-
-      Axios.post('/admin/verify-event', payload)
-        .then(function (_response) {
-          // console.log("data from server: ",response.data.events);
-          if(_response.data.status === "success"){
-            context.commit('CHANGE_STATE_TO_VERIFIED', payload)
-
-            NotificationEventBus.$emit('CALENDAR_EVENT_VERIFIED', payload)
-
-            NotificationEventBus.$emit('SHOW_INFO', {
-              message: "Success! Event verified."
-            })
-          }
-          else{
-            NotificationEventBus.$emit('SHOW_ALERT', {
-              message: "Unable to verify the event"
-            })
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
-            message: "API connection bit the dust. FiX!"
-          })
-        });
-    },
-
-    UpdateEvent:(context, payload) => {
-
-      Axios.post('/admin/update-event', {id:payload.id, data: payload.event_data})
-        .then(function (_response) {
-          // console.log("data from server: ",response.data.events);
-          if(_response.data.status === "success"){
-            console.log("yo");
-            NotificationEventBus.$emit('SHOW_INFO', {
-              message:"Event Successfully Updated"
-            })
-          }
-          else{
-            NotificationEventBus.$emit('SHOW_ALERT', {
-              message:"Unable to update event :("
-            })
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
-            message: "API connection bit the dust. FiX!"
-          })
-        });
-    },
-
-    DeleteEvent:(context, payload) => {
-
-      Axios.post('/admin/delete-event', {id:payload.id})
-        .then(function (_response) {
-          // console.log("data from server: ",response.data.events);
-          if(_response.data.status === "success"){
-            // context.commit('POPULATE_CURRENT_LIST', _response.data)
-            NotificationEventBus.$emit('CALENDAR_EVENT_DELETED', {id:_response.data.id})
-          }
-          else{
-            NotificationEventBus.$emit('SHOW_ALERT', {
-              message: "Unable to delete the event"
-            })
-          }
-        })
-        .catch(function (error) {
-          console.log(error);
-          NotificationEventBus.$emit('SHOW_ALERT', {
-            message: "API connection bit the dust. FiX!"
-          })
-        });
     }
+
 
   }
 })

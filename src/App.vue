@@ -19,7 +19,7 @@
 import NavMenu from './components/NavMenu.vue'
 import NotifyUser from './components/NotifyUser.vue'
 
-import EventsFromStore from './helpers/NotificationEventBus.js'
+import EventsFromStore from './helpers/ComponentEventBus.js'
 
 export default {
   data () {
@@ -46,7 +46,7 @@ export default {
 
     // Clean up localForage if admin verifies the event
     EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
-      console.log("Remove Verified Event", data.id);
+      console.log("EVENT CENTRAL cleanup --- Remove Verified Event", data.id);
       this.$vlf.removeItem(data.id)
     })
 
