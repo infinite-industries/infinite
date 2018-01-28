@@ -7,8 +7,9 @@ if [[ "production" = $1 ]]; then
   ROOT='/home/ubuntu/app/new_mvp'
   SERVER='infinite.industries'
 elif [[ "staging" = $1 ]]; then
-  ROOT='/home/ubuntu/new_mvp'
-  SERVER='staging.infinite.industries'
+  ROOT='/home/ubuntu/front_end_infinite'
+  # SERVER='staging.infinite.industries'
+  SERVER='staging5074.cloudapp.net'
 else
   echo Please specify environment to deploy to.
   echo Usage: ./deploy.sh environment
