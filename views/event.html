@@ -58,8 +58,10 @@
   <script src="https://use.fontawesome.com/9929e77eb0.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
 
   <link href="/css/style.css" rel="stylesheet">
+  <link href="/css/event-page.css" rel="stylesheet">
 
 </head>
 <body>
@@ -71,7 +73,12 @@
           <h3>{{event.venues[0]}}</h3>
         </div>
         <div class="col s2 event-close">
-          <a href="{{site_url}}"><i class="medium material-icons">close</i></a>
+          <a href="javascript:goBack()"><i class="medium material-icons">close</i></a>
+          <script>
+            function goBack() {
+              window.history.go(-1);
+            }
+          </script>
         </div>
       </div>
       <div class="row">
@@ -94,25 +101,66 @@
             {% endif %}
 
           </span>
+        </div>
+        <div class="col l1 hide-on-med-and-down"></div>
+        <div class="col m12 l5 map-and-calendar">
+          <div class="infinite-button infinite-button-blue">
+            <a href="{{event.map_link}}" target="_new">Event Map</a>
           </div>
-          <div class="col l1 hide-on-med-and-down"></div>
-          <div class="col m12 l5 map-and-calendar">
-            <span class="atc-style-blue">
-              <a href="{{event.map_link}}" class="event-map-button" target="_new">Event Map</a>
-            </span>
-            <span class="addtocalendar atc-style-blue">
-                <var class="atc_event">
-                  <var class="atc_date_start">{{event.time_start}}</var>
-                  <var class="atc_date_end">{{event.time_end}}</var>
-                  <var class="atc_timezone">America/Detroit</var>
-                  <var class="atc_title">{{event.title}}</var>
-                  <var class="atc_description">{{event.brief_description}}</var>
-                  <var class="atc_ical_filename">{{event.slug}}</var>
-                  <var class="atc_location">{{event.venues[0]}}</var>
-                </var>
-            </span>
+          <div class="infinite-dropdown">
+            <div class="infinite-button infinite-button-white dropbtn">
+              <a href="javascript:toggleDropdown()">Download Event</a>
+            </div>
+            <div id="calDropdown" class="infinite-dropdown-content">
+              <a href='javascript:addToCalendar(0)'>iCal</a>
+              <a href='javascript:addToCalendar(0)'>Outlook</a>
+              <a href='javascript:addToCalendar(1)'>Google Calendar</a>
+            </div>
+          </div>
+          <script>
+          function toggleDropdown() {
+            document.getElementById("calDropdown").classList.toggle("show");
+          }
+          //close dropdown(s) when you click outside
+          window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+
+              var dropdowns = document.getElementsByClassName("infinite-dropdown-content");
+              var i;
+              for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                  openDropdown.classList.remove('show');
+                }
+              }
+            }
+          }
+          function addToCalendar(type) {
+            const title = "{{event.title}}";
+            const desc = "{{event.brief_description}}";
+            const location = "{{event.address}}";
+            const time_start = "{{event.time_start}}";
+            const time_end = "{{event.time_end}}";
+            if (type == 0) { // .ics
+              window.open(`/calendar?title=${encodeURIComponent(title)}&description=${encodeURIComponent(desc)}&location=${encodeURIComponent(location)}&time_start=${encodeURIComponent(time_start)}&time_end=${encodeURIComponent(time_end)}`);
+            } else { // google cal
+              const time_start_formatted = moment(time_start).format('YYYYMMDDTHHmmss');
+              const time_end_formatted = moment(time_end).format('YYYYMMDDTHHmmss');
+              window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(desc)}&location=${encodeURIComponent(location)}`);
+            }
+          }
+          </script>
         </div>
       </div>
+
+      {% if event.hasOwnProperty('admission_fee') and event.admission_fee!="none" %}
+       <div class="row">
+         <div class="col s12">
+           <em>Admission Fee: {{event.admission_fee}}</em>
+         </div>
+       </div>
+     {% endif %}
+
       <div class="row">
         <div class="col s12">
           {{event.description | safe}}
@@ -165,13 +213,6 @@
     }(document, 'script', 'facebook-jssdk'));</script>
 
     <script type="text/javascript">(function () {
-      if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
-      if (window.ifaddtocalendar == undefined) { window.ifaddtocalendar = 1;
-          var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
-          s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
-          s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
-          var h = d[g]('body')[0];h.appendChild(s); }})();
-
 
       var clipboard = new Clipboard('.btn');
 
