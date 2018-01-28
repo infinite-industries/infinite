@@ -135,6 +135,7 @@
           // DISPATCH vuex
           //EventBus.$emit('VERIFY_EVENT', {_id:this.values_to_edit.id});
           this.$store.dispatch('VerifyEvent', {id:this.values_to_edit.id})
+          this.RouteTo('/admin')
         }
       }
   }
