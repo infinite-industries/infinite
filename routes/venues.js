@@ -8,8 +8,15 @@ router.use(bodyParser.urlencoded({
 }));
 
 router.get('/', (req, res) => {
-  console.log("get venues");
-  res.json([{name: "venue1"}, {name: "venue2"}, {name: "venue3"}]);
+  console.log("GET VENUES!!!!!!!!!!!!!!!!");
+  makeAPICall('get', 'venues', {}, process.env.API_KEY, (err, apiResp) => {
+    if (err) {
+      console.warn(err);
+      res.status(500).json({ status: 'error getting venues'});
+    } else {
+      res.json(apiResp.data);
+    }
+  })
 });
 
 module.exports = router;

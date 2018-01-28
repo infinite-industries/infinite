@@ -29,7 +29,6 @@ export default {
       this.$emit("selectVenue", venue);
     },
     hitEnter: function() {
-      console.log("hi");
       if (this.queryResults.length == 1) {
         this.selectVenue(this.queryResults[0]);
       }
