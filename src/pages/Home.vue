@@ -1,18 +1,21 @@
 <template>
     <v-container fluid>
+      <!-- <venue-picker :venues="venues"></venue-picker> -->
+      <h1>Upcoming Events:</h1>
       <events-list></events-list>
     </v-container>
 </template>
 
 <script>
-import Axios from 'axios';
+import axios from 'axios';
 
 import EventsList from '../components/EventsList.vue'
+// import VenuePicker from '../components/VenuePicker.vue'
 
 export default {
   data: function () {
     return {
-      //
+      // venues: []
     }
   },
   computed:{
@@ -20,21 +23,19 @@ export default {
       return this.$store.getters.GetAllLocalEvents
     }
   },
-  mounted: function(){
+  mounted: function() {
     this.$store.dispatch('LoadAllLocalEventData')
     console.log("TEST HOME");
 
-    if (window.addtocalendar)if(typeof window.addtocalendar.start == "function")return;
-    if (window.ifaddtocalendar == undefined) {
-      window.ifaddtocalendar = 1;
-      var d = document, s = d.createElement('script'), g = 'getElementsByTagName';
-      s.type = 'text/javascript';s.charset = 'UTF-8';s.async = true;
-      s.src = ('https:' == window.location.protocol ? 'https' : 'http')+'://addtocalendar.com/atc/1.5/atc.min.js';
-      var h = d[g]('body')[0];h.appendChild(s);
-    }
+    // axios.get('/venues').then( response => {
+    //   this.venues = response.data.venues;
+    // }).catch( err => {
+    //   console.log(err);
+    // })
   },
   components:{
-    'events-list': EventsList
+    'events-list': EventsList,
+    // 'venue-picker': VenuePicker
   }
 
 }
