@@ -30,6 +30,7 @@ const events = require('./routes/events');
 const lists = require('./routes/lists');
 const users = require('./routes/users');
 const calendar = require('./routes/calendar');
+const venues = require('./routes/venues');
 
 app.use(express.static('public'));
 app.use('/', routes);
@@ -38,6 +39,7 @@ app.use('/events', events);
 app.use('/lists', lists);
 app.use('/users', users);
 app.use('/calendar', calendar);
+app.use('/venues', venues);
 
 
 const appPort = process.env.PORT || '7779';
