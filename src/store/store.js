@@ -159,7 +159,7 @@ export const store = new Vuex.Store({
     },
     RemoveEventFromList: (context, payload) => {
       const _self = this
-      Axios.post('/events/remove',{event_id:payload.event_id, list_id:payload.list_id})
+      Axios.post('/events/remove',{ event_id:payload.event_id, list_id:payload.list_id })
         .then(function (_response) {
           if(_response.data.status === "success"){
             context.commit('REMOVE_FROM_CURRENT_LIST', _response.data)

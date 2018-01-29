@@ -12,6 +12,7 @@ module.exports = {
 
         console.info('requesting data from: ' + url);
 
+        console.log('!!! postBody: ' + JSON.stringify(postBody, null, 4));
         // general event listings for the user's area
         axios[verb](url, postBody)
             .then(function(response){

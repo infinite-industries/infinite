@@ -29,12 +29,28 @@ router.get("/:id", function(req, res) {
 
 router.post("/add", function(req,res){
   console.log("Data recieved: list - "+req.body.list_id+" event - "+req.body.event_id);
-  res.json({"status":"success", "id":req.body.event_id})
+
+	const listID = req.body.list_id;
+	const eventID = req.body.event_id;
+
+	console.log("Data received: list - "+ req.body.list_id+" event - " + req.body.event_id);
+
+	makeAPICall('put', 'event-lists/addEvent/' + listID +  '/' + eventID, {}, process.env.API_KEY, (err, apiResp) => {
+		res.json(apiResp.data);
+	});
+
+    res.json({"status":"success", "id":req.body.event_id})
 })
 
 router.post("/remove", function(req,res){
-  console.log("Data recieved: list - "+req.body.list_id+" event - "+req.body.event_id);
-  res.json({"status":"success", "id":req.body.event_id})
+    const listID = req.body.list_id;
+    const eventID = req.body.event_id;
+
+    console.log("Data received: list - "+ req.body.list_id+" event - " + req.body.event_id);
+
+    makeAPICall('put', 'event-lists/removeEvent/' + listID +  '/' + eventID, {}, process.env.API_KEY, (err, apiResp) => {
+		res.json(apiResp.data);
+    });
 })
 
 module.exports = router;

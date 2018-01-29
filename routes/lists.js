@@ -27,6 +27,7 @@ router.get('/:id', function(req, res){
     const id = req.params.id;
     console.info('getting user_list: ' +  id);
     makeAPICall('get', 'event-lists/' + id, {}, null, (err, resAPI) => {
+        console.log('!!! resAPI.data: ' + JSON.stringify(resAPI.data, null, 4));
         if (err) {
             console.warn(err);
         } else {
