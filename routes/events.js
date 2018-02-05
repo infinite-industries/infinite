@@ -45,6 +45,13 @@ router.post("/submit-new", function(req, res) {
   slack.Notify('test', 'very testing Ari hi')
 })
 
+router.post("/promo-new", function(req, res) {
+  res.json({"yo":"yo"})
+
+  // mail to UKY address to figure out email weirdness
+
+})
+
 router.get("/:id", function(req, res) {
     const id = req.params.id;
 
