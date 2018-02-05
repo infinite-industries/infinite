@@ -23,7 +23,13 @@
     },
     methods: {
       TestMail: function(){
-
+        Axios.post('/events/promo-new', {"test":"me"})
+          .then(function(_response) {
+            console.log(_response.data)
+          })
+          .catch(function(error) {
+            console.log(error)
+          })
       },
       TestSlack: function(){
         Axios.post('/events/submit-new', {"test":"me"})
