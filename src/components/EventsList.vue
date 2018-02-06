@@ -47,11 +47,11 @@ import EventCard from './EventCard.vue'
 
   export default {
     name:'EventsList',
-    props: ['type', 'id'],
+    props: ['standalone'],
     data: function() {
       return {
         dialog: false,
-        active_event:{}
+        active_event:{},
       }
     },
     mounted: function(){

@@ -109,7 +109,7 @@ export const store = new Vuex.Store({
           console.log(_response.data);
           if(_response.data.status === "success"){
             const empty_list = {
-              list_id: _response.data.id,
+              id: _response.data.id,
               list_name: payload.name,
               description: payload.description,
               events:[]
