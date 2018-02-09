@@ -41,8 +41,9 @@ router.use(bodyParser.urlencoded({
 
 router.post("/submit-new", function(req, res) {
   res.json({"yo":"yo"})
+  console.log(req.body);
   //slack.Test()
-  slack.Notify('test', 'very testing Ari hi')
+  // slack.Notify('test', 'very testing Ari hi')
 })
 
 router.post("/promo-new", function(req, res) {
