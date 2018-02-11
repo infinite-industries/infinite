@@ -34,7 +34,7 @@ const actions = {
   },
   VerifyEvent:(context, payload) => {
 
-    Axios.post('/admin/verify-event', payload)
+    Axios.post(`/admin/verify-event/${payload.id}`, payload)
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){

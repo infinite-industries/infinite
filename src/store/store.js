@@ -193,7 +193,7 @@ export const store = new Vuex.Store({
         });
     },
     LoadAllLocalEventData: (context, payload) => {
-      Axios.get('/lists/all')
+      Axios.get('/events')
         .then(function (_response) {
           context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
         })

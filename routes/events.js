@@ -9,6 +9,17 @@ router.use(bodyParser.urlencoded({
     extended: true
 }));
 
+router.get('/', function(req, res) {
+    makeAPICall('get','events', {}, null, (err, apiRes) => {
+        if (err) {
+            console.warn('error retrieving events:' + err);
+            res.status(500).json({"error": "error retrieving events: " + err})
+        } else {
+            console.info('success: ' + req.url);
+            res.json({"status":"success", "events": apiRes.data.events });
+        }
+    });
+})
 
 router.get("/:id", function(req, res) {
     const id = req.params.id;
