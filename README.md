@@ -1,28 +1,82 @@
-Infinite Industries Web App
-=========================
+# Infinite Industries Front-End
 
-Preliminary sketch of Infinite Industries.
-The code is super hacky and ugly but allows us to protoype general patterns and see
-how real live people are trying to interact with it.
-<br>
-Lots of technical TODOs and some feature ideas https://trello.com/b/N3YSDIuB/featurecreatures
+## Description
 
-## NOTES
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer accumsan fermentum nunc, eu bibendum leo facilisis id. In id risus placerat, iaculis ex sit amet, dignissim eros. Fusce mauris enim, ultricies a cursus et, tincidunt sed neque. Nam hendrerit sodales tempor. Donec mattis, leo nec convallis sollicitudin, metus felis varius.
 
-Lists can be of three types:
-1. following - users already follows the list - user can unfollow
-2. mine - list belongs to the user
-3. none - not 1 or 2 - user can follow
+## Features
 
-Lists can be in two states:
-1. live - user is actively supporting the list
-2. abandoned - user chooses to abandon the list -- need to figure out exact end of life strategy ;) -- user can not just delete a list
+- Phasellus ornare lacinia tellus ac eleifend.
+- Mauris vel efficitur mauris, eget luctus lorem.
+- Morbi lacinia mauris vitae maximus efficitur.
+- Nunc finibus mauris quis orci interdum cursus et nec ex.
+- Sed semper pretium ipsum id fermentum.
+- Phasellus vitae tellus non urna lacinia placerat.
 
-Lists can be:
-1. Public -- viewed by everyone
-2. Private -- viewed by the author only
+## Development Environment Setup
 
+#### Dependencies:
+To set up the Infinite Industries front-end development environment, you will need the following tools:
 
-TODO:
+- [Node.js](https://nodejs.org/en/): 8.9.4 or higher
+- [npm](https://www.npmjs.com/get-npm): 5.6.0 or higher
+- Vue.js: [vue-cli 3.0](https://github.com/vuejs/vue-cli)
+```bash
+$ npm install -g @vue/cli
+```
+- An `.env` file (see below)
 
-add vue-router to the project
+#### Recommended:
+The following tools will make your life easier:
+- [nodemon](https://nodemon.io/)
+```bash
+$ npm install -g nodemon
+```
+- Vue.js devtools browser extension
+ - [Chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
+ - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
+
+## Getting Started
+
+1. Download the current version of Infinite Industries from GitHub
+```bash
+$ git clone https://github.com/infinite-industries/front_end_infinite.git
+```
+2. Install project dependencies and devDependencies
+```bash
+$ npm install
+```
+3. Launch Watchify
+```bash
+$ npm run watchify
+```
+4. Start the Node.JS server
+```bash
+$ node server.js
+```
+5. Launch the Infinite Industries back-end
+```bash
+$ node index.js
+```
+    Find back-end setup in the [infinite back-end](https://github.com/infinite-industries/infinite) README.
+
+6. Point your browser to http://localhost:7779
+
+## Environment Config
+
+Use the following template to set up your `.env` file and store it in the root folder of the project.
+```
+SITE_URL=http://localhost:7779
+API_URL=http://localhost:3003
+API_KEY=########-####-####-####-############
+
+SLACK_WEBHOOK_TEST=###############################################
+SLACK_WEBHOOK_CONTACT=##################################################
+SLACK_WEBHOOK_EVENT_SUBMISSION=################################################
+
+...
+```
+
+## License
+
+MIT?
