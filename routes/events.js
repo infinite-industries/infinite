@@ -2,8 +2,10 @@ const express = require('express')
 const router = express.Router()
 const { makeAPICall } = require('./utils/requestHelper')
 const bodyParser = require('body-parser')
+const sanitizer = require('sanitizer');
 
-const slack = require('./utils/slackNotify');
+const slack = require('./utils/slackNotify')
+const Event = require('./utils/event')
 
 //get configuration file from .env
 const dotenv = require('dotenv')
@@ -15,6 +17,12 @@ const fs = require('fs')
 const uuidv4 = require('uuid/v4')
 const multiparty = require('multiparty')
 
+router.use(bodyParser.json())
+
+router.use(bodyParser.urlencoded({
+    extended: true
+}))
+
 
 const s3 = new aws.S3({
   region: process.env.AWS_REGION,
@@ -23,7 +31,7 @@ const s3 = new aws.S3({
 });
 
 
-const uploadFile = function(file_name, file_key, file_data, cb) {
+const UploadFile = function(file_name, file_key, file_data, cb) {
   var params = {
     Body: file_data,
     Bucket: process.env.AWS_S3_UPLOADS_BUCKET,
@@ -33,16 +41,56 @@ const uploadFile = function(file_name, file_key, file_data, cb) {
   s3.putObject(params, cb);
 }
 
-router.use(bodyParser.json())
+const ManageUpload = function (id, path, type, cb){
+  console.log("uploading "+type+" image ---"+path)
+  cb()
+}
 
-router.use(bodyParser.urlencoded({
-    extended: true
-}))
+
 
 router.post("/submit-new", function(req, res) {
+
+  const form = new multiparty.Form();
+
+   form.parse(req, function(err, fields, files) {
+     console.log(util.inspect({fields: fields, files: files}))
+
+     const EVENT = new Event({
+       id: fields.id[0],
+       title: fields.title[0],
+       slug: fields.title[0].toLowerCase().replace(/ /g,"-")
+
+     })
+
+     // console.log(EVENT.id);
+
+     if(Object.keys(files).length > 0){
+       if(files.hasOwnProperty('social_image')){
+         ManageUpload(EVENT.id, files.social_image[0].path, "social", function(err, data){
+           // if(err){
+           //   res.json({"status":"failure", "reason": err})
+           // }
+           // else{
+           //   res.json({"status":"success"})
+           // }
+         })
+       }
+       if(files.hasOwnProperty('image')){
+         ManageUpload(EVENT.id, files.image[0].path, "hero", function(err, data){
+           // if(err){
+           //   res.json({"status":"failure", "reason": err})
+           // }
+           // else{
+           //   res.json({"status":"success"})
+           // }
+         })
+       }
+     }
+   })
+
   res.json({"yo":"yo"})
-  //slack.Test()
-  slack.Notify('test', 'very testing Ari hi')
+  // slack.Test()
+  // slack.Notify('test', 'very testing Ari hi')
 })
 
 router.post("/promo-new", function(req, res) {
