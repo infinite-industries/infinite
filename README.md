@@ -58,7 +58,7 @@ $ node server.js
 ```bash
 $ node index.js
 ```
-    Find back-end setup in the [infinite back-end](https://github.com/infinite-industries/infinite) README.
+Find back-end setup in the [infinite back-end](https://github.com/infinite-industries/infinite) README.
 
 6. Point your browser to http://localhost:7779
 
