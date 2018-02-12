@@ -13,21 +13,13 @@
       </v-flex>
     </v-layout>
 
-    <!-- Start and End Dates -->
+    <!-- Start Date -->
     <v-layout row wrap>
       <v-flex xs12 sm3>
-        <h3 class="form-label">Dates:</h3>
+        <h3 class="form-label">Event Date:</h3>
       </v-flex>
-      <v-flex xs12 sm3>
-        <v-menu
-          lazy
-          :close-on-content-click="true"
-          transition="scale-transition"
-          offset-y
-          :nudge-right="40"
-          max-width="290px"
-          min-width="290px"
-        >
+      <v-flex xs12 sm8>
+        <v-menu :close-on-content-click="true">
           <v-text-field
             slot="activator"
             label="Start Date"
@@ -35,7 +27,7 @@
             prepend-icon="event"
             readonly
           ></v-text-field>
-          <v-date-picker v-model="new_event.time_start" no-title scrollable actions>
+          <v-date-picker v-model="new_event.time_start" no-title scrollable class="nomargin">
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
                 <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
@@ -45,33 +37,19 @@
           </v-date-picker>
         </v-menu>
       </v-flex>
-      <v-flex xs0 sm1></v-flex>
+    </v-layout>
+
+
+    <!-- Time -->
+    <v-layout row wrap>
       <v-flex xs12 sm3>
-        <v-menu
-          lazy
-          :close-on-content-click="true"
-          transition="scale-transition"
-          offset-y
-          :nudge-right="40"
-          max-width="290px"
-          min-width="290px"
-        >
-          <v-text-field
-            slot="activator"
-            label="End Date"
-            v-model="new_event.time_end"
-            prepend-icon="event"
-            readonly
-          ></v-text-field>
-          <v-date-picker v-model="new_event.time_end" no-title scrollable actions>
-            <template slot-scope="{ save, cancel }">
-              <v-card-actions>
-                <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
-                <v-btn flat color="primary" @click="save">OK</v-btn>
-              </v-card-actions>
-            </template>
-          </v-date-picker>
-        </v-menu>
+        <h3 class="form-label">Event Time:</h3>
+      </v-flex>
+      <v-flex xs12 sm4 class="some-padding-top">
+        <time-picker :label="'Start Time:'"></time-picker>
+      </v-flex>
+      <v-flex xs12 sm4 class="some-padding-top">
+        <time-picker :label="'End Time:'"></time-picker>
       </v-flex>
     </v-layout>
 
@@ -186,6 +164,7 @@
       </v-flex>
     </v-layout>
 
+    <!-- SUBMIT BUTTON -->
     <v-layout row>
       <div class="text-xs-center">
         <v-btn @click="submitEvent">Submit</v-btn>
@@ -202,6 +181,7 @@
   import Axios from 'axios'
   import { VueEditor, Quill } from 'vue2-editor'
   import VenuePicker from '../components/VenuePicker.vue'
+  import TimePicker from '../components/TimePicker.vue'
 
   export default {
     data: function () {
@@ -294,13 +274,17 @@
 
    components: {
      'vue-editor': VueEditor,
-     'venue-picker': VenuePicker
+     'venue-picker': VenuePicker,
+     'time-picker': TimePicker
    }
 
   }
 </script>
 
 <style scoped>
+.nomargin {
+  margin: 0px;
+}
 .form-label {
   text-align: right;
   padding-right: 15px;
@@ -314,5 +298,12 @@
   font-size: 2em;
   text-align: center;
   margin: 20px 0px 20px 0px;
+}
+.text-xs-center {
+  margin: 0 auto;
+  text-align: center;
+}
+.some-padding-top {
+  padding-top: 22px;
 }
 </style>

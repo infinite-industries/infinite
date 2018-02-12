@@ -2,7 +2,7 @@
   <div class="component-container">
     <input type="text" class="text-input" v-model="searchterm" placeholder="Search for a venue" @focusin="showDropdownContent()" @focusout="hideDropdownContent()" @keyup.enter="hitEnter()"/>
     <div class="results-container" v-if="show">
-      <a href="#" v-for="venue in queryResults" @click="selectVenue(venue)">{{venue.name}}</a>
+      <a href="#" v-for="venue in queryResults" @mousedown="selectVenue(venue)">{{venue.name}}</a>
     </div>
   </div>
 </template>
