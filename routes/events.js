@@ -49,16 +49,20 @@ const ManageUpload = function (id, path, type, cb){
 
     const base64file = new Buffer(data,'binary')
     let file_name = id
+    let file_key = "uploads"
+
     if(type === "social"){
       file_name = file_name + "_social.jpg"
+      file_key = file_key + "/social/" + file_name
     }
     else if(type === "hero"){
       file_name = file_name + ".jpg"
+      file_key = file_key + "/" + file_name
     }
-    else{
+    else{ //just in case we will have other image types at later point
       file_name = file_name + ".jpg"
+      file_key = file_key + "/" + file_name
     }
-    const file_key = "uploads/social/"+file_name;
 
     UploadFile(file_name, file_key, base64file, function(err, data){
       if(err) {
@@ -79,10 +83,12 @@ router.post("/submit-new", function(req, res) {
    form.parse(req, function(err, fields, files) {
     console.log(util.inspect({fields: fields, files: files}))
 
+    let EVENT = {}
+
     async.waterfall([
       // Begin creation of Event object
       function(callback) {
-        const EVENT = new Event({
+        EVENT = new Event({
           id: fields.id[0],
           title: fields.title[0],
           slug: fields.title[0].toLowerCase().replace(/ /g,"-")
@@ -117,14 +123,14 @@ router.post("/submit-new", function(req, res) {
       // Create bitly link
       // Notify (via Slack) that this needs review
 
-    ], function (err, result) {
+    ], function (err, data) {
           // throw me an error
             if(err){
               console.log(err)
               res.json({"status":"failure", "reason": err})
             }
             else{
-              console.log(result)
+              console.log(data)
               res.json({"status":"success"})
             }
           }
