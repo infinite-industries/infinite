@@ -1,5 +1,3 @@
-const axios = require('axios');
-
 
 const Event = function(init_obj){
   //required attributes
@@ -49,27 +47,14 @@ const Event = function(init_obj){
   }
 }
 
-Event.prototype.AddSocialImage = function(id, server_url, bucket_url){
-  this.social_image = server_url + bucket_url + "/uploads/social/" + id + "_social.jpg";
-}
+// Event.prototype.AddSocialImage = function(id, server_url, bucket_url){
+//   this.social_image = server_url + bucket_url + "/uploads/social/" + id + "_social.jpg";
+// }
+//
+// Event.prototype.AddHeroImage = function(id, server_url, bucket_url){
+//   this.image = server_url + bucket_url + "/uploads/" + id + ".jpg";
+// }
 
-Event.prototype.AddHeroImage = function(id, server_url, bucket_url){
-  this.image = server_url + bucket_url + "/uploads/" + id + ".jpg";
-}
-
-Event.prototype.AddBitlyLink = function(id, bitly_token, site_url ){
-  const bitly_query_url ="https://api-ssl.bitly.com/v3/shorten?access_token=" + bitly_token + "&longUrl=" + encodeURI(site_url+'/event/'+id)
-  const self = this
-
-  axios.get(bitly_query_url)
-  .then(function (_response) {
-    //console.log(_response.data.data.url);
-    self.bitly_link = _response.data.data.url
-  })
-  .catch(function (error) {
-    console.log(error)
-  })
-}
 
 
 module.exports = Event

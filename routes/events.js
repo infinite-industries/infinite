@@ -17,6 +17,7 @@ const util = require('util')
 const fs = require('fs')
 const uuidv4 = require('uuid/v4')
 const multiparty = require('multiparty')
+const request = require('request')
 
 router.use(bodyParser.json())
 
@@ -76,7 +77,26 @@ const ManageUpload = function (id, path, type, cb){
   })
 }
 
-router.post("/submit-new", function(req, res) {
+const AddBitlyLink = function(id, bitly_token, cb){
+  const bitly_query_url ="https://api-ssl.bitly.com/v3/shorten?access_token=" + bitly_token + "&longUrl=" + encodeURI('https://infinite.industries/event/'+id)
+  request(bitly_query_url, function(error, response, body) {
+    if(!error && response.statusCode == 200){
+      // Bitly throws status codes into the body *shrug*
+      const bitly = JSON.parse(body)
+      if(bitly.status_code == 200 && bitly.status_txt === "OK"){
+        cb(null, bitly.data.url)
+      }
+      else{
+        cb({reason:bitly.status_txt}, null)
+      }
+    }
+    else{
+      cb({reason:"connection issues"}, null)
+    }
+  })
+}
+
+router.post("/submit-new", function(req, res){
 
   const form = new multiparty.Form();
 
@@ -87,7 +107,7 @@ router.post("/submit-new", function(req, res) {
 
     async.waterfall([
       // Begin creation of Event object
-      function(callback) {
+      function(callback){
         EVENT = new Event({
           id: fields.id[0],
           title: fields.title[0],
@@ -97,7 +117,7 @@ router.post("/submit-new", function(req, res) {
       },
 
       // If social media ready image present, upload it to S3
-      function(callback) {
+      function(callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('social_image'))){
           ManageUpload(EVENT.id, files.social_image[0].path, "social", function(err, data){
             callback(err, data)
@@ -109,7 +129,7 @@ router.post("/submit-new", function(req, res) {
       },
 
       // If hero image present, upload it to S3
-      function(callback) {
+      function(callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('image'))){
           ManageUpload(EVENT.id, files.image[0].path, "hero", function(err, data){
             callback(err, data)
@@ -118,20 +138,35 @@ router.post("/submit-new", function(req, res) {
         else {
           callback(null)
         }
+      },
+
+      // Create and add bitly link
+      function(data, callback){
+        AddBitlyLink(EVENT.id, process.env.BITLY_TOKEN, function(err, data){
+          // console.log(data)
+
+          callback(err, data)
+        })
+      },
+
+      // Post as UNVERIFIED to DB and
+      // Notify (via Slack) that this needs review
+      function(data, callback){
+       slack.Notify('test', 'very testing Ari hi')
+       callback(null)
       }
 
-      // Create bitly link
-      // Notify (via Slack) that this needs review
-
-    ], function (err, data) {
+    ], function(err, data){
           // throw me an error
             if(err){
               console.log(err)
               res.json({"status":"failure", "reason": err})
             }
             else{
-              console.log(data)
-              res.json({"status":"success"})
+            // Generate a quick report back to the client
+            // Prep data for additional postings by venues
+              console.log(EVENT)
+              res.json({status:"success", data: EVENT})
             }
           }
     )
