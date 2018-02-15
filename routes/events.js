@@ -112,6 +112,8 @@ router.post("/submit-new", function(req, res){
           id: fields.id[0],
           title: fields.title[0],
           slug: fields.title[0].toLowerCase().replace(/ /g,"-")
+          
+
         })
         callback(null)
       },

@@ -59,7 +59,7 @@
         <h3 class="form-label">Event Image:</h3>
       </v-flex>
       <v-flex xs12 sm8>
-        <v-text-field></v-text-field>
+        <input type="file" class="form-control" id="event-image" name="event_image">
       </v-flex>
     </v-layout>
 
@@ -114,7 +114,7 @@
     </v-layout>
 
     <h3>Full Event Description:</h3>
-    <vue-editor v-model="content"></vue-editor>
+    <vue-editor v-model="new_event.description"></vue-editor>
 
     <v-layout row>
       <v-flex xs12>
@@ -175,7 +175,7 @@
     <!-- <v-btn @click.stop="TestMail()">Test Mailer</v-btn> -->
 
     <div>
-      <input type="file" class="form-control" id="event-image" name="event_image">
+
       <v-btn @click.stop="UploadEvent()">Test Text+Image Upload</v-btn>
     </div>
 
@@ -211,7 +211,6 @@
           ticket_link:"",
           organizer_contact:""
         },
-        content: "",
         venues: []
       }
     },
@@ -330,5 +329,8 @@
 }
 .some-padding-top {
   padding-top: 22px;
+}
+#event-image{
+  margin-top: 20px;
 }
 </style>
