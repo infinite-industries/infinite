@@ -63,6 +63,19 @@
       </v-flex>
     </v-layout>
 
+    <!-- Event Social Image -->
+    <v-layout row wrap>
+      <v-flex xs12 sm3>
+        <h3 class="form-label">Social Media Image:</h3>
+      </v-flex>
+      <v-flex xs12 sm8>
+        <input type="file" class="form-control" id="event-social-image" name="event_social_image">
+      </v-flex>
+      <v-flex xs8 offset-xs3>
+        <em>Image optimized for sharing on various social media platforms (recommended size )</em>
+      </v-flex>
+    </v-layout>
+
     <!-- Venue -->
     <v-layout row wrap>
       <v-flex xs12 sm3>
@@ -231,24 +244,15 @@
             console.log(error)
           })
       },
-      TestSlack: function(){
-        // Axios.post('/events/submit-new', {"test":"me"})
-        //   .then(function(_response) {
-        //     console.log(_response.data)
-        //   })
-        //   .catch(function(error) {
-        //     console.log(error)
-        //   })
-        window.alert("disabled for now")
-      },
       UploadEvent: function(){
 
         const formData = new FormData()
         formData.append('id', uuid())
-        formData.append('title', this.new_event.title);
+        //formData.append('title', this.new_event.title);
         formData.append('event_data', this.new_event);
 
         formData.append('image', document.getElementById('event-image').files[0])
+        formData.append('social_image', document.getElementById('event-social-image').files[0]);
 
         Axios.post('/events/submit-new', formData)
           .then(function(_response) {
@@ -270,28 +274,32 @@
         this.venues = response.data.venues;
         console.log(this.venues);
       })
+      .catch(function(error) {
+        console.log(error)
+        window.alert("Ooops... We were not able to load a list of venues. Please reload the page. If the problem continues, contact us. We will fix this ASAP!")
+      })
 
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId            : '132381870824243',
-          autoLogAppEvents : true,
-          xfbml            : true,
-          version          : 'v2.10'
-        });
-        FB.AppEvents.logPageView();
-
-        console.log("Facebook API initialized")
-
-      };
-
-      // vvv what is this? vvv
-      (function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/sdk.js";
-         fjs.parentNode.insertBefore(js, fjs);
-       }(document, 'script', 'facebook-jssdk'));
+      // window.fbAsyncInit = function() {
+      //   FB.init({
+      //     appId            : '132381870824243',
+      //     autoLogAppEvents : true,
+      //     xfbml            : true,
+      //     version          : 'v2.10'
+      //   });
+      //   FB.AppEvents.logPageView();
+      //
+      //   console.log("Facebook API initialized")
+      //
+      // };
+      //
+      // // vvv what is this? vvv
+      // (function(d, s, id){
+      //    var js, fjs = d.getElementsByTagName(s)[0];
+      //    if (d.getElementById(id)) {return;}
+      //    js = d.createElement(s); js.id = id;
+      //    js.src = "//connect.facebook.net/en_US/sdk.js";
+      //    fjs.parentNode.insertBefore(js, fjs);
+      //  }(document, 'script', 'facebook-jssdk'));
 
 
    },
@@ -330,7 +338,7 @@
 .some-padding-top {
   padding-top: 22px;
 }
-#event-image{
+#event-image, #event-social-image {
   margin-top: 20px;
 }
 </style>
