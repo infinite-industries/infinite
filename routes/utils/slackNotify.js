@@ -2,7 +2,7 @@
 const dotenv = require('dotenv')
 dotenv.load()
 
-// set channels to post to here
+// set channels to send notofications to
 const slackChannels = {}
 
 const SLACK_WEBHOOK_TEST = process.env.SLACK_WEBHOOK_TEST

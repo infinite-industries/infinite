@@ -180,7 +180,7 @@
     <!-- SUBMIT BUTTON -->
     <v-layout row>
       <div class="text-xs-center">
-        <v-btn @click="UploadEvent">Submit</v-btn>
+        <v-btn color="primary" class="deep-purple submission-btn" @click="UploadEvent">Submit Event</v-btn>
       </div>
     </v-layout>
 
@@ -200,7 +200,6 @@
   import { VueEditor, Quill } from 'vue2-editor'
   import VenuePicker from '../components/VenuePicker.vue'
   import TimePicker from '../components/TimePicker.vue'
-  import uuid from 'uuid/v4'
 
   export default {
     data: function () {
@@ -247,12 +246,11 @@
       UploadEvent: function(){
 
         const formData = new FormData()
-        formData.append('id', uuid())
-        //formData.append('title', this.new_event.title);
-        formData.append('event_data', this.new_event);
+
+        formData.append('event_data', JSON.stringify(this.new_event))
 
         formData.append('image', document.getElementById('event-image').files[0])
-        formData.append('social_image', document.getElementById('event-social-image').files[0]);
+        formData.append('social_image', document.getElementById('event-social-image').files[0])
 
         Axios.post('/events/submit-new', formData)
           .then(function(_response) {
@@ -341,4 +339,8 @@
 #event-image, #event-social-image {
   margin-top: 20px;
 }
+.submission-btn{
+  color:white;
+}
+
 </style>

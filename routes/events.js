@@ -5,7 +5,6 @@ const { makeAPICall } = require('./utils/requestHelper')
 const bodyParser = require('body-parser')
 const sanitizer = require('sanitizer');
 
-const slack = require('./utils/slackNotify')
 const Event = require('./utils/event')
 
 //get configuration file from .env
@@ -70,8 +69,8 @@ const ManageUpload = function (id, path, type, cb){
         cb(err, null)
       }
       else{
-        console.log(util.inspect(data));
-        cb(err, data)
+        console.log(data);
+        cb(null, data)
       }
     })
   })
@@ -96,25 +95,28 @@ const AddBitlyLink = function(id, bitly_token, cb){
   })
 }
 
+
+
+
 router.post("/submit-new", function(req, res){
 
   const form = new multiparty.Form();
 
    form.parse(req, function(err, fields, files) {
-    console.log(util.inspect({fields: fields, files: files}))
+
+    // console.log(util.inspect({fields: fields, files: files}))
+    // console.log("---------- Object in ------ \n")
+    // console.log(JSON.parse(fields.event_data[0]))
+    // console.log("-------------")
+
 
     let EVENT = {}
 
     async.waterfall([
       // Begin creation of Event object
       function(callback){
-        EVENT = new Event({
-          id: fields.id[0],
-          title: fields.title[0],
-          slug: fields.title[0].toLowerCase().replace(/ /g,"-")
-          
+        EVENT = new Event(JSON.parse(fields.event_data[0]))
 
-        })
         callback(null)
       },
 
@@ -122,18 +124,22 @@ router.post("/submit-new", function(req, res){
       function(callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('social_image'))){
           ManageUpload(EVENT.id, files.social_image[0].path, "social", function(err, data){
+            EVENT.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+EVENT.id+"_social.jpg"
+
+            console.log("YOYOYOY");
             callback(err, data)
           })
         }
         else {
-          callback(null)
+          callback(null, null)
         }
       },
 
       // If hero image present, upload it to S3
-      function(callback){
+      function(data, callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('image'))){
           ManageUpload(EVENT.id, files.image[0].path, "hero", function(err, data){
+            EVENT.image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/"+EVENT.id+".jpg"
             callback(err, data)
           })
         }
@@ -154,7 +160,7 @@ router.post("/submit-new", function(req, res){
       // Post as UNVERIFIED to DB and
       // Notify (via Slack) that this needs review
       function(data, callback){
-       slack.Notify('test', 'very testing Ari hi')
+       EVENT.Notify()
        callback(null)
       }
 
@@ -172,9 +178,6 @@ router.post("/submit-new", function(req, res){
             }
           }
     )
-
-  // slack.Test()
-  // slack.Notify('test', 'very testing Ari hi')
   })
 })
 

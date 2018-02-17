@@ -1,51 +1,122 @@
+const uuidv4 = require('uuid/v4')
+const slack = require('./slackNotify')
 
 const Event = function(init_obj){
+
+  console.log(init_obj)
   //required attributes
-  this.id = init_obj.id
+  this.id = uuidv4()
   this.title = init_obj.title
-  this.slug = init_obj.slug
+  this.slug = this.title.toLowerCase().replace(/ /g,"-")
+
+  if(init_obj.hasOwnProperty('description')){
+    this.description = init_obj.description
+  }
+  if(init_obj.hasOwnProperty('brief_description')){
+    this.brief_description = init_obj.brief_description
+  }
+  if(init_obj.hasOwnProperty('admission_fee')){
+    this.admission_fee = init_obj.admission_fee
+  }
+
+  // TODO CHANGE THIS!!!!!!! as soon as time input is complete
   this.start_time_string = "sample start time"
   this.end_time_string = "sample end time"
-  this.when = "Verbose time description"  // a verbose desciption of time and date of the event
+  this.when = "Verbose time description"  // a verbose description of time and date of the event
+  // -------------------------
 
-  //optional attributes
+
+  //venue specific attributes
   if(init_obj.hasOwnProperty('address')){
     this.address = init_obj.address
   }
   if(init_obj.hasOwnProperty('map_link')){
     this.map_link = init_obj.map_link
   }
-  if(init_obj.hasOwnProperty('organizers')){
-    this.organizers = init_obj.organizers
-  }
   if(init_obj.hasOwnProperty('venues')){
     this.venues = init_obj.venues
   }
-  if(init_obj.hasOwnProperty('brief_description')){
-    this.brief_description = init_obj.brief_description
+
+  // Organizer info -- will add more for venue submitting own event case
+  if(init_obj.hasOwnProperty('organizers')){
+    this.organizers = init_obj.organizers
   }
   if(init_obj.hasOwnProperty('organizer_contact')){
     this.organizer_contact = init_obj.organizer_contact
   }
-  if(init_obj.hasOwnProperty('admission_fee')){
-    this.admission_fee = init_obj.admission_fee
+  else{
+    this.organizer_contact = "no organizers :("
   }
-  if(init_obj.hasOwnProperty('description')){
-    this.description = init_obj.description
-  }
+
+
+  // Optional info
   if(init_obj.hasOwnProperty('ticket_link')){
-    this.ticket_link = init_obj.ticket_link
+    if(init_obj.ticket_link === ""){
+      this.ticket_link = "none"
+    }
+    else{
+      this.ticket_link = init_obj.ticket_link
+    }
   }
+
   if(init_obj.hasOwnProperty('fb_event_link')){
-    this.fb_event_link = init_obj.fb_event_link
+    if(init_obj.fb_event_link === ""){
+      this.fb_event_link = "none"
+    }
+    else{
+      this.fb_event_link = init_obj.fb_event_link
+    }
   }
+
   if(init_obj.hasOwnProperty('eventbrite_link')){
-    this.eventbrite_link = init_obj.eventbrite_link
+    if(init_obj.eventbrite_link === ""){
+      this.eventbrite_link = "none"
+    }
+    else{
+      this.eventbrite_link = init_obj.eventbrite_link
+    }
   }
+
   if(init_obj.hasOwnProperty('website')){
-    this.website = init_obj.website
+    if(init_obj.website === ""){
+      this.website = "none"
+    }
+    else{
+      this.website = init_obj.website
+    }
   }
+
 }
+
+Event.prototype.Notify = function(){
+  var event_payload = `\n\{
+        "id":"${this.id}",
+        "title":"${this.title}",
+        "slug":"${this.slug}",
+        "when":"${this.when}",
+        "time_start":"${this.time_start}",
+        "time_end": "${this.time_end}",
+        "website": "${this.website}",
+        "image":"${this.image}",
+        "social_image":"${this.social_image}",
+        "venues":["${this.venues}"],
+        "admission_fee": "${this.admission_fee}",
+        "address": "${this.address}",
+        "organizers":["${this.organizers}"],
+        "map_link":"${this.map_link}",
+        "brief_description":"${this.brief_description}",
+        "description":"${this.description}",
+        "links":["none"],
+        "ticket_link":"${this.ticket_link}",
+        "fb_event_link":"${this.fb_event_link}",
+        "eventbrite_link":"${this.eventbrite_link}",
+        "bitly_link":"${this.bitly_link}",
+        "tags":["not-yet-implemented"]
+      \}`;
+
+      slack.Notify("test","Review Me. Copy Me. Paste Me. Deploy Me." + event_payload + "\n Contact: "+this.organizer_contact);
+}
+
 
 // Event.prototype.AddSocialImage = function(id, server_url, bucket_url){
 //   this.social_image = server_url + bucket_url + "/uploads/social/" + id + "_social.jpg";
