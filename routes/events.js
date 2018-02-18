@@ -125,8 +125,6 @@ router.post("/submit-new", function(req, res){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('social_image'))){
           ManageUpload(EVENT.id, files.social_image[0].path, "social", function(err, data){
             EVENT.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+EVENT.id+"_social.jpg"
-
-            console.log("YOYOYOY");
             callback(err, data)
           })
         }

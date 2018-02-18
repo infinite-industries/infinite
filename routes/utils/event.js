@@ -19,9 +19,10 @@ const Event = function(init_obj){
     this.admission_fee = init_obj.admission_fee
   }
 
+  this.time_start = init_obj.time_start
+  this.time_end= init_obj.time_end
+
   // TODO CHANGE THIS!!!!!!! as soon as time input is complete
-  this.start_time_string = "sample start time"
-  this.end_time_string = "sample end time"
   this.when = "Verbose time description"  // a verbose description of time and date of the event
   // -------------------------
 
