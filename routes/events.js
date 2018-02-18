@@ -110,7 +110,8 @@ router.post("/submit-new", function(req, res){
     // console.log("-------------")
 
 router.get('/', function(req, res) {
-    makeAPICall('get','events', {}, null, (err, apiRes) => {
+    // get all current verified events
+    makeAPICall('get','events/current/verified/', {}, null, (err, apiRes) => {
         if (err) {
             console.warn('error retrieving events:' + err);
             res.status(500).json({"error": "error retrieving events: " + err})

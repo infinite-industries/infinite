@@ -47,7 +47,7 @@ import EventCard from './EventCard.vue'
 
   export default {
     name:'EventsList',
-    props: ['standalone'],
+    props: ['type', 'standalone'],
     data: function() {
       return {
         dialog: false,
