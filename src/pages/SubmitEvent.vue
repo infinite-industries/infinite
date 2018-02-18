@@ -23,11 +23,11 @@
           <v-text-field
             slot="activator"
             label="Start Date"
-            v-model="new_event.time_start"
+            v-model="new_event.date"
             prepend-icon="event"
             readonly
           ></v-text-field>
-          <v-date-picker v-model="new_event.time_start" no-title scrollable class="nomargin">
+          <v-date-picker v-model="new_event.date" no-title scrollable class="nomargin">
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
                 <v-btn flat color="primary" @click="cancel">Cancel</v-btn>
@@ -39,17 +39,17 @@
       </v-flex>
     </v-layout>
 
-
+    <!-- TODO: make calendar / time pickers into its own vue component, for use with multi-day events -->
     <!-- Time -->
     <v-layout row wrap>
       <v-flex xs12 sm3>
         <h3 class="form-label">Event Time:</h3>
       </v-flex>
       <v-flex xs12 sm4 class="some-padding-top">
-        <time-picker :label="'Start Time:'"></time-picker>
+        <time-picker :date="new_event.date" :label="'Start Time:'" @changeTime="formattedTime => { new_event.time_start = formattedTime }"></time-picker>
       </v-flex>
       <v-flex xs12 sm4 class="some-padding-top">
-        <time-picker :label="'End Time:'"></time-picker>
+        <time-picker :date="new_event.date" :label="'End Time:'" @changeTime="formattedTime => { new_event.time_end = formattedTime }"></time-picker>
       </v-flex>
     </v-layout>
 
@@ -210,6 +210,11 @@
           fb_event_link:"",
           ticket_link:"",
           organizer_contact:""
+        },
+        new_venue: {
+          name: "",
+          address: "",
+          google_maps_link: ""
         },
         content: "",
         venues: []
