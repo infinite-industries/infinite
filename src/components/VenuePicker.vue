@@ -1,8 +1,8 @@
 <template>
   <div class="component-container">
-    <input type="text" class="text-input" v-model="searchterm" placeholder="search for a venue" @focusin="showDropdownContent()" @focusout="hideDropdownContent()" @keyup.enter="hitEnter()"/>
+    <input type="text" class="text-input" v-model="searchterm" placeholder="Search for a venue" @focusin="showDropdownContent()" @focusout="hideDropdownContent()" @keyup.enter="hitEnter()"/>
     <div class="results-container" v-if="show">
-      <a href="#" v-for="venue in queryResults" @click="selectVenue(venue)">{{venue.name}}</a>
+      <a href="#" v-for="venue in queryResults" @mousedown="selectVenue(venue)">{{venue.name}}</a>
     </div>
   </div>
 </template>
@@ -36,9 +36,13 @@ export default {
   },
   computed: {
     queryResults: function() {
-      return this.venues.filter( venue => {
-        return venue.name.includes(this.searchterm);
-      })
+      if (this.venues == undefined) {
+        return [];
+      } else {
+        return this.venues.filter( venue => {
+          return venue.name.toLowerCase().includes(this.searchterm.toLowerCase());
+        })
+      }
     }
   }
 }
@@ -47,8 +51,12 @@ export default {
 <style scoped>
 .component-container {
   display: inline-block;
+  margin-top: 15px;
+  width: 100%;
 }
 .text-input {
+  width: 100%;
+  max-width: 300px;
   padding: 5px;
   box-shadow: 0 1px 5px rgba(0,0,0,.2), 0 2px 2px rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.12)
 }

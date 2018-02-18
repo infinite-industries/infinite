@@ -4,7 +4,7 @@
       <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
       <v-toolbar-title>Infinite Industries</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn outline @click.stop="OpenEventSubmitter()">Submit Your Event</v-btn>
+      <v-btn outline @click.stop="RouteTo('/submit-event')">Submit Your Event</v-btn>
       <nav-menu></nav-menu>
     </v-toolbar>
     <main id="content-wrapper">
