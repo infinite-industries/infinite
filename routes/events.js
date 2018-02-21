@@ -95,96 +95,101 @@ const AddBitlyLink = function(id, bitly_token, cb){
   })
 }
 
+router.get('/', function(req, res) {
+  // get all current verified events
+  makeAPICall('get','events/current/verified/', {}, null, (err, apiRes) => {
+    if (err) {
+      console.warn('error retrieving events:' + err);
+      res.status(500).json({"error": "error retrieving events: " + err})
+    } else {
+      console.info('success: ' + req.url);
+      res.json({"status":"success", "events": apiRes.data.events });
+    }
+  });
+})
 
 
 
 router.post("/submit-new", function(req, res){
+    const form = new multiparty.Form();
 
-  const form = new multiparty.Form();
-
-   form.parse(req, function(err, fields, files) {
+    form.parse(req, function(err, fields, files) {
 
     // console.log(util.inspect({fields: fields, files: files}))
     // console.log("---------- Object in ------ \n")
     // console.log(JSON.parse(fields.event_data[0]))
     // console.log("-------------")
 
-router.get('/', function(req, res) {
-    // get all current verified events
-    makeAPICall('get','events/current/verified/', {}, null, (err, apiRes) => {
-        if (err) {
-            console.warn('error retrieving events:' + err);
-            res.status(500).json({"error": "error retrieving events: " + err})
-        } else {
-            console.info('success: ' + req.url);
-            res.json({"status":"success", "events": apiRes.data.events });
-        }
-    });
-})
-
-    let EVENT = {}
-
     async.waterfall([
       // Begin creation of Event object
       function(callback){
-        EVENT = new Event(JSON.parse(fields.event_data[0]))
+        let event = new Event(JSON.parse(fields.event_data[0]))
 
-        callback(null)
+        callback(null, event)
       },
 
       // If social media ready image present, upload it to S3
-      function(callback){
+      function(event, callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('social_image'))){
-          ManageUpload(EVENT.id, files.social_image[0].path, "social", function(err, data){
-            EVENT.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+EVENT.id+"_social.jpg"
-            callback(err, data)
+          ManageUpload(event.id, files.social_image[0].path, "social", function(err, data){
+            event.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+event.id+"_social.jpg"
+            callback(err, event)
           })
         }
         else {
-          callback(null, null)
+          callback(null, event)
         }
       },
 
       // If hero image present, upload it to S3
-      function(data, callback){
+      function(event, callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('image'))){
-          ManageUpload(EVENT.id, files.image[0].path, "hero", function(err, data){
-            EVENT.image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/"+EVENT.id+".jpg"
-            callback(err, data)
+          ManageUpload(event.id, files.image[0].path, "hero", function(err, data){
+            event.image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/"+event.id+".jpg"
+            callback(err, event)
           })
         }
         else {
-          callback(null, null)
+          callback(null, event)
         }
       },
 
       // Create and add bitly link
-      function(data, callback){
-        AddBitlyLink(EVENT.id, process.env.BITLY_TOKEN, function(err, data){
+      function(event, callback){
+        AddBitlyLink(event.id, process.env.BITLY_TOKEN, function(err, data){
           // console.log(data)
 
-          callback(err, data)
+          callback(err, event)
         })
       },
 
-      // Post as UNVERIFIED to DB and
-      // Notify (via Slack) that this needs review
-      function(data, callback){
-       EVENT.Notify()
-       callback(null)
-      }
+      // submit to the api
+      function(event, callback) {
+        console.info('sending new un-verified event to the api')
+        makeAPICall('post', 'events/', { event: event }, process.env.API_KEY, (err, apiResp) => {
+          if (err)
+            return callback(err)
+          if (apiResp.data.status !== 'success')
+            return callback('failure returned from api: ' + apiResp.data.status)
 
-    ], function(err, data){
+          console.info('api received the event')
+          callback(null, event, apiResp.data.id)
+        })
+      }
+    ], function(err, event){
           // throw me an error
             if(err){
+              // is there a way to notify in case of failure?
               console.log(err)
               res.json({"status":"failure", "reason": err})
-            }
-            else{
+            } else {
+              // Post as UNVERIFIED to DB and
+              // Notify (via Slack) that this needs review
+              event.Notify()
             // Generate a quick report back to the client
             // Prep data for additional postings by venues
-              console.log(EVENT)
-              res.json({status:"success", data: EVENT})
+              console.log(event)
+              res.json({status:"success", data: event})
             }
           }
     )
