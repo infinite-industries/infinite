@@ -232,8 +232,6 @@ router.post("/add", function(req,res){
 	makeAPICall('put', 'event-lists/addEvent/' + listID +  '/' + eventID, {}, process.env.API_KEY, (err, apiResp) => {
 		res.json(apiResp.data);
 	});
-
-    res.json({"status":"success", "id":req.body.event_id})
 })
 
 router.post("/remove", function(req,res){
