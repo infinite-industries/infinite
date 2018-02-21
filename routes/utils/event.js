@@ -49,7 +49,6 @@ const Event = function(init_obj){
     this.organizer_contact = "no organizers :("
   }
 
-
   // Optional info
   if(init_obj.hasOwnProperty('ticket_link')){
     if(init_obj.ticket_link === ""){

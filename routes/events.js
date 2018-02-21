@@ -158,6 +158,8 @@ router.post("/submit-new", function(req, res){
       // Post as UNVERIFIED to DB and
       // Notify (via Slack) that this needs review
       function(data, callback){
+
+
        EVENT.Notify()
        callback(null)
       }
