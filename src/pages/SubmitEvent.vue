@@ -81,10 +81,88 @@
       <v-flex xs12 sm3>
         <h3 class="form-label">Select a Venue:</h3>
       </v-flex>
-      <v-flex xs12 sm8>
+      <v-flex xs7 sm6>
         <venue-picker :venues="venues" @selectVenue="selectVenue"></venue-picker>
       </v-flex>
+      <v-flex xs5 sm2 style="padding-top: 6px">
+        <v-btn color="info" @click="toggleVenueDropdown()">Add Venue</v-btn>
+      </v-flex>
     </v-layout>
+
+    <!-- Add a Venue (collapsible content)-->
+    <v-card class="collapsible-content" :class="{ expanded: showAddVenue }">
+
+      <v-card-title>
+        <h1>New Venue:</h1>
+      </v-card-title>
+
+      <!-- Venue Name -->
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Venue Name:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-text-field v-model="new_venue.name"></v-text-field>
+        </v-flex>
+      </v-layout>
+
+      <!-- Venue Address -->
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Venue Address:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-text-field v-model="new_venue.address"></v-text-field>
+        </v-flex>
+      </v-layout>
+
+      <!-- City -->
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">City:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-text-field v-model="new_venue.city"></v-text-field>
+        </v-flex>
+      </v-layout>
+
+      <!-- Zip -->
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Zip Code:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-text-field v-model="new_venue.zip"></v-text-field>
+        </v-flex>
+      </v-layout>
+
+      <!-- Neighborhood -->
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Neighborhood:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-text-field v-model="new_venue.neighborhood"></v-text-field>
+        </v-flex>
+      </v-layout>
+
+      <!-- G-maps Link -->
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Google Maps Link:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-text-field v-model="new_venue.google_maps_link"></v-text-field>
+        </v-flex>
+      </v-layout>
+
+      <v-layout row wrap >
+        <div style="margin: 0px auto 0px auto">
+          <v-btn color="success">Add Venue</v-btn>
+        </div>
+      </v-layout>
+
+    </v-card>
 
     <!-- Brief Description -->
     <v-layout row wrap>
@@ -181,15 +259,46 @@
     <v-layout row>
       <div class="text-xs-center">
         <v-btn color="primary" class="deep-purple submission-btn" @click="UploadEvent">Submit Event</v-btn>
+        <v-btn color="primary" class="deep-purple submission-btn" @click="showPromoTools = !showPromoTools">toggle</v-btn>
       </div>
     </v-layout>
 
-    <!-- <v-btn @click.stop="TestSlack()">Test Slack</v-btn> -->
-    <!-- <v-btn @click.stop="TestMail()">Test Mailer</v-btn> -->
-
-    <div>
-
-      <v-btn @click.stop="UploadEvent()">Test Text+Image Upload</v-btn>
+    <!-- Promo tools -->
+    <div class="collapsible-content" :class="{'expanded': showPromoTools}" style="margin-top: 10px">
+      <h1>Event Promotion Tools:</h1>
+      <vue-editor v-model="promoHTML"></vue-editor>
+      <p>
+        Note: Many email servers treat automated email as spam. For the best results simply copy
+        and paste the text above into your own email. Email sender forms below are still experimental but we
+        are working on delivery confirmation feature which will make the whole process much, much smoother.
+      </p>
+      <v-layout row wrap>
+        <v-flex xs1 sm1>
+          <v-checkbox v-model="send_summary" hide-details class="shrink mr-2"></v-checkbox>
+        </v-flex>
+        <v-flex xs11 sm5>
+          <p style="margin-top: 23px">Send summary to my email for review:</p>
+        </v-flex>
+        <v-flex xs12 sm6>
+          <v-text-field v-model="send_summary_to"></v-text-field>
+        </v-flex>
+      </v-layout>
+      <v-layout row wrap>
+        <v-flex xs1 sm1>
+          <v-checkbox v-model="send_summary_others" hide-details class="shrink mr-2"></v-checkbox>
+        </v-flex>
+        <v-flex xs11 sm5>
+          <p style="margin-top: 23px">Send announcement to the following address(es):</p>
+        </v-flex>
+        <v-flex xs12 sm6>
+          <v-text-field v-model="send_summary_others_emails"></v-text-field>
+        </v-flex>
+      </v-layout>
+      <v-layout row>
+        <div class="text-xs-center">
+          <v-btn color="primary" @click="sendEmails">Send Promo Email</v-btn>
+        </div>
+      </v-layout>
     </div>
 
   </v-container>
@@ -223,13 +332,23 @@
           ticket_link:"",
           organizer_contact:""
         },
+        showAddVenue: false,
+        showPromoTools: false,
+        promoHTML: "",
         new_venue: {
           name: "",
           address: "",
+          city: "",
+          zip: "",
+          neighborhood: "",
           google_maps_link: ""
         },
         content: "",
-        venues: []
+        venues: [],
+        send_summary: false,
+        send_summary_to: "",
+        send_summary_others: false,
+        send_summary_others_emails: ""
       }
     },
     methods: {
@@ -258,10 +377,12 @@
         formData.append('image', document.getElementById('event-image').files[0])
         formData.append('social_image', document.getElementById('event-social-image').files[0])
 
-        Axios.post('/events/submit-new', formData)
-          .then(function(_response) {
-            console.log(_response.data)
-            window.alert("Event submitted. Thank you! It should be out of review and on our site within 24 hours. Usually, much faster :)");
+        Axios.post('/events/submit-new', formData).then( response => {
+            console.log(response.data)
+            if (response.data.status == "success") {
+              this.showPromoTools = true;
+            }
+            // window.alert("Event submitted. Thank you! It should be out of review and on our site within 24 hours. Usually, much faster :)");
           })
           .catch(function(error) {
             console.log(error)
@@ -270,13 +391,24 @@
       selectVenue: function(venue) {
         console.log(venue);
         this.new_event.venue = venue.id;
+      },
+      toggleVenueDropdown: function() {
+        this.showAddVenue = !this.showAddVenue;
+      },
+      sendEmails: function() {
+        console.log("Allan please send emails.");
+      },
+      // for use in promo tools. Takes an event object and makes it into pretty html
+      parseEventToHTML: function(event) {
+        let html = "<h1>"
+        html += event.title;
+        // TODO
       }
     },
     mounted: function() {
 
       Axios.get('/venues').then( response => {
         this.venues = response.data.venues;
-        console.log(this.venues);
       })
       .catch(function(error) {
         console.log(error)
@@ -347,6 +479,26 @@
 }
 .submission-btn{
   color:white;
+}
+
+#new-venue {
+    font-weight: bold;
+    margin-top: 10px;
+    margin-left: 15px;
+    margin-bottom: 5px;
+}
+
+.collapsible-content {
+  padding-bottom: 0px;
+  /* height: 0px; */
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height 0.4s;
+}
+.expanded {
+  height: auto;
+  padding-bottom: 20px;
+  max-height: 800px; /* <-- this isn't ideal, need to approximate size of dropdown content for animation to work properly... */
 }
 
 </style>

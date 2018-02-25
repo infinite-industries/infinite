@@ -95,20 +95,6 @@ const AddBitlyLink = function(id, bitly_token, cb){
   })
 }
 
-
-
-
-router.post("/submit-new", function(req, res){
-
-  const form = new multiparty.Form();
-
-   form.parse(req, function(err, fields, files) {
-
-    // console.log(util.inspect({fields: fields, files: files}))
-    // console.log("---------- Object in ------ \n")
-    // console.log(JSON.parse(fields.event_data[0]))
-    // console.log("-------------")
-
 router.get('/', function(req, res) {
     // get all current verified events
     makeAPICall('get','events/current/verified/', {}, null, (err, apiRes) => {
@@ -121,6 +107,18 @@ router.get('/', function(req, res) {
         }
     });
 })
+
+
+router.post("/submit-new", function(req, res){
+
+  const form = new multiparty.Form();
+
+   form.parse(req, function(err, fields, files) {
+
+    // console.log(util.inspect({fields: fields, files: files}))
+    // console.log("---------- Object in ------ \n")
+    // console.log(JSON.parse(fields.event_data[0]))
+    // console.log("-------------")
 
     let EVENT = {}
 
@@ -170,7 +168,7 @@ router.get('/', function(req, res) {
       // Post as UNVERIFIED to DB and
       // Notify (via Slack) that this needs review
       function(data, callback){
-       EVENT.Notify()
+       // EVENT.Notify()
        callback(null)
       }
 
