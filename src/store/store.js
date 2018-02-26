@@ -13,6 +13,8 @@ export const store = new Vuex.Store({
     admin: Admin
   },
   state:{
+    current_event_id: null,
+    current_event: {},
     loaded_from_api: false,
     user_settings:{
       logged_in: false,
@@ -80,7 +82,7 @@ export const store = new Vuex.Store({
 
       state.lists_my[list_index].events.push(payload.event_data)
     },
-    POPULATE_CURRENT_LIST: (state, payload) =>{
+    POPULATE_CURRENT_LIST: (state, payload) => {
       state.current_list = payload
     },
 
@@ -96,6 +98,10 @@ export const store = new Vuex.Store({
       console.log(state.unverified_events.find(event => event.id === payload.id));
       state.all_local_events.push(state.unverified_events.find(event => event.id === payload.id))
       state.unverified_events = state.unverified_events.filter(event => event.id !== payload.id)
+    },
+    POPULATE_CURRENT_EVENT: (state, event) => {
+      //Vue.set(state.current_event, 'title', event.title)
+      state.current_event = event
     }
 
   },

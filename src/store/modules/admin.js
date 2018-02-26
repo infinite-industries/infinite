@@ -7,10 +7,20 @@ import ComponentEventBus from '../../helpers/ComponentEventBus.js'
 const getters = {
   GetUnverifiedEvents: (state, getters, rootState) =>{
     return rootState.unverified_events
+  },
+  GetCurrentEvent: (state, getters, rootState) => {
+    return rootState.current_event
   }
 }
 
 const actions = {
+  LoadCurrentEvent:(context, id) => {
+    Axios.get('/events/data/' + id)
+      .then(response => {
+        if (response.data.status === 'success')
+          context.commit('POPULATE_CURRENT_EVENT', response.data.event, { root: true })
+      })
+  },
   LoadUnverifiedEvents:(context, payload) => {
 
     Axios.get('/admin/list-unverified')

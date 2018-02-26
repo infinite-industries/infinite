@@ -26,15 +26,16 @@
     methods:{
       EditEvent: function(event_to_edit){
         const event_id = event_to_edit.id
+        this.$router.push({ path: `/admin-event-edit/${event_id}` })
 
-        this.$vlf.setItem(event_id, event_to_edit)
-          .then((result) => {
-            this.$router.push({ path: `/admin-event-edit/${event_id}` })
-          })
-          .catch((err) => {
-            window.alert("Unable to edit event! Holler at the bugs department on the contact page.")
-            console.log(err);
-          })
+        // this.$vlf.setItem(event_id, event_to_edit)
+        //   .then((result) => {
+        //     this.$router.push({ path: `/admin-event-edit/${event_id}` })
+        //   })
+        //   .catch((err) => {
+        //     window.alert("Unable to edit event! Holler at the bugs department on the contact page.")
+        //     console.log(err);
+        //   })
 
       },
       When: function(event_string){

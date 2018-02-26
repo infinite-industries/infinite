@@ -104,17 +104,17 @@
   export default {
       data: function(){
         return{
-          values_to_edit: {},
           dialog: false
         }
       },
       props:['id'],
-      mounted:function(){
-        this.$vlf.getItem(this.id)
-          .then((result) => {
-              console.log("got value:",result)
-              this.values_to_edit = result
-          })
+      mounted:function() {
+        this.$store.dispatch('LoadCurrentEvent', this.id)
+      },
+      computed: {
+        values_to_edit: function() {
+          return this.$store.getters.GetCurrentEvent
+        }
       },
       methods: {
         RouteTo: function(route_to_page){

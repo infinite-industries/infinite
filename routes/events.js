@@ -204,6 +204,20 @@ router.post("/promo-new", function(req, res) {
 
 })
 
+router.get('/data/:id', (req, res) => {
+  const id = req.params.id
+
+  console.info(`event data request for ${id}`)
+  makeAPICall('get', 'events/' + id, {}, null, (err, apiResp) => {
+    if (err) {
+      console.warn(`error getting event (${id}): ${err}`)
+      res.status(500).send('error getting event')
+    } else {
+      res.json(apiResp.data)
+    }
+  })
+})
+
 router.get("/:id", function(req, res) {
     const id = req.params.id;
 

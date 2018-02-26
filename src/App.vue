@@ -41,13 +41,11 @@ export default {
     // Clean up localForage if admin pannel deletes an event
     EventsFromStore.$on('CALENDAR_EVENT_DELETED', function(data){
       console.log("Delete the Event ", data.id);
-      this.$vlf.removeItem(data.id)
     })
 
     // Clean up localForage if admin verifies the event
     EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
       console.log("EVENT CENTRAL cleanup --- Remove Verified Event", data.id);
-      this.$vlf.removeItem(data.id)
     })
 
   },
