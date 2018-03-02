@@ -95,43 +95,33 @@ const AddBitlyLink = function(id, bitly_token, cb){
   })
 }
 
-router.get('/', function(req, res) {
-  // get all current verified events
-  makeAPICall('get','events/current/verified/', {}, null, (err, apiRes) => {
-    if (err) {
-      console.warn('error retrieving events:' + err);
-      res.status(500).json({"error": "error retrieving events: " + err})
-    } else {
-      console.info('success: ' + req.url);
-      res.json({"status":"success", "events": apiRes.data.events });
-    }
-  });
-})
 
 
 
 router.post("/submit-new", function(req, res){
-    const form = new multiparty.Form();
 
-    form.parse(req, function(err, fields, files) {
+  const form = new multiparty.Form();
+
+   form.parse(req, function(err, fields, files) {
 
     // console.log(util.inspect({fields: fields, files: files}))
     // console.log("---------- Object in ------ \n")
     // console.log(JSON.parse(fields.event_data[0]))
     // console.log("-------------")
 
+
     let EVENT = {}
 
     async.waterfall([
       // Begin creation of Event object
       function(callback){
-        let event = new Event(JSON.parse(fields.event_data[0]))
+        EVENT = new Event(JSON.parse(fields.event_data[0]))
 
-        callback(null, event)
+        callback(null)
       },
 
       // If social media ready image present, upload it to S3
-      function(event, callback){
+      function(callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('social_image'))){
           ManageUpload(EVENT.id, files.social_image[0].path, "social", function(err, data){
             EVENT.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+EVENT.id+"_social.jpg"
@@ -139,69 +129,66 @@ router.post("/submit-new", function(req, res){
           })
         }
         else {
-          callback(null, event)
+          callback(null, null)
         }
       },
 
       // If hero image present, upload it to S3
-      function(event, callback){
+      function(data, callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('image'))){
-          ManageUpload(event.id, files.image[0].path, "hero", function(err, data){
-            event.image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/"+event.id+".jpg"
-            callback(err, event)
+          ManageUpload(EVENT.id, files.image[0].path, "hero", function(err, data){
+            EVENT.image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/"+EVENT.id+".jpg"
+            callback(err, data)
           })
         }
         else {
-          callback(null, event)
+          callback(null, null)
         }
       },
 
       // Create and add bitly link
-      function(event, callback){
-        AddBitlyLink(event.id, process.env.BITLY_TOKEN, function(err, data){
+      function(data, callback){
+        AddBitlyLink(EVENT.id, process.env.BITLY_TOKEN, function(err, data){
           // console.log(data)
-          EVENT.bitly_link = data;
-
-          callback(err, event)
+          EVENT.bitly_link = data
+          callback(err, data)
         })
       },
-
-      // // submit to the api
-      // function(event, callback) {
-      //   console.info('sending new un-verified event to the api')
-      //   makeAPICall('post', 'events/', { event: event }, process.env.API_KEY, (err, apiResp) => {
-      //     if (err)
-      //       return callback(err)
-      //     if (apiResp.data.status !== 'success')
-      //       return callback('failure returned from api: ' + apiResp.data.status)
-      //
-      //     console.info('api received the event')
-      //     callback(null, event, apiResp.data.id)
-      //   })
-      // },
 
       // Post as UNVERIFIED to DB and
       // Notify (via Slack) that this needs review
       function(data, callback){
 
 
-       EVENT.Notify()
-       callback(null)
+        console.info('sending new un-verified event to the api')
+        makeAPICall('post', 'events/', { event: EVENT }, process.env.API_KEY, (err, apiResp) => {
+          if (err)
+            return callback(err)
+          if (apiResp.data.status !== 'success')
+            return callback('failure returned from api: ' + apiResp.data.status)
+
+          console.info('api received the event')
+
+          EVENT.Notify()
+          callback(null, apiResp.data.id)
+        })
+
+
+
+       //callback(null)
       }
-    ], function(err, event){
+
+    ], function(err, event_id){
           // throw me an error
             if(err){
-              // is there a way to notify in case of failure?
               console.log(err)
               res.json({"status":"failure", "reason": err})
-            } else {
-              // Post as UNVERIFIED to DB and
-              // Notify (via Slack) that this needs review
-              event.Notify()
+            }
+            else{
             // Generate a quick report back to the client
             // Prep data for additional postings by venues
-              console.log(event)
-              res.json({status:"success", data: event})
+              console.log(EVENT)
+              res.json({status:"success", data: EVENT})
             }
           }
     )
@@ -249,26 +236,12 @@ router.get("/:id", function(req, res) {
 
 router.post("/add", function(req,res){
   console.log("Data recieved: list - "+req.body.list_id+" event - "+req.body.event_id);
-
-	const listID = req.body.list_id;
-	const eventID = req.body.event_id;
-
-	console.log("Data received: list - "+ req.body.list_id+" event - " + req.body.event_id);
-
-	makeAPICall('put', 'event-lists/addEvent/' + listID +  '/' + eventID, {}, process.env.API_KEY, (err, apiResp) => {
-		res.json(apiResp.data);
-	});
+  res.json({"status":"success", "id":req.body.event_id})
 })
 
 router.post("/remove", function(req,res){
-    const listID = req.body.list_id;
-    const eventID = req.body.event_id;
-
-    console.log("Data received: list - "+ req.body.list_id+" event - " + req.body.event_id);
-
-    makeAPICall('put', 'event-lists/removeEvent/' + listID +  '/' + eventID, {}, process.env.API_KEY, (err, apiResp) => {
-		res.json(apiResp.data);
-    });
+  console.log("Data recieved: list - "+req.body.list_id+" event - "+req.body.event_id);
+  res.json({"status":"success", "id":req.body.event_id})
 })
 
 module.exports = router
