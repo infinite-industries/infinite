@@ -160,6 +160,7 @@ router.post("/submit-new", function(req, res){
       function(data, callback){
         AddBitlyLink(EVENT.id, process.env.BITLY_TOKEN, function(err, data){
           // console.log(data)
+          EVENT.bitly_link = data;
 
           callback(err, data)
         })
@@ -168,7 +169,7 @@ router.post("/submit-new", function(req, res){
       // Post as UNVERIFIED to DB and
       // Notify (via Slack) that this needs review
       function(data, callback){
-       // EVENT.Notify()
+       EVENT.Notify()
        callback(null)
       }
 

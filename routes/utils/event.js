@@ -34,8 +34,8 @@ const Event = function(init_obj){
   if(init_obj.hasOwnProperty('map_link')){
     this.map_link = init_obj.map_link
   }
-  if(init_obj.hasOwnProperty('venues')){
-    this.venues = init_obj.venues
+  if(init_obj.hasOwnProperty('venue')){
+    this.venues = [init_obj.venue]
   }
 
   // Organizer info -- will add more for venue submitting own event case
