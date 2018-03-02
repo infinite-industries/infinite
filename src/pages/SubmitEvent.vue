@@ -440,12 +440,28 @@
         this.promoHTML += `<p><b>Link for More Info: </b><a href="${event.website_link}">${event.website_link}</a></p>`;
         this.promoHTML += `<p><b>Organizer Contact: </b>${event.organizer_contact}</p>`;
 
+        Axios.post('/events/submit-new', formData)
+          .then(function(_response) {
+            console.log(_response.data)
+            window.alert("Event submitted. Thank you! It should be out of review and on our site within 24 hours. Usually, much faster :)");
+          })
+          .catch(function(error) {
+            console.log(error)
+          })
+      },
+      selectVenue: function(venue) {
+        console.log(venue);
+        this.new_event.venue = venue.id;
       }
     },
     mounted: function() {
 
       Axios.get('/venues').then( response => {
         this.venues = response.data.venues;
+<<<<<<< HEAD
+=======
+        console.log(this.venues);
+>>>>>>> add-event
       })
       .catch(function(error) {
         console.log(error)
