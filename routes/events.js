@@ -95,7 +95,18 @@ const AddBitlyLink = function(id, bitly_token, cb){
   })
 }
 
-
+router.get('/', function(req, res) {
+  // get all current verified events
+  makeAPICall('get','events/current/verified/', {}, null, (err, apiRes) => {
+    if (err) {
+      console.warn('error retrieving events:' + err);
+      res.status(500).json({"error": "error retrieving events: " + err})
+    } else {
+      console.info('success: ' + req.url);
+      res.json({"status":"success", "events": apiRes.data.events });
+    }
+  });
+})
 
 
 router.post("/submit-new", function(req, res){
@@ -236,12 +247,26 @@ router.get("/:id", function(req, res) {
 
 router.post("/add", function(req,res){
   console.log("Data recieved: list - "+req.body.list_id+" event - "+req.body.event_id);
-  res.json({"status":"success", "id":req.body.event_id})
+
+	const listID = req.body.list_id;
+	const eventID = req.body.event_id;
+
+	console.log("Data received: list - "+ req.body.list_id+" event - " + req.body.event_id);
+
+	makeAPICall('put', 'event-lists/addEvent/' + listID +  '/' + eventID, {}, process.env.API_KEY, (err, apiResp) => {
+		res.json(apiResp.data);
+	});
 })
 
 router.post("/remove", function(req,res){
-  console.log("Data recieved: list - "+req.body.list_id+" event - "+req.body.event_id);
-  res.json({"status":"success", "id":req.body.event_id})
+    const listID = req.body.list_id;
+    const eventID = req.body.event_id;
+
+    console.log("Data received: list - "+ req.body.list_id+" event - " + req.body.event_id);
+
+    makeAPICall('put', 'event-lists/removeEvent/' + listID +  '/' + eventID, {}, process.env.API_KEY, (err, apiResp) => {
+		res.json(apiResp.data);
+    });
 })
 
 module.exports = router

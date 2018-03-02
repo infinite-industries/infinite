@@ -31,9 +31,9 @@
 
        }
      },
-        mounted: function(){
-         console.log(this.lists)
-        },
+     mounted: function(){
+      console.log(this.lists)
+    },
      methods: {
        ShowIfType: function(type){
          return this.type===type ? true : false

@@ -221,6 +221,7 @@ export const store = new Vuex.Store({
         .then(function (_response) {
           // console.log("data from server: ",response.data.events);
           if(_response.data.status === "success"){
+            console.log(_response.data)
             context.commit('POPULATE_CURRENT_LIST', _response.data.eventList)
           }
           else{

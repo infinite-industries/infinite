@@ -47,17 +47,12 @@ import EventCard from './EventCard.vue'
 
   export default {
     name:'EventsList',
-    props: ['type', 'standalone'],
+    props: ['type', 'standalone','id'],
     data: function() {
       return {
         dialog: false,
         active_event:{},
       }
-    },
-    mounted: function(){
-      console.log("LIST ID:",this.id)
-      console.log("load state: ", this.$store.state.loaded_from_api);
-
     },
     methods:{
       CallEventCard: function(){
