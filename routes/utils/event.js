@@ -78,12 +78,12 @@ const Event = function(init_obj){
     }
   }
 
-  if(init_obj.hasOwnProperty('website')){
-    if(init_obj.website === ""){
-      this.website = "none"
+  if(init_obj.hasOwnProperty('website_link')){
+    if(init_obj.website_link === ""){
+      this.website_link = "none"
     }
     else{
-      this.website = init_obj.website
+      this.website_link = init_obj.website_link
     }
   }
 
@@ -97,7 +97,7 @@ Event.prototype.Notify = function(){
         "when":"${this.when}",
         "time_start":"${this.time_start}",
         "time_end": "${this.time_end}",
-        "website": "${this.website}",
+        "website_link": "${this.website_link}",
         "image":"${this.image}",
         "social_image":"${this.social_image}",
         "venues":["${this.venues}"],

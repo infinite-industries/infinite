@@ -32,7 +32,7 @@ export default {
     checkForFocusOutHour: function(e) {
       this.invalid_hour = false;
       if (this.hour.length >= 2) {
-        if (this.hour >= 0 && this.hour <= 12) {
+        if (this.hour >= 1 && this.hour <= 12) {
           this.$refs.minInput.focus();
         } else {
           this.invalid_hour = true;

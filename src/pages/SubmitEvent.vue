@@ -81,11 +81,14 @@
       <v-flex xs12 sm3>
         <h3 class="form-label">Select a Venue:</h3>
       </v-flex>
-      <v-flex xs7 sm6>
+      <v-flex xs7 sm5>
         <venue-picker :venues="venues" @selectVenue="selectVenue"></venue-picker>
       </v-flex>
-      <v-flex xs5 sm2 style="padding-top: 6px">
-        <v-btn color="info" @click="toggleVenueDropdown()">Add Venue</v-btn>
+      <v-flex xs1 sm1>
+        <p style="margin-top: 20px; text-align: center;">OR</p>
+      </v-flex>
+      <v-flex xs4 sm2 style="margin-top: 6px">
+        <v-btn color="info" @click="toggleVenueDropdown()">Add a Venue</v-btn>
       </v-flex>
     </v-layout>
 
@@ -156,10 +159,13 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row wrap >
-        <div style="margin: 0px auto 0px auto">
-          <v-btn color="success">Add Venue</v-btn>
-        </div>
+      <v-layout row wrap>
+        <v-flex xs12 style="text-align: center">
+          <v-btn color="success" @click="submitNewVenue()">Add Venue</v-btn>
+        </v-flex>
+        <v-flex xs12 style="text-align: center">
+          <img v-if="showVenueLoadingSpinner" class="loading-spinner" src="images/spinner.gif"></img>
+        </v-flex>
       </v-layout>
 
     </v-card>
@@ -205,7 +211,7 @@
     </v-layout>
 
     <h3>Full Event Description:</h3>
-    <vue-editor v-model="new_event.description"></vue-editor>
+    <vue-editor id="vue-editor1" v-model="new_event.description"></vue-editor>
 
     <v-layout row>
       <v-flex xs12>
@@ -256,17 +262,24 @@
     </v-layout>
 
     <!-- SUBMIT BUTTON -->
-    <v-layout row>
-      <div class="text-xs-center">
-        <v-btn color="primary" class="deep-purple submission-btn" @click="UploadEvent">Submit Event</v-btn>
-        <v-btn color="primary" class="deep-purple submission-btn" @click="showPromoTools = !showPromoTools">toggle</v-btn>
-      </div>
+    <v-layout row wrap>
+      <v-flex xs12>
+        <div class="text-xs-center">
+          <v-btn color="primary" class="deep-purple submission-btn" @click="UploadEvent">Submit Event</v-btn>
+          <!-- <v-btn color="primary" class="deep-purple submission-btn" @click="showPromoTools = !showPromoTools">toggle</v-btn> -->
+        </div>
+      </v-flex>
+      <v-flex xs12>
+        <div class="col-12 text-xs-center">
+          <img v-if="showEventLoadingSpinner" class="loading-spinner" src="images/spinner.gif"></img>
+        </div>
+      </v-flex>
     </v-layout>
 
     <!-- Promo tools -->
     <div class="collapsible-content" :class="{'expanded': showPromoTools}" style="margin-top: 10px">
       <h1>Event Promotion Tools:</h1>
-      <vue-editor v-model="promoHTML"></vue-editor>
+      <vue-editor id="vue-editor2" v-model="promoHTML"></vue-editor>
       <p>
         Note: Many email servers treat automated email as spam. For the best results simply copy
         and paste the text above into your own email. Email sender forms below are still experimental but we
@@ -324,6 +337,8 @@
           organizers:"",
           admission_fee:"none",
           venue:"",
+          venue_name: "",
+          address: "",
           brief_description:"",
           description:"",
           website_link:"",
@@ -345,6 +360,8 @@
         },
         content: "",
         venues: [],
+        showEventLoadingSpinner: false,
+        showVenueLoadingSpinner: false,
         send_summary: false,
         send_summary_to: "",
         send_summary_others: false,
@@ -377,10 +394,13 @@
         formData.append('image', document.getElementById('event-image').files[0])
         formData.append('social_image', document.getElementById('event-social-image').files[0])
 
+        this.showEventLoadingSpinner = true;
+
         Axios.post('/events/submit-new', formData).then( response => {
-            console.log(response.data)
+            this.showEventLoadingSpinner = false;
             if (response.data.status == "success") {
               this.showPromoTools = true;
+              this.parseEventToHTML(response.data.data);
             }
             // window.alert("Event submitted. Thank you! It should be out of review and on our site within 24 hours. Usually, much faster :)");
           })
@@ -388,9 +408,20 @@
             console.log(error)
           })
       },
+      submitNewVenue: function() {
+        this.showVenueLoadingSpinner = true;
+        Axios.post('/venues/submit-new', this.new_venue).then( response => {
+          this.showVenueLoadingSpinner = false;
+          console.log(response);
+        }).catch( err => {
+          console.log(err);
+        })
+      },
       selectVenue: function(venue) {
         console.log(venue);
         this.new_event.venue = venue.id;
+        this.new_event.venue_name = venue.name;
+        this.new_event.address = venue.address;
       },
       toggleVenueDropdown: function() {
         this.showAddVenue = !this.showAddVenue;
@@ -400,9 +431,15 @@
       },
       // for use in promo tools. Takes an event object and makes it into pretty html
       parseEventToHTML: function(event) {
-        let html = "<h1>"
-        html += event.title;
-        // TODO
+        console.log(event);
+        this.promoHTML = `<h2>${event.title}</h2>`;
+        this.promoHTML += `<p><b>Description: </b>${event.brief_description}</p>`;
+        this.promoHTML += `<p><b>Location: </b>${event.address}</p>`;
+        this.promoHTML += `<p><b>Start Time: </b>${event.time_start}</p>`;
+        this.promoHTML += `<p><b>End Time: </b>${event.time_end}</p>`;
+        this.promoHTML += `<p><b>Link for More Info: </b><a href="${event.website_link}">${event.website_link}</a></p>`;
+        this.promoHTML += `<p><b>Organizer Contact: </b>${event.organizer_contact}</p>`;
+
       }
     },
     mounted: function() {
@@ -497,8 +534,14 @@
 }
 .expanded {
   height: auto;
-  padding-bottom: 20px;
+  padding: 12px;
   max-height: 800px; /* <-- this isn't ideal, need to approximate size of dropdown content for animation to work properly... */
+}
+
+.loading-spinner {
+  text-align: center;
+  height: 50px;
+  vertical-align: top;
 }
 
 </style>
