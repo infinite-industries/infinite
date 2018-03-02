@@ -1,5 +1,6 @@
 const uuidv4 = require('uuid/v4')
 const slack = require('./slackNotify')
+const moment = require('moment')
 
 const Event = function(init_obj){
 
@@ -19,12 +20,11 @@ const Event = function(init_obj){
     this.admission_fee = init_obj.admission_fee
   }
 
+  this.date = init_obj.date
   this.time_start = init_obj.time_start
-  this.time_end= init_obj.time_end
+  this.time_end = init_obj.time_end
 
-  // TODO CHANGE THIS!!!!!!! as soon as time input is complete
-  this.when = "Verbose time description"  // a verbose description of time and date of the event
-  // -------------------------
+  this.when = moment(this.date).format('dddd, MMMM Do, YYYY') +" <br /> "+ moment(this.time_start).format('h:mma') +" - "+ moment(this.time_end).format('h:mma')
 
 
   //venue specific attributes
@@ -48,7 +48,6 @@ const Event = function(init_obj){
   else{
     this.organizer_contact = "no organizers :("
   }
-
 
   // Optional info
   if(init_obj.hasOwnProperty('ticket_link')){

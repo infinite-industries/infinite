@@ -133,9 +133,9 @@ router.post("/submit-new", function(req, res){
       // If social media ready image present, upload it to S3
       function(event, callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('social_image'))){
-          ManageUpload(event.id, files.social_image[0].path, "social", function(err, data){
-            event.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+event.id+"_social.jpg"
-            callback(err, event)
+          ManageUpload(EVENT.id, files.social_image[0].path, "social", function(err, data){
+            EVENT.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+EVENT.id+"_social.jpg"
+            callback(err, data)
           })
         }
         else {
@@ -166,18 +166,27 @@ router.post("/submit-new", function(req, res){
         })
       },
 
-      // submit to the api
-      function(event, callback) {
-        console.info('sending new un-verified event to the api')
-        makeAPICall('post', 'events/', { event: event }, process.env.API_KEY, (err, apiResp) => {
-          if (err)
-            return callback(err)
-          if (apiResp.data.status !== 'success')
-            return callback('failure returned from api: ' + apiResp.data.status)
+      // // submit to the api
+      // function(event, callback) {
+      //   console.info('sending new un-verified event to the api')
+      //   makeAPICall('post', 'events/', { event: event }, process.env.API_KEY, (err, apiResp) => {
+      //     if (err)
+      //       return callback(err)
+      //     if (apiResp.data.status !== 'success')
+      //       return callback('failure returned from api: ' + apiResp.data.status)
+      //
+      //     console.info('api received the event')
+      //     callback(null, event, apiResp.data.id)
+      //   })
+      // },
 
-          console.info('api received the event')
-          callback(null, event, apiResp.data.id)
-        })
+      // Post as UNVERIFIED to DB and
+      // Notify (via Slack) that this needs review
+      function(data, callback){
+
+
+       EVENT.Notify()
+       callback(null)
       }
     ], function(err, event){
           // throw me an error
