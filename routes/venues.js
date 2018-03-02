@@ -19,4 +19,13 @@ router.get('/', (req, res) => {
   })
 });
 
+router.post('/submit-new', (req, res) => {
+  let new_venue = req.body;
+  new_venue.approved = false;
+  console.log(new_venue);
+  setTimeout( () => {
+    res.json({ success: true });
+  }, 1000);
+})
+
 module.exports = router;

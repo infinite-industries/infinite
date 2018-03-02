@@ -120,6 +120,8 @@ router.post("/submit-new", function(req, res){
     // console.log(JSON.parse(fields.event_data[0]))
     // console.log("-------------")
 
+    let EVENT = {}
+
     async.waterfall([
       // Begin creation of Event object
       function(callback){
@@ -158,6 +160,7 @@ router.post("/submit-new", function(req, res){
       function(event, callback){
         AddBitlyLink(event.id, process.env.BITLY_TOKEN, function(err, data){
           // console.log(data)
+          EVENT.bitly_link = data;
 
           callback(err, event)
         })

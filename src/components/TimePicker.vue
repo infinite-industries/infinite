@@ -1,9 +1,9 @@
 <template>
   <div>
     <span class="label">{{ label }}</span>
-    <input ref="hourInput" v-model="hour" type="number" min="0" max="23" placeholder="hh" @keyup="checkForFocusOutHour" :class="{ 'invalid' : this.invalid_hour }"></input>
+    <input ref="hourInput" v-model="hour" type="text" min="0" max="23" placeholder="hh" @keyup="checkForFocusOutHour" :class="{ 'invalid' : this.invalid_hour }" maxlength="2"></input>
     <span>:</span>
-    <input ref="minInput" v-model="minute" type="number" min="0" max="59" placeholder="mm" @keyup="checkForFocusOutMin" :class="{ 'invalid' : this.invalid_min }"></input>
+    <input ref="minInput" v-model="minute" type="text" min="0" max="59" placeholder="mm" @keyup="checkForFocusOutMin" :class="{ 'invalid' : this.invalid_min }" maxlength="2"></input>
     <select ref="ampm" name="ampm" v-model="ampm">
       <option value="am">AM</option>
       <option value="pm">PM</option>
@@ -32,7 +32,7 @@ export default {
     checkForFocusOutHour: function(e) {
       this.invalid_hour = false;
       if (this.hour.length >= 2) {
-        if (this.hour >= 0 && this.hour <= 12) {
+        if (this.hour >= 1 && this.hour <= 12) {
           this.$refs.minInput.focus();
         } else {
           this.invalid_hour = true;
