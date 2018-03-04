@@ -146,8 +146,12 @@ export const store = new Vuex.Store({
       Axios.post('/events/add',{event_id:payload.event_data.id, list_id:payload.list_id})
         .then(function (_response) {
           if(_response.data.status === "success"){
-             context.commit('PUSH_NEW_EVENT_TO_MY_LIST', {list_id:payload.list_id, event_data:payload.event_data})
+            context.commit('PUSH_NEW_EVENT_TO_MY_LIST', {list_id:payload.list_id, event_data:payload.event_data})
             // need to get back the full list
+
+            ComponentEventBus.$emit('SHOW_INFO', {
+              message: "Added a new event to your list."
+            })
           }
           else{
             ComponentEventBus.$emit('SHOW_ALERT', {
@@ -169,6 +173,10 @@ export const store = new Vuex.Store({
         .then(function (_response) {
           if(_response.data.status === "success"){
             context.commit('REMOVE_FROM_CURRENT_LIST', _response.data)
+
+            ComponentEventBus.$emit('SHOW_INFO', {
+              message: "Event taken off your list."
+            })
           }
           else{
             ComponentEventBus.$emit('SHOW_ALERT', {
