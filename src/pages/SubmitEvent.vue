@@ -338,6 +338,7 @@
           admission_fee:"none",
           venue:"",
           venue_name: "",
+          venue_id: "",
           address: "",
           brief_description:"",
           description:"",
@@ -389,7 +390,10 @@
 
         const formData = new FormData()
 
-        formData.append('event_data', JSON.stringify(this.new_event))
+        formData.append('event_data', JSON.stringify({
+          ... this.new_event,
+          organizers: this.new_event.organizers ? this.new_event.organizers.split(',') : []
+        }))
 
         formData.append('image', document.getElementById('event-image').files[0])
         formData.append('social_image', document.getElementById('event-social-image').files[0])
@@ -443,9 +447,13 @@
       },
       selectVenue: function(venue) {
         console.log(venue);
+<<<<<<< HEAD
         this.new_event.venue = venue.id;
         this.new_event.venue_name = venue.name;
         this.new_event.address = venue.address;
+=======
+        this.new_event.venue_id = venue.id;
+>>>>>>> caw/postgres
       }
     },
     mounted: function() {

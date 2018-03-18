@@ -27,7 +27,7 @@
       <div>
         <h3 class="headline mb-0">{{event.title}}</h3>
         <div class="event-venue">
-          {{event.venues[0]}}
+          {{event.venue}}
         </div>
         <div class="event-date" v-html="event.when"></div>
         <div>{{trimmedDescription}}</div>

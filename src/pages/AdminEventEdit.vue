@@ -73,7 +73,7 @@
           </tr>
           <tr>
             <td>Event Website:</td>
-            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.website"></td>
+            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.website_link"></td>
           </tr>
           <tr>
             <td>Additional Web Links:</td>

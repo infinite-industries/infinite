@@ -70,7 +70,7 @@
         <div class="col s10">
           <h1>{{event.title}}</h1>
           <h3>{{event.when | safe}}</h3>
-          <h3>{{event.venues[0]}}</h3>
+          <h3>{{event.venue.name}}</h3>
         </div>
         <div class="col s2 event-close">
           <a href="javascript:goBack()"><i class="medium material-icons">close</i></a>
@@ -167,10 +167,10 @@
         </div>
       </div>
 
-      {% if event.hasOwnProperty('website') and event.website!="none" %}
+      {% if event.hasOwnProperty('website_link') and event.website_link!="none" %}
         <div class="row">
           <div class="col s12">
-            <a href="{{event.website}}" target="_new">Event Website</a>
+            <a href="{{event.website_link}}" target="_new">Event Website</a>
           </div>
         </div>
       {% endif %}
