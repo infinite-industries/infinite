@@ -423,9 +423,8 @@
       },
       selectVenue: function(venue) {
         console.log(venue);
-        this.new_event.venue = venue.id;
-        this.new_event.venue_name = venue.name;
-        this.new_event.address = venue.address;
+        this.new_event.venue_id = venue.id;
+
       },
       toggleVenueDropdown: function() {
         this.showAddVenue = !this.showAddVenue;
@@ -444,16 +443,6 @@
         this.promoHTML += `<p><b>Link for More Info: </b><a href="${event.website_link}">${event.website_link}</a></p>`;
         this.promoHTML += `<p><b>Organizer Contact: </b>${event.organizer_contact}</p>`;
 
-      },
-      selectVenue: function(venue) {
-        console.log(venue);
-<<<<<<< HEAD
-        this.new_event.venue = venue.id;
-        this.new_event.venue_name = venue.name;
-        this.new_event.address = venue.address;
-=======
-        this.new_event.venue_id = venue.id;
->>>>>>> caw/postgres
       }
     },
     mounted: function() {
