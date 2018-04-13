@@ -120,7 +120,8 @@ Event.prototype.Notify = function(){
         "tags":["not-yet-implemented"]
       \}`;
 
-      slack.Notify("test","Review Me. Copy Me. Paste Me. Deploy Me." + event_payload + "\n Contact: "+this.organizer_contact);
+      let slack_channel = process.env.ENV == 'prod' ? 'submission' : 'test'
+      slack.Notify(slack_channel,"Review Me. Copy Me. Paste Me. Deploy Me." + event_payload + "\n Contact: "+this.organizer_contact);
 }
 
 
