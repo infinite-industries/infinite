@@ -54,11 +54,15 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
-  <link href="https://addtocalendar.com/atc/1.5/atc-style-blue.css" rel="stylesheet" type="text/css">
   <script src="https://use.fontawesome.com/9929e77eb0.js"></script>
+  <!-- font awesome icons -->
+  <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+  <script
+			  src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+			  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
+			  crossorigin="anonymous"></script>
 
   <link href="/css/style.css" rel="stylesheet">
   <link href="/css/event-page.css" rel="stylesheet">
@@ -69,16 +73,11 @@
       <div class="row">
         <div class="col s10">
           <h1>{{event.title}}</h1>
-          <h3>{{event.when | safe}}</h3>
-          <h3>{{event.venue.name}}</h3>
+          <h3>{{event.when_date}}<br>{{event.when_time}}</h3>
+          <h3>{{event.venues[0]}}</h3>
         </div>
         <div class="col s2 event-close">
-          <a href="javascript:goBack()"><i class="medium material-icons">close</i></a>
-          <script>
-            function goBack() {
-              window.history.go(-1);
-            }
-          </script>
+          <a href="{{site_url}}"><i class="medium material-icons">close</i></a>
         </div>
       </div>
       <div class="row">
@@ -88,78 +87,144 @@
       </div>
     </div>
     <div class="container event-description">
-      <div class="row">
-        <div class="col m12 l6 social-and-link">
-          <span class="social-media-links">
-            {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="none" %}
-              <div class="fb-share-button" data-href="https://infinite.industries/event/{{event.id}}" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{event.id}}">Share</a></div>
-            {% endif %}
-            <a href="https://twitter.com/intent/tweet?text=Check%20out%20this%20event%20" class="twitter-share-button" data-show-count="false" data-size="large">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-
-            {% if event.hasOwnProperty('bitly_link') and event.bitly_link!="none" %}
-            <button class="btn" data-clipboard-text="{{event.bitly_link}}" style="padding-right:18px"><i class="fa fa-link fa-3x" aria-hidden="true"></i>Copy Link</button>
-            {% endif %}
-
-          </span>
+      <div class="ii-event-actions">
+        <div class="ii-social-button" onclick="fbShare()" style="background-color: rgb(66, 102, 178)">
+          <i class="fab fa-facebook-square ii-social-icon"></i>
+          <span>Share</span>
         </div>
-        <div class="col l1 hide-on-med-and-down"></div>
-        <div class="col m12 l5 map-and-calendar">
-          <div class="infinite-button infinite-button-blue">
-            <a href="{{event.map_link}}" target="_new">Event Map</a>
-          </div>
-          <div class="infinite-dropdown">
-            <div class="infinite-button infinite-button-white dropbtn">
-              <a href="javascript:toggleDropdown()">Download Event</a>
-            </div>
-            <div id="calDropdown" class="infinite-dropdown-content">
-              <a href='javascript:addToCalendar(0)'>iCal</a>
-              <a href='javascript:addToCalendar(0)'>Outlook</a>
-              <a href='javascript:addToCalendar(1)'>Google Calendar</a>
-            </div>
-          </div>
-          <script>
-          function toggleDropdown() {
-            document.getElementById("calDropdown").classList.toggle("show");
-          }
-          //close dropdown(s) when you click outside
-          window.onclick = function(event) {
-            if (!event.target.matches('.dropbtn')) {
+        <div class="ii-social-button" onclick="twitterShare()" style="background-color: rgb(31, 149, 224)">
+          <i class="fab fa-twitter ii-social-icon"></i>
+          <span>Tweet</span>
+        </div>
+        {% if event.hasOwnProperty('bitly_link') and event.bitly_link!="none" %}
+        <div class="ii-social-button ii-copy-btn" data-clipboard-text="{{event.bitly_link}}" onclick="copyLink()" style="background-color: rgb(38, 166, 153)">
+          <i class="fas fa-link ii-social-icon"></i>
+          <span>Link</span>
+        </div>
+        {% endif %}
+        {% if event.hasOwnProperty('map_link') and event.map_link!="none" %}
+        <div class="ii-social-button" onclick="mapLink()" style="background-color: rgb(126, 66, 179)">
+          <i class="fas fa-map-marker-alt ii-social-icon"></i>
+          <span>Directions</span>
+        </div>
+        {% endif %}
 
-              var dropdowns = document.getElementsByClassName("infinite-dropdown-content");
-              var i;
-              for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                  openDropdown.classList.remove('show');
-                }
+        <div class="infinite-dropdown ii-social-button dropbtn" onclick="toggleDropdown()" style="background-color: rgb(38, 186, 71)">
+          <i class="fas fa-calendar-alt ii-social-icon"></i>
+          <span>Download</span>
+          <div id="calDropdown" class="infinite-dropdown-content">
+            <a href='javascript:addToCalendar(0)'>iCal</a>
+            <a href='javascript:addToCalendar(1)'>Outlook</a>
+            <a href='javascript:addToCalendar(2)'>Google Calendar</a>
+          </div>
+        </div>
+
+        <script>
+          function fbShare() {
+            InfiniteAnalytics('{{ id }}', 'facebook_share', '{{ site_url }}')
+            window.open("https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{event.id}}");
+          }
+          function twitterShare() {
+            InfiniteAnalytics('{{ id }}', 'twitter_share', '{{ site_url }}')
+            window.open("https://twitter.com/intent/tweet?text=Check%20out%20this%20event:&url={{ event.bitly_link }}");
+          }
+          function copyLink() {
+            InfiniteAnalytics('{{ id }}', 'bitly_view', '{{ site_url }}')
+          }
+          function mapLink() {
+            InfiniteAnalytics('{{ id }}', 'map_view', '{{ site_url }}')
+            window.open("{{event.map_link}}");
+          }
+
+          var clipboard = new Clipboard('.ii-copy-btn');
+          clipboard.on('success', function(e) {
+              // console.info('Action:', e.action);
+              console.info('URL:', e.text);
+              window.alert("Copied the URL. Now you can paste it into emails, tweets or any other announcements. Enjoy!")
+              // console.info('Trigger:', e.trigger);
+
+          });
+          clipboard.on('error', function(e) {
+              console.error('Action:', e.action);
+              console.error('Trigger:', e.trigger);
+          });
+        </script>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            InfiniteAnalytics("{{id}}", "load_view", "", "{{site_url}}")
+            document.getElementById('facfb-share-buttonebook_share').addEventListener('click', function() {
+              //console.log('!!! foo')
+            })
+        })
+
+        function InfiniteAnalytics(id, type, calType, site_url) {
+          var event_obj = {
+            "time_stamp": new Date(),
+            "event_id" : id,
+            "action_type": type,
+            "view_type": "expanded",
+            "calendar_type": calType,
+            "user_agent": navigator.userAgent
+          }
+          var api_url = (site_url || '') + '/analytics'
+          console.log("saved to analytics db")
+          axios.post(api_url, event_obj)
+          .then(function (_response) {})
+          .catch(function (error) {
+            console.log(error);
+          });
+        }
+
+        function toggleDropdown() {
+          document.getElementById("calDropdown").classList.toggle("show");
+        }
+        //close dropdown(s) when you click outside
+        window.onclick = function(event) {
+          // if you clicked on something that isn't the dropdown button (or a child of it), close the dropdown
+          if (!(event.target.closest('.dropbtn') || event.target.classList.contains('dropbtn')) ) {
+
+            var dropdowns = document.getElementsByClassName("infinite-dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+              var openDropdown = dropdowns[i];
+              if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
               }
             }
           }
-          function addToCalendar(type) {
-            const title = "{{event.title}}";
-            const desc = "{{event.brief_description}}";
-            const location = "{{event.address}}";
-            const time_start = "{{event.time_start}}";
-            const time_end = "{{event.time_end}}";
-            if (type == 0) { // .ics
-              window.open(`/calendar?title=${encodeURIComponent(title)}&description=${encodeURIComponent(desc)}&location=${encodeURIComponent(location)}&time_start=${encodeURIComponent(time_start)}&time_end=${encodeURIComponent(time_end)}`);
-            } else { // google cal
-              const time_start_formatted = moment(time_start).format('YYYYMMDDTHHmmss');
-              const time_end_formatted = moment(time_end).format('YYYYMMDDTHHmmss');
-              window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(desc)}&location=${encodeURIComponent(location)}`);
+        }
+        function addToCalendar(type) {
+          const title = "{{event.title}}";
+          const desc = "{{event.brief_description}}";
+          const location = "{{event.address}}";
+          const time_start = "{{event.time_start}}";
+          const time_end = "{{event.time_end}}";
+          if (type == 0 || type == 1) { // .ics
+            if (type == 0){
+              InfiniteAnalytics("{{id}}", "calendar_add", "iCal", "{{site_url}}");
+            } else {
+              InfiniteAnalytics("{{id}}", "calendar_add", "Outlook", "{{site_url}}");
             }
+            window.open(`/calendar?title=${encodeURIComponent(title)}&description=${encodeURIComponent(desc)}&location=${encodeURIComponent(location)}&time_start=${encodeURIComponent(time_start)}&time_end=${encodeURIComponent(time_end)}`);
+          } else { // google cal
+            InfiniteAnalytics("{{id}}", "calendar_add", "Google Calendar", "{{site_url}}");
+            const time_start_formatted = moment(time_start).format('YYYYMMDDTHHmmss');
+            const time_end_formatted = moment(time_end).format('YYYYMMDDTHHmmss');
+            window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(desc)}&location=${encodeURIComponent(location)}`);
           }
-          </script>
-        </div>
+        }
+        </script>
       </div>
 
       {% if event.hasOwnProperty('admission_fee') and event.admission_fee!="none" %}
-       <div class="row">
-         <div class="col s12">
-           <em>Admission Fee: {{event.admission_fee}}</em>
-         </div>
-       </div>
-     {% endif %}
+        <div class="row">
+          <div class="col s12">
+            <em>Admission Fee: {{event.admission_fee}}</em>
+          </div>
+        </div>
+      {% endif %}
+
 
       <div class="row">
         <div class="col s12">
@@ -167,10 +232,11 @@
         </div>
       </div>
 
-      {% if event.hasOwnProperty('website_link') and event.website_link!="none" %}
+
+      {% if event.hasOwnProperty('website') and event.website!="none" %}
         <div class="row">
           <div class="col s12">
-            <a href="{{event.website_link}}" target="_new">Event Website</a>
+            <a href="{{event.website}}" onclick="InfiniteAnalytics('{{ id }}', 'website_view', '', '{{ site_url }}')" target="_new">Event Website</a>
           </div>
         </div>
       {% endif %}
@@ -178,7 +244,7 @@
       {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="none" %}
         <div class="row">
           <div class="col s12">
-            <a href="{{event.fb_event_link}}" target="_new">Facebook Event Link</a>
+            <a href="{{ event.fb_event_link }}" onclick="InfiniteAnalytics('{{ id }}', 'facebook_view', '', '{{ site_url }}')" target="_new">Facebook Event Link</a>
           </div>
         </div>
       {% endif %}
@@ -187,7 +253,7 @@
       {% if event.hasOwnProperty('eventbrite_link') and event.eventbrite_link!="none" %}
         <div class="row">
           <div class="col s12">
-            <a href="{{event.eventbrite_link}}" target="_new">Eventbrite Link</a>
+            <a href="{{event.eventbrite_link}}" onclick="InfiniteAnalytics('{{ id }}', 'eventbrite_view', '', '{{ site_url }}')" target="_new">Eventbrite Link</a>
           </div>
         </div>
       {% endif %}
@@ -195,39 +261,34 @@
       {% if event.hasOwnProperty('ticket_link') and event.ticket_link!="none" %}
         <div class="row">
             <div class="col s12">
-              <a href="{{event.ticket_link}}" target="_new">Buy Tickets</a>
+              <a href="{{event.ticket_link}}" id="twitter-wjs" onclick="InfiniteAnalytics('{{ id }}', 'ticket_view', '', '{{ site_url }}')" target="_new">Buy Tickets</a>
             </div>
         </div>
       {% endif %}
 
     </div>
 
-
-    <div id="fb-root"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js" type="text/javascript"></script>
     <script>(function(d, s, id) {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) return;
       js = d.createElement(s); js.id = id;
       js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=510767252621911";
       fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
+    }(document, 'script', 'facebook-jssdk'));
 
-    <script type="text/javascript">(function () {
-
-      var clipboard = new Clipboard('.btn');
-
-      clipboard.on('success', function(e) {
-          // console.info('Action:', e.action);
-          console.info('URL:', e.text);
-          window.alert("Copied the URL. Now you can paste it into emails, tweets or any other announcements. Enjoy!")
-          // console.info('Trigger:', e.trigger);
-
-      });
-
-      clipboard.on('error', function(e) {
-          console.error('Action:', e.action);
-          console.error('Trigger:', e.trigger);
-      });
+      // $( "#facebook_share" ).click(function() {
+      //   console.log('facebook_share!!!!');
+      // });
+      // var facebookShare = document.querySelector('[id="facebook_share"]');
+      // facebookShare.onclick = function(e) {
+      //   console.log('Hi!')
+      //   e.preventDefault();
+      //   console.log('sfasdfs')
+      //   var facebookWindow = window.open('https://www.facebook.com/sharer/sharer.php?u=' + document.URL, 'facebook-popup', 'height=350,width=600');
+      //   if(facebookWindow.focus) { facebookWindow.focus(); }
+      //     return false;
+      // };
     </script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
+const nunjucks = require('nunjucks')
 
 dotenv.load(); //get configuration file from .env
 
@@ -28,6 +29,12 @@ router.post("/contact", function (req, res) {
   console.log(req.body)
   res.json({"message_status":"sent"})
 });
+
+router.get('/subscribe-email', function(req, res) {
+  res.send(nunjucks.render(
+    '../views/subscribe-email.html'
+  ));
+})
 
 
 module.exports = router;

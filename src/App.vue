@@ -2,9 +2,19 @@
   <v-app id="infinite-industries">
     <v-toolbar class="deep-purple" dark fixed>
       <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
-      <v-toolbar-title>Infinite Industries</v-toolbar-title>
+      <v-toolbar-title @click="RouteTo('/')" class="clickable">
+        <span class="hidden-sm-and-down">Infinite Industries</span>
+        <span class="hidden-md-and-up">I.I</span>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn outline @click.stop="RouteTo('/submit-event')">Submit Your Event</v-btn>
+      <v-btn outline @click.stop="RouteTo('/submit-event')">
+        <span class="hidden-sm-and-down">Submit Your Event</span>
+        <span class="hidden-md-and-up">SUBMIT</span>
+      </v-btn>
+      <v-btn outline @click.stop="OpenEmailSubscribe()">
+        <span class="hidden-sm-and-down">Subscribe to our Mail List</span>
+        <span class="hidden-md-and-up">SUBSCRIBE</span>
+      </v-btn>
       <nav-menu></nav-menu>
     </v-toolbar>
     <main id="content-wrapper">
@@ -53,6 +63,9 @@ export default {
     OpenEventSubmitter: function(){
       window.location.assign('https://event-add.glitch.me/');
     },
+    OpenEmailSubscribe: function() {
+      window.location.assign('/subscribe-email');
+    },
     RouteTo: function(route_to_page){
       this.$router.push({ path: route_to_page })
     },
@@ -73,3 +86,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.clickable {
+  cursor: pointer;
+}
+</style>
