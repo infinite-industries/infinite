@@ -37,6 +37,7 @@
     "vlf": "^1.0.3",
     "vue": "^2.4.4",
     "vue-router": "^3.0.1",
+    "vue-smoothscroll": "^0.1.1",
     "vue2-editor": "^2.3.33",
     "vuetify": "^0.15.7",
     "vuex": "^3.0.1"

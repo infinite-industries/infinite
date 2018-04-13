@@ -4,6 +4,7 @@ import Axios from 'axios';
 import Moment from 'moment';
 import Vuetify from 'vuetify';
 import VueLocalForage from '../node_modules/vlf/index.js'
+import VueSmoothScroll from 'vue-smoothscroll';
 
 import App from './App.vue';
 
@@ -27,6 +28,7 @@ Vue.use(VueRouter);
 Vue.use(Vuetify);
 Vue.use(VueLocalForage);
 Vue.use(GlobalEventBus);
+Vue.use(VueSmoothScroll);
 
 const router = new VueRouter({
     routes: [

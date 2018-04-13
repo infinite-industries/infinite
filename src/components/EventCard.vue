@@ -29,7 +29,9 @@
         <div class="event-venue">
           {{event.venue}}
         </div>
-        <div class="event-date" v-html="event.when"></div>
+        <div class="event-date">
+          {{event.when_date}}<br>{{event.when_time}}
+        </div>
         <div>{{trimmedDescription}}</div>
       </div>
     </v-card-title>

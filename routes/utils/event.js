@@ -24,8 +24,9 @@ const Event = function(init_obj){
   this.time_start = init_obj.time_start
   this.time_end = init_obj.time_end
 
-  this.when = moment(this.date).format('dddd, MMMM Do, YYYY') +" <br /> "+ moment(this.time_start).format('h:mma') +" - "+ moment(this.time_end).format('h:mma')
-
+  // this.when = moment(this.date).format('dddd, MMMM Do, YYYY') +" <br /> "+ moment(this.time_start).format('h:mma') +" - "+ moment(this.time_end).format('h:mma')
+  this.when_date = moment(this.date).format('dddd, MMMM Do, YYYY');
+  this.when_time = moment(this.time_start).format('h:mma') + " - " + moment(this.time_end).format('h:mma');
 
   //venue specific attributes
   if(init_obj.hasOwnProperty('address')){

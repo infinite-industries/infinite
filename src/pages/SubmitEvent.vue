@@ -398,21 +398,13 @@
 
         Axios.post('/events/submit-new', formData).then( response => {
             this.showEventLoadingSpinner = false;
-
-            if (response.data.status == "success") {
-              this.showPromoTools = true;
-              this.parseEventToHTML(response.data.data);
-              this.$SmoothScroll(this.$refs.promoTools);
-
-              // window.alert("Event submitted. Thank you! It should be out of review and on our site within 24 hours. Usually, much faster :)");
-            }
-            else{
-              window.alert("Hmmm... something went wrong :( Can you ping the management at info@infinite.industries");
-            }
-
+            this.showPromoTools = true;
+            this.parseEventToHTML(response.data.data);
+            this.$SmoothScroll(this.$refs.promoTools);
           })
-          .catch(function(error) {
+          .catch( error => {
             console.log(error)
+            this.showEventLoadingSpinner = false;
             this.eventSubmitted = false;
             window.alert("Hmmm... something went wrong :( Can you ping the management at info@infinite.industries");
           })
