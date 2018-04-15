@@ -10,7 +10,6 @@ router.use(bodyParser.urlencoded({
 }));
 
 router.get('/', (req, res) => {
-  console.log("GET VENUES!!!!!!!!!!!!!!!!");
   makeAPICall('get', 'venues', {}, process.env.API_KEY, (err, apiResp) => {
     if (err) {
       console.warn(err);

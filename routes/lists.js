@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const jwtAuthenticator = require(__dirname + '/utils/jwtAuthenticator')
 const router = express.Router()
 const { makeAPICall } = require('./utils/requestHelper');
 
@@ -22,7 +23,7 @@ router.get('/:id', function(req, res){
     });
 });
 
-router.post('/create-new', function(req, res){
+router.post('/create-new', [jwtAuthenticator], function(req, res){
     console.log(req.body)
 
     let newList = { eventList: req.body }

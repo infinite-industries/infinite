@@ -8,3 +8,4 @@ prep.txt
 public/js/*
 !.gitkeep
 .idea
+analytics.sqlite

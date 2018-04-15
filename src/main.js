@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Axios from 'axios';
 import Moment from 'moment';
 import Vuetify from 'vuetify';
 import VueLocalForage from '../node_modules/vlf/index.js'
@@ -16,12 +15,13 @@ import Contact from './pages/Contact.vue';
 import UserEvents from './pages/UserEvents.vue';
 import UserSettings from './pages/UserSettings.vue';
 import ListViewer from './pages/ListViewer.vue'
-import Logout from './pages/Logout.vue';
 import SubmitEvent from './pages/SubmitEvent.vue'
+import Callback from './pages/Callback.vue'
 
 import GlobalEventBus from './helpers/GlobalEventBus.js'
 
 import { store } from './store/store.js'
+import { requireAuth } from "./helpers/Auth";
 
 
 Vue.use(VueRouter);
@@ -31,6 +31,7 @@ Vue.use(GlobalEventBus);
 Vue.use(VueSmoothScroll);
 
 const router = new VueRouter({
+    mode: 'history',
     routes: [
       {
         path: '/',
@@ -46,11 +47,13 @@ const router = new VueRouter({
       {
         path: '/admin',
         name: 'admin',
+        beforeEnter: requireAuth,
         component: Admin
       },
       {
         path: '/admin-event-edit/:id',
         name: 'admin_event_edit',
+        beforeEnter: requireAuth,
         component: AdminEventEdit,
         props: true
       },
@@ -62,23 +65,26 @@ const router = new VueRouter({
       {
         path: '/your-events',         //slightly more user-friendly naming might need to change later for clarity
         name: 'user_events',
+        beforeEnter: requireAuth,
         component: UserEvents
       },
       {
         path: '/your-settings',      //slightly more user-friendly naming might need to change later for clarity
         name: 'user_settings',
+        beforeEnter: requireAuth,
         component: UserSettings
       },
       {
         path: '/list-viewer/:id/:type',
         name: 'list_viewer',
+        beforeEnter: requireAuth,
         component: ListViewer,
         props: true
       },
       {
-        path: '/logout',
-        name: 'logout',
-        component: Logout
+        path: '/callback',
+        name: 'callback',
+        component: Callback
       },
       {
         path:'/submit-event',

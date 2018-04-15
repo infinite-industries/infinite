@@ -3,7 +3,6 @@
 import Axios from 'axios'
 import ComponentEventBus from '../../helpers/ComponentEventBus.js'
 
-
 const getters = {
   GetUnverifiedEvents: (state, getters, rootState) =>{
     return rootState.unverified_events
@@ -22,7 +21,7 @@ const actions = {
       })
   },
   LoadUnverifiedEvents:(context, payload) => {
-
+    //Axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken');
     Axios.get('/admin/list-unverified')
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
@@ -43,7 +42,6 @@ const actions = {
       });
   },
   VerifyEvent:(context, payload) => {
-
     Axios.post(`/admin/verify-event/${payload.id}`, payload)
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
@@ -71,7 +69,6 @@ const actions = {
   },
 
   UpdateEvent:(context, payload) => {
-
     Axios.post('/admin/update-event', {id:payload.id, data: payload.event_data})
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);

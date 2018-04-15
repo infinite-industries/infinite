@@ -110,7 +110,7 @@ export const store = new Vuex.Store({
     CreateNewList: (context, payload) => {
       const _self = this
       // Hit API to create a list
-      Axios.post('/lists/create-new',{list_name:payload.name, description:payload.description})
+      Axios.post('/lists/create-new', { list_name:payload.name, description:payload.description })
         .then(function (_response) {
           console.log(_response.data);
           if(_response.data.status === "success"){
@@ -143,7 +143,7 @@ export const store = new Vuex.Store({
     },
     AddEventToMyList: (context, payload) => {
       const _self = this
-      Axios.post('/events/add',{event_id:payload.event_data.id, list_id:payload.list_id})
+      Axios.post('/events/add',{ event_id:payload.event_data.id, list_id:payload.list_id })
         .then(function (_response) {
           if(_response.data.status === "success"){
             context.commit('PUSH_NEW_EVENT_TO_MY_LIST', {list_id:payload.list_id, event_data:payload.event_data})
@@ -224,7 +224,6 @@ export const store = new Vuex.Store({
       // set current_list that we will be operating on
       const req_url = "/lists/" + id;
 
-      console.log('!!! id: ' + id);
       Axios.get(req_url)
         .then(function (_response) {
           // console.log("data from server: ",response.data.events);

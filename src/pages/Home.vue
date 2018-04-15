@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
       <!-- <venue-picker :venues="venues"></venue-picker> -->
-      <h1>Upcoming Events:</h1>
+      <h1 @click="debug">Upcoming Events:</h1>
       <events-list></events-list>
     </v-container>
 </template>
@@ -21,6 +21,11 @@ export default {
   computed:{
     events: function(){
       return this.$store.getters.GetAllLocalEvents
+    }
+  },
+  methods: {
+    debug: function() {
+      console.log(axios.defaults.headers.common['x-access-token'])
     }
   },
   mounted: function() {
