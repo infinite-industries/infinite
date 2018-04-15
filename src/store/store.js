@@ -5,7 +5,6 @@ import _ from 'lodash'
 
 import ComponentEventBus from '../helpers/ComponentEventBus'
 import Admin from './modules/admin'
-import { getConfigForReq } from "../helpers/Auth";
 
 Vue.use(Vuex)
 
@@ -111,8 +110,7 @@ export const store = new Vuex.Store({
     CreateNewList: (context, payload) => {
       const _self = this
       // Hit API to create a list
-      Axios.post('/lists/create-new', { list_name:payload.name, description:payload.description },
-        getConfigForReq())
+      Axios.post('/lists/create-new', { list_name:payload.name, description:payload.description })
         .then(function (_response) {
           console.log(_response.data);
           if(_response.data.status === "success"){
@@ -145,8 +143,7 @@ export const store = new Vuex.Store({
     },
     AddEventToMyList: (context, payload) => {
       const _self = this
-      Axios.post('/events/add',{ event_id:payload.event_data.id, list_id:payload.list_id },
-        getConfigForReq())
+      Axios.post('/events/add',{ event_id:payload.event_data.id, list_id:payload.list_id })
         .then(function (_response) {
           if(_response.data.status === "success"){
             context.commit('PUSH_NEW_EVENT_TO_MY_LIST', {list_id:payload.list_id, event_data:payload.event_data})
@@ -172,8 +169,7 @@ export const store = new Vuex.Store({
     },
     RemoveEventFromList: (context, payload) => {
       const _self = this
-      Axios.post('/events/remove',{ event_id:payload.event_id, list_id:payload.list_id },
-        getConfigForReq())
+      Axios.post('/events/remove',{ event_id:payload.event_id, list_id:payload.list_id })
         .then(function (_response) {
           if(_response.data.status === "success"){
             context.commit('REMOVE_FROM_CURRENT_LIST', _response.data)
@@ -198,7 +194,7 @@ export const store = new Vuex.Store({
     },
 
     LoadAllUserData: (context) => {
-      Axios.get('/users/1234556', getConfigForReq())
+      Axios.get('/users/1234556')
         .then(function (_response) {
           context.commit('UPDATE_USER_DATA', _response.data)
         })
@@ -211,7 +207,7 @@ export const store = new Vuex.Store({
         });
     },
     LoadAllLocalEventData: (context, payload) => {
-      Axios.get('/events', getConfigForReq())
+      Axios.get('/events')
         .then(function (_response) {
           context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
         })
@@ -228,7 +224,7 @@ export const store = new Vuex.Store({
       // set current_list that we will be operating on
       const req_url = "/lists/" + id;
 
-      Axios.get(req_url, getConfigForReq())
+      Axios.get(req_url)
         .then(function (_response) {
           // console.log("data from server: ",response.data.events);
           if(_response.data.status === "success"){

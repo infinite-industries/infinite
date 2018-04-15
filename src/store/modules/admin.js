@@ -2,7 +2,6 @@
 
 import Axios from 'axios'
 import ComponentEventBus from '../../helpers/ComponentEventBus.js'
-import { getConfigForReq } from "../../helpers/Auth";
 
 const getters = {
   GetUnverifiedEvents: (state, getters, rootState) =>{
@@ -15,7 +14,7 @@ const getters = {
 
 const actions = {
   LoadCurrentEvent:(context, id) => {
-    Axios.get('/events/data/' + id, getConfigForReq())
+    Axios.get('/events/data/' + id)
       .then(response => {
         if (response.data.status === 'success')
           context.commit('POPULATE_CURRENT_EVENT', response.data.event, { root: true })
@@ -23,7 +22,7 @@ const actions = {
   },
   LoadUnverifiedEvents:(context, payload) => {
     //Axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken');
-    Axios.get('/admin/list-unverified', getConfigForReq())
+    Axios.get('/admin/list-unverified')
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){
@@ -43,7 +42,7 @@ const actions = {
       });
   },
   VerifyEvent:(context, payload) => {
-    Axios.post(`/admin/verify-event/${payload.id}`, payload, getConfigForReq())
+    Axios.post(`/admin/verify-event/${payload.id}`, payload)
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){
@@ -70,7 +69,7 @@ const actions = {
   },
 
   UpdateEvent:(context, payload) => {
-    Axios.post('/admin/update-event', {id:payload.id, data: payload.event_data}, getConfigForReq())
+    Axios.post('/admin/update-event', {id:payload.id, data: payload.event_data})
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){
@@ -95,7 +94,7 @@ const actions = {
 
   DeleteEvent:(context, payload) => {
 
-    Axios.post('/admin/delete-event', {id:payload.id}, getConfigForReq())
+    Axios.post('/admin/delete-event', {id:payload.id})
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){

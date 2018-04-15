@@ -1,6 +1,7 @@
 import decode from 'jwt-decode'
 import auth0 from 'auth0-js'
 import Router from 'vue-router'
+import axios from 'axios'
 
 const ID_TOKEN_KEY = 'id_token'
 const ACCESS_TOKEN_KEY = 'access_token'
@@ -9,7 +10,7 @@ const SCOPE = 'openid profile'
 // these doe not need to be kept secret but for testing would be nice to have a way to configure them during build
 const CLIENT_ID = 'PYKhof4U0jKE3v4h8xKSgihHz9atBE5O'
 const CLIENT_DOMAIN = '1nfinite.auth0.com1nfinite.auth0.com'
-const REDIRECT = 'http://localhost:3004/callback'
+const REDIRECT = 'http://localhost:7779/callback'
 const AUDIENCE = 'https://1nfinite.auth0.com/api/v2/'
 
 const auth = new auth0.WebAuth({
@@ -33,6 +34,7 @@ export function login () {
 export function logout () {
   clearIdToken()
   clearAccessToken()
+  resetAxiosConfig()
   router.go('/')
 }
 
@@ -58,6 +60,11 @@ export function getConfigForReq () {
     return {}
 
   return { headers: {'x-access-token': getIdToken() } }
+}
+
+// resets the default axios config to no longer include local jwt in request headers
+export function resetAxiosConfig() {
+  delete axios.defaults.headers.common['x-access-token'];
 }
 
 export function getAccessToken () {

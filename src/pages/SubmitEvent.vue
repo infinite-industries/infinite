@@ -322,7 +322,6 @@
   import { VueEditor, Quill } from 'vue2-editor'
   import VenuePicker from '../components/VenuePicker.vue'
   import TimePicker from '../components/TimePicker.vue'
-  import { getConfigForReq } from "../helpers/Auth";
 
   export default {
     data: function () {
@@ -374,13 +373,13 @@
       submitEvent: function() {
         console.log("submit!");
         // this.new_event.id = uuidv1();
-        Axios.post('/events/submit-new', this.new_event, getConfigForReq())
+        Axios.post('/events/submit-new', this.new_event)
           .then( response => {
             console.log(response);
           })
       },
       TestMail: function(){
-        Axios.post('/events/promo-new', {"test":"me"}, getConfigForReq())
+        Axios.post('/events/promo-new', {"test":"me"})
           .then(function(_response) {
             console.log(_response.data)
           })
@@ -402,7 +401,7 @@
 
         this.showEventLoadingSpinner = true;
 
-        Axios.post('/events/submit-new', formData, getConfigForReq()).then( response => {
+        Axios.post('/events/submit-new', formData).then( response => {
             this.showEventLoadingSpinner = false;
             if (response.data.status == "success") {
               this.showPromoTools = true;
@@ -416,7 +415,7 @@
       },
       submitNewVenue: function() {
         this.showVenueLoadingSpinner = true;
-        Axios.post('/venues/submit-new', this.new_venue, getConfigForReq()).then( response => {
+        Axios.post('/venues/submit-new', this.new_venue).then( response => {
           this.showVenueLoadingSpinner = false;
           console.log(response);
         }).catch( err => {
@@ -449,7 +448,7 @@
     },
     mounted: function() {
 
-      Axios.get('/venues', getConfigForReq()).then( response => {
+      Axios.get('/venues').then( response => {
         this.venues = response.data.venues;
         console.log(this.venues);
       })

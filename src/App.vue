@@ -21,6 +21,9 @@ import NotifyUser from './components/NotifyUser.vue'
 
 import EventsFromStore from './helpers/ComponentEventBus.js'
 
+import axios from 'axios'
+import { getIdToken } from './helpers/auth'
+
 export default {
   data () {
     return {
@@ -30,6 +33,12 @@ export default {
         message: '',
         timeout: false
       }
+    }
+  },
+  // setting access token in created, so that it comes before mounted hooks in child components
+  created: function() {
+    if (getIdToken()) {
+      axios.defaults.headers.common['x-access-token'] = getIdToken();
     }
   },
   mounted: function(){
