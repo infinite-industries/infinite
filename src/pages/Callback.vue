@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import { setIdToken, setAccessToken } from '../helpers/auth'
+  import { setIdToken, setAccessToken } from '../helpers/Auth'
 
   export default {
     name: '',

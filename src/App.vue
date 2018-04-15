@@ -32,7 +32,7 @@ import NotifyUser from './components/NotifyUser.vue'
 import EventsFromStore from './helpers/ComponentEventBus.js'
 
 import axios from 'axios'
-import { getIdToken } from './helpers/auth'
+import { getIdToken } from './helpers/Auth'
 
 export default {
   data () {
