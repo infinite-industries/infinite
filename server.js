@@ -1,10 +1,14 @@
 // init project
 const express = require('express');
-const app = express();
 const path = require('path');
 const nunjucks = require('nunjucks');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+const fs = require('fs')
+const secretString = fs.readFileSync('./keys/1nfinite.pem');
+
+const app = express();
+app.set('superSecret', secretString);
 
 dotenv.load(); //get configuration file from .env
 
@@ -25,6 +29,7 @@ app.set('view engine', 'html');
 
 
 const routes = require('./routes/index');
+
 const admin = require('./routes/admin');
 const events = require('./routes/events');
 const lists = require('./routes/lists');
@@ -40,7 +45,10 @@ app.use('/lists', lists);
 app.use('/users', users);
 app.use('/calendar', calendar);
 app.use('/venues', venues);
-
+app.use((req, res) => {
+    // catch all, returns index so that we can let the spa decide what to do
+    res.render('index');
+})
 
 const appPort = process.env.PORT || '7779';
 

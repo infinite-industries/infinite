@@ -2,7 +2,7 @@
 
 import Axios from 'axios'
 import ComponentEventBus from '../../helpers/ComponentEventBus.js'
-
+import { getConfigForReq } from "../../helpers/Auth";
 
 const getters = {
   GetUnverifiedEvents: (state, getters, rootState) =>{
@@ -15,15 +15,15 @@ const getters = {
 
 const actions = {
   LoadCurrentEvent:(context, id) => {
-    Axios.get('/events/data/' + id)
+    Axios.get('/events/data/' + id, getConfigForReq())
       .then(response => {
         if (response.data.status === 'success')
           context.commit('POPULATE_CURRENT_EVENT', response.data.event, { root: true })
       })
   },
   LoadUnverifiedEvents:(context, payload) => {
-
-    Axios.get('/admin/list-unverified')
+    //Axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken');
+    Axios.get('/admin/list-unverified', getConfigForReq())
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){
@@ -43,8 +43,7 @@ const actions = {
       });
   },
   VerifyEvent:(context, payload) => {
-
-    Axios.post(`/admin/verify-event/${payload.id}`, payload)
+    Axios.post(`/admin/verify-event/${payload.id}`, payload, getConfigForReq())
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){
@@ -71,8 +70,7 @@ const actions = {
   },
 
   UpdateEvent:(context, payload) => {
-
-    Axios.post('/admin/update-event', {id:payload.id, data: payload.event_data})
+    Axios.post('/admin/update-event', {id:payload.id, data: payload.event_data}, getConfigForReq())
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){
@@ -97,7 +95,7 @@ const actions = {
 
   DeleteEvent:(context, payload) => {
 
-    Axios.post('/admin/delete-event', {id:payload.id})
+    Axios.post('/admin/delete-event', {id:payload.id}, getConfigForReq())
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){

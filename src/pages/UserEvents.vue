@@ -41,8 +41,6 @@
 </template>
 
 <script>
-  import Axios from 'axios'
-
   import CreateNewList from '../components/CreateNewList.vue'
   import ListOfLists from '../components/ListOfLists.vue'
 

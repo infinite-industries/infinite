@@ -18,8 +18,6 @@
 </template>
 
 <script>
-import Axios from 'axios';
-
 import EventsList from '../components/EventsList.vue'
 
   export default {

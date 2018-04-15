@@ -1,4 +1,5 @@
 const express = require('express');
+const jwtAuthenticator = require(__dirname + '/utils/jwtAuthenticator')
 const router = express.Router();
 const axios = require('axios')
 const bodyParser = require('body-parser')
@@ -11,7 +12,7 @@ router.use(bodyParser.urlencoded({
 }));
 
 // List unverified non-expired events
-router.get('/list-unverified', function(req, res) {
+router.get('/list-unverified', [jwtAuthenticator], function(req, res) {
   makeAPICall('get', 'events/current/non-verified', {}, null, (err, apiRes) => {
     if (err) {
       console.warn('error retrieving events:' + err);
@@ -38,7 +39,7 @@ router.get('/list-unverified', function(req, res) {
 })*/
 
 // Update specific event info
-router.post('/update-event', function(req, res){
+router.post('/update-event', [jwtAuthenticator], function(req, res){
   const id = req.body.id
   const event = req.body.data
 
@@ -53,7 +54,7 @@ router.post('/update-event', function(req, res){
 })
 
 // Delete specific event
-router.post('/delete-event', function(req, res){
+router.post('/delete-event', [jwtAuthenticator], function(req, res){
   let id = req.body.id
   makeAPICall('delete', `events/${id}`, null, process.env.API_KEY, err => {
     if (err)
@@ -64,7 +65,7 @@ router.post('/delete-event', function(req, res){
 })
 
 // Verify specific event
-router.post('/verify-event/:id', (req, res) => {
+router.post('/verify-event/:id', [jwtAuthenticator], (req, res) => {
   const id = req.params.id
   console.log(`handling request to verify event "${id}"`)
   makeAPICall('put', `events/verify/${id}`, {}, process.env.API_KEY, err => {
