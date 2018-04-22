@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "start-dev": "concurrently \"npm run watchify\" \"nodemon ./server.js\"",
-    "watchify": "watchify -vd -p browserify -d -e ./src/main.js -o ./public/js/dist.js",
-    "production-build": "NODE_ENV=production browserify -g envify -e ./src/main.js | uglifyjs -c -m > ./public/js/dist.js",
+    "watchify": "watchify -vd -p browserify -t envify -d -e ./src/main.js -o ./public/js/dist.js",
+    "production-build": "NODE_ENV=production browserify -t envify -e ./src/main.js | uglifyjs -c -m > ./public/js/dist.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "browserify": {

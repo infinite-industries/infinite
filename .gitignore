@@ -9,3 +9,4 @@ public/js/*
 !.gitkeep
 .idea
 analytics.sqlite
+clientConfig.js

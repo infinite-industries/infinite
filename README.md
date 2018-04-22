@@ -77,6 +77,8 @@ SLACK_WEBHOOK_EVENT_SUBMISSION=################################################
 ...
 ```
 
+Follow the sample template in src/clientConfig.sample.js to setup client settings for authO
+
 ## License
 
 MIT?
