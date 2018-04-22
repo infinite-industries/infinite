@@ -23,6 +23,7 @@ import GlobalEventBus from './helpers/GlobalEventBus.js'
 import { store } from './store/store.js'
 import { requireAuth } from "./helpers/Auth";
 
+console.log('!!! foo bar')
 
 Vue.use(VueRouter);
 Vue.use(Vuetify);
