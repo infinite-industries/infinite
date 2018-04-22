@@ -38,9 +38,9 @@ elif [[ "staging" = $1 ]]; then
   git pull
   echo 'Installing npm packages'
   npm install --production
+  echo 'Building frontend js'
+  npm run production-build
   echo 'Restarting'
-  #npm run server-build
-  #echo 'Building frontend js'
   forever stop infinite
   rm /home/$USER/.forever/infinite.log
   forever start --uid infinite server.js
@@ -52,7 +52,3 @@ else
   echo Example: ./deploy.sh staging
   exit
 fi
-
-npm run production-build
-
-scp public/js/dist.js $USER@$SERVER:$ROOT/public/js
