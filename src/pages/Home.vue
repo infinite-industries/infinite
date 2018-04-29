@@ -21,6 +21,12 @@ export default {
   computed:{
     events: function(){
       return this.$store.getters.GetAllLocalEvents
+    },
+    loggedIn: function() {
+      return this.$store.getters.GetUser.logged_in
+    },
+    isAdmin: function() {
+      return this.$store.getters.GetUser.admin_role
     }
   },
   methods: {
