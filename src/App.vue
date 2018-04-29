@@ -32,7 +32,7 @@ import NotifyUser from './components/NotifyUser.vue'
 import EventsFromStore from './helpers/ComponentEventBus.js'
 
 import axios from 'axios'
-import { getIdToken } from './helpers/Auth'
+import { isLoggedIn, setAxiosConfig } from './helpers/Auth'
 
 export default {
   data () {
@@ -47,8 +47,9 @@ export default {
   },
   // setting access token in created, so that it comes before mounted hooks in child components
   created: function() {
-    if (getIdToken()) {
-      axios.defaults.headers.common['x-access-token'] = getIdToken();
+    if (isLoggedIn()) {
+      this.$store.dispatch('Login');
+      setAxiosConfig();
     }
   },
   mounted: function(){

@@ -56,6 +56,9 @@ export function getConfigForReq () {
   return { headers: {'x-access-token': getIdToken() } }
 }
 
+export function setAxiosConfig() {
+  axios.defaults.headers.common['x-access-token'] = getIdToken();
+}
 // resets the default axios config to no longer include local jwt in request headers
 export function resetAxiosConfig() {
   delete axios.defaults.headers.common['x-access-token'];
@@ -95,6 +98,21 @@ export function isAdmin() {
   try {
     const token = decode(idToken)
     return !!token['https://infinite.industries.com/isInfiniteAdmin']
+  } catch (error) {
+    console.warn(error)
+  }
+
+  return false
+}
+
+export function getUsername() {
+  const idToken = getIdToken()
+  if (!idToken)
+    return false
+
+  try {
+    const token = decode(idToken)
+    return token.nickname
   } catch (error) {
     console.warn(error)
   }

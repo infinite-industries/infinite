@@ -6,6 +6,8 @@ import _ from 'lodash'
 import ComponentEventBus from '../helpers/ComponentEventBus'
 import Admin from './modules/admin'
 
+import { getUsername, isAdmin, logout } from '../helpers/Auth'
+
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
@@ -18,7 +20,9 @@ export const store = new Vuex.Store({
     loaded_from_api: false,
     user_settings:{
       logged_in: false,
-      admin_role: false
+      admin_role: false,
+      username: "",
+      associated_venues: []
     },
     current_list:{},
 
@@ -52,9 +56,9 @@ export const store = new Vuex.Store({
   },
   mutations:{
      UPDATE_USER_DATA: (state, user_data) => {
-      state.user_settings = _.merge({},state.user_settings,user_data.settings, user_data.permissions)
+      state.user_settings = _.merge({},state.user_settings, user_data.settings, user_data.permissions, { username: getUsername() })
       state.lists_my = user_data.lists_my;
-       state.lists_follow = user_data.lists_follow;
+      state.lists_follow = user_data.lists_follow;
 
       state.loaded_from_api = true
 
@@ -102,10 +106,30 @@ export const store = new Vuex.Store({
     POPULATE_CURRENT_EVENT: (state, event) => {
       //Vue.set(state.current_event, 'title', event.title)
       state.current_event = event
+    },
+    LOGIN: (state, payload) => {
+      state.user_settings.logged_in = true;
+      state.user_settings.admin_role = payload.admin_role;
+    },
+    LOGOUT: state => {
+      state.user_settings = {
+        logged_in: false,
+        admin_role: false,
+        username: "",
+        associated_venues: []
+      }
     }
 
   },
   actions:{
+
+    Logout: (context, payload) => {
+      logout()
+      context.commit('LOGOUT')
+    },
+    Login: (context, payload) => {
+      context.commit('LOGIN', { admin_role: isAdmin() })
+    },
 
     CreateNewList: (context, payload) => {
       const _self = this

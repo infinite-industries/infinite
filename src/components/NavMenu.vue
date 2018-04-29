@@ -54,7 +54,7 @@
         if (item.title === 'Login') {
           login()
         } else if (item.title === 'Logout') {
-          logout()
+          this.$store.dispatch('Logout')
         } else {
           this.$router.push({path: item.route})
         }
