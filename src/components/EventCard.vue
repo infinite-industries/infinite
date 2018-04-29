@@ -3,11 +3,11 @@
 <template>
   <v-card style="margin-bottom: 10px; min-height: 100%;" v-show="card_visibility">
     <v-card-media :src="event.image" height="200px">
-      <v-speed-dial v-model="fab" :top="true" :right="true" :direction="right">
-      <v-btn slot="activator" class="deep-purple lighten-1" dark fab hover v-model="fab" @click="OpenOptionsDialog()">
-        <v-icon>playlist_add</v-icon>
-        <!-- <v-icon>close</v-icon> -->
-      </v-btn>
+      <v-speed-dial v-model="fab" :top="true" :right="true" :direction="right" v-if="userIsAdmin">
+        <v-btn slot="activator" class="deep-purple lighten-1" dark fab hover v-model="fab" @click="OpenOptionsDialog()">
+          <v-icon>playlist_add</v-icon>
+          <!-- <v-icon>close</v-icon> -->
+        </v-btn>
       <!-- <template>
         <div class="event-add-wrapper">
           <div class="event-add-to-list" @click="AddToList('eventTest','listOne')">+ List One</div>
@@ -95,6 +95,9 @@
         } else {
           return this.event.brief_description;
         }
+      },
+      userIsAdmin: function() {
+        return this.$store.getters.GetUser.admin_role;
       }
     },
     mounted: function(){
