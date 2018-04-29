@@ -52,6 +52,9 @@ export const store = new Vuex.Store({
 
     GetSettings: state => {
       // TODO
+    },
+    GetUser: state => {
+      return state.user_settings
     }
   },
   mutations:{
