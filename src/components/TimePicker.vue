@@ -33,7 +33,7 @@ export default {
       this.invalid_hour = false;
       if (this.hour.length >= 2) {
         if (this.hour >= 1 && this.hour <= 12) {
-          this.$refs.minInput.focus();
+          // this.$refs.minInput.focus();
         } else {
           this.invalid_hour = true;
         }
@@ -43,7 +43,7 @@ export default {
       this.invalid_min = false;
       if (this.minute.length >= 2) {
         if (this.minute >= 0 && this.minute <= 59) {
-          this.$refs.ampm.focus();
+          // this.$refs.ampm.focus();
         } else {
           this.invalid_min = true;
         }

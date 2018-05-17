@@ -55,6 +55,32 @@
       </v-flex>
     </v-layout>
 
+    <v-layout row wrap>
+      <v-flex xs12 sm3>
+        <h3 class="form-label">Additional Dates:</h3>
+      </v-flex>
+      <v-flex xs12 sm8>
+        <v-card>
+          <!-- <v-card-title>
+            <h3 class="headline">Additional Dates:</h3>
+          </v-card-title> -->
+          <v-card-text>
+            <div id="dotted-placeholder" v-if="additional_dates.length == 0"></div>
+            <event-date-picker
+              v-for="(additionalDate, index) in additional_dates"
+              :key="additionalDate.title"
+              :eventDateObject="additionalDate"
+              @delete="removeAdditionalDate(index)">
+            </event-date-picker>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn flat primary @click="addDate">Add Date</v-btn>
+          </v-card-actions>
+        </v-card>
+        
+      </v-flex>
+    </v-layout>
+
     <!-- Event Image -->
     <v-layout row wrap>
       <v-flex xs12 sm3>
@@ -331,6 +357,7 @@
   import { VueEditor, Quill } from 'vue2-editor'
   import VenuePicker from '../components/VenuePicker.vue'
   import TimePicker from '../components/TimePicker.vue'
+  import EventDatePicker from '../components/EventDatePicker.vue'
 
   export default {
     data: function () {
@@ -357,6 +384,7 @@
           ticket_link:"",
           organizer_contact:""
         },
+        additional_dates: [],
         imageChosen: false,
         showAddVenue: false,
         showPromoTools: false,
@@ -471,6 +499,13 @@
       isEmail: function(text) {
         let regex = /\S+@\S+\.\S+/;
         return regex.test(text);
+      },
+
+      addDate: function() {
+        this.additional_dates.push({ time_start: "", time_end: "", title: `Day ${this.additional_dates.length+2}`})
+      },
+      removeAdditionalDate: function(index) {
+        this.additional_dates.splice(index, 1);
       }
     },
     mounted: function() {
@@ -532,7 +567,8 @@
    components: {
      'vue-editor': VueEditor,
      'venue-picker': VenuePicker,
-     'time-picker': TimePicker
+     'time-picker': TimePicker,
+     'event-date-picker': EventDatePicker
    }
 
   }
@@ -606,8 +642,11 @@
   }
 }
 
-/* #vue-editor2{
-  height: 200px;
-} */
+#dotted-placeholder {
+  height: 100%;
+  min-height: 50px;
+  width: 100%;
+  outline: 1px dashed rgb(210, 210, 210)
+}
 
 </style>
