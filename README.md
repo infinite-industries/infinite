@@ -52,8 +52,9 @@ $ npm run watchify
 ```
 4. Start the Node.JS server
 ```bash
-$ node server.js
+$ npm run start-dev
 ```
+This sets up watchers to rebuild the client-side on changes and starts the server; if you need to do these steps separately consult `package.json` to see how `start-dev` works.
 5. Launch the Infinite Industries back-end
 ```bash
 $ node index.js
