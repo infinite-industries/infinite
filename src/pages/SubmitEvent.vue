@@ -480,10 +480,11 @@
       parseEventToHTML: function(ii_event) {
         console.log(ii_event);
 
-        //this.promoHTML = "testing \<h1\>Testing\<\/h1\>";
+        let when_date = moment(ii_event.time_start).format('dddd, MMMM Do, YYYY')
+        let when_time = moment(ii_event.time_start).format('h:mma') + " - " + moment(ii_event.time_end).format('h:mma')
 
         this.promoHTML = `<h2>${ii_event.title}</h2>`;
-        this.promoHTML += `<p><b>When: </b>${ii_event.when_date} ${ii_event.when_time}</p>`;
+        this.promoHTML += `<p><b>When: </b>${when_date} ${when_time}</p>`;
         this.promoHTML += `<p><b>Location: </b>${ii_event.address}</p> <p><br></p>`;
         this.promoHTML += `<img src="${ii_event.image}" width="450px" height="auto">`;
 

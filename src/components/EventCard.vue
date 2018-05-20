@@ -30,7 +30,7 @@
           {{event.venue}}
         </div>
         <div class="event-date">
-          {{event.when_date}}<br>{{event.when_time}}
+          {{ when_date }}<br>{{ when_time }}
         </div>
         <div>{{trimmedDescription}}</div>
       </div>
@@ -98,6 +98,12 @@
       },
       userIsAdmin: function() {
         return this.$store.getters.GetUser.admin_role;
+      },
+      when_date: function() {        
+        return moment(this.event.time_start).format('dddd, MMMM Do, YYYY');
+      },
+      when_time: function() {
+        return moment(this.event.time_start).format('h:mma') + " - " + moment(this.event.time_end).format('h:mma');
       }
     },
     mounted: function(){

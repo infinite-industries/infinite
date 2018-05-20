@@ -7,13 +7,14 @@
     </tr>
     <tr v-for="event in events">
       <td>{{event.title}}</td>
-      <td>{{When(event.when)}}</td>
+      <td>{{when(event)}}</td>
       <td><v-btn @click="EditEvent(event)">Edit</v-btn></td>
     </tr>
   </table>
 </template>
 
 <script>
+  import moment from 'moment'
 
   export default {
     name:'AdminEventsList',
@@ -38,8 +39,10 @@
         //   })
 
       },
-      When: function(event_string){
-        return event_string.replace(" <br /> ", " ")
+      when: function(ii_event){
+        let when_date = moment(ii_event.time_start).format('dddd, MMMM Do, YYYY')
+        let when_time = moment(ii_event.time_start).format('h:mma') + " - " + moment(ii_event.time_end).format('h:mma')
+        return when_date + ', ' + when_time;
       }
     }
 }
