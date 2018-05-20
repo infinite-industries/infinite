@@ -24,6 +24,11 @@ const Event = function(init_obj){
   this.time_start = init_obj.time_start
   this.time_end = init_obj.time_end
 
+  this.multi_day = init_obj.multi_day;
+  if(init_obj.hasOwnProperty('additional_dates')){
+    this.additional_dates = init_obj.additional_dates;
+  }
+
   // this.when = moment(this.date).format('dddd, MMMM Do, YYYY') +" <br /> "+ moment(this.time_start).format('h:mma') +" - "+ moment(this.time_end).format('h:mma')
 
   //venue specific attributes
@@ -98,9 +103,10 @@ Event.prototype.Notify = function(){
         "id":"${this.id}",
         "title":"${this.title}",
         "slug":"${this.slug}",
-        "when":"${this.when}",
         "time_start":"${this.time_start}",
         "time_end": "${this.time_end}",
+        "multi_day": "${this.multi_day}",
+        "additional_dates": "${this.additional_dates}",
         "website_link": "${this.website_link}",
         "image":"${this.image}",
         "social_image":"${this.social_image}",
