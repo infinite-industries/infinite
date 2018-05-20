@@ -5,6 +5,8 @@ const { makeAPICall } = require('./utils/requestHelper')
 const bodyParser = require('body-parser')
 const sanitizer = require('sanitizer');
 
+const moment = require('moment')
+
 const Event = require('./utils/event')
 
 //get configuration file from .env
@@ -237,9 +239,19 @@ router.get("/:id", function(req, res) {
             console.warn('error getting event (%s): %s', id, err);
             res.status(500).send('error getting event');
         } else {
-            res.render(
+          // precompute when_date and when_time values
+          let ii_event = {
+            ...apiResp.data.event,
+            when_date: moment(apiResp.data.event.time_start).format('dddd, MMMM Do, YYYY'),
+            when_time: moment(apiResp.data.event.time_start).format('h:mma') + " - " + moment(apiResp.data.event.time_end).format('h:mma')
+          }
+          console.log(ii_event);
+          res.render(
                 'event',
-                { id, event: apiResp.data.event, site_url: process.env.SITE_URL }
+                { id,
+                  event: ii_event,
+                  site_url: process.env.SITE_URL
+                }
             );
         }
     });
