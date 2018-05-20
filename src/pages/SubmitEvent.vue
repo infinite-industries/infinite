@@ -353,6 +353,7 @@
 
 <script>
   import Axios from 'axios'
+  import moment from 'moment'
   import { VueEditor, Quill } from 'vue2-editor'
   import VenuePicker from '../components/VenuePicker.vue'
   import TimePicker from '../components/TimePicker.vue'
@@ -410,6 +411,11 @@
     },
     methods: {
       UploadEvent: function(){
+
+        this.adjustTimeEnd(this.new_event);
+        this.new_event.additional_dates.forEach( eventDate => {
+          this.adjustTimeEnd(eventDate);
+        })
 
         const formData = new FormData()
 
@@ -509,6 +515,12 @@
         this.new_event.additional_dates.splice(index, 1);
         if (this.new_event.additional_dates.length == 0) {
           this.new_event.multi_day = false;
+        }
+      },
+      adjustTimeEnd: function(eventDate) {
+        // if time_end is before time_start, assume that time_end should be during the next calendar day
+        if (moment(eventDate.time_end).isBefore(moment(eventDate.time_start))) {
+            eventDate.time_end = moment(eventDate.time_end).add(1, 'd').format('YYYY-MM-DD HH:mm:ss');
         }
       }
     },
