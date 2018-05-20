@@ -63,6 +63,9 @@ export default {
     // }
   },
   watch: {
+    date: function() {
+      this.recomputeFormatted();
+    },
     hour: function() {
       this.recomputeFormatted();
     },

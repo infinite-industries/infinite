@@ -4,7 +4,12 @@
             <h3 class="form-label">Title<span class="required-field">*</span>:</h3>
         </v-flex>
         <v-flex xs12 sm10>
-            <v-text-field label="Date Title*" v-model="eventDateObject.title" :rules="[v => !!v || 'Title is required']"></v-text-field>
+            <v-text-field
+                label="Date Title*"
+                v-model="value.title"
+                @input="$emit('input', value)"
+                :rules="[v => !!v || 'Title is required']">
+            </v-text-field>
         </v-flex>
         <v-flex xs12 sm2>
             <v-btn fab dark small primary class="red floating-offset-left" @click="$emit('delete')">
@@ -36,10 +41,10 @@
             <h3 class="form-label">Time<span class="required-field">*</span>:</h3>
         </v-flex>
         <v-flex xs12 sm5 class="some-padding-top">
-            <time-picker :date="date" :label="'Start Time:'" @changeTime="formattedTime => { eventDateObject.time_start = formattedTime }"></time-picker>
+            <time-picker :date="date" :label="'Start:'" @changeTime="changeStartTime"></time-picker>
         </v-flex>
         <v-flex xs12 sm5 class="some-padding-top">
-            <time-picker :date="date" :label="'End Time:'" @changeTime="formattedTime => { eventDateObject.time_end = formattedTime }"></time-picker>
+            <time-picker :date="date" :label="'End:'" @changeTime="changeEndTime"></time-picker>
         </v-flex>
     </v-layout>
 </template>
@@ -47,14 +52,22 @@
 import TimePicker from "./TimePicker.vue";
 
 export default {
-    props: ["eventDateObject"],
+    // value: { title, time_start, time_end }
+    props: ["value"],
     data: function() {
         return {
             date: undefined
         }
     },
     methods: {
-
+        changeStartTime: function(formatted) {
+            this.value.time_start = formatted
+            this.$emit('input', this.value)
+        },
+        changeEndTime: function(formatted) {
+            this.value.time_end = formatted
+            this.$emit('input', this.value)
+        }
     },
     computed: {
 

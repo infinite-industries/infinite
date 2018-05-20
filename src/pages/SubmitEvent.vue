@@ -69,7 +69,7 @@
             <event-date-picker
               v-for="(additionalDate, index) in additional_dates"
               :key="additionalDate.title"
-              :eventDateObject="additionalDate"
+              v-model="additional_dates[index]"
               @delete="removeAdditionalDate(index)">
             </event-date-picker>
           </v-card-text>
