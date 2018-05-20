@@ -65,11 +65,10 @@
             <h3 class="headline">Additional Dates:</h3>
           </v-card-title> -->
           <v-card-text>
-            <div id="dotted-placeholder" v-if="additional_dates.length == 0"></div>
+            <div id="dotted-placeholder" v-if="new_event.additional_dates.length == 0"></div>
             <event-date-picker
-              v-for="(additionalDate, index) in additional_dates"
-              :key="additionalDate.title"
-              v-model="additional_dates[index]"
+              v-for="(additionalDate, index) in new_event.additional_dates"
+              v-model="new_event.additional_dates[index]"
               @delete="removeAdditionalDate(index)">
             </event-date-picker>
           </v-card-text>
@@ -382,9 +381,10 @@
           eventbrite_link:"",
           fb_event_link:"",
           ticket_link:"",
-          organizer_contact:""
+          organizer_contact:"",
+          multi_day: false,
+          additional_dates: [],
         },
-        additional_dates: [],
         imageChosen: false,
         showAddVenue: false,
         showPromoTools: false,
@@ -502,10 +502,14 @@
       },
 
       addDate: function() {
-        this.additional_dates.push({ time_start: "", time_end: "", title: `Day ${this.additional_dates.length+2}`})
+        this.new_event.additional_dates.push({ time_start: "", time_end: "", title: `Day ${this.new_event.additional_dates.length+2}`})
+        this.new_event.multi_day = true;
       },
       removeAdditionalDate: function(index) {
-        this.additional_dates.splice(index, 1);
+        this.new_event.additional_dates.splice(index, 1);
+        if (this.new_event.additional_dates.length == 0) {
+          this.new_event.multi_day = false;
+        }
       }
     },
     mounted: function() {
