@@ -14,6 +14,9 @@ slackChannels['contact'] = require('slack-notify')(SLACK_WEBHOOK_CONTACT)
 const SLACK_WEBHOOK_EVENT_SUBMISSION = process.env.SLACK_WEBHOOK_EVENT_SUBMISSION
 slackChannels['submission'] = require('slack-notify')(SLACK_WEBHOOK_EVENT_SUBMISSION)
 
+const SLACK_WEBHOOK_VENUE_SUBMISSION = process.env.SLACK_WEBHOOK_VENUE_SUBMISSION
+slackChannels['venue-submission'] = require('slack-notify')(SLACK_WEBHOOK_VENUE_SUBMISSION);
+
 module.exports = {
   Notify: function(channel_name,payload){
     const _channel = '#'+channel_name
