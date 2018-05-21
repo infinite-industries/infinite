@@ -7,11 +7,20 @@
         <p>
           mission here
         </p>
+        <!--
         <a href="/calendar/?name=test-cal-event"><button>Test Cal ICS Gen</button></a>
         \\\
         <a href="/calendar/?name=test-cal-event"><button>Test Cal Google Cal</button></a>
+        -->
+        <div class="ii-spacer">. . .</div>
+
         <p>
-          <h2>Dima</h2>
+          <h2>
+            <v-avatar class="teal">
+              <span class="white--text headline">D</span>
+            </v-avatar>
+            Dima
+          </h2>
           <p class="brief-bio">
             people here
           </p>
@@ -20,7 +29,12 @@
           </p>
         </p>
         <p>
-          <h2>Chris</h2>
+          <h2>
+            <v-avatar class="red">
+              <span class="white--text headline">C</span>
+            </v-avatar>
+            Chris
+          </h2>
           <p class="brief-bio">
             people here
           </p>
@@ -29,7 +43,12 @@
           </p>
         </p>
         <p>
-          <h2>Eugene</h2>
+          <h2>
+            <v-avatar class="indigo darken-2">
+              <span class="white--text headline">E</span>
+            </v-avatar>
+            Eugene
+          </h2>
           <p class="brief-bio">
             people here
           </p>
@@ -38,7 +57,21 @@
           </p>
         </p>
         <p>
-          Many awesome peoples form the past.
+          <h2>
+            <v-avatar>
+              <img src="images/evan.jpg" alt="Evan">
+            </v-avatar>
+            Evan
+          </h2>
+          <p class="brief-bio">
+            Front-end intern
+          </p>
+          <p class="personal-social-media">
+            facebook | twitter | medium | github | <a href="http://wallchart.tk">website</a>
+          </p>
+        </p>
+        <p>
+          And many awesome peoples from the past.
         </p>
         <p>
           On org level please like and follow us on the social media of your choice.
@@ -65,3 +98,17 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+h2 {
+  margin-bottom: 8px;
+}
+.personal-social-media {
+  margin-bottom: 20px;
+}
+.ii-spacer {
+  margin: 20px;
+  font-size: 20px;
+  text-align: center;
+}
+</style>
