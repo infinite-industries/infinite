@@ -412,6 +412,7 @@
     methods: {
       UploadEvent: function(){
 
+        // sanitize the date inputs
         this.adjustTimeEnd(this.new_event);
         this.new_event.additional_dates.forEach( eventDate => {
           this.adjustTimeEnd(eventDate);
@@ -433,6 +434,7 @@
         Axios.post('/events/submit-new', formData).then( response => {
             this.showEventLoadingSpinner = false;
             this.showPromoTools = true;
+            // fill in Quill editor for promo tools
             this.parseEventToHTML(response.data.data);
             this.$SmoothScroll(this.$refs.promoTools);
           })

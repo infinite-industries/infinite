@@ -25,7 +25,7 @@
             people here
           </p>
           <p class="personal-social-media">
-            facebook | twitter | medium | github | wesite
+            facebook | twitter | medium | github | website
           </p>
         </p>
         <p>
@@ -39,7 +39,7 @@
             people here
           </p>
           <p class="personal-social-media">
-            facebook | twitter | medium | github | wesite
+            facebook | twitter | medium | github | website
           </p>
         </p>
         <p>
@@ -53,7 +53,7 @@
             people here
           </p>
           <p class="personal-social-media">
-            facebook | twitter | medium | github | wesite
+            facebook | twitter | medium | github | website
           </p>
         </p>
         <p>
@@ -64,7 +64,7 @@
             Evan
           </h2>
           <p class="brief-bio">
-            Front-end intern
+            Front-end
           </p>
           <p class="personal-social-media">
             facebook | twitter | medium | github | <a href="http://wallchart.tk">website</a>

@@ -1,11 +1,11 @@
 // NavMenu.vue
 <template>
   <v-menu class="main-nav" absolute bottom :nudge-top="40">
-    <v-btn outline offset-y slot="activator">
-      <v-icon>account_circle</v-icon>
+    <v-btn icon slot="activator">
+      <v-icon>menu</v-icon>
     </v-btn>
     <v-list style="background-color: white;">
-      <v-list-tile v-for="item in getVisibleItems(nav_items)" :key="item.title" @click.stop="RouteTo(item)">
+      <v-list-tile v-for="item in getVisibleItems(nav_items)" :key="item.title" @click="RouteTo(item)">
         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
       </v-list-tile>
     </v-list>
