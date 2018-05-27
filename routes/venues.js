@@ -33,6 +33,7 @@ router.get('/:id', (req, res) => {
 })
 
 router.post('/submit-new', (req, res) => {
+
   let new_venue = new Venue(req.body);
 
   makeAPICall('post', 'venues/', { venue: new_venue }, process.env.API_KEY, (err, apiResp) => {
@@ -43,6 +44,7 @@ router.post('/submit-new', (req, res) => {
       console.info('venue created');
       slack.Notify("venue-submission", "New venue created:\n" + JSON.stringify(new_venue, null, 4));
       // don't return API response because it only includes the ID, and client expects the whole venue
+      new_venue.id = apiResp.data.id;
       res.status(201).json({ status: 'success', venue: new_venue });
     }
   });

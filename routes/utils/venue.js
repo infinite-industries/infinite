@@ -3,7 +3,7 @@ const uuidv4 = require('uuid/v4');
 const Venue = function(init_obj){
 
   //required attributes
-  this.id = uuidv4();
+  // this.id = uuidv4();
   this.name = init_obj.name;
   this.slug = this.name.toLowerCase().replace(/ /g,"-");
 
