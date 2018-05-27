@@ -21,6 +21,17 @@ router.get('/', (req, res) => {
   })
 });
 
+router.get('/:id', (req, res) => {
+  makeAPICall('get', `venues/${req.params.id}`, {}, process.env.API_KEY, (err, apiResp) => {
+    if (err) {
+      console.warn(err);
+      res.status(500).json({ status: 'error getting venue'});
+    } else {
+      res.json(apiResp.data)
+    }
+  })
+})
+
 router.post('/submit-new', (req, res) => {
   let new_venue = new Venue(req.body);
 

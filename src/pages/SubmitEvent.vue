@@ -370,12 +370,8 @@
           time_end:"",
           image:"",
           social_image:"",
-          organizers:"",
           admission_fee:"none",
-          venue:"",
-          venue_name: "",
           venue_id: "",
-          address: "",
           brief_description:"",
           description:"",
           website_link:"",
@@ -422,7 +418,6 @@
 
         formData.append('event_data', JSON.stringify({
           ... this.new_event,
-          organizers: this.new_event.organizers ? this.new_event.organizers.split(',') : []
         }))
 
         formData.append('image', document.getElementById('event-image').files[0])
@@ -469,8 +464,6 @@
       selectVenue: function(venue) {
         console.log(venue);
         this.new_event.venue_id = venue.id;
-        this.new_event.address = venue.address;
-        this.new_event.venue_name = venue.name;
       },
       toggleVenueDropdown: function() {
         this.showAddVenue = !this.showAddVenue;
@@ -485,21 +478,25 @@
         let when_date = moment(ii_event.time_start).format('dddd, MMMM Do, YYYY')
         let when_time = moment(ii_event.time_start).format('h:mma') + " - " + moment(ii_event.time_end).format('h:mma')
 
-        this.promoHTML = `<h2>${ii_event.title}</h2>`;
-        this.promoHTML += `<p><b>When: </b>${when_date} ${when_time}</p>`;
-        this.promoHTML += `<p><b>Location: </b>${ii_event.address}</p> <p><br></p>`;
-        this.promoHTML += `<img src="${ii_event.image}" width="450px" height="auto">`;
+        Axios.get(`/venues/${ii_event.venue_id}`).then( response => {
+          console.log(response);
+          let address = response.data.venue.address
 
-        if(ii_event.admission_fee!=="none"){
-          this.promoHTML += `<p><b>Admission: </b>${ii_event.admission_fee}</p>`;
-        }
+          this.promoHTML = `<h2>${ii_event.title}</h2>`;
+          this.promoHTML += `<p><b>When: </b>${when_date} ${when_time}</p>`;
+          this.promoHTML += `<p><b>Location: </b>${address}</p> <p><br></p>`;
+          this.promoHTML += `<img src="${ii_event.image}" width="450px" height="auto">`;
 
-        this.promoHTML += `<p><b>Description: </b>${ii_event.description}</p>`;
-        this.promoHTML += `<p><b>Link for More Info: </b><a href="${ii_event.bitly_link}">${ii_event.bitly_link}</a></p>`;
-        this.promoHTML += `<p><b>Organizer Contact: </b>${ii_event.organizer_contact}</p>`;
+          if(ii_event.admission_fee!=="none"){
+            this.promoHTML += `<p><b>Admission: </b>${ii_event.admission_fee}</p>`;
+          }
 
-        console.log(this.promoHTML);
+          this.promoHTML += `<p><b>Description: </b>${ii_event.description}</p>`;
+          this.promoHTML += `<p><b>Link for More Info: </b><a href="${ii_event.bitly_link}">${ii_event.bitly_link}</a></p>`;
+          this.promoHTML += `<p><b>Organizer Contact: </b>${ii_event.organizer_contact}</p>`;
 
+          console.log(this.promoHTML);
+        })
       },
       onFileChange: function() {
         // files.length will be a 0 for no image, 1 for image

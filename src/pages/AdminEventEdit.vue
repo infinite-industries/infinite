@@ -20,20 +20,12 @@
             <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.slug"></td>
           </tr>
           <tr>
-            <td>When:</td>
-            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.when"></td>
-          </tr>
-          <tr>
             <td>Start Time:</td>
             <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.time_start"></td>
           </tr>
           <tr>
             <td>End Time:</td>
             <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.time_end"></td>
-          </tr>
-          <tr>
-            <td>Address:</td>
-            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.address"></td>
           </tr>
           <tr>
             <td>Admission Fee:</td>
@@ -52,32 +44,20 @@
             <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.fb_event_link"></td>
           </tr>
           <tr>
-            <td>Map Links:</td>
-            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.map_link"></td>
-          </tr>
-          <tr>
-            <td>Organizers:</td>
-            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.organizers"></td>
-          </tr>
-          <tr>
-            <td>Tags:</td>
-            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.tags"></td>
+            <td>Organizer Contact:</td>
+            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.organizer_contact"></td>
           </tr>
           <tr>
             <td>Ticket Link:</td>
             <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.ticket_link"></td>
           </tr>
           <tr>
-            <td>Venues:</td>
-            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.venues"></td>
+            <td>Venue ID:</td>
+            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.venue_id"></td>
           </tr>
           <tr>
             <td>Event Website:</td>
             <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.website_link"></td>
-          </tr>
-          <tr>
-            <td>Additional Web Links:</td>
-            <td><input type="text" class="admin-value-to-edit" v-model="values_to_edit.links"></td>
           </tr>
         </table>
         <v-btn @click="UpdateEvent()">Save</v-btn>

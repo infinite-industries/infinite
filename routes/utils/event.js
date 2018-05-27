@@ -32,9 +32,6 @@ const Event = function(init_obj){
   // this.when = moment(this.date).format('dddd, MMMM Do, YYYY') +" <br /> "+ moment(this.time_start).format('h:mma') +" - "+ moment(this.time_end).format('h:mma')
 
   //venue specific attributes
-  if(init_obj.hasOwnProperty('address')){
-    this.address = init_obj.address
-  }
   if(init_obj.hasOwnProperty('venue_id')){
     this.venue_id = init_obj.venue_id
   }
