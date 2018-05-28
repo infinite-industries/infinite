@@ -5,23 +5,24 @@ import Vuetify from 'vuetify';
 import VueLocalForage from '../node_modules/vlf/index.js'
 import VueSmoothScroll from 'vue-smoothscroll';
 
-import App from './App.vue';
+import App from './App.vue'
 
-import Home from './pages/Home.vue';
-import About from './pages/About.vue';
-import Admin from './pages/Admin.vue';
-import AdminEventEdit from './pages/AdminEventEdit.vue';
-import Contact from './pages/Contact.vue';
-import UserEvents from './pages/UserEvents.vue';
-import UserSettings from './pages/UserSettings.vue';
+import Home from './pages/Home.vue'
+import About from './pages/About.vue'
+import Admin from './pages/Admin.vue'
+import AdminEventEdit from './pages/AdminEventEdit.vue'
+import Contact from './pages/Contact.vue'
+import UserEvents from './pages/UserEvents.vue'
+import UserSettings from './pages/UserSettings.vue'
 import ListViewer from './pages/ListViewer.vue'
 import SubmitEvent from './pages/SubmitEvent.vue'
+import FourOhFour from './pages/404.vue'
 import Callback from './pages/Callback.vue'
 
 import GlobalEventBus from './helpers/GlobalEventBus.js'
 
 import { store } from './store/store.js'
-import { requireAuth } from "./helpers/Auth";
+import { requireAuth } from "./helpers/Auth"
 Vue.use(VueRouter);
 Vue.use(Vuetify);
 Vue.use(VueLocalForage);
@@ -88,6 +89,11 @@ const router = new VueRouter({
         path:'/submit-event',
         name: 'submit_event',
         component: SubmitEvent
+      },
+      {
+        path: '*',
+        name: 'error',
+        component: FourOhFour
       }
     ]
 })

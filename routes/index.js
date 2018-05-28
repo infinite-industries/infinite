@@ -20,6 +20,10 @@ const router = express.Router()
 
 router.use(bodyParser.json())
 
+router.get("/404", function (req, res) {
+  res.render('error-page');
+});
+
 router.get("/", function (req, res) {
   res.render('index');
 });
