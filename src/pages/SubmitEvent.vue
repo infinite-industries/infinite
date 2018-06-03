@@ -10,7 +10,7 @@
         <h3 class="form-label">Event Title<span class="required-field">*</span>:</h3>
       </v-flex>
       <v-flex xs12 sm8>
-        <v-text-field v-model="new_event.title" :rules="[v => !!v || 'Title is required']"></v-text-field>
+        <v-text-field class="event-title" v-model="new_event.title" :rules="[v => !!v || 'Title is required']"></v-text-field>
       </v-flex>
     </v-layout>
 
@@ -29,7 +29,7 @@
             readonly
             :rules="[v => !!v || 'Required']"
           ></v-text-field>
-          <v-date-picker v-model="new_event.date" no-title class="nomargin">
+          <v-date-picker v-model="new_event.date" no-title class="nomargin date-picker">
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
                 <v-btn flat color="primary" @click.native="cancel()">Cancel</v-btn>
@@ -76,7 +76,7 @@
             <v-btn flat primary @click="addDate">Add Date</v-btn>
           </v-card-actions>
         </v-card>
-        
+
       </v-flex>
     </v-layout>
 
