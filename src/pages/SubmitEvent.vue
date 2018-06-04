@@ -24,6 +24,7 @@
           <v-text-field
             slot="activator"
             label="Start Date"
+            class="event-start-date"
             v-model="new_event.date"
             prepend-icon="event"
             readonly
@@ -48,10 +49,10 @@
         <h3 class="form-label">Event Time<span class="required-field">*</span>:</h3>
       </v-flex>
       <v-flex xs12 sm4 class="some-padding-top">
-        <time-picker :date="new_event.date" :label="'Start Time:'" @changeTime="formattedTime => { new_event.time_start = formattedTime }"></time-picker>
+        <time-picker class="start-time" :date="new_event.date" :label="'Start Time:'" @changeTime="formattedTime => { new_event.time_start = formattedTime }"></time-picker>
       </v-flex>
       <v-flex xs12 sm4 class="some-padding-top">
-        <time-picker :date="new_event.date" :label="'End Time:'" @changeTime="formattedTime => { new_event.time_end = formattedTime }"></time-picker>
+        <time-picker class="stop-time" :date="new_event.date" :label="'End Time:'" @changeTime="formattedTime => { new_event.time_end = formattedTime }"></time-picker>
       </v-flex>
     </v-layout>
 
@@ -193,7 +194,7 @@
         <h3 class="form-label">Brief Description<span class="required-field">*</span>:</h3>
       </v-flex>
       <v-flex xs12 sm8>
-        <v-text-field label="A brief description for short-attention-span humans and webcrawlers" v-model="new_event.brief_description"></v-text-field>
+        <v-text-field class="brief-description" label="A brief description for short-attention-span humans and webcrawlers" v-model="new_event.brief_description"></v-text-field>
       </v-flex>
     </v-layout>
 
@@ -223,7 +224,7 @@
         <h3 class="form-label">Your Contact Email<span class="required-field">*</span>:</h3>
       </v-flex>
       <v-flex xs12 sm8>
-        <v-text-field label="We will send you a confirmation when your event is added" v-model="new_event.organizer_contact" :rules="[v => !!v || 'Organizer Contact is required', v => isEmail(v) || 'Must be a valid email address']"></v-text-field>
+        <v-text-field class="submitter-email" label="We will send you a confirmation when your event is added" v-model="new_event.organizer_contact" :rules="[v => !!v || 'Organizer Contact is required', v => isEmail(v) || 'Must be a valid email address']"></v-text-field>
       </v-flex>
     </v-layout>
 
