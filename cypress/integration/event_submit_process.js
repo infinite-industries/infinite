@@ -34,19 +34,8 @@ describe('Testing event submission flow', function() {
     cy.get('.stop-time .hour').type("10")
     cy.get('.stop-time .minute').type("00")
 
-    cy.fixture('images/event_sample_image.jpg').then(function(res) {
-      // it's hard to programmatically change an input[type=file]'s files property
-      // for security reasons; it can be overridden with a FileList, which cannot
-      // be created on its own, but we can get one from a DataTransfer object
-      // (used with drop events)
-      var dt = new DataTransfer();
-      dt.items.add(new File([res], 'event_sample_image.jpg'));
-      return cy.get('#event-image').then(function(els) {
-        var el = els[0];
-        el.files = dt.files;
-        el.dispatchEvent(new Event('change', { bubbles: true }));
-      })
-    });
+    // selectFile is a custom command; see cypress/support/commands.js
+    cy.get('#event-image').selectFile('images/event_sample_image.jpg');
 
     cy.get('.brief-description input').type("still testing")
     cy.get('.submitter-email input').type("test@te.st")
