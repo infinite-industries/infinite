@@ -37,9 +37,10 @@ describe('Testing event submission flow', function() {
     // selectFile is a custom command; see cypress/support/commands.js
     cy.get('#event-image').selectFile('images/event_sample_image.jpg');
 
+    cy.get('.venue').focus()
+    cy.get('.results-container > :first-child').click()
+
     cy.get('.brief-description input').type("still testing")
     cy.get('.submitter-email input').type("test@te.st")
-
-
   })
 })
