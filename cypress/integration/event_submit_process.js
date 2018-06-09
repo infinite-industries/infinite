@@ -42,5 +42,8 @@ describe('Testing event submission flow', function() {
 
     cy.get('.brief-description input').type("still testing")
     cy.get('.submitter-email input').type("test@te.st")
+
+    cy.get('.submission-btn').click()
+    cy.get('.collapsible-content.expanded')
   })
 })
