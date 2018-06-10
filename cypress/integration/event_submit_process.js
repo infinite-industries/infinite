@@ -4,23 +4,22 @@ describe('Testing event submission flow', function() {
     cy.visit('/submit-event')
   })
 
-  // it('Visits Submission page and check all fields', function() {
-  //   cy.contains('.form-label', 'Event Title')
-  //   cy.contains('.form-label', 'Event Date')
-  //   cy.contains('.form-label', 'Event Time')
-  //   cy.contains('.form-label', 'Event Image')
-  //   cy.contains('.form-label', 'Social Media Image')
-  //   cy.contains('.form-label', 'Select a Venue')
-  //   cy.contains('.form-label', 'Brief Description')
-  //   cy.contains('.form-label', 'Admission Fee')
-  //   cy.contains('.form-label', 'Your Contact Email')
-  //   cy.contains('.form-label', 'Event Website Link')
-  //   cy.contains('.form-label', 'Ticket Link')
-  //   cy.contains('.form-label', 'Facebook Event Link')
-  //   cy.contains('.form-label', 'Eventbrite Link')
-  //
-  //   cy.contains('Full Event Description')
-  // })
+  it('Visits Submission page and check all fields', function() {
+    cy.contains('.form-label', 'Event Title')
+    cy.contains('.form-label', 'Event Date')
+    cy.contains('.form-label', 'Event Time')
+    cy.contains('.form-label', 'Event Image')
+    cy.contains('.form-label', 'Social Media Image')
+    cy.contains('.form-label', 'Select a Venue')
+    cy.contains('.form-label', 'Brief Description')
+    cy.contains('.form-label', 'Admission Fee')
+    cy.contains('.form-label', 'Your Contact Email')
+    cy.contains('.form-label', 'Event Website Link')
+    cy.contains('.form-label', 'Ticket Link')
+    cy.contains('.form-label', 'Facebook Event Link')
+    cy.contains('.form-label', 'Eventbrite Link')
+   cy.contains('Full Event Description')
+  })
 
   it('Inputs dummy data into event submission form', function(){
     cy.get('.event-title input').type("Test Event")
@@ -45,5 +44,10 @@ describe('Testing event submission flow', function() {
 
     cy.get('.submission-btn').click()
     cy.get('.collapsible-content.expanded')
+  })
+
+  it('Submitted events not displayed immediately after submission', function() {
+    cy.visit('/')
+    cy.contains('.card h3', 'Test Event').should('not.exist')
   })
 })
