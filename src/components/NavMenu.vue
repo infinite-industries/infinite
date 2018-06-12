@@ -4,7 +4,7 @@
     <v-btn outline offset-y slot="activator">
       <v-icon>account_circle</v-icon>
     </v-btn>
-    <v-list style="background-color: white;">
+    <v-list id="account-list" style="background-color: white;">
       <v-list-tile v-for="item in getVisibleItems(nav_items)" :key="item.title" @click.stop="RouteTo(item)">
         <v-list-tile-title>{{ item.title }}</v-list-tile-title>
       </v-list-tile>
