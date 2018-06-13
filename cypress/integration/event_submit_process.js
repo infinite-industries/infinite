@@ -52,13 +52,7 @@ describe('Testing event submission flow', function() {
   })
 
   it('Admin user can verify event', function() {
-    cy.visit('/', {
-      onBeforeLoad: function(win) {
-        // before the page finishes loading, set the access_token and id_token in local storage
-        win.localStorage.setItem('access_token', Cypress.env('admin_access_token'))
-        win.localStorage.setItem('id_token', Cypress.env('admin_id_token'))
-      }
-    })
+    cy.visitAsUser('/', 'test-admin')
     cy.get('nav .main-nav .menu__activator button').click()
     cy.get('#account-list li').contains('Admin').click()
     cy.location('pathname').should('include', 'admin')

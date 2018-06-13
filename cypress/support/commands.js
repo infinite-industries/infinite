@@ -37,3 +37,17 @@ Cypress.Commands.add("selectFile", { prevSubject: 'element' }, (subject, file, o
     subject[0].dispatchEvent(new Event('change', { bubbles: true }));
   });
 });
+
+import { getIDTokenForUser, getAccessToken } from './login_utils';
+
+Cypress.Commands.add('visitAsUser', {}, (url, user, options) => {
+  // get user info from file
+  cy.fixture('users/' + user + '.json').then(function(res) {
+    cy.visit(url, {
+      onBeforeLoad: function(win) {
+        win.localStorage.setItem('access_token', getAccessToken(res));
+        win.localStorage.setItem('id_token', getIDTokenForUser(res));
+      }
+    });
+  });
+});
