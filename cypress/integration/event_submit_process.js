@@ -1,10 +1,9 @@
 describe('Testing event submission flow', function() {
 
-  beforeEach(function(){
-    cy.visit('/submit-event')
-  })
+  var EVENT_NAME = 'Test Event'
 
   it('Visits Submission page and check all fields', function() {
+    cy.visit('/submit-event')
     cy.contains('.form-label', 'Event Title')
     cy.contains('.form-label', 'Event Date')
     cy.contains('.form-label', 'Event Time')
@@ -22,7 +21,8 @@ describe('Testing event submission flow', function() {
   })
 
   it('Inputs dummy data into event submission form', function(){
-    cy.get('.event-title input').type("Test Event")
+    cy.visit('/submit-event')
+    cy.get('.event-title input').type(EVENT_NAME)
 
     cy.get('.event-start-date i').click()
     cy.contains('13').click()       // lucky number ;)
@@ -48,7 +48,7 @@ describe('Testing event submission flow', function() {
 
   it('Submitted events not displayed immediately after submission', function() {
     cy.visit('/')
-    cy.contains('.card h3', 'Test Event').should('not.exist')
+    cy.contains('.card h3', EVENT_NAME).should('not.exist')
   })
 
   it('Admin user can verify event', function() {
@@ -56,7 +56,7 @@ describe('Testing event submission flow', function() {
     cy.get('nav .main-nav .menu__activator button').click()
     cy.get('#account-list li').contains('Admin').click()
     cy.location('pathname').should('include', 'admin')
-    cy.contains('.admin-table tr:last-child td', "Test Event")
+    cy.contains('.admin-table tr:last-child td', EVENT_NAME)
     cy.get('.admin-table tr:last-child button').contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
     cy.get('button').contains('Verify').click()
@@ -65,6 +65,6 @@ describe('Testing event submission flow', function() {
 
   it('Event is displayed after verification', function() {
     cy.visit('/')
-    cy.contains('.card h3', 'Test Event').should('exist')
+    cy.contains('.card h3', EVENT_NAME).should('exist')
   })
 })
