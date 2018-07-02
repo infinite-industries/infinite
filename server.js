@@ -5,12 +5,13 @@ const nunjucks = require('nunjucks');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const fs = require('fs')
-const secretString = fs.readFileSync('./keys/1nfinite.pem');
+
+dotenv.load(); //get configuration file from .env
+
+const secretString = fs.readFileSync(process.env.SECRET_STRING_FILE);
 
 const app = express();
 app.set('superSecret', secretString);
-
-dotenv.load(); //get configuration file from .env
 
 app.use(bodyParser.urlencoded({
     extended: true
