@@ -1,42 +1,30 @@
 import { CLIENT_ID, CLIENT_DOMAIN } from '../../src/clientConfig';
+import { sign } from 'jsonwebtoken';
 
 /**
  * constructs an JWT ID token for a given user's information
- * @param user a object that should contain at least a name /
- * email and whether the user is an admin
- * @returns a JWT token for the user
+ * @param user an object containing information for the body of the token
+ * @param cert secret used to sign the token
+ * @returns a JWT for the user
  */
-export function getIDTokenForUser(user) {
-  return encodeToken(Object.assign({}, user, {
+export function getIDTokenForUser(user, cert) {
+  return sign(Object.assign({}, user, {
     aud: CLIENT_ID,
-    iss: "https://" + CLIENT_DOMAIN + "/",
-    updated_at: (new Date()).toISOString(),
-    iat: parseInt(Date.now() / 1000),
-    exp: parseInt(Date.now() / 1000) + 36000
-  }))
+    iss: "https://infinite.industries/"
+  }), cert, { algorithm: 'RS256', expiresIn: 60 * 15 });
 }
 
 /**
  * constructs a JWT access token for a given user's information
+ * @param user an object containing information for the body of the token
+ * @param cert secret used to sign the token
+ * @returns a JWT for the user
  */
-export function getAccessToken(user) {
-  return encodeToken({
-    iss: "https://" + CLIENT_DOMAIN + "/",
-    sub: user.sub,
-    aud: [
-      "https://" + CLIENT_DOMAIN + "/api/v2/",
-      "https://" + CLIENT_DOMAIN + "/userinfo"
-    ],
-    iat: parseInt(Date.now() / 1000),
-    exp: parseInt(Date.now() / 1000) + 7200,
+export function getAccessTokenForUser(user, cert) {
+  return sign({
+    iss: "https://infinite.industries/",
+    sub: user.name,
     azp: CLIENT_ID,
     scope: "openid profile"
-  });
-}
-
-function encodeToken(body) {
-  return [
-    Buffer.from('{"typ":"JWT"}', 'ascii').toString('base64'),
-    Buffer.from(JSON.stringify(body), 'ascii').toString('base64')
-  ].join('.');
+  }, cert, { algorithm: 'RS256', expiresIn: 60 * 60 });
 }

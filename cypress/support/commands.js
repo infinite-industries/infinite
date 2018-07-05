@@ -38,16 +38,19 @@ Cypress.Commands.add("selectFile", { prevSubject: 'element' }, (subject, file, o
   });
 });
 
-import { getIDTokenForUser, getAccessToken } from './login_utils';
+import { getIDTokenForUser, getAccessTokenForUser } from './login_utils';
 
 Cypress.Commands.add('visitAsUser', {}, (url, user, options) => {
+  // load private key for signing token (can't get `fs` to work in this context)
+  cy.fixture(Cypress.env('auth_token_signing_key')).then(function(key) {
   // get user info from file
-  cy.fixture('users/' + user + '.json').then(function(res) {
-    cy.visit(url, {
-      onBeforeLoad: function(win) {
-        win.localStorage.setItem('access_token', getAccessToken(res));
-        win.localStorage.setItem('id_token', getIDTokenForUser(res));
-      }
+    cy.fixture('users/' + user + '.json').then(function(res) {
+      cy.visit(url, {
+        onBeforeLoad: function(win) {
+          win.localStorage.setItem('access_token', getAccessTokenForUser(res, key));
+          win.localStorage.setItem('id_token', getIDTokenForUser(res, key));
+        }
+      });
     });
   });
 });
