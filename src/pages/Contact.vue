@@ -1,9 +1,9 @@
 // Contact.vue
 <template>
-  <v-container fluid id="static-page-wrapper">
+  <v-container id="static-page-wrapper">
     <h4>Contact Us</h4>
 
-          Comments, suggestions and bug reports highly apprecited!
+          Comments, suggestions and bug reports highly appreciated!
 
           <v-form v-model="valid" lazy-validation>
           <v-text-field

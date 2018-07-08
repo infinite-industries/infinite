@@ -32,20 +32,11 @@ const Event = function(init_obj){
   // this.when = moment(this.date).format('dddd, MMMM Do, YYYY') +" <br /> "+ moment(this.time_start).format('h:mma') +" - "+ moment(this.time_end).format('h:mma')
 
   //venue specific attributes
-  if(init_obj.hasOwnProperty('address')){
-    this.address = init_obj.address
-  }
-  if(init_obj.hasOwnProperty('map_link')){
-    this.map_link = init_obj.map_link
-  }
   if(init_obj.hasOwnProperty('venue_id')){
     this.venue_id = init_obj.venue_id
   }
 
   // Organizer info -- will add more for venue submitting own event case
-  if(init_obj.hasOwnProperty('organizers')){
-    this.organizers = init_obj.organizers
-  }
   if(init_obj.hasOwnProperty('organizer_contact')){
     this.organizer_contact = init_obj.organizer_contact
   }
@@ -98,35 +89,10 @@ const Event = function(init_obj){
 }
 
 Event.prototype.Notify = function(){
-  // TODO (CAW) Why copy all this over to a string like this, can we just use stringify?
-  var event_payload = `\n\{
-        "id":"${this.id}",
-        "title":"${this.title}",
-        "slug":"${this.slug}",
-        "time_start":"${this.time_start}",
-        "time_end": "${this.time_end}",
-        "multi_day": "${this.multi_day}",
-        "additional_dates": "${this.additional_dates}",
-        "website_link": "${this.website_link}",
-        "image":"${this.image}",
-        "social_image":"${this.social_image}",
-        "venues":["${this.venues}"],
-        "admission_fee": "${this.admission_fee}",
-        "address": "${this.address}",
-        "organizers":["${this.organizers}"],
-        "map_link":"${this.map_link}",
-        "brief_description":"${this.brief_description}",
-        "description":"${this.description}",
-        "links":["none"],
-        "ticket_link":"${this.ticket_link}",
-        "fb_event_link":"${this.fb_event_link}",
-        "eventbrite_link":"${this.eventbrite_link}",
-        "bitly_link":"${this.bitly_link}",
-        "tags":["not-yet-implemented"]
-      \}`;
+  var event_payload = JSON.stringify(this, null, "\t")
 
-      let slack_channel = process.env.ENV == 'prod' ? 'submission' : 'test'
-      slack.Notify(slack_channel,"Review Me. Copy Me. Paste Me. Deploy Me." + event_payload + "\n Contact: "+this.organizer_contact);
+  let slack_channel = process.env.ENV == 'prod' ? 'submission' : 'test'
+  slack.Notify(slack_channel,"Review Me. Copy Me. Paste Me. Deploy Me.\n" + event_payload + "\n Contact: "+this.organizer_contact);
 }
 
 
