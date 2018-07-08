@@ -10,3 +10,4 @@ public/js/*
 .idea
 analytics.sqlite
 clientConfig.js
+cypress.env.json

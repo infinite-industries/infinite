@@ -77,8 +77,22 @@ SLACK_WEBHOOK_EVENT_SUBMISSION=################################################
 
 ...
 ```
+See also .env.sample
 
 Follow the sample template in src/clientConfig.sample.js to setup client settings for authO
+
+## Running Tests
+
+1. Create cypress.env.json by copying cypress.env.json.sample
+2. Launch the Infinite Industries back-end (it currently lacks a test mode)
+```bash
+$ node index.js
+```
+3. Start the portal server and Cypress runner
+```bash
+$ npm test
+```
+Alternatively, you can run `npm run start-test` and `npm run test-open` separately. `start-test` starts the server using a custom public key for verifying auth tokens, so our tests can generate them without needing to request them from Auth0.
 
 ## License
 

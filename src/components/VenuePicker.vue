@@ -1,8 +1,8 @@
 <template>
   <div class="component-container">
-    <input type="text" class="text-input" v-model="searchterm" placeholder="Search for a venue" @focusin="showDropdownContent()" @focusout="hideDropdownContent()" @keyup.enter="hitEnter()"/>
+    <input type="text" class="text-input venue" v-model="searchterm" placeholder="Search for a venue" @focusin="showDropdownContent()" @focusout="hideDropdownContent()" @keyup.enter="hitEnter()"/>
     <div class="results-container" v-if="show">
-      <div href="#" v-for="venue in queryResults" @mousedown="selectVenue(venue)">
+      <div href="#" v-for="venue in queryResults" v-bind:key="venue.id" @mousedown="selectVenue(venue)">
         {{venue.name}}
         <p>{{venue.address}}</p>
       </div>
