@@ -83,15 +83,16 @@ Follow the sample template in src/clientConfig.sample.js to setup client setting
 
 ## Running Tests
 
-1. Start the server in test mode
+1. Create cypress.env.json by copying cypress.env.json.sample
+2. Launch the Infinite Industries back-end (it currently lacks a test mode)
 ```bash
-$ npm run start-test
+$ node index.js
 ```
-This starts the server using a custom public key for verifying auth tokens, so our tests can generate them without needing to request them from Auth0.
-2. Start the Cypress runner
+3. Start the portal server and Cypress runner
 ```bash
-$ npm run test-open
+$ npm test
 ```
+Alternatively, you can run `npm run start-test` and `npm run test-open` separately. `start-test` starts the server using a custom public key for verifying auth tokens, so our tests can generate them without needing to request them from Auth0.
 
 ## License
 
