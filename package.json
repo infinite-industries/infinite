@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "start-dev": "concurrently \"npm run watchify\" \"nodemon ./server.js\"",
+    "start-test": "concurrently \"npm run watchify\" \"SECRET_STRING_FILE=\"./cypress/fixtures/keys/1nfinite_testing.pem\" nodemon ./server.js\"",
     "watchify": "watchify -vd -p browserify -t envify -d -e ./src/main.js -o ./public/js/dist.js",
     "production-build": "NODE_ENV=production browserify -t envify -e ./src/main.js | uglifyjs -c -m > ./public/js/dist.js",
     "test-open": "./node_modules/.bin/cypress open"

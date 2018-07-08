@@ -77,8 +77,21 @@ SLACK_WEBHOOK_EVENT_SUBMISSION=################################################
 
 ...
 ```
+See also .env.sample
 
 Follow the sample template in src/clientConfig.sample.js to setup client settings for authO
+
+## Running Tests
+
+1. Start the server in test mode
+```bash
+$ npm run start-test
+```
+This starts the server using a custom public key for verifying auth tokens, so our tests can generate them without needing to request them from Auth0.
+2. Start the Cypress runner
+```bash
+$ npm run test-open
+```
 
 ## License
 
