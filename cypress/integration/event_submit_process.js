@@ -13,6 +13,10 @@ describe('Testing event submission flow', function() {
       // delete the event
       cy.get('button').contains('Delete').click()
       cy.get('.dialog.dialog--active button').contains('Kill').click()
+
+      // event should no longer be present
+      cy.visit('/')
+      cy.contains('.card h3', EVENT_NAME).should('not.exist')
     });
   });
 
