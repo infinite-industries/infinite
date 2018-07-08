@@ -2,6 +2,20 @@ describe('Testing event submission flow', function() {
 
   var EVENT_NAME = 'Test Event'
 
+  after(function() {
+    // get the ID of the event
+    cy.visitAsUser('/', 'test-admin')
+    cy.contains('.card', EVENT_NAME).contains('button', 'More Info').click()
+    cy.url().then((url) => {
+      // open the admin-event-edit page for the event
+      cy.visit('/admin-event-edit/' + url.split('/').pop())
+
+      // delete the event
+      cy.get('button').contains('Delete').click()
+      cy.get('.dialog.dialog--active button').contains('Kill').click()
+    });
+  });
+
   it('Visits Submission page and check all fields', function() {
     cy.visit('/submit-event')
     cy.contains('.form-label', 'Event Title')
