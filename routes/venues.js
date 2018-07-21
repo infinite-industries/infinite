@@ -11,7 +11,7 @@ router.use(bodyParser.urlencoded({
 }));
 
 router.get('/', (req, res) => {
-  makeAPICall('get', 'venues', {}, process.env.API_KEY, (err, apiResp) => {
+  makeAPICall('get', 'venues', {}, process.env.API_KEY, req.token, (err, apiResp) => {
     if (err) {
       console.warn(err);
       res.status(500).json({ status: 'error getting venues'});
@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  makeAPICall('get', `venues/${req.params.id}`, {}, process.env.API_KEY, (err, apiResp) => {
+  makeAPICall('get', `venues/${req.params.id}`, {}, process.env.API_KEY, req.token, (err, apiResp) => {
     if (err) {
       console.warn(err);
       res.status(500).json({ status: 'error getting venue'});
@@ -36,7 +36,7 @@ router.post('/submit-new', (req, res) => {
 
   let new_venue = new Venue(req.body);
 
-  makeAPICall('post', 'venues/', { venue: new_venue }, process.env.API_KEY, (err, apiResp) => {
+  makeAPICall('post', 'venues/', { venue: new_venue }, process.env.API_KEY, req.token, (err, apiResp) => {
     if (err) {
       console.warn(err);
       res.status(500).json({ status: 'error creating venue' });

@@ -9,6 +9,8 @@ const fs = require('fs')
 dotenv.load(); //get configuration file from .env
 
 const secretString = fs.readFileSync(process.env.SECRET_STRING_FILE);
+const JWTParser = require(__dirname + '/routes/utils/JWTParser')
+
 
 const app = express();
 app.set('superSecret', secretString);
@@ -39,13 +41,13 @@ const calendar = require('./routes/calendar');
 const venues = require('./routes/venues');
 
 app.use(express.static('public'));
-app.use('/', routes);
-app.use('/admin', admin);
-app.use('/events', events);
-app.use('/lists', lists);
-app.use('/users', users);
-app.use('/calendar', calendar);
-app.use('/venues', venues);
+app.use('/', [JWTParser, routes]);
+app.use('/admin', [JWTParser, admin]);
+app.use('/events', [JWTParser, events]);
+app.use('/lists', [JWTParser, lists]);
+app.use('/users', [JWTParser, users]);
+app.use('/calendar', [JWTParser, calendar]);
+app.use('/venues', [JWTParser, venues]);
 app.use((req, res) => {
     // catch all, returns index so that we can let the spa decide what to do
     res.render('index');

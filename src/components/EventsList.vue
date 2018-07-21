@@ -44,8 +44,9 @@
 <script>
 
 import EventCard from './EventCard.vue'
+import { isLoggedIn } from "../helpers/Auth";
 
-  export default {
+export default {
     name:'EventsList',
     props: ['type', 'standalone','id'],
     data: function() {
@@ -98,10 +99,18 @@ import EventCard from './EventCard.vue'
 
       },
       my_lists: function(){
+        if (!isLoggedIn()) {
+          return []
+        }
+
         return this.$store.getters.GetMyLists
       },
       my_other_lists: function(){
-      // This list excludes current active list
+        if (!isLoggedIn()) {
+          return []
+        }
+
+        // This list excludes current active list
         if(this.$store.state.loaded_from_api){
           const all_lists = this.$store.getters.GetMyLists
           return all_lists.filter(list => list.id !== this.id)

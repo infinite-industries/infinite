@@ -1,5 +1,6 @@
 const express = require('express');
 const jwtAuthenticator = require(__dirname + '/utils/jwtAuthenticator')
+const JWTParser = require(__dirname + '/utils/JWTParser')
 const router = express.Router();
 const axios = require('axios')
 const bodyParser = require('body-parser')
@@ -12,8 +13,8 @@ router.use(bodyParser.urlencoded({
 }));
 
 // List unverified non-expired events
-router.get('/list-unverified', [jwtAuthenticator], function(req, res) {
-  makeAPICall('get', 'events/current/non-verified', {}, null, (err, apiRes) => {
+router.get('/list-unverified', [jwtAuthenticator()], function(req, res) {
+  makeAPICall('get', 'events/current/non-verified', {}, null, req.token, (err, apiRes) => {
     if (err) {
       console.warn('error retrieving events:' + err);
       res.status(500).json({"error": "error retrieving events: " + err})
@@ -39,12 +40,12 @@ router.get('/list-unverified', [jwtAuthenticator], function(req, res) {
 })*/
 
 // Update specific event info
-router.post('/update-event', [jwtAuthenticator], function(req, res){
+router.post('/update-event', [jwtAuthenticator()], function(req, res){
   const id = req.body.id
   const event = req.body.data
 
   console.log(`handling request for update-event "${id}"`)
-  makeAPICall('put', `events/${id}`, { event }, process.env.API_KEY, err => {
+  makeAPICall('put', `events/${id}`, { event }, process.env.API_KEY, req.token, err => {
     if (err) {
       return res.status(500).json({status: 'fail', error: err})
     }
@@ -54,9 +55,9 @@ router.post('/update-event', [jwtAuthenticator], function(req, res){
 })
 
 // Delete specific event
-router.post('/delete-event', [jwtAuthenticator], function(req, res){
+router.post('/delete-event', [jwtAuthenticator()], function(req, res){
   let id = req.body.id
-  makeAPICall('delete', `events/${id}`, null, process.env.API_KEY, err => {
+  makeAPICall('delete', `events/${id}`, null, process.env.API_KEY, req.token, err => {
     if (err)
       return res.status(500).json({ status: 'fail', error: err })
 
@@ -65,10 +66,10 @@ router.post('/delete-event', [jwtAuthenticator], function(req, res){
 })
 
 // Verify specific event
-router.post('/verify-event/:id', [jwtAuthenticator], (req, res) => {
+router.post('/verify-event/:id', [jwtAuthenticator()], (req, res) => {
   const id = req.params.id
   console.log(`handling request to verify event "${id}"`)
-  makeAPICall('put', `events/verify/${id}`, {}, process.env.API_KEY, err => {
+  makeAPICall('put', `events/verify/${id}`, {}, process.env.API_KEY, req.token, err => {
     if (err)
       return res.status(500).json({ status: 'fail', error: err })
 

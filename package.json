@@ -21,7 +21,7 @@
   "dependencies": {
     "addtocalendar": "^1.5.3",
     "async": "^2.6.0",
-    "auth0-js": "^9.4.2",
+    "auth0-js": "^9.5.1",
     "aws-sdk": "^2.187.0",
     "axios": "^0.16.2",
     "body-parser": "^1.18.1",

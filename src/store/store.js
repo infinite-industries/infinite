@@ -226,11 +226,15 @@ export const store = new Vuex.Store({
           context.commit('UPDATE_USER_DATA', _response.data)
         })
         .catch(function (error) {
-          console.log(error);
-          ComponentEventBus.$emit('SHOW_ALERT', {
-            message: "Hrrmm... unable to get your data. Please contact us and we will figure out what went wrong."
+          console.log(`no user data: ${error}`);
+          context.commit('UPDATE_USER_DATA', {
+            user_settings: {
+              logged_in: false
+            }
           })
-
+          /*ComponentEventBus.$emit('SHOW_ALERT', {
+            message: "Hrrmm... unable to get your data. Please contact us and we will figure out what went wrong."
+          })*/
         });
     },
     LoadAllLocalEventData: (context, payload) => {
