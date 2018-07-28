@@ -4,7 +4,9 @@ import Axios from 'axios'
 import _ from 'lodash'
 
 import ComponentEventBus from '../helpers/ComponentEventBus'
-import Admin from './modules/admin'
+
+import admin from './modules/admin'
+import ui from './modules/ui'
 
 import { getUsername, isAdmin, logout } from '../helpers/Auth'
 
@@ -12,18 +14,23 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   modules:{
-    admin: Admin
+    admin,
+    ui
   },
   state:{
     current_event_id: null,
     current_event: {},
     loaded_from_api: false,
+
+    all_venues: [],
+
     user_settings:{
       logged_in: false,
       admin_role: false,
       username: "",
       associated_venues: []
     },
+
     current_list:{},
 
     lists_my:[],
@@ -35,10 +42,12 @@ export const store = new Vuex.Store({
     editable_event: {},      // currently unused
   },
   getters:{
+    GetAllVenues: state => {
+      return state.all_venues;
+    },
     GetMyLists: state => {
       return state.lists_my;
     },
-
     GetListsIFollow: state => {
       return state.lists_follow;
     },
@@ -74,6 +83,9 @@ export const store = new Vuex.Store({
     },
     UPDATE_LOCALIZED_EVENTS: (state, payload) => {
       state.all_local_events = payload
+    },
+    UPDATE_ALL_VENUES:(state, payload) => {
+      state.all_venues = payload
     },
     PUSH_NEW_LIST: (state, payload) => {
       state.lists_my.push(payload)
@@ -238,9 +250,25 @@ export const store = new Vuex.Store({
         });
     },
     LoadAllLocalEventData: (context, payload) => {
+      // Axios.get('/events/current/verified')
       Axios.get('/events')
         .then(function (_response) {
           context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
+        })
+        .catch(function (error) {
+          console.log(error);
+          ComponentEventBus.$emit('SHOW_ALERT', {
+            message: "Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong."
+          })
+
+        });
+    },
+    LoadAllVenueData: (context, payload) => {
+      // Axios.get('/events/current/verified')
+      Axios.get('/venues')
+        .then(function (_response) {
+          console.log(_response.data)
+          context.commit('UPDATE_ALL_VENUES', _response.data.venues)
         })
         .catch(function (error) {
           console.log(error);

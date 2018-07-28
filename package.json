@@ -30,6 +30,7 @@
     "express": "^4.15.4",
     "fs-js": "^1.0.6",
     "fsevents": "^1.2.4",
+    "gsap": "^2.0.1",
     "ics": "^2.7.0",
     "jsonwebtoken": "^8.2.1",
     "jwt-decode": "^2.2.0",

@@ -15,7 +15,7 @@
   <meta name="theme-color" content="#0000ff">
 
   <meta property="author" content="infinte industries">
-  <meta property="article:publisher" content="https://www.facebook.com/medium">
+  <meta property="article:publisher" content="https://www.facebook.com/infinite.dot.industries/">
   <meta property="article:author" content="https://medium.com/@dima_strakovsky">
 
   <meta property="og:title" content="{{event.title}}" />
@@ -64,15 +64,15 @@
 			  integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E="
 			  crossorigin="anonymous"></script>
 
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+
   <link href="/css/style.css" rel="stylesheet">
   <link href="/css/event-page.css" rel="stylesheet">
 
+
+
 </head>
 <body>
-    <script>
-      // var when_date = moment(event.time_start).format('dddd, MMMM Do, YYYY');
-      // var when_time = moment(event.time_start).format('h:mma') + " - " + moment(event.time_end).format('h:mma');
-    </script>
     <div class="container event-heading">
       <div class="row">
         <div class="col s10">
@@ -84,12 +84,37 @@
           <a href="{{site_url}}"><i class="medium material-icons">close</i></a>
         </div>
       </div>
+
+      <div class="row">
+        <div class="col s10">
+          <div class="ii-event-actions">
+            {% if event.hasOwnProperty('map_link') and event.map_link!="none" %}
+            <div class="ii-social-button" onclick="mapLink()" style="background-color: rgb(126, 66, 179)">
+              <i class="fas fa-map-marker-alt ii-social-icon"></i>
+              <span>Directions</span>
+            </div>
+            {% endif %}
+
+            <div class="infinite-dropdown ii-social-button add-event-to-cal dropbtn" onclick="toggleDropdown()" style="background-color: rgb(38, 186, 71)">
+              <i class="fas fa-calendar-alt ii-social-icon"></i>
+              <span>Add to Calendar</span>
+              <div id="calDropdown" class="infinite-dropdown-content">
+                <a href='javascript:addToCalendar(0)'>iCal</a>
+                <a href='javascript:addToCalendar(1)'>Outlook</a>
+                <a href='javascript:addToCalendar(2)'>Google Calendar</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row">
         <div class="col s12">
           <img src="{{event.image}}" width="100%" height="auto" />
         </div>
       </div>
     </div>
+
     <div class="container event-description">
       <div class="ii-event-actions">
         <div class="ii-social-button" onclick="fbShare()" style="background-color: rgb(66, 102, 178)">
@@ -106,6 +131,8 @@
           <span>Link</span>
         </div>
         {% endif %}
+      </div>
+      <!-- <div class="ii-event-actions ">
         {% if event.hasOwnProperty('map_link') and event.map_link!="none" %}
         <div class="ii-social-button" onclick="mapLink()" style="background-color: rgb(126, 66, 179)">
           <i class="fas fa-map-marker-alt ii-social-icon"></i>
@@ -113,15 +140,16 @@
         </div>
         {% endif %}
 
-        <div class="infinite-dropdown ii-social-button dropbtn" onclick="toggleDropdown()" style="background-color: rgb(38, 186, 71)">
+        <div class="infinite-dropdown ii-social-button add-event-to-cal dropbtn" onclick="toggleDropdown()" style="background-color: rgb(38, 186, 71)">
           <i class="fas fa-calendar-alt ii-social-icon"></i>
-          <span>Download</span>
+          <span>Add to Calendar</span>
           <div id="calDropdown" class="infinite-dropdown-content">
             <a href='javascript:addToCalendar(0)'>iCal</a>
             <a href='javascript:addToCalendar(1)'>Outlook</a>
             <a href='javascript:addToCalendar(2)'>Google Calendar</a>
           </div>
         </div>
+      </div> -->
 
         <script>
           function fbShare() {
@@ -157,9 +185,9 @@
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             InfiniteAnalytics("{{id}}", "load_view", "", "{{site_url}}")
-            //document.getElementById('facfb-share-buttonebook_share').addEventListener('click', function() {
-              //console.log('!!! foo')
-            //})
+            document.getElementById('facfb-share-buttonebook_share').addEventListener('click', function() {
+              console.log('!!! foo')
+            })
         })
 
         function InfiniteAnalytics(id, type, calType, site_url) {
@@ -210,7 +238,7 @@
             } else {
               InfiniteAnalytics("{{id}}", "calendar_add", "Outlook", "{{site_url}}");
             }
-            window.open(`/calendar?title=${encodeURIComponent(title)}&description=${encodeURIComponent(desc)}&location=${encodeURIComponent(location)}&time_start=${encodeURIComponent(time_start)}&time_end=${encodeURIComponent(time_end)}`);
+            window.location = `/calendar?title=${encodeURIComponent(title)}&description=${encodeURIComponent(desc)}&location=${encodeURIComponent(location)}&time_start=${encodeURIComponent(time_start)}&time_end=${encodeURIComponent(time_end)}`;
           } else { // google cal
             InfiniteAnalytics("{{id}}", "calendar_add", "Google Calendar", "{{site_url}}");
             const time_start_formatted = moment(time_start).format('YYYYMMDDTHHmmss');
@@ -219,7 +247,7 @@
           }
         }
         </script>
-      </div>
+
 
       {% if event.hasOwnProperty('admission_fee') and event.admission_fee!="none" %}
         <div class="row">
@@ -281,18 +309,46 @@
       fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
-      // $( "#facebook_share" ).click(function() {
-      //   console.log('facebook_share!!!!');
-      // });
-      // var facebookShare = document.querySelector('[id="facebook_share"]');
-      // facebookShare.onclick = function(e) {
-      //   console.log('Hi!')
-      //   e.preventDefault();
-      //   console.log('sfasdfs')
-      //   var facebookWindow = window.open('https://www.facebook.com/sharer/sharer.php?u=' + document.URL, 'facebook-popup', 'height=350,width=600');
-      //   if(facebookWindow.focus) { facebookWindow.focus(); }
-      //     return false;
-      // };
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+        (function (d, w, c) {
+            (w[c] = w[c] || []).push(function() {
+                try {
+                    w.yaCounter47982824 = new Ya.Metrika2({
+                        id:47982824,
+                        clickmap:true,
+                        trackLinks:true,
+                        accurateTrackBounce:true,
+                        webvisor:true
+                    });
+                } catch(e) { }
+            });
+
+            var n = d.getElementsByTagName("script")[0],
+                s = d.createElement("script"),
+                f = function () { n.parentNode.insertBefore(s, n); };
+            s.type = "text/javascript";
+            s.async = true;
+            s.src = "https://mc.yandex.ru/metrika/tag.js";
+
+            if (w.opera == "[object Opera]") {
+                d.addEventListener("DOMContentLoaded", f, false);
+            } else { f(); }
+        })(document, window, "yandex_metrika_callbacks2");
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/47982824" style="position:absolute; left:-9999px;" alt="" /></div></noscript> -->
+    <!-- /Yandex.Metrika counter -->
+
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-73795062-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments)};
+      gtag('js', new Date());
+
+      gtag('config', 'UA-73795062-1');
+    </script>
+
     </script>
   </body>
 </html>

@@ -1,15 +1,14 @@
 <template>
-    <v-container fluid>
-      <!-- <venue-picker :venues="venues"></venue-picker> -->
-      <h1>Upcoming Events:</h1>
-      <events-list></events-list>
-    </v-container>
+  <div>
+    <ii-list-viewer :calendar_events="events"/>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
 
-import EventsList from '../components/EventsList.vue'
+import ListViewer from '../components/ii-list-viewer.vue'
+// import EventsList from '../components/EventsList.vue'
 // import VenuePicker from '../components/VenuePicker.vue'
 
 export default {
@@ -29,11 +28,6 @@ export default {
       return this.$store.getters.GetUser.admin_role
     }
   },
-  methods: {
-    debug: function() {
-      
-    }
-  },
   mounted: function() {
     this.$store.dispatch('LoadAllLocalEventData')
     console.log("TEST HOME");
@@ -45,9 +39,11 @@ export default {
     // })
   },
   components:{
-    'events-list': EventsList,
-    // 'venue-picker': VenuePicker
+    'ii-list-viewer': ListViewer
   }
 
 }
 </script>
+
+
+<style scoped></style>

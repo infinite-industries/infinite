@@ -1,48 +1,42 @@
 <template>
-  <v-app id="infinite-industries">
-    <v-toolbar class="deep-purple" dark fixed>
-      <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
-      <v-toolbar-title @click="RouteTo('/')" class="clickable">
-        <span class="hidden-sm-and-down">Infinite Industries</span>
-        <span class="hidden-md-and-up">I.I</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn outline @click.stop="RouteTo('/submit-event')">
-        <span class="hidden-sm-and-down">Submit Your Event</span>
-        <span class="hidden-md-and-up">SUBMIT</span>
-      </v-btn>
-      <v-btn outline @click.stop="OpenEmailSubscribe()">
-        <span class="hidden-sm-and-down">Subscribe to our Mail List</span>
-        <span class="hidden-md-and-up">SUBSCRIBE</span>
-      </v-btn>
-      <nav-menu></nav-menu>
-    </v-toolbar>
-    <main id="content-wrapper">
-      <notify-user></notify-user>
+  <div>
+    <!-- Toolbar and Nav -->
+    <ii-toolbar />
+    <div id="ii-container">
+      <!-- Notifications -->
+      <ii-notifications />
+      <!-- Content -->
       <router-view></router-view>
-    </main>
-  </v-app>
+    </div>
+    <!-- PopUps and Modals -->
+      <!-- Regular Old Modal -->
+      <ii-modal />
+      <!-- iPhone-specific save button to desktop -->
+      <ii-iphone-save-button />
+  </div>
 </template>
 
 <script>
 
-import NavMenu from './components/NavMenu.vue'
-import NotifyUser from './components/NotifyUser.vue'
+import Toolbar from './components/ii-toolbar.vue'
+import Notifications from './components/ii-notifications.vue'
+import IphoneSaveButton from './components/ii-iphone-save-button.vue'
+import Modal from './components/ii-modal.vue'
 
-import EventsFromStore from './helpers/ComponentEventBus.js'
+//import EventsFromStore from './helpers/ComponentEventBus.js'
 
-import axios from 'axios'
+//import axios from 'axios'
 import { isLoggedIn, setAxiosConfig } from './helpers/Auth'
 
 export default {
   data () {
     return {
-      notification: {
-        visible: false,
-        type: '',
-        message: '',
-        timeout: false
-      }
+      // notification: {
+      //   visible: false,
+      //   type: '',
+      //   message: '',
+      //   timeout: false
+      // }
     }
   },
   // setting access token in created, so that it comes before mounted hooks in child components
@@ -57,16 +51,17 @@ export default {
     const _self = this
     // Inhale mock user data
     this.$store.dispatch('LoadAllUserData')
+    this.$store.dispatch('LoadAllVenueData')
 
-    // Clean up localForage if admin pannel deletes an event
-    EventsFromStore.$on('CALENDAR_EVENT_DELETED', function(data){
-      console.log("Delete the Event ", data.id);
-    })
-
-    // Clean up localForage if admin verifies the event
-    EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
-      console.log("EVENT CENTRAL cleanup --- Remove Verified Event", data.id);
-    })
+    // // Clean up localForage if admin pannel deletes an event
+    // EventsFromStore.$on('CALENDAR_EVENT_DELETED', function(data){
+    //   console.log("Delete the Event ", data.id);
+    // })
+    //
+    // // Clean up localForage if admin verifies the event
+    // EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
+    //   console.log("EVENT CENTRAL cleanup --- Remove Verified Event", data.id);
+    // })
 
   },
   methods: {
@@ -79,25 +74,42 @@ export default {
     RouteTo: function(route_to_page){
       this.$router.push({ path: route_to_page })
     },
-    ConfirmAction: function(action_confirmation_message){
-      // DISPATCH vuex
-      // EventBus.$emit(action_confirmation_message);
-      // this.notification = {
-      //   visible: true,
-      //   type: 'info',
-      //   message: action_confirmation_message
-      // }
-    }
+    // ConfirmAction: function(action_confirmation_message){
+    //   // DISPATCH vuex
+    //   // EventBus.$emit(action_confirmation_message);
+    //   // this.notification = {
+    //   //   visible: true,
+    //   //   type: 'info',
+    //   //   message: action_confirmation_message
+    //   // }
+    // }
 
   },
   components: {
-    'nav-menu': NavMenu,
-    'notify-user': NotifyUser
+    'ii-toolbar': Toolbar,
+    'ii-notifications': Notifications,
+    'ii-iphone-save-button': IphoneSaveButton,
+    'ii-modal': Modal
   }
 }
 </script>
-<style scoped>
-.clickable {
-  cursor: pointer;
-}
+
+<style>
+
+  @import url('https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,600,600i,700');
+
+  body {
+    background-color: black;
+  }
+
+  #app {
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+  }
+
+  #ii-container {
+    padding-top: 90px;
+  }
 </style>

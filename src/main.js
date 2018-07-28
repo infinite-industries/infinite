@@ -16,6 +16,7 @@ import UserEvents from './pages/UserEvents.vue'
 import UserSettings from './pages/UserSettings.vue'
 import ListViewer from './pages/ListViewer.vue'
 import SubmitEvent from './pages/SubmitEvent.vue'
+
 import FourOhFour from './pages/404.vue'
 import Callback from './pages/Callback.vue'
 
@@ -23,6 +24,7 @@ import GlobalEventBus from './helpers/GlobalEventBus.js'
 
 import { store } from './store/store.js'
 import { requireAuth } from "./helpers/Auth"
+
 Vue.use(VueRouter);
 Vue.use(Vuetify);
 Vue.use(VueLocalForage);
