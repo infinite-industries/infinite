@@ -62,16 +62,14 @@
         //
       },
       venue_info: function() {
-        console.log("get fucking Venue:",this.calendar_event.venue_id);
+        // console.log("get fucking Venue:",this.calendar_event.venue_id);
 
-        let current_venue = this.$store.getters.GetAllVenues
+        let all_venues = this.$store.getters.GetAllVenues
 
-        current_venue.find((venue) => {
+        let current_venue = all_venues.find((venue) => {
           return venue.id === this.calendar_event.venue_id
         })
-
-        console.log("REALLY?!", current_venue);
-        return { name:"arrrg"}
+        return current_venue
 
       },
       when_date: function() {

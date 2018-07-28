@@ -1,7 +1,7 @@
 // Contact.vue
 <template>
-  <v-container id="static-page-wrapper">
-    <h4>Contact Us</h4>
+  <div>
+    <h1>Contact Us</h1>
 
           Comments, suggestions and bug reports highly appreciated!
 
@@ -29,7 +29,7 @@
             <v-btn color="primary" class="deep-purple" dark @click="ContactUs()">Send</v-btn>
           </div>
 
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -85,3 +85,9 @@
       }
   }
 </script>
+
+<style scoped>
+  *{
+    color: white;
+  }
+</style>

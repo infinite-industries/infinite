@@ -8,7 +8,9 @@ import VueSmoothScroll from 'vue-smoothscroll';
 import App from './App.vue'
 
 import Home from './pages/Home.vue'
-import About from './pages/About.vue'
+import WhoWeAre from './pages/WhoWeAre.vue'
+import Legal from './pages/Legal.vue'
+import OurMission from './pages/OurMission.vue'
 import Admin from './pages/Admin.vue'
 import AdminEventEdit from './pages/AdminEventEdit.vue'
 import Contact from './pages/Contact.vue'
@@ -41,9 +43,19 @@ const router = new VueRouter({
       },
 
       {
-        path: '/about',
-        name: 'about',
-        component: About
+        path: '/who-we-are',
+        name: 'who_we_are',
+        component: WhoWeAre
+      },
+      {
+        path: '/our-mission',
+        name: 'our_mission',
+        component: OurMission
+      },
+      {
+        path: '/legal',
+        name: 'legal',
+        component: Legal
       },
       {
         path: '/admin',

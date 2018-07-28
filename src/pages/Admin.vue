@@ -1,11 +1,11 @@
 // Admin.vue
 <template>
-  <v-container fluid>
+  <div>
     <h3>Unverified Events</h3>
     <admin-events-list :events="unverified_events"></admin-events-list>
     <!-- <h3>Active Events</h3>
     <admin-events-list :events="events"></admin-events-list> -->
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -30,3 +30,10 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+  *{
+    color: white;
+  }
+</style>
