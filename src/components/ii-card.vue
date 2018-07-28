@@ -62,14 +62,18 @@
         //
       },
       venue_info: function() {
-        // console.log("get fucking Venue:",this.calendar_event.venue_id);
-
         let all_venues = this.$store.getters.GetAllVenues
 
         let current_venue = all_venues.find((venue) => {
           return venue.id === this.calendar_event.venue_id
         })
-        return current_venue
+
+        if(current_venue === undefined){
+          return {}
+        }
+        else{
+          return current_venue
+        }
 
       },
       when_date: function() {
@@ -344,17 +348,17 @@
 @media only screen and (max-width: 480px) {
   .card-container {
     /* border: 1px solid red; */
-    min-width: 95%;
-    min-height: 480px;
+    min-width: 85%;
+    min-height: 520px;
 
     padding:5px;
-    /* margin: 5px; */
+    margin-bottom: 20px;
   }
 
   .infinte-card{
 
-    width: 95%;
-    min-height: 480px;
+    width: 85%;
+    min-height: 520px;
 
     border-radius: 10px;
 
@@ -364,7 +368,7 @@
 
   .image-container{
 
-    min-height: 180px;
+    min-height: 200px;
     min-width: 100%;
 
     border-top-left-radius: 10px;
@@ -376,7 +380,7 @@
   .image-container .image-surface{
 
     min-width: 100%;
-    min-height: 180px;
+    min-height: 200px;
 
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -386,10 +390,10 @@
 
   .info-container{
 
-    top: 180px;
+    top: 200px;
     left: 0px;
 
-    min-height: 280px;
+    min-height: 300px;
     min-width: 220px;
 
     padding: 18px;

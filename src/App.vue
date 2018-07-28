@@ -12,7 +12,7 @@
       <!-- Regular Old Modal -->
       <ii-modal />
       <!-- iPhone-specific save button to desktop -->
-      <ii-iphone-save-button />
+      <!-- <ii-iphone-save-button /> -->
   </div>
 </template>
 
@@ -48,10 +48,13 @@ export default {
   },
   mounted: function(){
 
-    const _self = this
+    //const _self = this
+
     // Inhale mock user data
     this.$store.dispatch('LoadAllUserData')
     this.$store.dispatch('LoadAllVenueData')
+
+    console.log(this.$store.getters.GetLoadingStatus)
 
     // // Clean up localForage if admin pannel deletes an event
     // EventsFromStore.$on('CALENDAR_EVENT_DELETED', function(data){

@@ -18,6 +18,11 @@ export const store = new Vuex.Store({
     ui
   },
   state:{
+
+    util:{
+      loading: false
+    },
+
     current_event_id: null,
     current_event: {},
     loaded_from_api: false,
@@ -45,6 +50,9 @@ export const store = new Vuex.Store({
     GetAllVenues: state => {
       return state.all_venues;
     },
+    GetLoadingStatus: state => {
+      return state.util.loading;
+    },
     GetMyLists: state => {
       return state.lists_my;
     },
@@ -67,7 +75,11 @@ export const store = new Vuex.Store({
     }
   },
   mutations:{
-     UPDATE_USER_DATA: (state, user_data) => {
+    SET_LOADING_STATUS: (state, payload) => {
+      state.util.loading = payload
+    },
+
+    UPDATE_USER_DATA: (state, user_data) => {
       state.user_settings = _.merge({},state.user_settings, user_data.settings, user_data.permissions, { username: getUsername() })
       state.lists_my = user_data.lists_my;
       state.lists_follow = user_data.lists_follow;
@@ -250,10 +262,11 @@ export const store = new Vuex.Store({
         });
     },
     LoadAllLocalEventData: (context, payload) => {
-      // Axios.get('/events/current/verified')
+      context.commit('SET_LOADING_STATUS', true)
       Axios.get('/events')
         .then(function (_response) {
           context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
+          context.commit('SET_LOADING_STATUS', false)
         })
         .catch(function (error) {
           console.log(error);
