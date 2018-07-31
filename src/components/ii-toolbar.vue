@@ -2,7 +2,7 @@
   <div class="container">
     <div id="toolbar">
       <ii-logo id="logo" iconColor="#fff" width="140" height="55" style="cursor: pointer" />
-      <ii-subscribe id="subscribe" iconColor="#fff" width="140" height="55" style="cursor: pointer" />
+      <ii-subscribe v-show="nav_closed" id="subscribe" iconColor="#fff" width="140" height="55" style="cursor: pointer" />
       <ii-hamburger id="hamburger" width="55" height="55" style="cursor: pointer" />
     </div>
     <ii-nav />
@@ -25,6 +25,11 @@ export default {
       //stuff
     }
   },
+  computed: {
+    nav_closed: function(){
+      return !this.$store.state.ui.sidebarOpen
+    }
+  },
   methods:{
     NavigateTo: function(route_name){
       console.log("clicked");
@@ -44,7 +49,7 @@ export default {
 
   #toolbar {
     position: fixed;
-    z-index: 11;
+    z-index: 15;
     top: 0px;
     left:0px;
     height: 75px;

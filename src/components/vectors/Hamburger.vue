@@ -53,7 +53,7 @@
     watch: {
       open: function (open) {
         if(open){
-          this.iconColor = 'black'
+          this.iconColor = 'white'
         }
         else {
           this.iconColor = 'white'
