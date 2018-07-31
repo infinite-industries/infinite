@@ -1,0 +1,59 @@
+// Instagram Icon
+<template>
+
+  <svg
+    :width="width"
+    :height="height"
+    viewBox="0 0 31 29"
+    version="1.1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+  >
+      <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+
+      <title>Instagram Icon</title>
+      <desc>Created with Sketch.</desc>
+      <defs></defs>
+      <g id="Core-Views" stroke="none" stroke-width="1" :fill="iconColor" fill-rule="evenodd">
+          <g id="Landing-iPhone-8-w/-menu-open" transform="translate(-214.000000, -615.000000)">
+              <g id="social-block" transform="translate(100.000000, 615.000000)">
+                  <g id="instagram" transform="translate(114.000000, 0.000000)">
+                      <!-- <rect id="Rectangle" x="0" y="0" width="31" height="29"></rect> -->
+                      <ellipse id="Oval" :stroke="iconColor" stroke-width="2" cx="15.5" cy="14.5" rx="14.5" ry="13.5"></ellipse>
+                      <path d="M19.8222174,7.90909091 L11.1777826,7.90909091 C9.67656397,7.90909091 8.45454545,9.05149448 8.45454545,10.4566354 L8.45454545,18.5433646 C8.45454545,19.9485055 9.67656397,21.0909091 11.1777826,21.0909091 L19.8222174,21.0909091 C21.323436,21.0909091 22.5454545,19.9485055 22.5454545,18.5433646 L22.5454545,10.4566354 C22.5454545,9.05149448 21.323436,7.90909091 19.8222174,7.90909091 L19.8222174,7.90909091 Z M20.6034807,9.42893718 L20.9149919,9.42738711 L20.9149919,11.6618169 L18.5339199,11.6687922 L18.525635,9.43436244 L20.6034807,9.42893718 L20.6034807,9.42893718 Z M13.4892617,13.1467865 C13.9399587,12.5624091 14.6723414,12.1795412 15.5,12.1795412 C16.3276586,12.1795412 17.0600413,12.5624091 17.5107383,13.1467865 C17.8048512,13.5281044 17.9804905,13.9946763 17.9804905,14.5 C17.9804905,15.77881 16.8678323,16.8196838 15.5,16.8196838 C14.1329962,16.8196838 13.020338,15.77881 13.020338,14.5 C13.020338,13.9946763 13.1959773,13.5281044 13.4892617,13.1467865 L13.4892617,13.1467865 Z M21.1726514,18.5433646 C21.1726514,19.2401223 20.5670273,19.8066739 19.8222174,19.8066739 L11.1777826,19.8066739 C10.4329727,19.8066739 9.82734863,19.2401223 9.82734863,18.5433646 L9.82734863,13.1467865 L11.9317059,13.1467865 C11.7494388,13.5653062 11.6475348,14.0218026 11.6475348,14.5 C11.6475348,16.4871932 13.375759,18.104694 15.5,18.104694 C17.6250695,18.104694 19.3532936,16.4871932 19.3532936,14.5 C19.3532936,14.0218026 19.2497327,13.5653062 19.0691226,13.1467865 L21.1726514,13.1467865 L21.1726514,18.5433646 L21.1726514,18.5433646 Z" id="Shape" fill="#000000"></path>
+                  </g>
+              </g>
+          </g>
+      </g>
+      <rect class="clickable" x="0" y="0" width="31" height="29" @click.stop="NavigateTo('Instagram')"/>
+  </svg>
+</template>
+
+<script>
+
+// Created by https://github.com/konsav/social-icons
+
+  export default {
+    props: ['width', 'height', 'iconColor'],
+    data: function(){
+      return{
+        //
+      }
+    },
+    methods:{
+      NavigateTo: function(route_name){
+        console.log("clicked");
+        window.alert("Open page --> "+ route_name)
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  .clickable {
+    stroke:#fff;
+    fill:#fff;
+    fill-opacity:0;
+    stroke-opacity:0;
+  }
+</style>
