@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar">
     <ul id="nav-list">
-       <li v-for="item in getVisibleItems(nav_items)" :key="item.title" @click.stop="RouteTo(item)">
+       <li v-for="item in getVisibleItems(nav_items)" :key="item.title" @click.stop="RouteTo(item)" style="cursor: pointer">
          {{ item.title }}
        </li>
     </ul>
@@ -93,7 +93,6 @@
           ease: Power4.easeOut
         })
 
-        TweenMax.to(document.getElementById("LINE__nav"), 1, {autoAlpha:1})
       }
     },
     components: {
@@ -115,8 +114,8 @@
     width: 300px;
     height: 100vh;
     max-width: 90vw;
-    background-color: black;
-    opacity: 0.85;
+    background-color: rgba(10,10,10,0.95);
+    /* opacity: 0.95; */
     color: white;
   }
 
@@ -129,6 +128,17 @@
     font-family: 'Open Sans', sans-serif;
     font-size: 1.2em;
     padding: 10px;
+
+  }
+
+  @media only screen and (max-width: 480px) {
+    #nav-list li {
+      font-size: 1.4em;
+    }
+  }
+
+  #nav-list li:hover {
+    text-decoration: underline;
   }
 
   #nav-social-media {

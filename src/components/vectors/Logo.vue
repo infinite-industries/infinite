@@ -48,7 +48,6 @@
     },
     methods:{
       NavigateTo: function(route_name){
-        console.log("clicked");
         window.alert("Open page --> "+ route_name)
       }
     }

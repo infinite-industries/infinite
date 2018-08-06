@@ -42,12 +42,12 @@
         window.alert("Open page --> "+ route_name)
       }
     },
-    // 
-    // mounted:function(){
-    //   let tl = new TimelineMax({delay:0.5});
-    //
-    //   tl.to(document.getElementById("LINE__nav"), 1, {autoAlpha:1})
-    // }
+    
+    mounted:function(){
+      let tl = new TimelineMax({delay:0.5});
+
+      tl.to(document.getElementById("LINE__nav"), 1, {autoAlpha:1})
+    }
   }
 </script>
 
