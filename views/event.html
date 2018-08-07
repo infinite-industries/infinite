@@ -185,9 +185,6 @@
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             InfiniteAnalytics("{{id}}", "load_view", "", "{{site_url}}")
-            document.getElementById('facfb-share-buttonebook_share').addEventListener('click', function() {
-              console.log('!!! foo')
-            })
         })
 
         function InfiniteAnalytics(id, type, calType, site_url) {
@@ -307,7 +304,7 @@
       js = d.createElement(s); js.id = id;
       js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.10&appId=510767252621911";
       fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
+    }(document, 'script', 'facebook-jssdk'));</script>
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript" >
@@ -336,7 +333,7 @@
             } else { f(); }
         })(document, window, "yandex_metrika_callbacks2");
     </script>
-    <noscript><div><img src="https://mc.yandex.ru/watch/47982824" style="position:absolute; left:-9999px;" alt="" /></div></noscript> -->
+    <noscript><div><img src="https://mc.yandex.ru/watch/47982824" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
     <!-- /Yandex.Metrika counter -->
 
     <!-- Global Site Tag (gtag.js) - Google Analytics -->
@@ -349,6 +346,5 @@
       gtag('config', 'UA-73795062-1');
     </script>
 
-    </script>
   </body>
 </html>
