@@ -7,8 +7,8 @@
     "start": "node server.js",
     "start-dev": "concurrently \"npm run watchify\" \"nodemon ./server.js\"",
     "start-test": "concurrently \"npm run watchify\" \"SECRET_STRING_FILE=\"./cypress/fixtures/keys/1nfinite_testing.pem\" nodemon ./server.js\"",
-    "watchify": "watchify -vd -p browserify -t envify -d -e ./src/main.js -o ./public/js/dist.js",
-    "production-build": "NODE_ENV=production browserify -t envify -e ./src/main.js | uglifyjs -c -m > ./public/js/dist.js",
+    "watchify": "concurrently \"watchify -vd -p browserify -t envify -d -e ./src/main.js -o ./public/js/dist.js\" \"watchify -vd -p browserify -t envify -d -e ./src/light_main.js -o ./public/js/light_dist.js\"",
+    "production-build": "NODE_ENV=production browserify -t envify -e ./src/main.js | uglifyjs -c -m > ./public/js/dist.js && NODE_ENV=production browserify -t envify -e ./src/light_main.js | uglifyjs -c -m > ./public/js/light_dist.js",
     "test-open": "./node_modules/.bin/cypress open",
     "test": "concurrently \"npm run start-test\" \"npm run test-open\""
   },

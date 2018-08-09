@@ -242,7 +242,7 @@ router.get("/:id", function(req, res) {
           // precompute when_date and when_time values
           let ii_event = {
             ...apiResp.data.event,
-            when_date: moment(apiResp.data.event.time_start).format('dddd, MMMM Do, YYYY'),
+            when_date: moment(apiResp.data.event.time_start).format('dddd, MMMM Do'),
             when_time: moment(apiResp.data.event.time_start).format('h:mma') + " - " + moment(apiResp.data.event.time_end).format('h:mma')
           }
           console.log(ii_event);

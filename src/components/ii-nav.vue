@@ -74,6 +74,10 @@
           login()
         } else if (item.title === 'Logout') {
           this.$store.dispatch('Logout')
+        } else if (!this.$router) {
+          // not using vue-router in server-rendered pages
+          // in those cases, handle navigation manually
+          window.location = window.location.origin + item.route;
         } else {
           this.$router.push({path: item.route})
         }

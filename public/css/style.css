@@ -1,14 +1,20 @@
+@import url('https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,600,600i,700');
+
+h1, h2, h3 {
+  font-family: "Open Sans", sans-serif;
+}
+
 h1{
   margin-top: 5px;
   margin-bottom: 5px;
-  font-size: 25px;
-  font-weight: 500;
+  font-size: 2em;
+  font-weight: 700;
   letter-spacing: .02em;
 }
 
 h2, h3{
   margin-top: 5px;
-  font-size: 20px;
+  font-size: 1.2em;
   font-weight: 400;
   letter-spacing: .02em;
 }
@@ -29,88 +35,16 @@ h2, h3{
   max-width: 900px;
 }
 
-.event-venue{
-  font-weight: bold;
-  padding-top: 5px;
-}
-
-.event-date{
-  font-weight: bold;
-  padding-bottom: 10px;
-}
-
-.event-heading{
-  margin-top: 0px;
-  padding: 24px;
-}
-
-.event-close{
- text-align:center;
-}
-
 .event-card-container{
   padding-top: 15px;
 }
-.event-map-button{
-  color: rgb(66, 129, 244);
-  font-size: 12px;
-  line-height: 20px;
-  vertical-align: middle;
-  box-shadow: rgba(0, 0, 0, 0.13) 0px 0px 40px inset;
-  zoom: 1;
-  margin: 0px;
-  padding: 10px 25px;
-  text-decoration: none;
-  outline: none;
-  background: rgb(255, 255, 255);
-  border-radius: 4px;
-}
-
-.event-description{
-  padding: 24px;
-  -webkit-box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0px 7px 5px 0 rgba(0,0,0,0.12), 0 3px 1px -2px rgba(0,0,0,0.2);
-  margin-bottom: 50px;
-}
-
-.social-media-links{
-
-  vertical-align: bottom;
-}
-.social-media-links iframe {
-vertical-align: middle;
-}
-.social-media-links div span {
-vertical-align:middle !important;
-}
-/*
-.btn{
-  height:28px;
-  font-size: 12px;
-  /*padding-left: 10px;*/
-  /*
-
-  line-height: normal;
-}*/
 
 .btn .fa{
   padding-right: 5px;
 }
 
-.social-and-link{
-  text-align: right;
-}
-.map-and-calendar{
-  text-align: right;
-}
 main{
   margin-top: 10px;
-}
-
-@media only screen and (max-width: 992px) {
-  .map-and-calendar{
-    margin-top: 10px;
-  }
 }
 
 /*-------------------------------------------------*/
@@ -316,17 +250,6 @@ main{
   color: white;
   min-width: 120px;
 }
-
-.event-favorite{
-  position: absolute;
-  top:80px;
-  left: 20px;
-
-}
-.event-favorite-icon{
-  position: absolute;
-}
-
 
 /* ------------- Transition Effects ---------- */
 

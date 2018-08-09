@@ -99,7 +99,7 @@
       userIsAdmin: function() {
         return this.$store.getters.GetUser.admin_role;
       },
-      when_date: function() {        
+      when_date: function() {
         return moment(this.event.time_start).format('dddd, MMMM Do, YYYY');
       },
       when_time: function() {
@@ -129,4 +129,25 @@
   position: absolute;
   right: 0;
 }
+
+.event-venue{
+  font-weight: bold;
+  padding-top: 5px;
+}
+
+.event-date{
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+
+.event-favorite{
+  position: absolute;
+  top:80px;
+  left: 20px;
+
+}
+.event-favorite-icon{
+  position: absolute;
+}
+
 </style>
