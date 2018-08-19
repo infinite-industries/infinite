@@ -30,6 +30,9 @@ const mutations = {
   TOGGLE_SIDEBAR: (state) => {
     state.sidebarOpen = !state.sidebarOpen
   },
+  CLOSE_SIDEBAR: (state) => {
+    state.sidebarOpen = false
+  },
   SHOW_NOTIFICATIONS: (state, payload) => {
     state.notifications.open = payload.open
     if(payload.open){
@@ -47,6 +50,9 @@ const mutations = {
 const actions = {
   toggleSidebar: (context) => {
     context.commit('TOGGLE_SIDEBAR')
+  },
+  closeSidebar: (context) => {
+    context.commit('CLOSE_SIDEBAR')
   },
   showNotifications: (context, payload) => {
     context.commit('SHOW_NOTIFICATIONS', payload)

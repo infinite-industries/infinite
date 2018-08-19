@@ -112,6 +112,10 @@ const router = new VueRouter({
     ]
 })
 
+router.beforeResolve((to, from, next) => {
+  store.dispatch('closeSidebar')
+  next()
+})
 
 const app = new Vue({
     router: router,
