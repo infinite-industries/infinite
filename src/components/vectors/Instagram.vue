@@ -42,7 +42,8 @@
     },
     methods:{
       NavigateTo: function(route_name){
-        window.alert("Open page --> "+ route_name)
+        console.log("Clicked on Instagram Icon");
+        window.open("https://www.instagram.com/1nfinite_1ndustries/");
       }
     }
   }

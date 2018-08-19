@@ -42,8 +42,8 @@
     },
     methods:{
       NavigateTo: function(route_name){
-        console.log("clicked");
-        window.alert("Open page --> "+ route_name)
+        console.log("clicked on twitter icon");
+        window.open("https://twitter.com/1nfinite_1");
       }
     }
   }

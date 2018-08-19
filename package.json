@@ -29,7 +29,6 @@
     "dotenv": "^4.0.0",
     "express": "^4.15.4",
     "fs-js": "^1.0.6",
-    "fsevents": "^1.2.4",
     "gsap": "^2.0.1",
     "ics": "^2.7.0",
     "jsonwebtoken": "^8.2.1",
@@ -65,6 +64,9 @@
     "uglify-js": "^3.3.21",
     "vueify": "^9.4.1",
     "watchify": "^3.11.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^1.2.4"
   },
   "repository": {
     "url": "https://glitch.com/edit/#!/welcome-project"

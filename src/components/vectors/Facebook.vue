@@ -42,8 +42,8 @@
     },
     methods:{
       NavigateTo: function(route_name){
-        console.log("clicked");
-        window.alert("Open page --> "+ route_name)
+        console.log("clicked on Facebook Icon");
+        window.open("https://www.facebook.com/infinite.dot.industries/");
       }
     }
   }
