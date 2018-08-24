@@ -77,10 +77,10 @@
 
       },
       when_date: function() {
-        return moment(this.calendar_event.start_time).format('dddd, MMMM Mo')
+        return moment(this.calendar_event.time_start).format('dddd, MMMM Do')
       },
       when_time: function() {
-        let output_string = moment(this.calendar_event.start_time).format('h:mma - ')+moment(this.calendar_event.end_time).format('h:mma')
+        let output_string = moment(this.calendar_event.time_start).format('h:mma - ')+moment(this.calendar_event.time_end).format('h:mma')
         return output_string
       },
     },
@@ -409,7 +409,6 @@
   .info-container h4 {
 
     font-size: 16px;
-    margin-top
     margin-bottom: 10px;
   }
 
