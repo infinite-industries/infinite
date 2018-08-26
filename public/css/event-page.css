@@ -6,6 +6,7 @@ body {
 
 .event {
   padding: 0;
+  margin-top: 75px;
   border-radius: 10px;
   color: black;
   background-color: white;

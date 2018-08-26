@@ -54,6 +54,8 @@ export default {
     left:0px;
     height: 75px;
     width: 100%;
+    background: #000000;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0, rgba(0, 0, 0, 1) 20px, rgba(0, 0, 0, 0.75) 40px, rgba(0, 0, 0, 0.5) 60px, rgba(0, 0, 0, 0.25) 75px);
     /* border: 1px solid red; */
   }
 
