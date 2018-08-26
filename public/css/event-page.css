@@ -113,6 +113,10 @@ body {
   border-radius: 5px 5px 0 0;
 }
 
+.ii-social-button:focus {
+  outline: rgb(59, 153, 252) auto 5px;
+}
+
 .ii-social-button .infinite-dropdown-content {
   margin-top: 5px;
 }
