@@ -7,7 +7,7 @@
       <div id="shim"></div>
     </div>
     <div v-else>
-      <h1>LOADING!!!!!!!!</h1>
+      <img src="/images/spinner.gif" />
     </div>
   </div>
 </template>

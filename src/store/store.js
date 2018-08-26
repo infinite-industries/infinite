@@ -23,8 +23,8 @@ export const store = new Vuex.Store({
       loading: false
     },
 
-    current_event_id: null,
-    current_event: {},
+    calendar_event_id: null,
+    calendar_event: {},
     loaded_from_api: false,
 
     all_venues: [],
@@ -47,6 +47,9 @@ export const store = new Vuex.Store({
     editable_event: {},      // currently unused
   },
   getters:{
+    GetAllDateTimes: state => {
+      return state.calendar_event.date_times;
+    },
     GetAllVenues: state => {
       return state.all_venues;
     },
@@ -93,6 +96,56 @@ export const store = new Vuex.Store({
         })
       }
     },
+
+    CREATE_NEW_EVENT: (state) => {
+        state.calendar_event = {
+          id:"",
+          title: "",
+          date_times: [
+
+          ],
+          image:"",
+          social_image:"",
+          organizers:"",
+          admission_fee:"none",
+          venue:{
+            name: "",
+            id:"",
+            slug:"",
+            createdAt:"",
+            updatedAt: "",
+            g_map_link:"",
+            address: ""
+          },
+          address: "",
+          brief_description:"",
+          description:"",
+          website_link:"",
+          eventbrite_link:"",
+          fb_event_link:"",
+          ticket_link:"",
+          organizer_contact:"",
+          multi_day: false,
+          additional_dates: []
+
+        }
+      },
+      DELETE_TIME_SEGMENT: (state, payload) => {
+        state.calendar_event.date_times.splice(payload.index,1)
+      },
+      ADD_NEW_TIME_SEGMENT: (state) => {
+        state.calendar_event.date_times.push({
+          optional_title:"",
+          start_time:"",
+          end_time:""
+        })
+      },
+      UPDATE_CURRENT_TIME_SEGMENT: (state, payload) => {
+        state.calendar_event.date_times[payload.current_time_segment].optional_title = payload.optional_title
+        state.calendar_event.date_times[payload.current_time_segment].start_time = payload.start_time
+        state.calendar_event.date_times[payload.current_time_segment].end_time = payload.end_time
+      },
+
     UPDATE_LOCALIZED_EVENTS: (state, payload) => {
       state.all_local_events = payload
     },
@@ -130,10 +183,10 @@ export const store = new Vuex.Store({
       state.all_local_events.push(state.unverified_events.find(event => event.id === payload.id))
       state.unverified_events = state.unverified_events.filter(event => event.id !== payload.id)
     },
-    POPULATE_CURRENT_EVENT: (state, event) => {
-      //Vue.set(state.current_event, 'title', event.title)
-      state.current_event = event
-    },
+    // POPULATE_calendar_event: (state, event) => {
+    //   //Vue.set(state.calendar_event, 'title', event.title)
+    //   state.calendar_event = event
+    // },
     LOGIN: (state, payload) => {
       state.user_settings.logged_in = true;
       state.user_settings.admin_role = payload.admin_role;
@@ -157,6 +210,22 @@ export const store = new Vuex.Store({
     Login: (context, payload) => {
       context.commit('LOGIN', { admin_role: isAdmin() })
     },
+    CreateNewEvent: (context) =>{
+      context.commit('CREATE_NEW_EVENT')
+    },
+    DeleteTimeSegment: (context, payload) =>{
+      context.commit('DELETE_TIME_SEGMENT', payload)
+    },
+
+    AddNewTimeSegment: (context) =>{
+      context.commit('ADD_NEW_TIME_SEGMENT')
+    },
+    UpdateCurrentTimeSegment: (context, payload) =>{
+      context.commit('UPDATE_CURRENT_TIME_SEGMENT', payload)
+    },
+
+
+
 
     CreateNewList: (context, payload) => {
       const _self = this

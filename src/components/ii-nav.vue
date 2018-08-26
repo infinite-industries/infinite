@@ -34,6 +34,7 @@
       return {
         nav_items: [
           { title: 'Home', route:'/' },
+          { title: 'Submit Event', route:'/submit-event' },
           { title: 'Login', route: '/login', isUnAuthOnly: true },
           { title: 'Admin', route: '/admin', isAdminOnly: true },
           { title: 'Who We Are', route: '/who-we-are'},

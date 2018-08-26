@@ -115,4 +115,11 @@ export default {
   #ii-container {
     padding-top: 90px;
   }
+
+  h1{
+    font-family: 'EB Garamond', serif;
+    font-size: 1.9em;
+    text-decoration: underline;
+    color: white;
+  }
 </style>

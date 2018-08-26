@@ -20,10 +20,13 @@ const Event = function(init_obj){
     this.admission_fee = init_obj.admission_fee
   }
 
-  this.date = init_obj.date
-  this.time_start = init_obj.time_start
-  this.time_end = init_obj.time_end
+  // this.date = init_obj.date
+  // this.time_start = init_obj.time_start
+  // this.time_end = init_obj.time_end
 
+  this.dates = init_obj.date_times
+
+  // No longer used
   this.multi_day = init_obj.multi_day;
   if(init_obj.hasOwnProperty('additional_dates')){
     this.additional_dates = init_obj.additional_dates;
