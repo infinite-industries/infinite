@@ -122,4 +122,24 @@ export default {
     text-decoration: underline;
     color: white;
   }
+
+  .info-page {
+    background: white;
+    color: black;
+    border-radius: 10px;
+  }
+
+  h2, h3 {
+    font-family: "Open Sans", sans-serif;
+    font-size: 1.5em;
+    font-weight: 700;
+    letter-spacing: .02em;
+    margin-bottom: 1em;
+  }
+
+  .info-page p {
+    font-family: "EB Garamond";
+    font-size: 1.25em;
+  }
+
 </style>
