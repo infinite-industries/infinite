@@ -1,33 +1,39 @@
 // Contact.vue
 <template>
-  <div>
+  <div class="container info-page">
+
     <h1>Contact Us</h1>
 
-          Comments, suggestions and bug reports highly appreciated!
+      <p>
+        Comments, suggestions and bug reports highly appreciated!
+      </p>
 
-          <v-form v-model="valid" lazy-validation>
-          <v-text-field
-            label="Your Name"
-            v-model="name"
-            :rules="nameRules"
-            required
-          ></v-text-field>
-          <v-text-field
-            label="Your E-mail"
-            v-model="email"
-            :rules="emailRules"
-            required
-          ></v-text-field>
-          <v-text-field
-             v-model="comment"
-             label="Your Text"
-             multi-line
-           ></v-text-field>
+      <div class="container">
+        <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="ContactUs()">
 
-          </v-form>
-          <div class="text-xs-right">
-            <v-btn color="primary" class="deep-purple" dark @click="ContactUs()">Send</v-btn>
-          </div>
+          <v-layout row>
+            <v-flex xs12 sm11>
+              <v-text-field label="Your Name" v-model="name" :rules="nameRules" required></v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <v-layout row>
+            <v-flex xs12 sm11>
+              <v-text-field label="Your E-mail" v-model="email" :rules="emailRules" required></v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <v-layout row>
+            <v-flex xs12 sm11>
+              <v-textarea label="Your Text" v-model="comment" multi-line></v-textarea>
+            </v-flex>
+          </v-layout>
+
+          <v-btn color="grey" type="submit">Send</v-btn>
+
+        </v-form>
+
+      </div>
 
   </div>
 </template>
@@ -37,57 +43,66 @@
   import Axios from 'axios'
 
   export default {
-      data: function() {
-        return {
-          comment: '',
-          valid: false,
-          name: '',
-          nameRules: [
-            (v) => !!v || 'Name is required'
-          ],
-          email: '',
-          emailRules: [
-            (v) => !!v || 'E-mail is required',
-            (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-          ]
-        }
-      },
-      methods: {
-        RouteTo: function(route_to_page){
-          this.$router.push({ path: route_to_page })
-        },
-        ContactUs: function(){
-          const _self = this
-          Axios.post('/contact', {name:_self.name, email:_self.email, comment:_self.comment})
-            .then(function (_response) {
-              // EventBus.$emit('SHOW_NOTIFICATION',{
-              //   visible: true,
-              //   type: 'info',
-              //   message: "Message sent. Thank you!",
-              // })
-
-              _self.nameRules = []      // UGLY UGLY UGLY UGLY will try something slightly nicer laters
-              _self.emailRules = []
-              _self.name = ''
-              _self.email = ''
-              _self.comment = ''
-
-            })
-            .catch(function (error) {
-              console.log(error);
-              // EventBus.$emit('SHOW_NOTIFICATION',{
-              //   visible: true,
-              //   type: 'info',
-              //   message: "Hrrmm... unable to send your data. Email us directly at info@infinite.industries and we will look into this asap.",
-              // })
-            });
-        }
+    data: function() {
+      return {
+        comment: '',
+        valid: false,
+        name: '',
+        nameRules: [
+          (v) => !!v || 'Name is required'
+        ],
+        email: '',
+        emailRules: [
+          (v) => !!v || 'E-mail is required',
+          (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+        ]
       }
+    },
+    methods: {
+      RouteTo: function(route_to_page){
+        this.$router.push({ path: route_to_page })
+      },
+
+      ContactUs: function(){
+        Axios.post('/contact', { name: this.name, email: this.email, comment: this.comment })
+          .then((_response) => {
+            // EventBus.$emit('SHOW_NOTIFICATION',{
+            //   visible: true,
+            //   type: 'info',
+            //   message: "Message sent. Thank you!",
+            // })
+
+            this.ResetForm();
+
+          })
+          .catch(function (error) {
+            console.log(error);
+            // EventBus.$emit('SHOW_NOTIFICATION',{
+            //   visible: true,
+            //   type: 'info',
+            //   message: "Hrrmm... unable to send your data. Email us directly at info@infinite.industries and we will look into this asap.",
+            // })
+          });
+      },
+      ResetForm: function(){
+        this.name = '';
+        this.email = '';
+        this.comment = '';
+        this.$refs.form.reset(); // resets form validation
+      }
+    }
   }
 </script>
 
 <style scoped>
-  *{
-    color: white;
+
+  h1 {
+    color: black;
+    margin-bottom: 1rem;
   }
+
+  form {
+    font-family: "Open Sans", sans-serif;
+  }
+
 </style>
