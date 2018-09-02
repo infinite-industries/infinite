@@ -123,6 +123,12 @@ export default {
     color: white;
   }
 
+  .admin-page {
+    background: white;
+    color: black;
+    border-radius: 10px;
+  }
+
   .info-page {
     background: white;
     color: black;

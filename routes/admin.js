@@ -14,12 +14,12 @@ router.use(bodyParser.urlencoded({
 
 // List unverified non-expired events
 router.get('/list-unverified', [jwtAuthenticator()], function(req, res) {
-  makeAPICall('get', 'events/current/non-verified', {}, null, req.token, (err, apiRes) => {
+  makeAPICall('get', 'events/all/non-verified', {}, null, req.token, (err, apiRes) => {
     if (err) {
       console.warn('error retrieving events:' + err);
       res.status(500).json({"error": "error retrieving events: " + err})
     } else {
-      console.info('success: ' + req.url);
+      console.info('success: ' + req.url + "\n events returned: " + JSON.stringify(apiRes.data, null, 4));
       res.json({"status": "success", "events": apiRes.data.events});
     }
   })

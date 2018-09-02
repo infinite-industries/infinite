@@ -1,14 +1,14 @@
 <template>
-  <table class="admin-table">
+  <table class="calendar-events-table">
     <tr>
       <th>TITLE</th>
       <th>WHEN</th>
       <th>ACTION</th>
     </tr>
-    <tr v-for="event in events">
-      <td>{{event.title}}</td>
-      <td>{{when(event)}}</td>
-      <td><v-btn @click="EditEvent(event)">Edit</v-btn></td>
+    <tr v-for="calendar_event in calendar_events">
+      <td>{{calendar_event.title}}</td>
+      <td>{{ShowEventDates(calendar_event)}}</td>
+      <td><v-btn @click="EditEvent(calendar_event)">Edit</v-btn></td>
     </tr>
   </table>
 </template>
@@ -18,32 +18,46 @@
 
   export default {
     name:'AdminEventsList',
-    props: ['events'],
+    props: ['calendar_events'],
     data: function() {
       return {
 
       }
     },
     methods:{
-      EditEvent: function(event_to_edit){
-        const event_id = event_to_edit.id
-        this.$router.push({ path: `/admin-event-edit/${event_id}` })
-
-        // this.$vlf.setItem(event_id, event_to_edit)
-        //   .then((result) => {
-        //     this.$router.push({ path: `/admin-event-edit/${event_id}` })
-        //   })
-        //   .catch((err) => {
-        //     window.alert("Unable to edit event! Holler at the bugs department on the contact page.")
-        //     console.log(err);
-        //   })
-
+      EditEvent: function(calendar_event_to_edit){
+        this.$router.push({ path: `/admin-calendar_event-edit/${calendar_event_to_edit.id}` })
       },
-      when: function(ii_event){
-        let when_date = moment(ii_event.time_start).format('dddd, MMMM Do, YYYY')
-        let when_time = moment(ii_event.time_start).format('h:mma') + " - " + moment(ii_event.time_end).format('h:mma')
-        return when_date + ', ' + when_time;
+      ShowEventDates: function(ii_calendar_event){
+        //let when_date = moment(ii_calendar_event.time_start).format('dddd, MMMM Do, YYYY')
+        //let when_time = moment(ii_calendar_event.time_start).format('h:mma') + " - " + moment(ii_calendar_event.time_end).format('h:mma')
+        return "time range work in progress";
       }
     }
 }
 </script>
+
+<style scoped>
+  .calendar-events-table th{
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: grey;
+    color: white;
+  }
+
+  .calendar-events-table {
+    border-collapse: collapse;
+    width: 90%;
+  }
+
+  .calendar-events-table td, .calendar-events-table th {
+      border: 1px solid #ddd;
+      padding: 8px;
+  }
+
+  .calendar-events-table tr:nth-child(even){background-color: #f2f2f2;}
+
+  .calendar-events-table tr:hover {background-color: #ddd;}
+
+</style>

@@ -1,8 +1,8 @@
 // Admin.vue
 <template>
-  <div>
-    <h3>Unverified Events</h3>
-    <admin-events-list :events="unverified_events"></admin-events-list>
+  <div class="container admin-page">
+    <h2>Unverified Events</h2>
+    <admin-events-list :calendar_events="unverified_events"></admin-events-list>
     <!-- <h3>Active Events</h3>
     <admin-events-list :events="events"></admin-events-list> -->
   </div>
@@ -33,7 +33,5 @@ export default {
 
 
 <style scoped>
-  *{
-    color: white;
-  }
+
 </style>

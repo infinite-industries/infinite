@@ -24,7 +24,7 @@ const actions = {
     //Axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken');
     Axios.get('/admin/list-unverified')
       .then(function (_response) {
-        // console.log("data from server: ",response.data.events);
+         console.log("data from server: ",_response.data.events);
         if(_response.data.status === "success"){
           context.commit('POPULATE_UNVERIFIED_LIST', _response.data.events, { root: true })
         }
