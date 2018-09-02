@@ -324,22 +324,30 @@
         console.log("Allan please send emails.") // Who is Allan?
       },
       // for use in promo tools. Takes an event object and makes it into pretty html
-      parseEventToHTML: function(ii_event) {
+      parseEventToHTML: async function(ii_event) {
         //console.log(ii_event)
+
+        let venueResp
+        let venue
+
+        try {
+          venueResp = await Axios.get(`/venues/${ii_event.venue_id}`)
+          venue = venueResp.data && venueResp.data.venue
+        } catch (ex) {
+          console.error(`could not fetch venue ${ii_event.venue_id}: "${ex}"`)
+        }
 
         let when_date = moment(ii_event.time_start).format('dddd, MMMM Do, YYYY')
         let when_time = moment(ii_event.time_start).format('h:mma') + " - " + moment(ii_event.time_end).format('h:mma')
 
         this.promoHTML = `<h2>${ii_event.title}</h2>`
         this.promoHTML += `<p><b>When: </b>${when_date} ${when_time}</p>`
-        this.promoHTML += `<p><b>Location: </b>${ii_event.address}</p> <p><br></p>`
+        this.promoHTML += `<p><b>Location: </b>${venue ? venue.address : 'none'}</p> <p><br></p>`
         this.promoHTML += `<img src="${ii_event.image}" width="450px" height="auto">`
 
-        if(ii_event.admission_fee!=="none"){
-          this.promoHTML += `<p><b>Admission: </b>${ii_event.admission_fee}</p>`
-        }
+        this.promoHTML += `<p><b>Admission: </b>${(ii_event.admission_fee || 'none')}</p>`
 
-        this.promoHTML += `<p><b>Description: </b>${ii_event.description}</p>`
+        this.promoHTML += `<p><b>Description: </b>${(ii_event.description || '')}</p>`
         this.promoHTML += `<p><b>Link for More Info: </b><a href="${ii_event.bitly_link}">${ii_event.bitly_link}</a></p>`
         this.promoHTML += `<p><b>Organizer Contact: </b>${ii_event.organizer_contact}</p>`
 
