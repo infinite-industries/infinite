@@ -26,7 +26,8 @@
     },
     methods:{
       EditEvent: function(calendar_event_to_edit){
-        this.$router.push({ path: `/admin-calendar_event-edit/${calendar_event_to_edit.id}` })
+        // console.log(`/admin-event-edit/${calendar_event_to_edit.id}`);
+        this.$router.push({ path: `/admin-event-edit/${calendar_event_to_edit.id}` })
       },
       ShowEventDates: function(ii_calendar_event){
         //let when_date = moment(ii_calendar_event.time_start).format('dddd, MMMM Do, YYYY')
