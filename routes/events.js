@@ -3,11 +3,10 @@ const router = express.Router()
 const async = require('async')
 const { makeAPICall } = require('./utils/requestHelper')
 const bodyParser = require('body-parser')
-const sanitizer = require('sanitizer');
 
 const moment = require('moment')
 
-const Event = require('./utils/event')
+const { notify } = require('./utils/event')
 
 //get configuration file from .env
 const dotenv = require('dotenv')
@@ -122,59 +121,65 @@ router.post("/submit-new", function(req, res){
     // console.log(JSON.parse(fields.event_data[0]))
     // console.log("-------------")
 
-
-    let EVENT = {}
-
     async.waterfall([
-      // Begin creation of Event object
-      function(callback){
-        EVENT = new Event(JSON.parse(fields.event_data[0]))
 
-        callback(null)
+      // Begin creation of Event object
+      function _parseRequest(callback){
+        try {
+          const eventSeed = JSON.parse(fields.event_data[0])
+          const event = {
+            ...eventSeed,
+            id: uuidv4(),
+            slug: eventSeed.title && eventSeed.title.toLowerCase().replace(/ /g,"-")
+          }
+
+          callback(null, event)
+        } catch (ex) {
+          console.warn('error parsing request: ' + ex)
+          callback(ex)
+        }
       },
 
       // If social media ready image present, upload it to S3
-      function(callback){
+      function(event, callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('social_image'))){
-          ManageUpload(EVENT.id, files.social_image[0].path, "social", function(err, data){
-            EVENT.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+EVENT.id+"_social.jpg"
+          ManageUpload(event.id, files.social_image[0].path, "social", function(err, data){
+            event.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+event.id+"_social.jpg"
             callback(err, data)
           })
         }
         else {
-          callback(null, null)
+          callback(null, event)
         }
       },
 
       // If hero image present, upload it to S3
-      function(data, callback){
+      function(event, callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('image'))){
-          ManageUpload(EVENT.id, files.image[0].path, "hero", function(err, data){
-            EVENT.image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/"+EVENT.id+".jpg"
-            callback(err, data)
+          ManageUpload(event.id, files.image[0].path, "hero", function(err, data){
+            event.image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/"+event.id+".jpg"
+            callback(err, event)
           })
         }
         else {
-          callback(null, null)
+          callback(null, event)
         }
       },
 
       // Create and add bitly link
-      function(data, callback){
-        AddBitlyLink(EVENT.id, process.env.BITLY_TOKEN, function(err, data){
+      function(event, callback){
+        console.log('adding bitly link')
+        AddBitlyLink(event.id, process.env.BITLY_TOKEN, function(err, data){
           // console.log(data)
-          EVENT.bitly_link = data
-          callback(err, data)
+          event.bitly_link = data
+          callback(err, event)
         })
       },
-
       // Post as UNVERIFIED to DB and
       // Notify (via Slack) that this needs review
-      function(data, callback){
-
-
+      function(event, callback){
         console.info('sending new un-verified event to the api')
-        makeAPICall('post', 'events/', { event: EVENT }, process.env.API_KEY, req.token, (err, apiResp) => {
+        makeAPICall('post', 'events/', { event }, process.env.API_KEY, req.token, (err, apiResp) => {
           if (err)
             return callback(err)
           if (apiResp.data.status !== 'success')
@@ -182,16 +187,12 @@ router.post("/submit-new", function(req, res){
 
           console.info('api received the event')
 
-          EVENT.Notify()
-          callback(null, apiResp.data.id)
+          notify(event)
+          callback(null, event)
         })
-
-
-
-       //callback(null)
       }
 
-    ], function(err, event_id){
+    ], function(err, event){
           // throw me an error
             if(err){
               console.log(err)
@@ -200,8 +201,8 @@ router.post("/submit-new", function(req, res){
             else{
             // Generate a quick report back to the client
             // Prep data for additional postings by venues
-              console.log(EVENT)
-              res.json({status:"success", data: EVENT})
+              console.log(event)
+              res.json({ status:"success", data: event })
             }
           }
     )
