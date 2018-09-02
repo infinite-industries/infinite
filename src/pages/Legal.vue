@@ -1,13 +1,17 @@
 // Legal.vue
 <template>
-  <div>
+  <div class="container info-page">
 
-    <h2> Terms of Service </h2>
+    <h2>Terms of Service</h2>
+
+    <p>
+      If using &lt;p&gt; tags the EB Garamond font we're using for body content will automatically be applied.
+    </p>
 
     <h2>Privacy</h2>
 
     <p>
-      Lorem and ipsum coming soon ...
+      (if this is separate from TOS)
     </p>
   </div>
 </template>
@@ -19,8 +23,5 @@ export default {
 </script>
 
 <style scoped>
-  *{
-    color: white;
-  }
 
 </style>

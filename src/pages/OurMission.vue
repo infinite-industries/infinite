@@ -1,12 +1,13 @@
 // OurMission.vue
 <template>
-  <div>
+  <div class="container info-page">
 
     <h2>Mission</h2>
 
     <p>
-      Lorem and ipsum coming soon ...
+      If using &lt;p&gt; tags the EB Garamond font we're using for body content will automatically be applied
     </p>
+
   </div>
 </template>
 
@@ -17,8 +18,5 @@ export default {
 </script>
 
 <style scoped>
-  *{
-    color: white;
-  }
 
 </style>
