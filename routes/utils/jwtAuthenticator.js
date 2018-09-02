@@ -4,7 +4,7 @@
 
 module.exports = (requiresAdmin = true) => {
   return (req, res, next ) => {
-    if (requiresAdmin && !req.isInfiniteAdmin) {
+    if (req.token && requiresAdmin && !req.isInfiniteAdmin) {
       // not an admin
       console.warn(`user is authenticated but is not an admin (${req.decoded.nickname})`)
       res.status(403).json({
