@@ -19,14 +19,14 @@
         console.log("MY ID:",this.id);
         // this.$store.dispatch('LoadCurrentEvent', this.id)
       },
-      computed: {
-        values_to_edit: function() {
-          return this.$store.getters.GetCurrentEvent
-        }
-      },
-      methods: {
-
-      },
+      // computed: {
+      //   values_to_edit: function() {
+      //     return this.$store.getters.GetCurrentEvent
+      //   }
+      // },
+      // methods: {
+      //
+      // },
       components:{
         'submission-form': SubmissionForm
       }

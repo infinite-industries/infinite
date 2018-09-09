@@ -38,8 +38,8 @@
               </span>
 
               <span v-if="edit_mode">
-                <v-btn small dark outline @click="Cancel()">Cancel</v-btn>
-                <v-btn small dark outline  @click="UpdateTimeSegment(time_segment_index)">UPDATE</v-btn>
+                <v-btn style="color:black" small dark outline @click="Cancel()">Cancel</v-btn>
+                <v-btn style="color:black" small dark outline  @click="UpdateTimeSegment(time_segment_index)">UPDATE</v-btn>
               </span>
               <span v-else>
                 <v-btn small dark depressed color="grey" class="white--text" @click="Cancel()">Cancel</v-btn>
@@ -62,8 +62,8 @@
                 <span> {{FormatedDateTime(date_and_time.start_time, date_and_time.end_time)}}</span>
               </td>
               <td>
-                <v-btn small dark outline @click="DeleteTimeSegment(index)">Delete</v-btn>
-                <v-btn small dark outline @click="EditTimeSegment(index)">Edit</v-btn>
+                <v-btn style="color:black" small dark outline @click="DeleteTimeSegment(index)">Delete</v-btn>
+                <v-btn style="color:black" small dark outline @click="EditTimeSegment(index)">Edit</v-btn>
               </td>
             </tr>
           </table>
@@ -75,8 +75,6 @@
           <!-- <div v-show="!picker&&!introduction">
             It's lonely here.
           </div> -->
-
-
 
         </div>
       </div>

@@ -272,9 +272,9 @@
       UploadEvent: function(){
 
         // this is a hack, I think
-        // since only date_times array gets modified and saved to store,
+        // since only dates array gets modified and saved to store,
         // we need to grab it from the store and add it to current calendar event
-        this.calendar_event.date_times = this.$store.getters.GetAllDateTimes
+        this.calendar_event.dates = this.$store.getters.GetAllDateTimes
 
         console.log("Uploading: -------- :\n"+JSON.stringify(this.calendar_event));
 
@@ -286,7 +286,7 @@
         const formData = new FormData()
 
         // console.log(this.$store.getters.GetAllDateTimes);
-        // formData.append('date_times', this.$store.getters.GetAllDateTimes)
+        // formData.append('dates', this.$store.getters.GetAllDateTimes)
 
         formData.append('event_data', JSON.stringify({
           ... this.calendar_event,
@@ -385,7 +385,7 @@
       if(this.user_action==='edit'){
         this.$store.dispatch('LoadCurrentEvent', this.event_id)
         //this.$refs.venuePicker.selectVenue(this.calendar_event.venue)
-
+          console.log("trying to edit here: "+this.event_id);
       }
       else{
         this.$store.dispatch('CreateNewEvent')

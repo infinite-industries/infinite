@@ -8,7 +8,7 @@ const getters = {
     return rootState.unverified_events
   },
   GetCurrentEvent: (state, getters, rootState) => {
-    return rootState.current_event
+    return rootState.calendar_event
   }
 }
 

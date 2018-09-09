@@ -48,7 +48,7 @@ export const store = new Vuex.Store({
   },
   getters:{
     GetAllDateTimes: state => {
-      return state.calendar_event.date_times;
+      return state.calendar_event.dates;
     },
     GetAllVenues: state => {
       return state.all_venues;
@@ -97,11 +97,15 @@ export const store = new Vuex.Store({
       }
     },
 
+    POPULATE_CURRENT_EVENT: (state, payload) => {
+      state.calendar_event = payload
+    },
+
     CREATE_NEW_EVENT: (state) => {
         state.calendar_event = {
           id:"",
           title: "",
-          date_times: [
+          dates: [
 
           ],
           image:"",
@@ -131,19 +135,19 @@ export const store = new Vuex.Store({
         }
       },
       DELETE_TIME_SEGMENT: (state, payload) => {
-        state.calendar_event.date_times.splice(payload.index,1)
+        state.calendar_event.dates.splice(payload.index,1)
       },
       ADD_NEW_TIME_SEGMENT: (state) => {
-        state.calendar_event.date_times.push({
+        state.calendar_event.dates.push({
           optional_title:"",
           start_time:"",
           end_time:""
         })
       },
       UPDATE_CURRENT_TIME_SEGMENT: (state, payload) => {
-        state.calendar_event.date_times[payload.current_time_segment].optional_title = payload.optional_title
-        state.calendar_event.date_times[payload.current_time_segment].start_time = payload.start_time
-        state.calendar_event.date_times[payload.current_time_segment].end_time = payload.end_time
+        state.calendar_event.dates[payload.current_time_segment].optional_title = payload.optional_title
+        state.calendar_event.dates[payload.current_time_segment].start_time = payload.start_time
+        state.calendar_event.dates[payload.current_time_segment].end_time = payload.end_time
       },
 
     UPDATE_LOCALIZED_EVENTS: (state, payload) => {
