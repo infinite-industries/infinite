@@ -18,6 +18,7 @@ import UserEvents from './pages/UserEvents.vue'
 import UserSettings from './pages/UserSettings.vue'
 import ListViewer from './pages/ListViewer.vue'
 import SubmitEvent from './pages/SubmitEvent.vue'
+import FirstLogin from './pages/FirstLogin.vue'
 
 import FourOhFour from './pages/404.vue'
 import Callback from './pages/Callback.vue'
@@ -74,6 +75,11 @@ const router = new VueRouter({
         path: '/contact',
         name: 'contact',
         component: Contact
+      },
+      {
+        path: '/first-login',
+        name: 'first_login',
+        component: FirstLogin
       },
       {
         path: '/your-events',         //slightly more user-friendly naming might need to change later for clarity

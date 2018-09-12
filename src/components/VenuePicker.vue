@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  props: ["venues"],
+  props: ["venues", "venue_id_to_edit"],
   data: function() {
     return {
       searchterm: "",
@@ -36,6 +36,9 @@ export default {
         this.selectVenue(this.queryResults[0]);
       }
     }
+  },
+  mounted: function(){
+    console.log(this.venue_id_to_edit);
   },
   computed: {
     queryResults: function() {

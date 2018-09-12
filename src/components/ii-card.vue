@@ -15,7 +15,7 @@
           <p class="description">{{calendar_event.brief_description | truncate(90)}} </p>
 
           <div class="btn-actions">
-            <span class="card-btn more-info">More Info</span>
+            <span class="card-btn more-info" @click.stop="ShowEvent(calendar_event.id)">More Info</span>
             <span class="card-btn add-to-calendar" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="17" height="17" class="ii-calendar"/>Add to Calendar</span>
           </div>
 
@@ -51,7 +51,10 @@
       },
       CloseCalendars: function(){
         this.showCalendars = false
-      }
+      },
+      ShowEvent: function(event_id){
+        window.location.assign('/events/'+ event_id)
+      },
     },
     mounted: function(){
       console.log('card loaded:', this.calendar_event);

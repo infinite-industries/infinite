@@ -1,7 +1,8 @@
 <template>
 <div id="form-wrapper">
 
-  <h2>Submit Your Event:</h2>
+  <h2 v-if="user_action==='upload'">Submit Your Event:</h2>
+  <h2 v-else>Edit Your Event:</h2>
 
   <i><span class="required-field">*</span> = required field</i>
 
@@ -51,7 +52,7 @@
         <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
       </v-flex>
       <v-flex xs12 sm8>
-        <venue-picker ref="venuePicker" :venues="venues" @selectVenue="selectVenue"></venue-picker>
+        <venue-picker ref="venuePicker" :venues="venues" :venue_id_to_edit="calendar_event.venue_id" @selectVenue="selectVenue" ></venue-picker>
       </v-flex>
       <v-flex xs0 sm3></v-flex>
       <v-flex xs12 sm8>
@@ -384,8 +385,6 @@
 
       if(this.user_action==='edit'){
         this.$store.dispatch('LoadCurrentEvent', this.event_id)
-        //this.$refs.venuePicker.selectVenue(this.calendar_event.venue)
-          console.log("trying to edit here: "+this.event_id);
       }
       else{
         this.$store.dispatch('CreateNewEvent')
