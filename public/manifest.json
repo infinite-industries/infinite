@@ -1,0 +1,21 @@
+{
+  "name": "Infinite Industries",
+  "short_name": "Infinite",
+  "lang": "en-US",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#b3d4fc",
+  "icons": [
+    {
+      "src": "/images/4_manifest_192.png",
+      "sizes": "192X192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/4_manifest_512.png",
+      "sizes": "512X512",
+      "type": "image/png"
+    }
+  ],
+  "background_color": "#fff"
+}
