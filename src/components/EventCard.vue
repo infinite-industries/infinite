@@ -77,6 +77,7 @@
         window.location.assign('/events/'+ event_id)
       },
       AddEventToCalendar(calType) {
+        console.log(calType);
         if (calType === "iCal" || calType === "Outlook") {
           // send event data to node layer to be converted into an .ics file
           window.open(`/calendar?title=${encodeURIComponent(this.event.title)}&description=${encodeURIComponent(this.event.brief_description)}&location=${encodeURIComponent(this.event.address)}&time_start=${encodeURIComponent(this.event.time_start)}&time_end=${encodeURIComponent(this.event.time_end)}`);

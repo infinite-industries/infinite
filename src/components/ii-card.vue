@@ -15,14 +15,14 @@
           <p class="description">{{calendar_event.brief_description | truncate(90)}} </p>
 
           <div class="btn-actions">
-            <span class="card-btn more-info" @click.stop="ShowEvent(calendar_event.id)">More Info</span>
-            <span class="card-btn add-to-calendar" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="17" height="17" class="ii-calendar"/>Add to Calendar</span>
+            <span class="card-btn more-info" style="cursor: pointer" @click.stop="ShowEvent(calendar_event.id)">More Info</span>
+            <span class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="17" height="17" class="ii-calendar"/>Add to Calendar</span>
           </div>
 
           <div class="drop-down" v-show="showCalendars">
-            <div>iCal</div>
-            <div>Outlook</div>
-            <div>Google Cal</div>
+            <div @click.stop="AddEventToCalendar('iCal')">iCal</div>
+            <div @click.stop="AddEventToCalendar('Outlook')">Outlook</div>
+            <div @click.stop="AddEventToCalendar('Google Calendar')">Google Cal</div>
           </div>
         </div>
     </div>
@@ -55,6 +55,18 @@
       ShowEvent: function(event_id){
         window.location.assign('/events/'+ event_id)
       },
+      AddEventToCalendar(calType) {
+        // console.log(calType);
+        if (calType === "iCal" || calType === "Outlook") {
+          // send calendar_event data to node layer to be converted into an .ics file
+          window.open(`/calendar?title=${encodeURIComponent(this.calendar_event.title)}&description=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}&time_start=${encodeURIComponent(this.calendar_event.time_start)}&time_end=${encodeURIComponent(this.calendar_event.time_end)}`);
+        } else if (calType === "Google Calendar") {
+          var time_start_formatted = moment(this.calendar_event.time_start).format('YYYYMMDDTHHmmss');
+          var time_end_formatted = moment(this.calendar_event.time_end).format('YYYYMMDDTHHmmss');
+
+          window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.calendar_event.title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}`);
+        }
+      }
     },
     mounted: function(){
       console.log('card loaded:', this.calendar_event);
