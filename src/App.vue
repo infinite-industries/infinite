@@ -116,12 +116,12 @@ export default {
     padding-top: 90px;
   }
 
-  h1{
+  /* h1{
     font-family: 'EB Garamond', serif;
     font-size: 1.9em;
     text-decoration: underline;
     color: white;
-  }
+  } */
 
   .admin-page {
     background: white;
@@ -135,13 +135,25 @@ export default {
     border-radius: 10px;
   }
 
-  h2, h3 {
+  h1, h2, h3 {
     font-family: "Open Sans", sans-serif;
+    letter-spacing: .02em;
+
+  }
+
+  h1{
+    font-size: 1.9em;
+    font-weight: bold;
+    margin-bottom: 0.7em;
+  }
+
+  h2, h3{
     font-size: 1.5em;
     font-weight: 700;
-    letter-spacing: .02em;
-    margin-bottom: 1em;
+    margin-top: 1.5em;
+    margin-bottom: .5em;
   }
+
 
   .info-page p {
     font-family: "EB Garamond";

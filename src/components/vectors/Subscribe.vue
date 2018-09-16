@@ -17,7 +17,7 @@
           </g>
       </g>
 
-      <rect class="clickable" x="0" y="0" width="210" height="65" @click.stop="NavigateTo('Subscribe')"/>
+      <rect class="clickable" x="0" y="0" width="210" height="65" @click.stop="NavigateTo('/subscribe-email')"/>
   </svg>
 </template>
 
@@ -38,8 +38,7 @@
     },
     methods:{
       NavigateTo: function(route_name){
-        console.log("clicked");
-        window.alert("Open page --> "+ route_name)
+        window.location=route_name
       }
     },
     mounted:function(){

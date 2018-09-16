@@ -34,7 +34,7 @@ elif [[ "staging" = $1 ]]; then
   cd $ROOT
   echo 'Updating sources'
   git reset --hard HEAD
-  git checkout development
+  git checkout ui-changes
   git pull
   echo 'Installing npm packages'
   npm install --production

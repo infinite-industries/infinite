@@ -34,7 +34,7 @@
       </g>
     </g>
 
-    <rect class="clickable" x="0" y="0" width="179" height="65" @click.stop="NavigateTo('Home')"/>
+    <rect class="clickable" x="0" y="0" width="179" height="65" @click.stop="NavigateTo('/')"/>
   </svg>
 </template>
 
@@ -48,7 +48,7 @@
     },
     methods:{
       NavigateTo: function(route_name){
-        window.alert("Open page --> "+ route_name)
+        window.location=route_name
       }
     }
   }

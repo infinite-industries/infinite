@@ -2,13 +2,18 @@
 <template>
   <div class="container info-page">
 
-    <h2>Core Team</h2>
+    <h1>Who We Are</h1>
 
     <ul>
       <li>
-        <h3>Dima Strakovsky</h3>
-        <p>About Dima</p>
+        <h3>Dmitry "Dima" Strakovsky</h3>
+        <p>Dima is the Founder and Creative Director of Infinite Industries. Along with his coding and design know-how, he is a practicing artist and has run and curated a wide variety of art spaces. His experiences as a technologist and artist/curator finally united when he dreamed up Infinite Industries. Dima works with an awesome team of coders, designers and marketing folk to help bring this dream to all the screens near you.</p>
       </li>
+    </ul>
+
+    <h2>Core Dev Team</h2>
+
+    <ul>
       <li>
         <h3>Chris Wininger</h3>
         <p>About Chris</p>
@@ -29,61 +34,57 @@
 
     <p>If you got the skills and the passion join us!</p>
 
-    <h2>Folks Who Got Us Here</h2>
+
+    <h2>Core Design Team</h2>
+
+    <p><a href="https://bullhorncreative.com/" target="_blank">BullHorn Creative</a> generously donated their skills and time</p>
+    <p>UI/UX work by Ben Byrum </p>
+
+
+    <h2>Our Board:</h2>
+
+    <p>Together with our fearless founder, these are the folks that steer the boat</p>
 
     <ul>
       <li>
-        <h3>More people here</h3>
+        <h3>Brian Frye</h3>
+        <p> About Brian </p>
+      </li>
+      <li>
+        <h3>Arthur Shechet</h3>
+        <p> About Art </p>
       </li>
     </ul>
 
-    <p>
-      And many awesome peoples from the past.
-    </p>
+    <h2>Thank you! Thank you! Thank you!</h2>
 
     <p>
-      On org level please like and follow us on the social media of your choice.
+      Shout out to all the folks who have made this happen by offering their time and advice: .
+    </p>
+    <p>
+      Apologies if we have forgotten anyone. Any omission is simply a function of cluttered minds and short deadlines.
+    </p>
+    <p>
+      Giant thanks to [Kasey’s company] for marketing and promo work and VisitLex for helping us out with the publicity grant.
+    </p>
+    <p>
+      We would also like to thank Microsoft for the server space and Google for email and other digital nourishment.
+    </p>
+    <p>
+      And finally, thanks to open-projects that we love and use: Node, Vue, Moment.js
     </p>
 
-    <p>
-      Looking forward to your comments on <a href="https://www.facebook.com/Infinite-Industries-1041120505976874/" target="_new">Facebook</a> and some terse prose on <a href="https://twitter.com/1nfinite_1" target="_new">Twitter</a>.
-    </p>
 
-    <p>
-      If enjoy longer-form writing, please <a href="https://medium.com/infinite-industries" target="_new">check us out on Medium</a>. Appreciate any highlights, &lt;3 or comments.
-    </p>
-
-    <p>
-      If <a href="https://www.instagram.com/1nfinite_1ndustries/" target="_new">Instagram</a> is your thing, we got one of those. All the messages, comments and, of course, hashtags are super welcome and definitely nurture our will to live and thrive ;) i.e. regardless if you actually read this far or just skipped to the end, BIG THNX for checking us out!
-    </p>
 
   </div>
 </template>
 
 <script>
-export default {
-  //
-}
+  export default {
+    //
+  }
 </script>
 
 <style scoped>
-  h2 {
-    margin-bottom: 8px;
-  }
-  .personal-social-media {
-    margin-bottom: 20px;
-  }
-  .ii-spacer {
-    margin: 20px;
-    font-size: 20px;
-    text-align: center;
-  }
-  .logo-image {
-    border-radius: 100px;
-    max-width: 200px;
-  }
-  .contributor-container {
-    padding: 10px;
-    margin: 10px;
-  }
+
 </style>
