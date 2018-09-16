@@ -226,7 +226,7 @@
   import uploadcare from 'uploadcare-widget'
 
   export default {
-    props:['event_id', 'user_role', 'user_action'],
+    props:['event_id', 'user_role', 'user_action','venues'],
     // user_role --> admin, venue, regular
     // user_action --> upload, edit
     data: function () {
@@ -239,7 +239,6 @@
         promoHTML: "",
         eventSubmitted: false,
         content: "",
-        venues: [],
         showEventLoadingSpinner: false,
         send_summary: false,
         send_summary_to: "",
@@ -390,15 +389,6 @@
         this.$store.dispatch('CreateNewEvent')
         console.log("ready to input event");
       }
-
-      Axios.get('/venues').then( response => {     // need to move into vuex
-        this.venues = response.data.venues;
-        console.log(this.venues);
-      })
-      .catch(function(error) {
-        console.log(error)
-        window.alert("Ooops... We were not able to load a list of venues. Please reload the page. If the problem continues, contact us. We will fix this ASAP!")
-      })
 
    },
 
