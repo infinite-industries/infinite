@@ -223,7 +223,7 @@
   import VenuePicker from './VenuePicker.vue'
   import DateTimePicker from './DateTimePicker.vue'
   import AddNewVenue from './AddNewVenue.vue'
-
+  import uploadcare from 'uploadcare-widget'
 
   export default {
     props:['event_id', 'user_role', 'user_action'],
@@ -275,7 +275,7 @@
         // this is a hack, I think
         // since only dates array gets modified and saved to store,
         // we need to grab it from the store and add it to current calendar event
-        this.calendar_event.dates = this.$store.getters.GetAllDateTimes
+        this.calendar_event.date_times = this.$store.getters.GetAllDateTimes
 
         console.log("Uploading: -------- :\n"+JSON.stringify(this.calendar_event));
 
