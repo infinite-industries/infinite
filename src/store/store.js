@@ -8,7 +8,7 @@ import ComponentEventBus from '../helpers/ComponentEventBus'
 import admin from './modules/admin'
 import ui from './modules/ui'
 
-import { getUsername, isAdmin, logout } from '../helpers/Auth'
+import {getIdToken, getUsername, isAdmin, logout} from '../helpers/Auth'
 
 Vue.use(Vuex)
 
@@ -83,18 +83,11 @@ export const store = new Vuex.Store({
     },
 
     UPDATE_USER_DATA: (state, user_data) => {
-      state.user_settings = _.merge({},state.user_settings, user_data.settings, user_data.permissions, { username: getUsername() })
+      state.user_settings = {... state.user_settings, ...user_data, username: user_data.name }
       state.lists_my = user_data.lists_my;
       state.lists_follow = user_data.lists_follow;
 
       state.loaded_from_api = true
-
-      //Greet users who are not logged in
-      if(state.user_settings.logged_in === false){
-        ComponentEventBus.$emit('SHOW_INFO', {
-          message: "Welcome! Check out the local cultural awesomeness! Please log in to start saving and sharing event lists. If we accidently missed something cool and cultural in your area, feel free to submit your own event via submissions page."
-        })
-      }
     },
 
     POPULATE_CURRENT_EVENT: (state, payload) => {
@@ -318,20 +311,33 @@ export const store = new Vuex.Store({
     },
 
     LoadAllUserData: (context) => {
+      const showWelcome = () => {
+        //Greet users who are not logged in
+        ComponentEventBus.$emit('SHOW_INFO', {
+          message: "Welcome! Check out the local cultural awesomeness! Please log in to start saving and sharing event lists. If we accidently missed something cool and cultural in your area, feel free to submit your own event via submissions page."
+        })
+      }
+
+      if (!getIdToken()) {
+        return showWelcome()
+      }
+
       Axios.get('/users/1234556')
         .then(function (_response) {
           context.commit('UPDATE_USER_DATA', _response.data)
+          showWelcome()
         })
         .catch(function (error) {
-          console.log(`no user data: ${error}`);
+          console.error(`no user data: ${error}`);
           context.commit('UPDATE_USER_DATA', {
             user_settings: {
-              logged_in: false
+              logged_in: false,
+              admin_role: false,
+              username: "",
+              associated_venues: []
             }
           })
-          /*ComponentEventBus.$emit('SHOW_ALERT', {
-            message: "Hrrmm... unable to get your data. Please contact us and we will figure out what went wrong."
-          })*/
+          showWelcome()
         });
     },
     LoadAllLocalEventData: (context, payload) => {
