@@ -39,7 +39,7 @@
           { title: 'Admin', route: '/admin', isAdminOnly: true },
           { title: 'Who We Are', route: '/who-we-are'},
           { title: 'Our Mission', route: '/our-mission'},
-          { title: 'Legal', route: '/legal'},
+          //{ title: 'Legal', route: '/legal'},
           //{ title: 'Your Events', route: '/your-events', isAdminOnly: true }, // isAuthOnly: true
           // { title: 'Your Settings', route: '/your-settings'},
           { title: 'Contact', route: '/contact'},

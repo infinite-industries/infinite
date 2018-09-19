@@ -210,10 +210,10 @@
       </div>
 
 
-      {% if event.hasOwnProperty('website') and event.website!="none" %}
+      {% if event.hasOwnProperty('website_link') and event.website_link!="none" %}
         <div class="row event-website">
           <div class="col s11">
-            <a href="{{event.website}}" onclick="InfiniteAnalytics('{{ id }}', 'website_view', '', '{{ site_url }}')" target="_new">Event Website</a>
+            <a href="{{event.website_link}}" onclick="InfiniteAnalytics('{{ id }}', 'website_view', '', '{{ site_url }}')" target="_new">Event Website</a>
           </div>
         </div>
       {% endif %}
