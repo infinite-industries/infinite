@@ -223,7 +223,7 @@
   import VenuePicker from './VenuePicker.vue'
   import DateTimePicker from './DateTimePicker.vue'
   import AddNewVenue from './AddNewVenue.vue'
-  import uploadcare from 'uploadcare-widget'
+  // import uploadcare from 'uploadcare-widget'
 
   export default {
     props:['event_id', 'user_role', 'user_action','venues'],
