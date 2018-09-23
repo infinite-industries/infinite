@@ -161,7 +161,7 @@
        <!-- LOADING INDICATOR -->
        <v-flex xs12>
          <div class="col-12 text-xs-center">
-           <img v-if="showEventLoadingSpinner" class="loading-spinner" src="images/spinner.gif"></img>
+           <img v-if="showEventLoadingSpinner" class="loading-spinner" src="images/spinner.gif">
          </div>
        </v-flex>
      </v-layout>
