@@ -52,7 +52,7 @@
         <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
       </v-flex>
       <v-flex xs12 sm8>
-        <venue-picker ref="venuePicker" :venues="venues" :venue_id_to_edit="calendar_event.venue_id" @selectVenue="selectVenue" ></venue-picker>
+        <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="calendar_event.venue_id" @selectVenue="selectVenue" ></venue-picker>
       </v-flex>
       <v-flex xs0 sm3></v-flex>
       <v-flex xs12 sm8>

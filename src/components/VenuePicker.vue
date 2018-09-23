@@ -12,7 +12,7 @@
 
 <script>
 export default {
-  props: ["venues", "venue_id_to_edit"],
+  props: ["venues", "initial_venue_id"],
   data: function() {
     return {
       searchterm: "",
@@ -35,10 +35,18 @@ export default {
       if (this.queryResults.length == 1) {
         this.selectVenue(this.queryResults[0]);
       }
+    },
+    initToVenueId: function() {
+      let venue = this.venues.find((v) => v.id === this.initial_venue_id);
+      this.searchterm = venue.name || this.searchterm;
     }
   },
   mounted: function(){
-    console.log(this.venue_id_to_edit);
+    // for some reason these props aren't set when we get here
+    // they _should_ be, though
+    if (this.initial_venue_id && this.venues) {
+      this.initToVenueId();
+    }
   },
   computed: {
     queryResults: function() {
@@ -49,6 +57,15 @@ export default {
           return venue.name.toLowerCase().includes(this.searchterm.toLowerCase())
           || venue.address.toLowerCase().includes(this.searchterm.toLowerCase());
         })
+      }
+    }
+  },
+  watch: {
+    initial_venue_id: function(initial_venue_id, old_venue_id) {
+      // this works around timing issues where this component's props aren't initialized at mount time
+      // should only try to do this once, when initial_venue_id is populated
+      if (!old_venue_id && initial_venue_id && this.venues && this.venues.length > 0) {
+        this.initToVenueId();
       }
     }
   }
