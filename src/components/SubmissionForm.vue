@@ -154,11 +154,7 @@
      <v-layout row wrap v-if="user_action==='upload'">
        <v-flex xs12>
          <div class="text-xs-center">
-           <v-btn color="grey" :disabled="false" :flat="false" :outline="false" depressed @click="UploadEvent()">Submit Event</v-btn>
-           <!-- <v-btn v-if="!eventRequiredFields || eventSubmitted" dark outline >Submit Event</v-btn>
-           <v-btn v-else depressed color="red" class="white--text" @click="UploadEvent">Submit Event</v-btn> -->
-
-           <!-- <v-btn color="primary" class="deep-purple submission-btn" @click="showPromoTools = !showPromoTools">toggle</v-btn> -->
+           <v-btn color="grey" :disabled="!eventRequiredFields" :flat="false" :outline="!eventRequiredFields" depressed @click="UploadEvent()">Submit Event</v-btn>
          </div>
        </v-flex>
 
