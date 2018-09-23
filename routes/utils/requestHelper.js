@@ -15,7 +15,7 @@ module.exports = {
         }
 
         if (userToken) {
-          if (verb === 'get') {
+          if (verb === 'get' || verb === 'delete') {
             args = [url, { headers: {'x-access-token': userToken } }]
           } else {
             args = [url, postBody, { headers: {'x-access-token': userToken } }]

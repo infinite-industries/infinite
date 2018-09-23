@@ -96,7 +96,7 @@ const actions = {
 
     Axios.post('/admin/delete-event', {id:payload.id})
       .then(function (_response) {
-        // console.log("data from server: ",response.data.events);
+         console.log("Trying to delete event \n data from server: ",_response.data.events);
         if(_response.data.status === "success"){
           // context.commit('POPULATE_CURRENT_LIST', _response.data)
           ComponentEventBus.$emit('CALENDAR_EVENT_DELETED', {id:_response.data.id})

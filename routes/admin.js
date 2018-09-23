@@ -57,6 +57,7 @@ router.post('/update-event', [jwtAuthenticator()], function(req, res){
 // Delete specific event
 router.post('/delete-event', [jwtAuthenticator()], function(req, res){
   let id = req.body.id
+  console.log('sending delete event', req.token);
   makeAPICall('delete', `events/${id}`, null, process.env.API_KEY, req.token, err => {
     if (err)
       return res.status(500).json({ status: 'fail', error: err })
