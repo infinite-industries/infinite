@@ -92,10 +92,16 @@
 
       },
       when_date: function() {
-        return moment(this.calendar_event.time_start).format('dddd, MMMM Do')
+        const calendar = this.calendar_event
+        const dateTimes = calendar.date_times
+        const firstDay = dateTimes[0]
+        return moment(firstDay.start_time).format('dddd, MMMM Do')
       },
       when_time: function() {
-        let output_string = moment(this.calendar_event.time_start).format('h:mma - ')+moment(this.calendar_event.time_end).format('h:mma')
+        const calendar = this.calendar_event
+        const dateTimes = calendar.date_times
+        const firstDay = dateTimes[0]
+        let output_string = moment(firstDay.start_time).format('h:mma - ')+moment(firstDay.end_time).format('h:mma')
         return output_string
       },
     },

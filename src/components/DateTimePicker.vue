@@ -195,8 +195,8 @@
           this.$store.dispatch('UpdateCurrentTimeSegment', {
             current_time_segment: which_segment,
             optional_title: '',   // add later afer consulting with users
-            start_time: moment(formated_start_time).format('YYYY-MM-DD HH:mm'),
-            end_time: moment(formated_end_time).format('YYYY-MM-DD HH:mm')
+            start_time: moment(formated_start_time).format('YYYY-MM-DD HH:mm:ss'),
+            end_time: moment(formated_end_time).format('YYYY-MM-DD HH:mm:ss')
           })
 
           this.picker = null
