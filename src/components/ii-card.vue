@@ -3,7 +3,7 @@
     <div class="card-overlay" v-show="showCalendars" @click.stop="CloseCalendars()"></div>
     <div class="infinte-card">
         <div class="image-container">
-          <div class="image-surface" :style="backGroundImage"></div>
+          <div class="image-surface" :style="backGroundImage" @click.stop="ShowEvent(calendar_event.id)"></div>
         </div>
         <div class="info-container">
           <h3>{{calendar_event.title | truncate(33)}}</h3>
@@ -73,8 +73,7 @@
     },
     computed:{
       backGroundImage: function(){
-        return "background: url('"+this.calendar_event.image+"') center center / cover no-repeat;"
-        //
+        return "background: url('"+this.calendar_event.image+"') center center / cover no-repeat; cursor: pointer;"
       },
       venue_info: function() {
         let all_venues = this.$store.getters.GetAllVenues
@@ -206,7 +205,7 @@
     left: 170px;
 
     min-height: 210px;
-    min-width: 190px;
+    min-width: 200px;
 
     padding: 12px;
     padding-top: 15px;
