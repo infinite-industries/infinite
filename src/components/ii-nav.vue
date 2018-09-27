@@ -34,17 +34,16 @@
       return {
         nav_items: [
           { title: 'Home', route:'/' },
+          { title: 'Our Mission', route: '/our-mission'},
           { title: 'Submit Event', route:'/submit-event' },
           { title: 'Login', route: '/login', isUnAuthOnly: true },
           { title: 'Admin', route: '/admin', isAdminOnly: true },
           { title: 'Who We Are', route: '/who-we-are'},
-          { title: 'Our Mission', route: '/our-mission'},
-          //{ title: 'Legal', route: '/legal'},
+          { title: 'Legal', route: '/legal'},
           //{ title: 'Your Events', route: '/your-events', isAdminOnly: true }, // isAuthOnly: true
           // { title: 'Your Settings', route: '/your-settings'},
-          { title: 'Contact', route: '/contact'},
           { title: 'Logout', route: '/logout', isAuthOnly: true },
-
+          { title: 'Contact', route: '/contact'},
         ]
       }
     },
