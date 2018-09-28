@@ -93,13 +93,13 @@ const router = new VueRouter({
       //   beforeEnter: requireAuth,
       //   component: UserSettings
       // },
-      {
-        path: '/list-viewer/:id/:type',
-        name: 'list_viewer',
-        beforeEnter: requireAuth,
-        component: ListViewer,
-        props: true
-      },
+      // {
+      //   path: '/list-viewer/:id/:type',
+      //   name: 'list_viewer',
+      //   beforeEnter: requireAuth,
+      //   component: ListViewer,
+      //   props: true
+      // },
       {
         path: '/callback',
         name: 'callback',
