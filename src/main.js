@@ -14,9 +14,9 @@ import OurMission from './pages/OurMission.vue'
 import Admin from './pages/Admin.vue'
 import AdminEventEdit from './pages/AdminEventEdit.vue'
 import Contact from './pages/Contact.vue'
-import UserEvents from './pages/UserEvents.vue'
-import UserSettings from './pages/UserSettings.vue'
-import ListViewer from './pages/ListViewer.vue'
+//import UserEvents from './pages/UserEvents.vue'
+//import UserSettings from './pages/UserSettings.vue'
+//import ListViewer from './pages/ListViewer.vue'
 import SubmitEvent from './pages/SubmitEvent.vue'
 import FirstLogin from './pages/FirstLogin.vue'
 
@@ -81,18 +81,18 @@ const router = new VueRouter({
         name: 'first_login',
         component: FirstLogin
       },
-      {
-        path: '/your-events',         //slightly more user-friendly naming might need to change later for clarity
-        name: 'user_events',
-        beforeEnter: requireAuth,
-        component: UserEvents
-      },
-      {
-        path: '/your-settings',      //slightly more user-friendly naming might need to change later for clarity
-        name: 'user_settings',
-        beforeEnter: requireAuth,
-        component: UserSettings
-      },
+      // {
+      //   path: '/your-events',         //slightly more user-friendly naming might need to change later for clarity
+      //   name: 'user_events',
+      //   beforeEnter: requireAuth,
+      //   component: UserEvents
+      // },
+      // {
+      //   path: '/your-settings',      //slightly more user-friendly naming might need to change later for clarity
+      //   name: 'user_settings',
+      //   beforeEnter: requireAuth,
+      //   component: UserSettings
+      // },
       {
         path: '/list-viewer/:id/:type',
         name: 'list_viewer',
