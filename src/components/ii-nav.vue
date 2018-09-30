@@ -125,12 +125,14 @@
 
   #nav-list {
     margin-top: 150px;
+    padding-left: 24px;
   }
 
   #nav-list li {
     list-style: none;
     font-family: 'Open Sans', sans-serif;
     font-size: 1.2em;
+    line-height: normal;
     padding: 10px;
 
   }
