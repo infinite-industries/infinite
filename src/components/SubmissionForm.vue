@@ -15,7 +15,7 @@
         <h3 class="form-label">Event Title<span class="required-field">*</span>:</h3>
       </v-flex>
       <v-flex xs12 sm8>
-        <v-text-field v-model="calendar_event.title" :rules="[v => !!v || 'Title is required']"></v-text-field>
+        <v-text-field v-model="calendar_event.title" :rules="[v => !!v || 'Title is required']" class="event-title"></v-text-field>
       </v-flex>
     </v-layout>
 
@@ -151,7 +151,7 @@
 
 
     <!-- SUBMIT BUTTON -->
-     <v-layout row wrap v-if="user_action==='upload'">
+     <v-layout row wrap v-if="user_action==='upload'" class="submit-container">
        <v-flex xs12>
          <div class="text-xs-center">
            <v-btn color="grey" :disabled="!eventRequiredFields" :flat="false" :outline="!eventRequiredFields" depressed @click="UploadEvent()">Submit Event</v-btn>
@@ -168,7 +168,7 @@
 
 
      <!-- EDIT EVENT TOOLS -->
-     <v-layout row wrap v-if="user_action==='edit'">
+     <v-layout row wrap v-if="user_action==='edit'" class="edit-container">
        <v-flex xs12>
          <div class="text-xs-center">
            <v-btn @click="UpdateEvent()">Save</v-btn>

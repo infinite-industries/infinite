@@ -19,9 +19,9 @@
             <div class="time-date-entry" v-show="picker">
               On {{picker}} from
               <span>
-                <input ref="startHourInput" v-model="start_hour" type="text" min="0" max="23" placeholder="hh"  :class="{ 'invalid' : start_hour_invalid }" maxlength="2"></input>
+                <input ref="startHourInput" v-model="start_hour" type="text" min="0" max="23" placeholder="hh" class="start-hour" :class="{ 'invalid' : start_hour_invalid }" maxlength="2" />
                 <span>:</span>
-                <input ref="startMinInput" v-model="start_minute" type="text" min="0" max="59" placeholder="mm"  :class="{ 'invalid' : start_minute_invalid }" maxlength="2"></input>
+                <input ref="startMinInput" v-model="start_minute" type="text" min="0" max="59" placeholder="mm" class="start-minute" :class="{ 'invalid' : start_minute_invalid }" maxlength="2" />
                 <select ref="startAmPm" name="start_ampm" v-model="start_ampm">
                   <option value="am">AM</option>
                   <option value="pm">PM</option>
@@ -29,9 +29,9 @@
               </span>
               to
               <span>
-                <input ref="endHourInput" v-model="end_hour" type="text" min="0" max="23" placeholder="hh" :class="{ 'invalid' : end_hour_invalid }" maxlength="2"></input>
+                <input ref="endHourInput" v-model="end_hour" type="text" min="0" max="23" placeholder="hh" class="end-hour" :class="{ 'invalid' : end_hour_invalid }" maxlength="2" />
                 <span>:</span>
-                <input ref="endMinInput" v-model="end_minute" type="text" min="0" max="59" placeholder="mm" :class="{ 'invalid' : end_minute_invalid }" maxlength="2"></input>
+                <input ref="endMinInput" v-model="end_minute" type="text" min="0" max="59" placeholder="mm" class="end-minute" :class="{ 'invalid' : end_minute_invalid }" maxlength="2" />
                 <select ref="endAmPm" name="end_ampm" v-model="end_ampm">
                   <option value="am">AM</option>
                   <option value="pm">PM</option>
@@ -39,14 +39,14 @@
               </span>
 
               <span v-if="edit_mode">
-                <v-btn style="color:black" small dark outline @click="Cancel()">Cancel</v-btn>
-                <v-btn style="color:black" small dark outline  @click="UpdateTimeSegment(time_segment_index)">UPDATE</v-btn>
+                <v-btn style="color:black" class="time-cancel" small dark outline @click="Cancel()">Cancel</v-btn>
+                <v-btn style="color:black" small dark outline class="time-update" @click="UpdateTimeSegment(time_segment_index)">UPDATE</v-btn>
               </span>
               <span v-else>
-                <v-btn small dark depressed color="grey" class="white--text" @click="Cancel()">Cancel</v-btn>
-                <v-btn small dark outline v-show="!validate_time" disabled>CONFIRM</v-btn>
+                <v-btn small dark depressed color="grey" class="white--text time-cancel" @click="Cancel()">Cancel</v-btn>
+                <v-btn small dark outline v-show="!validate_time" class="time-confirm" disabled>CONFIRM</v-btn>
                 <!-- Ugly hack thanks to "disabled" bug in vuetify -->
-                <v-btn small dark depressed color="grey" class="white--text" @click="AddTimeSegment()" v-show="validate_time">CONFIRM</v-btn>
+                <v-btn small dark depressed color="grey" class="white--text time-confirm" @click="AddTimeSegment()" v-show="validate_time">CONFIRM</v-btn>
               </span>
             </div>
           </div>

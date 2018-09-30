@@ -39,17 +39,23 @@ describe('Testing event submission flow', function() {
   })
 
   it('Inputs dummy data into event submission form', function(){
-    cy.visit('/submit-event')
+    // cy.visit('/submit-event')
+    cy.visitAsUser('/submit-event', 'test-admin') // REMOVE SHOULDN'T NEED TO BE ADMIN!
     cy.get('.event-title input').type(EVENT_NAME)
 
-    cy.get('.event-start-date i').click()
-    cy.contains('13').click()       // lucky number ;)
+    // can't select dates in the past
+    // advance calendar one month and select the first
+    cy.get('#cal-container .v-date-picker-header button:last-child').click()
+    cy.get('#cal-container .v-date-picker-table button').contains('1').click()
 
-    cy.get('.start-time .hour').type("9")
-    cy.get('.start-time .minute').type("00")
+    cy.get('.start-hour').type("9")
+    cy.get('.start-minute').type("00")
+    cy.get('select[name=start_ampm]').select('PM')
 
-    cy.get('.stop-time .hour').type("10")
-    cy.get('.stop-time .minute').type("00")
+    cy.get('.end-hour').type("10")
+    cy.get('.end-minute').type("00")
+    cy.get('select[name=end_ampm]').select('PM')
+    cy.get('time-confirm').click()
 
     // selectFile is a custom command; see cypress/support/commands.js
     cy.get('#event-image').selectFile('images/event_sample_image.jpg');
@@ -60,7 +66,8 @@ describe('Testing event submission flow', function() {
     cy.get('.brief-description input').type("still testing")
     cy.get('.submitter-email input').type("test@te.st")
 
-    cy.get('.submission-btn').click()
+    // submit event and wait for promo tools section to expand on success
+    cy.get('.submit-container button').click()
     cy.get('.collapsible-content.expanded')
   })
 
@@ -71,11 +78,11 @@ describe('Testing event submission flow', function() {
 
   it('Admin user can verify event', function() {
     cy.visitAsUser('/', 'test-admin')
-    cy.get('nav .main-nav .menu__activator button').click()
-    cy.get('#account-list li').contains('Admin').click()
+    cy.get('#hamburger').click()
+    cy.get('#nav-list li').contains('Admin').click()
     cy.location('pathname').should('include', 'admin')
-    cy.contains('.admin-table tr:last-child td', EVENT_NAME)
-    cy.get('.admin-table tr:last-child button').contains('Edit').click()
+    cy.contains('.calendar-events-table tr:last-child td', EVENT_NAME)
+    cy.get('.calendar-events-table tr:last-child button').contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
     cy.get('button').contains('Verify').click()
     cy.get('.alert.alert--dismissible').contains('Success! Event verified.')
