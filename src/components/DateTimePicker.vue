@@ -3,6 +3,7 @@
     <div>
       <v-date-picker v-model="picker"
       color="gray lighten-1"
+      :allowed-dates="AllowedDates"
       :no-title="true"
       :dark="true"
       />
@@ -110,6 +111,10 @@
       // stuff
     },
     methods:{
+      AllowedDates: function(val){
+        if(moment(val).isSameOrAfter(moment().subtract(1,'d'))) return val
+      },
+
       FormatedDateTime: function(start,end){
         console.log(start)
         return moment(start).format('dddd, MMMM Do, h:mma - ') + moment(end).format('h:mma')
