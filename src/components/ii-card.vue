@@ -1,7 +1,7 @@
 <template>
   <div class="card-container">
     <div class="card-overlay" v-show="showCalendars" @click.stop="CloseCalendars()"></div>
-    <div class="infinte-card">
+    <div class="infinite-card">
         <div class="image-container">
           <div class="image-surface" :style="backGroundImage" @click.stop="ShowEvent(calendar_event.id)"></div>
         </div>
@@ -140,7 +140,7 @@
     /* margin: 5px; */
   }
 
-  .infinte-card{
+  .infinite-card{
     position: relative;
 
     display:flex;
@@ -313,7 +313,7 @@
       /* margin: 5px; */
     }
 
-    .infinte-card{
+    .infinite-card{
 
       width: 220px;
       min-height: 380px;
@@ -375,7 +375,7 @@
     margin-bottom: 20px;
   }
 
-  .infinte-card{
+  .infinite-card{
 
     width: 85%;
     min-height: 520px;
