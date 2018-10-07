@@ -196,7 +196,7 @@ router.post("/submit-new", function(req, res){
           // throw me an error
             if(err){
               console.log(err)
-              res.json({"status":"failure", "reason": err})
+              res.status(500).json({"status":"failure", "reason": err})
             }
             else{
             // Generate a quick report back to the client
