@@ -5,47 +5,29 @@ describe('Testing event submission flow', function() {
   after(function() {
     // get the ID of the event
     cy.visitAsUser('/', 'test-admin')
-    cy.contains('.card', EVENT_NAME).contains('button', 'More Info').click()
+    cy.contains('.infinite-card', EVENT_NAME).contains('.more-info', 'More Info').click()
     cy.url().then((url) => {
       // open the admin-event-edit page for the event
       cy.visit('/admin-event-edit/' + url.split('/').pop())
 
       // delete the event
       cy.get('button').contains('Delete').click()
-      cy.get('.dialog.dialog--active button').contains('Kill').click()
+      cy.get('.v-dialog.v-dialog--active button').contains('Kill').click()
 
       // event should no longer be present
       cy.visit('/')
-      cy.contains('.card h3', EVENT_NAME).should('not.exist')
+      cy.contains('.infinite-card h3', EVENT_NAME).should('not.exist')
     });
   });
 
-  it('Visits Submission page and check all fields', function() {
-    cy.visit('/submit-event')
-    cy.contains('.form-label', 'Event Title')
-    cy.contains('.form-label', 'Event Date')
-    cy.contains('.form-label', 'Event Time')
-    cy.contains('.form-label', 'Event Image')
-    cy.contains('.form-label', 'Social Media Image')
-    cy.contains('.form-label', 'Select a Venue')
-    cy.contains('.form-label', 'Brief Description')
-    cy.contains('.form-label', 'Admission Fee')
-    cy.contains('.form-label', 'Your Contact Email')
-    cy.contains('.form-label', 'Event Website Link')
-    cy.contains('.form-label', 'Ticket Link')
-    cy.contains('.form-label', 'Facebook Event Link')
-    cy.contains('.form-label', 'Eventbrite Link')
-   cy.contains('Full Event Description')
-  })
-
   it('Inputs dummy data into event submission form', function(){
-    // cy.visit('/submit-event')
-    cy.visitAsUser('/submit-event', 'test-admin') // REMOVE SHOULDN'T NEED TO BE ADMIN!
+    cy.visit('/submit-event')
     cy.get('.event-title input').type(EVENT_NAME)
 
     // can't select dates in the past
     // advance calendar one month and select the first
     cy.get('#cal-container .v-date-picker-header button:last-child').click()
+    cy.wait(1000) // wait for calendar animation to complete
     cy.get('#cal-container .v-date-picker-table button').contains('1').click()
 
     cy.get('.start-hour').type("9")
@@ -55,7 +37,7 @@ describe('Testing event submission flow', function() {
     cy.get('.end-hour').type("10")
     cy.get('.end-minute').type("00")
     cy.get('select[name=end_ampm]').select('PM')
-    cy.get('time-confirm').click()
+    cy.get('.time-confirm:not([disabled])').click()
 
     // selectFile is a custom command; see cypress/support/commands.js
     cy.get('#event-image').selectFile('images/event_sample_image.jpg');
@@ -73,7 +55,7 @@ describe('Testing event submission flow', function() {
 
   it('Submitted events not displayed immediately after submission', function() {
     cy.visit('/')
-    cy.contains('.card h3', EVENT_NAME).should('not.exist')
+    cy.contains('.infinite-card h3', EVENT_NAME).should('not.exist')
   })
 
   it('Admin user can verify event', function() {
@@ -85,11 +67,13 @@ describe('Testing event submission flow', function() {
     cy.get('.calendar-events-table tr:last-child button').contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
     cy.get('button').contains('Verify').click()
-    cy.get('.alert.alert--dismissible').contains('Success! Event verified.')
+    cy.get('.calendar-events-table')
+    cy.contains('.calendar-events-table tr:last-child td', EVENT_NAME).should('not.exist')
+    // cy.get('.alert.alert--dismissible').contains('Success! Event verified.')
   })
 
   it('Event is displayed after verification', function() {
     cy.visit('/')
-    cy.contains('.card h3', EVENT_NAME).should('exist')
+    cy.contains('.infinite-card h3', EVENT_NAME).should('exist')
   })
 })
