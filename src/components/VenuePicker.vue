@@ -38,7 +38,7 @@ export default {
     },
     initToVenueId: function() {
       let venue = this.venues.find((v) => v.id === this.initial_venue_id);
-      this.searchterm = venue.name || this.searchterm;
+      this.searchterm = venue && venue.name || this.searchterm;
     }
   },
   mounted: function(){
@@ -65,6 +65,12 @@ export default {
       // this works around timing issues where this component's props aren't initialized at mount time
       // should only try to do this once, when initial_venue_id is populated
       if (!old_venue_id && initial_venue_id && this.venues && this.venues.length > 0) {
+        this.initToVenueId();
+      }
+    },
+    venues: function(venues, old_venues) {
+      // more timing issues; need to rethink the way we're loading this data
+      if ((!old_venues || old_venues.length === 0) && venues && venues.length > 0 && this.initial_venue_id) {
         this.initToVenueId();
       }
     }
