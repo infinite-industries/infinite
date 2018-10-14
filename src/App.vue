@@ -24,6 +24,7 @@ import Toolbar from './components/ii-toolbar.vue'
 import Notifications from './components/ii-notifications.vue'
 import IphoneSaveButton from './components/ii-iphone-save-button.vue'
 import Modal from './components/ii-modal.vue'
+import 'babel-polyfill';
 
 //import EventsFromStore from './helpers/ComponentEventBus.js'
 
