@@ -191,6 +191,13 @@
      </v-dialog>
 
 
+    <!-- Submission error -->
+    <div class="collapsible-content" ref="submitError" :class="{ 'expanded': showSubmitError }">
+      <h3 style="text-align: center">
+        Hmmm... something went wrong :( Can you ping the management at <a href="mailto:info@infinite.industries">info@infinite.industries</a>?
+      </h3>
+    </div>
+
     <!-- Promo tools -->
     <div class="collapsible-content" ref="promoTools" :class="{'expanded': showPromoTools}" style="margin-top: 10px">
 
@@ -232,6 +239,7 @@
         // calendar_event: {},
         imageChosen: false,
         showPromoTools: false,
+        showSubmitError: false,
         promoHTML: "",
         eventSubmitted: false,
         content: "",
@@ -294,6 +302,7 @@
 
         this.showEventLoadingSpinner = true;
         this.eventSubmitted = true; // to disable button and prevent multiple submissions
+        this.showSubmitError = false;
 
         Axios.post('/events/submit-new', formData).then( response => {
             this.showEventLoadingSpinner = false;
@@ -306,7 +315,7 @@
             console.log(error)
             this.showEventLoadingSpinner = false;
             this.eventSubmitted = false;
-            window.alert("Hmmm... something went wrong :( Can you ping the management at info@infinite.industries");
+            this.showSubmitError = true;
           })
       },
       selectVenue: function(venue) {
