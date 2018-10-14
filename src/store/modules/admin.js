@@ -48,16 +48,12 @@ const actions = {
         if(_response.data.status === "success"){
           context.commit('CHANGE_STATE_TO_VERIFIED', payload, { root: true })
 
-          ComponentEventBus.$emit('CALENDAR_EVENT_VERIFIED', payload)
+          context.commit('SHOW_NOTIFICATIONS',{open:true, message: "Event was successfuly verified."})
 
-          ComponentEventBus.$emit('SHOW_INFO', {
-            message: "Success! Event verified."
-          })
         }
         else{
-          ComponentEventBus.$emit('SHOW_ALERT', {
-            message: "Unable to verify the event"
-          })
+          context.commit('SHOW_NOTIFICATIONS',{open:true, message: "Unable to verify the event."})
+
         }
       })
       .catch(function (error) {
@@ -73,15 +69,12 @@ const actions = {
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if(_response.data.status === "success"){
-          console.log("yo");
-          ComponentEventBus.$emit('SHOW_INFO', {
-            message:"Event Successfully Updated"
-          })
+          console.log("event updated");
+
+          context.commit('SHOW_NOTIFICATIONS',{open:true, message: "Content of the event updated."})
         }
         else{
-          ComponentEventBus.$emit('SHOW_ALERT', {
-            message:"Unable to update event :("
-          })
+          context.commit('SHOW_NOTIFICATIONS',{open:true, message: "Unable to update :("})
         }
       })
       .catch(function (error) {

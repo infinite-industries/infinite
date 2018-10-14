@@ -1,10 +1,12 @@
 <template>
   <div>
+    <!-- Notifications -->
+    <ii-notifications />
+
     <!-- Toolbar and Nav -->
     <ii-toolbar />
+
     <div id="ii-container">
-      <!-- Notifications -->
-      <ii-notifications />
       <!-- Content -->
       <router-view></router-view>
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <div id='container' v-if='notification.open'>
+  <div id='container' v-show='notification.open'>
     <div id="notify">
       <div id="close-notify" @click="CloseNotifications()">X</div>
       {{notification.message}}
@@ -26,25 +26,38 @@
       notification: function() {
         return this.$store.getters.notificationsData
       }
+    },
+    mounted: function(){
+      let margin = Math.floor((window.innerWidth - window.innerWidth*0.8)/2)
+      // this is strongly coupled to the size of the countainer
+      // currently 80%
+      // and does not yet work with resizing the screen
+      console.log(margin);
+      document.getElementById('container').style.left = margin +'px'
+
     }
   }
 </script>
 
 <style scoped>
   #container {
-    width: 100%;
-    background-color: rgba(255, 255, 255, 0.1)
+    width: 80%;
+    position: fixed;
+    top: 105px;
+    z-index: 99;
+    background-color: black;
+    border-radius: 8px;
+    border: 2px solid white;
   }
 
   #close-notify{
-      position: absolute;
-      top: 5px;
-      right: 5px;
+      float: right;
+      cursor: pointer;
   }
 
   #notify{
-    position: relative;
-    max-width: 60%;
+    /* position: relative; */
+    max-width: 90%;
     margin-left: auto;
     margin-right: auto;
 
