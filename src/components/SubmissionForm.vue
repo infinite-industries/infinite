@@ -27,7 +27,11 @@
         <h3 class="form-label">Event Image<span class="required-field">*</span>:</h3>
       </v-flex>
       <v-flex xs12 sm8>
-        <input type="file" class="form-control" @change="onFileChange" ref="eventImage" id="event-image" name="event_image">
+        <div v-if="user_action == 'edit'" class="preview-image">
+          <img v-if="calendar_event.image" :src="calendar_event.image" alt="">
+          <span>Cannot upload new image at this time</span>
+        </div>
+        <input v-else type="file" accept="image/*" class="form-control" @change="onFileChange" ref="eventImage" id="event-image" name="event_image">
       </v-flex>
     </v-layout>
 
@@ -37,7 +41,12 @@
         <h3 class="form-label">Social Media Image:</h3>
       </v-flex>
       <v-flex xs12 sm8>
-        <input type="file" class="form-control" id="event-social-image" name="event_social_image">
+        <div v-if="user_action =='edit'" class="preview-image">
+          <img v-if="calendar_event.social_image" :src="calendar_event.social_image" alt="">
+          <span v-if="calendar_event.social_image">Cannot upload new image at this time</span>
+          <span v-else>Not provided; cannot upload at this time</span>
+        </div>
+        <input v-else type="file" accept="image/*" class="form-control" id="event-social-image" name="event_social_image" ref="eventSocialImage">
       </v-flex>
       <v-flex xs8 offset-xs3>
         <em>Image optimized for social media sharing (recommended size 1024X512 under 1MB)</em>
@@ -471,7 +480,7 @@
 .some-padding-top {
   padding-top: 22px;
 }
-#event-image, #event-social-image {
+#event-image, #event-social-image, .preview-image {
   margin-top: 20px;
 }
 .submission-btn{
@@ -519,6 +528,15 @@
   min-height: 50px;
   width: 100%;
   outline: 1px dashed rgb(210, 210, 210)
+}
+
+.preview-image img {
+  max-width: 150px;
+}
+
+.preview-image span {
+  vertical-align: top;
+  line-height: 2;
 }
 
 </style>
