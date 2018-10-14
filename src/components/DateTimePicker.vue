@@ -58,7 +58,7 @@
 
           <div id="all-confirmed-times-dates">
             <table>
-            <tr v-for="(date_and_time, index) in dates_and_times">
+            <tr v-for="(date_and_time, index) in dates_and_times" :key="date_and_time.start_time + '/' + date_and_time.end_time">
               <td>
                 <span> {{FormatedDateTime(date_and_time.start_time, date_and_time.end_time)}}</span>
               </td>
