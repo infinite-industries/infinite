@@ -48,23 +48,23 @@
     "vue-smoothscroll": "^0.1.1",
     "vue2-editor": "^2.3.33",
     "vuetify": "^1.1.10",
-    "vuex": "^3.0.1"
-  },
-  "devDependencies": {
+    "vuex": "^3.0.1",
     "babel-core": "^6.26.3",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-plugin-transform-es2015-spread": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
-    "babelify": "^7.3.0",
-    "browserify": "^14.4.0",
-    "concurrently": "^3.5.1",
-    "cypress": "^3.0.2",
-    "envify": "^4.1.0",
-    "nodemon": "^1.18.3",
     "uglify-js": "^3.3.21",
     "vueify": "^9.4.1",
+    "babelify": "^7.3.0",
+    "browserify": "^14.4.0",
+    "envify": "^4.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^3.5.1",
+    "cypress": "^3.0.2",
+    "nodemon": "^1.18.3",
     "watchify": "^3.11.0"
   },
   "optionalDependencies": {
