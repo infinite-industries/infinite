@@ -2,8 +2,8 @@
   <v-layout row>
     <v-flex xs0 sm3></v-flex>
     <v-flex xs12 sm8>
-      <v-expansion-panel expand style="margin-bottom: 10px;">
-        <v-expansion-panel-content ref="expansionPanelContent" style="padding: 0px 15px 0px 15px;">
+      <v-expansion-panel expand style="margin-bottom: 10px;" v-model="showAddVenue">
+        <v-expansion-panel-content style="padding: 0px 15px 0px 15px;">
           <div slot="header">Add a New Venue:</div>
 
           <!-- Venue Name -->
@@ -50,7 +50,7 @@
 
           <v-layout row wrap>
             <v-flex xs12 style="text-align: center">
-              <v-btn color="success" :disabled="!venueRequiredFields" @click="submitNewVenue()">Add Venue</v-btn>
+              <v-btn style="color: black" dark outline :disabled="!venueRequiredFields" @click="submitNewVenue()">Add Venue</v-btn>
             </v-flex>
             <v-flex xs12 style="text-align: center">
               <img v-if="showVenueLoadingSpinner" class="loading-spinner" src="images/spinner.gif"></img>
@@ -70,7 +70,7 @@
   export default {
     data: function () {
       return {
-        showAddVenue: false,
+        showAddVenue: [false],
         showVenueLoadingSpinner: false,    // maybe
         new_venue: {
           name: "",
@@ -92,16 +92,18 @@
     },
     methods: {
       toggleVenueDropdown: function() {
-        this.showAddVenue = !this.showAddVenue
+        this.showAddVenue[0] = !this.showAddVenue[0]
+      },
+      closeVenueDropdown: function() {
+        this.showAddVenue = [];
       },
       submitNewVenue: function() {
         this.showVenueLoadingSpinner = true;
         Axios.post('/venues/submit-new', this.new_venue).then( response => {
           this.showVenueLoadingSpinner = false;
-          this.expansionPanelContent.isActive = false;
+          this.closeVenueDropdown();
           if (response.data.status == "success") {
             this.venues.push(response.data.venue);
-            //this.$refs.venuePicker.selectVenue(response.data.venue);
             this.new_venue = {
               name: "",
               address: "",
@@ -112,10 +114,19 @@
             }
           }
         }).catch( err => {
-          console.log(err);
+          console.error(err);
         })
       }
     }
   }
 
 </script>
+<style scoped>
+  .theme--dark.v-btn.v-btn--disabled:not(.v-btn--icon):not(.v-btn--flat) {
+    background: transparent !important;
+    border: 1px solid !important;
+  }
+  .theme--dark.v-btn.v-btn--disabled {
+    color: rgba(0, 0, 0, 0.4) !important;
+  }
+</style>
