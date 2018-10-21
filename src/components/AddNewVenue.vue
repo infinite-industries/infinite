@@ -53,7 +53,7 @@
               <v-btn style="color: black" dark outline :disabled="!venueRequiredFields" @click="submitNewVenue()">Add Venue</v-btn>
             </v-flex>
             <v-flex xs12 style="text-align: center">
-              <img v-if="showVenueLoadingSpinner" class="loading-spinner" src="images/spinner.gif"></img>
+              <img v-if="showVenueLoadingSpinner" class="loading-spinner" src="images/spinner.gif">
             </v-flex>
           </v-layout>
 
