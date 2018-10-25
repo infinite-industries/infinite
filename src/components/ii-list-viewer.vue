@@ -1,10 +1,10 @@
 <template>
   <div id="list-container">
-    <div id="list-viewer" v-if="!LOADING">
-      <div v-for= "calendar_event in calendar_events" class="outer-countainer">
+    <div id="list-viewer" ref="list" v-if="!LOADING">
+      <div v-for= "calendar_event in calendar_events" :key="calendar_event.id" class="outer-countainer">
          <ii-card :calendar_event="calendar_event"></ii-card>
       </div>
-      <div id="shim"></div>
+      <div id="shim" ref="shim"></div>
     </div>
     <div v-else>
       <img src="/images/spinner.gif" />
@@ -68,6 +68,9 @@
       })
 
     },
+    beforeDestroy: function() {
+      window.removeEventListener('resize', this.adjustCardSpacing);
+    },
     computed:{
       LOADING: function(){
         return this.$store.getters.GetLoadingStatus
@@ -88,6 +91,8 @@
 
         console.log("RESIZZZING " + this.calendar_events.length);
 
+        // list is hidden while loading, cannot measure width
+        if (this.LOADING) return;
 
         if(window.innerWidth>890){
           this.CARD_SIZE = 400
@@ -97,20 +102,20 @@
         }
         else{
           this.CARD_SIZE = window.innerWidth
-          document.getElementById('shim').style.width = window.innerWidth + "px"
+          this.$refs.shim.style.width = window.innerWidth + "px"
         }
 
         // ROW_LENGTH - CARD_TOTAL%ROW_LENGTH
         this.CARD_TOTAL = this.calendar_events.length
         //console.log("TOTAL:"+this.CARD_TOTAL);
-        this.list_viewer_width = document.getElementById('list-viewer').clientWidth
+        this.list_viewer_width = this.$refs.list.clientWidth
         //console.log("width of list-viewer: "+ this.list_viewer_width);
         let ROW_LENGTH = Math.floor(this.list_viewer_width/this.CARD_SIZE)
         //console.log("row length: " + ROW_LENGTH);
 
         //console.log(((ROW_LENGTH - this.CARD_TOTAL%ROW_LENGTH)*this.CARD_SIZE).toString() + "px")
         //(()*this.CARD_SIZE).toString()
-        document.getElementById('shim').style.width = ((ROW_LENGTH - this.CARD_TOTAL%ROW_LENGTH)*this.CARD_SIZE).toString() + "px"
+        this.$refs.shim.style.width = ((ROW_LENGTH - this.CARD_TOTAL%ROW_LENGTH)*this.CARD_SIZE).toString() + "px"
       }
     },
     components:{
