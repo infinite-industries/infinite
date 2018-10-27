@@ -16,51 +16,18 @@
 <script>
   //import Axios from 'axios';
 
+  const VERTICAL_CARD_SIZE = 230; // 220px + 5px padding each side
+
   import Card from './ii-card.vue'
   export default {
     name: 'ListViewer',
     props: ['calendar_events'],
     data: function(){
       return {
-        //stuff
-        list_viewer_width: 0,
-        CARD_TOTAL: 0,
-        CARD_SIZE: 400,    // 380 +10 +10
 
       }
     },
     mounted: function(){
-
-      // console.log("MY EVENTS: "+this.calendar_events);
-      //
-      // if(window.innerWidth>890){
-      //   this.CARD_SIZE = 400
-      // }
-      // else if(window.innerWidth>480){
-      //   this.CARD_SIZE = 230
-      // }
-      // else{
-      //   this.CARD_SIZE = window.innerWidth
-      // }
-
-      // console.log("viewer loaded: ", this.list_type);
-
-      // var self = this;
-      // Axios.get('mock_calendar_events.json')
-      //   .then(function (response) {
-      //     console.log("data from server: ",response.data);
-      //     self.calendar_events = response.data;
-      //
-      //     self.$nextTick(function() {
-      //       self.adjustCardSpacing()
-      //     })
-      //
-      //   })
-      //   .catch(function (error) {
-      //     console.log(error);
-      //   });
-
-
       // Adjust the row size
       this.$nextTick(function() {
         this.adjustCardSpacing()
@@ -89,33 +56,35 @@
     methods: {
       adjustCardSpacing: function(){
 
-        console.log("RESIZZZING " + this.calendar_events.length);
-
         // list is hidden while loading, cannot measure width
         if (this.LOADING) return;
 
-        if(window.innerWidth>890){
-          this.CARD_SIZE = 400
-        }
-        else if(window.innerWidth>480){
-          this.CARD_SIZE = 230
+        if(window.innerWidth>480){
+          let card_width = VERTICAL_CARD_SIZE;
+          let card_total = this.calendar_events.length;
+          let list_viewer_width = this.$refs.list.clientWidth;
+
+          // number of cards that fit in one row is the width of the list divided by the width of a card
+          let row_length = Math.floor(list_viewer_width / card_width);
+          let shim_equiv = card_total % row_length;
+
+          // when the total divides evenly into the row length, there's no need for the shim,
+          // and it actively interferes with resize by preventing the list container from adjusting
+          let shim_width = "0";
+          if (shim_equiv > 0)
+            shim_width = (row_length - shim_equiv) * card_width;
+
+          // console.log(card_total + " cards with width " + card_width + "px");
+          // console.log(row_length + " cards will fit in " + list_viewer_width + "px");
+          // console.log("shim is equivalent to " + shim_equiv + " cards with width " + shim_width + "px");
+
+          this.$refs.shim.style.width = shim_width + "px"
+          this.$refs.shim.style.display = "";
         }
         else{
-          this.CARD_SIZE = window.innerWidth
-          this.$refs.shim.style.width = window.innerWidth + "px"
+          // console.log("single column, shim not necessary");
+          this.$refs.shim.style.display = "none";
         }
-
-        // ROW_LENGTH - CARD_TOTAL%ROW_LENGTH
-        this.CARD_TOTAL = this.calendar_events.length
-        //console.log("TOTAL:"+this.CARD_TOTAL);
-        this.list_viewer_width = this.$refs.list.clientWidth
-        //console.log("width of list-viewer: "+ this.list_viewer_width);
-        let ROW_LENGTH = Math.floor(this.list_viewer_width/this.CARD_SIZE)
-        //console.log("row length: " + ROW_LENGTH);
-
-        //console.log(((ROW_LENGTH - this.CARD_TOTAL%ROW_LENGTH)*this.CARD_SIZE).toString() + "px")
-        //(()*this.CARD_SIZE).toString()
-        this.$refs.shim.style.width = ((ROW_LENGTH - this.CARD_TOTAL%ROW_LENGTH)*this.CARD_SIZE).toString() + "px"
       }
     },
     components:{
@@ -132,10 +101,13 @@
   #list-container {
     width: 100%;
     padding: 0px;
+  }
 
-    display: flex;
-    justify-content: center;
-
+  @media only screen and (min-width: 481px) {
+    #list-container {
+      display: flex;
+      justify-content: center;
+    }
   }
 
   #list-viewer {

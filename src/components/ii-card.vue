@@ -6,13 +6,13 @@
           <div class="image-surface" :style="backGroundImage" @click.stop="ShowEvent(calendar_event.id)"></div>
         </div>
         <div class="info-container">
-          <h3>{{calendar_event.title | truncate(33)}}</h3>
+          <h3>{{calendar_event.title | truncate(40)}}</h3>
           <h4>{{venue_info.name}}<ii-location iconColor="#B7B09C" width="12" height="12" /></h4>
 
           <p class="date">{{when_date}}</p>
           <p class="time">{{when_time}}</p>
 
-          <p class="description">{{calendar_event.brief_description | truncate(90)}} </p>
+          <p class="description">{{calendar_event.brief_description | truncate(120)}} </p>
 
           <div class="btn-actions">
             <span class="card-btn more-info" style="cursor: pointer" @click.stop="ShowEvent(calendar_event.id)">More Info</span>
@@ -132,21 +132,18 @@
   }
 
   .card-container {
-    /* border: 1px solid red; */
-    min-width: 380px;
-    min-height: 100px;
+    min-width: 220px;
+    min-height: 380px;
 
-    padding:10px;
-    /* margin: 5px; */
+    padding:5px;
   }
 
-  .infinite-card{
+  .infinite-card {
     position: relative;
-
     display:flex;
 
-    width: 380px;
-    min-height: 220px;
+    width: 220px;
+    min-height: 380px;
 
     border-radius: 10px;
 
@@ -158,10 +155,10 @@
     position: absolute;
 
     border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
 
-    min-height: 220px;
-    min-width: 170px;
+    min-height: 150px;
+    min-width: 220px;
 
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -177,16 +174,15 @@
 
   .image-container .image-surface{
 
-    min-width: 170px;
-    min-height: 220px;
+    min-width: 220px;
+    min-height: 150px;
 
     -moz-transition: all 0.3s;
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
 
     border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-
+    border-top-right-radius: 10px;
   }
 
   .image-container:hover .image-surface {
@@ -202,14 +198,14 @@
 
   .info-container{
     position: absolute;
-    left: 170px;
+    top: 150px;
+    left: 0;
 
-    min-height: 210px;
-    min-width: 200px;
+    min-height: 230px;
+    min-width: 220px;
 
     padding: 12px;
     padding-top: 15px;
-
   }
 
   .info-container h3 {
@@ -246,7 +242,8 @@
 
   .btn-actions {
     position: absolute;
-    bottom: 8px;
+    bottom: 20px;
+    padding-left: 5px;
 
 
     font-family: 'Open Sans', sans-serif;
@@ -275,8 +272,8 @@
 
   .drop-down{
     position: absolute;
-    bottom: -80px;
-    right: 15px;
+    bottom: -70px;
+    right: 20px;
     z-index: 5;
     /* border: 2px solid white; */
 
@@ -299,70 +296,6 @@
 
   .drop-down div:hover {
     text-decoration: underline;
-  }
-
-
-  @media only screen and (max-width: 890px) {
-
-    .card-container {
-      /* border: 1px solid red; */
-      min-width: 220px;
-      min-height: 380px;
-
-      padding:5px;
-      /* margin: 5px; */
-    }
-
-    .infinite-card{
-
-      width: 220px;
-      min-height: 380px;
-
-      border-radius: 10px;
-    }
-
-    .image-container{
-
-      min-height: 150px;
-      min-width: 220px;
-
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      border-bottom-left-radius: 0px;
-    }
-
-    .image-container .image-surface{
-
-      min-width: 220px;
-      min-height: 150px;
-
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      border-bottom-left-radius: 0px;
-    }
-
-    .info-container{
-      position: absolute;
-      top: 150px;
-      left: 0px;
-
-      min-height: 230px;
-      min-width: 220px;
-
-      padding: 12px;
-      padding-top: 15px;
-    }
-
-    .btn-actions {
-      bottom: 20px;
-      padding-left: 5px;
-    }
-
-    .drop-down{
-      bottom: -70px;
-      right: 20px;
-    }
-
   }
 
 @media only screen and (max-width: 480px) {
