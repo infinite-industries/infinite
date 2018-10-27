@@ -177,9 +177,9 @@
     min-width: 220px;
     min-height: 150px;
 
-    -moz-transition: all 0.3s;
-    -webkit-transition: all 0.3s;
-    transition: all 0.3s;
+    -moz-transition: -moz-transform 0.3s, transform 0.3s;
+    -webkit-transition: -webkit-transform 0.3s, transform 0.3s;
+    transition: transform 0.3s;
 
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -189,10 +189,6 @@
     -moz-transform: scale(1.1);
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
-
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-
   }
 
 
