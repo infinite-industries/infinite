@@ -137,11 +137,11 @@
             <i class="fas fa-share ii-social-icon"></i>
             <span>Share</span>
             <div id="shareDropdown" class="infinite-dropdown-content">
-              <a class="ii-social-button" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{ event.id }}" onclick="InfiniteAnalytics('{{ id }}', 'facebook_share', '{{ site_url }}')">
+              <a class="ii-social-button" target="_new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F{{ event.id }}" onclick="InfiniteAnalytics('{{ id }}', 'facebook_share', '{{ site_url }}')">
                 <i class="fab fa-facebook-square ii-social-icon"></i>
                 <span>Share</span>
               </a>
-              <a class="ii-social-button" href="https://twitter.com/intent/tweet?text=Check%20out%20this%20event:&url={{ event.bitly_link }}" onclick="InfiniteAnalytics('{{ id }}', 'twitter_share', '{{ site_url }}')">
+              <a class="ii-social-button" target="_new" href="https://twitter.com/intent/tweet?text=Check%20out%20this%20event:&url={{ event.bitly_link }}" onclick="InfiniteAnalytics('{{ id }}', 'twitter_share', '{{ site_url }}')">
                 <i class="fab fa-twitter ii-social-icon"></i>
                 <span>Tweet</span>
               </a>
