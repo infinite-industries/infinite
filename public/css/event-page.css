@@ -55,6 +55,10 @@ body {
   margin-left: 0.5em;
 }
 
+.event-time-actions .event-time > div:first-child {
+  vertical-align: top;
+}
+
 .event-actions {
   display: flex;
   justify-content: flex-end;
@@ -205,4 +209,8 @@ body {
 
 .event-description .event-description-content {
   font-family: 'EB Garamond', serif;
+}
+
+.date-time-container:not(:first-child){
+  margin-top: 15px;
 }

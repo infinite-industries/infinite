@@ -241,10 +241,16 @@ router.get("/:id", function(req, res) {
             res.status(500).send('error getting event');
         } else {
           // precompute when_date and when_time values
+          let formatted_date_times = apiResp.data.event.date_times.map((date_time)=>{
+            return {
+              when_date:moment(date_time.start_time).format('dddd, MMMM Do'),
+              when_time: moment(date_time.start_time).format('h:mma') + " - " + moment(date_time.end_time).format('h:mma')
+            }
+          })
+
           let ii_event = {
             ...apiResp.data.event,
-            when_date: moment(apiResp.data.event.time_start).format('dddd, MMMM Do'),
-            when_time: moment(apiResp.data.event.time_start).format('h:mma') + " - " + moment(apiResp.data.event.time_end).format('h:mma')
+            formatted_date_times
           }
           console.log(ii_event);
           res.render(

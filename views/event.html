@@ -44,9 +44,6 @@
   <link rel="icon" type="image/png" sizes="512X512" href="/images/4_manifest_512.png">
   <link rel="apple-touch-icon" type="image/png" sizes="512X512" href="/images/4_manifest_512.png">
 
-
-
-
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@1nfinite_1" />
   <meta name="twitter:creator" content="@1nfinite_1">
@@ -110,8 +107,12 @@
           <i class="fas fa-clock"></i>
         </div>
         <div>
-            <em>{{event.when_date}}</em> <br />
-            <em>{{event.when_time}}</em>
+          {% for date_time in event.formatted_date_times %}
+              <div class="date-time-container">
+                  <em>{{date_time.when_date}}</em> <br />
+                  <em>{{date_time.when_time}}</em>
+              </div>
+          {% endfor %}
         </div>
       </div>
       <div class="col s6">
@@ -126,7 +127,7 @@
             </div>
           </button>
 
-          {% if event.hasOwnProperty('map_link') and event.map_link!="none" %}
+          {% if event.hasOwnProperty('map_link') and event.map_link!="" %}
             <a class="ii-social-button map-event" target="_blank" href="{{event.map_link}}" onclick="InfiniteAnalytics('{{ id }}', 'map_view', '{{ site_url }}')">
               <i class="fas fa-map-marker-alt ii-social-icon"></i>
               <span>Directions</span>
@@ -145,7 +146,7 @@
                 <i class="fab fa-twitter ii-social-icon"></i>
                 <span>Tweet</span>
               </a>
-              {% if event.hasOwnProperty('bitly_link') and event.bitly_link!="none" %}
+              {% if event.hasOwnProperty('bitly_link') and event.bitly_link!="" %}
               <div class="ii-social-button ii-copy-btn" data-clipboard-text="{{event.bitly_link}}" onclick="InfiniteAnalytics('{{ id }}', 'bitly_view', '{{ site_url }}')">
                 <i class="fas fa-link ii-social-icon"></i>
                 <span>Copy Link</span>
@@ -194,7 +195,7 @@
 
     <div class="event-description">
 
-      {% if event.hasOwnProperty('admission_fee') and event.admission_fee!="none" %}
+      {% if event.hasOwnProperty('admission_fee') and event.admission_fee!="" %}
         <div class="row event-admission-fee">
           <div class="col s11">
             <em>Admission Fee: {{event.admission_fee}}</em>
@@ -210,7 +211,7 @@
       </div>
 
 
-      {% if event.hasOwnProperty('website_link') and event.website_link!="none" %}
+      {% if event.hasOwnProperty('website_link') and event.website_link!="" %}
         <div class="row event-website">
           <div class="col s11">
             <a href="{{event.website_link}}" onclick="InfiniteAnalytics('{{ id }}', 'website_view', '', '{{ site_url }}')" target="_new">Event Website</a>
@@ -218,7 +219,7 @@
         </div>
       {% endif %}
 
-      {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="none" %}
+      {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="" %}
         <div class="row event-fb-link">
           <div class="col s11">
             <a href="{{ event.fb_event_link }}" onclick="InfiniteAnalytics('{{ id }}', 'facebook_view', '', '{{ site_url }}')" target="_new">Facebook Event Link</a>
@@ -227,7 +228,7 @@
       {% endif %}
 
 
-      {% if event.hasOwnProperty('eventbrite_link') and event.eventbrite_link!="none" %}
+      {% if event.hasOwnProperty('eventbrite_link') and event.eventbrite_link!="" %}
         <div class="row event-eventbrite-link">
           <div class="col s11">
             <a href="{{event.eventbrite_link}}" onclick="InfiniteAnalytics('{{ id }}', 'eventbrite_view', '', '{{ site_url }}')" target="_new">Eventbrite Link</a>
@@ -235,7 +236,7 @@
         </div>
       {% endif %}
 
-      {% if event.hasOwnProperty('ticket_link') and event.ticket_link!="none" %}
+      {% if event.hasOwnProperty('ticket_link') and event.ticket_link!="" %}
         <div class="row event-ticket-link">
             <div class="col s11">
               <a href="{{event.ticket_link}}" id="twitter-wjs" onclick="InfiniteAnalytics('{{ id }}', 'ticket_view', '', '{{ site_url }}')" target="_new">Buy Tickets</a>
