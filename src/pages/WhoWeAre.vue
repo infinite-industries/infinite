@@ -24,7 +24,7 @@
       </li>
       <li>
         <h3>Matthew Gidcomb</h3>
-        <p>About Matthew</p>
+        <p>Matthew is a software developer in Lexington, KY. When not working on code, he is involved in voter engagement and community organizing, browsing shelves at local bookstores, and fantasizing about having sufficient free time to play Kerbal Space Program.</p>
       </li>
       <li>
         <h3>Ryan Borja</h3>
@@ -38,7 +38,7 @@
     <h2>Core Design Team</h2>
 
     <p><a href="https://bullhorncreative.com/" target="_blank">BullHorn Creative</a> generously donated their skills and time</p>
-    <p>UI/UX work by Ben Byrum </p>
+    <p>UI/UX work by Ben Byrum</p>
 
 
     <h2>Our Board:</h2>
@@ -59,19 +59,19 @@
     <h2>Thank you! Thank you! Thank you!</h2>
 
     <p>
-      Shout out to all the folks who have made this happen by offering their time and advice: .
+      Shout out to all the folks who have made this happen by offering their time and advice:
     </p>
     <p>
       Apologies if we have forgotten anyone. Any omission is simply a function of cluttered minds and short deadlines.
     </p>
     <p>
-      Giant thanks to [Kasey’s company] for marketing and promo work and VisitLex for helping us out with the publicity grant.
+      Giant thanks to <a href="javascript:alert('?')">[Kasey’s company]</a> for marketing and promo work and <a href="https://www.visitlex.com/">VisitLex</a> for helping us out with the publicity grant.
     </p>
     <p>
       We would also like to thank Microsoft for the server space and Google for email and other digital nourishment.
     </p>
     <p>
-      And finally, thanks to open-projects that we love and use: Node, Vue, Moment.js
+      And finally, thanks to open-projects that we love and use: <a href="https://nodejs.org/">Node</a>, <a href="https://vuejs.org/">Vue</a>, <a href="https://momentjs.com/">Moment</a>, <a href="https://www.cypress.io/">Cypress</a>, and many others.
     </p>
 
 
