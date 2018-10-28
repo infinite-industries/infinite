@@ -103,15 +103,7 @@
           this.showVenueLoadingSpinner = false;
           this.closeVenueDropdown();
           if (response.data.status == "success") {
-            this.venues.push(response.data.venue);
-            this.new_venue = {
-              name: "",
-              address: "",
-              city: "",
-              zip: "",
-              neighborhood: "",
-              google_maps_link: ""
-            }
+            this.$store.dispatch('LoadAllVenueData')
           }
         }).catch( err => {
           console.error(err);

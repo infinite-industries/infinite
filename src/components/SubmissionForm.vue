@@ -238,7 +238,7 @@
   // import uploadcare from 'uploadcare-widget'
 
   export default {
-    props:['event_id', 'user_role', 'user_action','venues'],
+    props:['event_id', 'user_role', 'user_action'],
     // user_role --> admin, venue, regular
     // user_action --> upload, edit
     data: function () {
@@ -407,6 +407,14 @@
    },
 
    computed: {
+     venues: function() {
+       if (!this.$store.getters.GetAllVenues) {
+         return []
+       }
+
+       return this.$store.getters.GetAllVenues
+     },
+
      calendar_event: function(){
        if(this.$store.getters.GetCurrentEvent===undefined){
          return {}
