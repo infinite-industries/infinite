@@ -16,7 +16,7 @@
 <script>
   //import Axios from 'axios';
 
-  const VERTICAL_CARD_SIZE = 230; // 220px + 5px padding each side
+  const VERTICAL_CARD_SIZE = 250; // 240px + 5px padding each side
 
   import Card from './ii-card.vue'
   export default {

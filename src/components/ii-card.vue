@@ -132,8 +132,8 @@
   }
 
   .card-container {
-    min-width: 220px;
-    min-height: 380px;
+    min-width: 240px;
+    min-height: 400px;
 
     padding:5px;
   }
@@ -142,8 +142,8 @@
     position: relative;
     display:flex;
 
-    width: 220px;
-    min-height: 380px;
+    width: 240px;
+    min-height: 400px;
 
     border-radius: 10px;
 
@@ -158,7 +158,7 @@
     border-top-right-radius: 10px;
 
     min-height: 150px;
-    min-width: 220px;
+    min-width: 240px;
 
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -174,7 +174,7 @@
 
   .image-container .image-surface{
 
-    min-width: 220px;
+    min-width: 240px;
     min-height: 150px;
 
     -moz-transition: -moz-transform 0.3s, transform 0.3s;
@@ -198,9 +198,9 @@
     left: 0;
 
     min-height: 230px;
-    min-width: 220px;
+    min-width: 240px;
 
-    padding: 12px;
+    padding: 20px;
     padding-top: 15px;
   }
 
@@ -238,7 +238,7 @@
 
   .btn-actions {
     position: absolute;
-    bottom: 20px;
+    bottom: 5px;
     padding-left: 5px;
 
 
@@ -343,7 +343,7 @@
     left: 0px;
 
     min-height: 300px;
-    min-width: 220px;
+    min-width: 240px;
 
     padding: 18px;
     padding-top: 15px;
