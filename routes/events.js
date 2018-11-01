@@ -143,9 +143,9 @@ router.post("/submit-new", function(req, res){
       // If social media ready image present, upload it to S3
       function(event, callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('social_image'))){
-          ManageUpload(event.id, files.social_image[0].path, "social", function(err, data){
+          ManageUpload(event.id, files.social_image[0].path, "social", function(err){
             event.social_image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +"/uploads/social/"+event.id+"_social.jpg"
-            callback(err, data)
+            callback(err, event)
           })
         }
         else {
@@ -177,7 +177,7 @@ router.post("/submit-new", function(req, res){
       },
       // Post as UNVERIFIED to DB and
       // Notify (via Slack) that this needs review
-      function(event, callback){
+      function(event, callback) {
         console.info('sending new un-verified event to the api')
         makeAPICall('post', 'events/', { event }, process.env.API_KEY, req.token, (err, apiResp) => {
           if (err)

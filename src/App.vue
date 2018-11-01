@@ -136,6 +136,15 @@ export default {
     background: white;
     color: black;
     border-radius: 10px;
+
+    width: 85%;
+    max-width: 900px;
+  }
+
+  @media only screen and (min-width: 993px) {
+    .info-page {
+      width: 70%;
+    }
   }
 
   h1, h2, h3 {
