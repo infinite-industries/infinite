@@ -11,8 +11,6 @@ body {
   border-radius: 10px;
   color: black;
   background-color: white;
-
-  font-size: 1.2rem;
 }
 
 @media only screen and (min-width: 960px) {
@@ -31,7 +29,7 @@ h1, h2, h3 {
 }
 
 h1{
-  font-size: 1.6em;
+  font-size: 1.9em;
   font-weight: bold;
   margin-bottom: 0.7em;
 }
