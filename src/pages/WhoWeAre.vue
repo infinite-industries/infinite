@@ -19,7 +19,13 @@
       <li>
         <h3>Chris Wininger</h3>
         <img class="member-portrait" src="https://picsum.photos/200/300" width="150px" height="150px">
-        <p class="bio">About Chris</p>
+        <p class="bio">
+          Chris Wininger is a software engineer, electronic artist and lover of the weird. He is one half of the two person team that birthed the <a href="https://fongphone.com/" target="_new">Fong Phone</a>, a collaborator on interactive art exhibitions such as <a href="https://www.wegotrats.com/call-and-response/" target="_new">Call and Response</a> and the artist behind <a href="https://www.wegotrats.com/rules-play-gallery-hop/" target="_new">Every Picture Tells a Story</a> He currently works at <a href="https://www.sonatype.com/" target="_new">Sonatype</a> where he is passionate about open source and develops tools that enhance the security and quality of enterprise software.
+        </p>
+        <p class="link-block">
+          <a href="https://github.com/chriswininger" target="_new">Github</a>
+          <a href="https://twitter.com/remembersonly" target="_new">Twitter</a>
+        </p>
         <div class="spacer"></div>
       </li>
       <li>
