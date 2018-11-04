@@ -49,7 +49,6 @@
     </v-layout>
 </template>
 <script>
-import moment from 'moment'
 import TimePicker from "./TimePicker.vue";
 
 export default {

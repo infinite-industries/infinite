@@ -20,7 +20,7 @@
 
 <script>
   import { TweenMax, Power4 } from 'gsap'
-  import { isLoggedIn, login, logout, isAdmin } from '../helpers/Auth.js'
+  import { isLoggedIn, login, isAdmin } from '../helpers/Auth.js'
 
   import NavSubscribe from './vectors/NavSubscribe.vue'
   import Facebook from './vectors/Facebook.vue'

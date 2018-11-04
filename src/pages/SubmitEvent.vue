@@ -6,7 +6,6 @@
 </template>
 
 <script>
-  import Axios from 'axios'
   import SubmissionForm from '../components/SubmissionForm.vue'
   export default {
     data: function () {

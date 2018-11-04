@@ -14,8 +14,6 @@
 </template>
 
 <script>
-  import moment from 'moment'
-
   export default {
     name:'AdminEventsList',
     props: ['calendar_events'],

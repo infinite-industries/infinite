@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Axios from 'axios'
-import _ from 'lodash'
 
 import ComponentEventBus from '../helpers/ComponentEventBus'
 

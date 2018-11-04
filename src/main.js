@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Moment from 'moment';
 import Vuetify from 'vuetify';
 import VueLocalForage from '../node_modules/vlf/index.js'
 import VueSmoothScroll from 'vue-smoothscroll';

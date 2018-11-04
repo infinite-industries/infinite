@@ -5,11 +5,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 
 import ListViewer from '../components/ii-list-viewer.vue'
-// import EventsList from '../components/EventsList.vue'
-// import VenuePicker from '../components/VenuePicker.vue'
 
 export default {
   data: function () {
