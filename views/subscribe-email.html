@@ -146,10 +146,14 @@
   </div>
 
   <script src="/js/light_dist.js"></script>
+  <script>
+    // redirect to home page after submission
+    document.getElementById('mc-embedded-subscribe-form').onsubmit = function(e) {
+      window.setTimeout(function() {
+        window.location = window.location.origin + "/";
+      }, 10);
+    };
+  </script>
 
 </body>
 </html>
-
-
-
-<!--End mc_embed_signup-->
