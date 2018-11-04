@@ -7,6 +7,8 @@
     <p>
       Infinite Industries makes experimental contemporary culture more accessible to everyone. Our digital platform and open-source tools highlight cultural events and experiences so more of us can discover, share and participate in them.
     </p>
+
+    
     <h2>What does this mean in practice?</h2>
       <p>
         In a word: experience. Our online platform features a curated and regularly updated list of current cultural events that you can attend, encounter and immerse yourself in. The range of activities is broad: gallery openings, film, punk shows, theater, street art, orchestra, festivals, record releases, retrospectives, rap shows, house concerts, Thriller parades, comedy. Basically, if it’s happening, and it’s <em>happening</em>, Infinite Industries will let you know about it. We’re also developing tools that allow users to curate their own event lists and share them with friends, so you can call the shots about what’s going on and what’s worth doing.
