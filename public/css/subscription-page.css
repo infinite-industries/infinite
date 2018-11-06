@@ -11,6 +11,7 @@ body {
   border-radius: 10px;
   color: black;
   background-color: white;
+  width: 85%;
 }
 
 @media only screen and (min-width: 960px) {
@@ -53,4 +54,28 @@ p {
 
 .copy-container p {
   margin-top: 30px;
+}
+
+form {
+  font-family: "Open Sans", sans-serif;
+}
+
+form .layout .form-label {
+  display: block;
+  padding-right: 15px;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 22px;
+  letter-spacing: normal;
+  line-height: normal;
+}
+
+@media only screen and (min-width: 600px) {
+  form .layout .form-label {
+    text-align: right;
+  }
+}
+
+form .submit-container {
+  text-align: center;
 }
