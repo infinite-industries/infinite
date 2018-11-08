@@ -193,15 +193,20 @@
       </script>
     </div>
 
+    <!-- Admission Fee -->
     <div class="event-description">
+      {% if event.hasOwnProperty('admission_fee') and event.admission_fee!="none" %}
 
-      {% if event.hasOwnProperty('admission_fee') and event.admission_fee!="" %}
+      {% elif event.hasOwnProperty('admission_fee') and event.admission_fee!="" %}
         <div class="row event-admission-fee">
           <div class="col s11">
             <em>Admission Fee: {{event.admission_fee}}</em>
           </div>
         </div>
+      {% else %}
+
       {% endif %}
+      <!-- end of Admission Fee -->
 
 
       <div class="row event-description-content">
@@ -210,39 +215,62 @@
         </div>
       </div>
 
+      <!-- Website Link -->
+      {% if event.hasOwnProperty('website_link') and event.website_link=="none" %}
 
-      {% if event.hasOwnProperty('website_link') and event.website_link!="" %}
+      {% elif event.hasOwnProperty('website_link') and event.website_link!="" %}
         <div class="row event-website">
           <div class="col s11">
             <a href="{{event.website_link}}" onclick="InfiniteAnalytics('{{ id }}', 'website_view', '', '{{ site_url }}')" target="_new">Event Website</a>
           </div>
         </div>
-      {% endif %}
+      {% else %}
 
-      {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link!="" %}
+      {% endif %}
+      <!-- end end Website Link -->
+
+      <!-- Facebook Link -->
+      {% if event.hasOwnProperty('fb_event_link') and event.fb_event_link=="none" %}
+
+      {% elif event.hasOwnProperty('fb_event_link') and event.fb_event_link!="" %}
         <div class="row event-fb-link">
           <div class="col s11">
             <a href="{{ event.fb_event_link }}" onclick="InfiniteAnalytics('{{ id }}', 'facebook_view', '', '{{ site_url }}')" target="_new">Facebook Event Link</a>
           </div>
         </div>
+      {% else %}
+
       {% endif %}
+      <!-- end of Facebook Link -->
 
+      <!-- Eventbrite Link -->
+      {% if event.hasOwnProperty('eventbrite_link') and event.eventbrite_link=="none" %}
 
-      {% if event.hasOwnProperty('eventbrite_link') and event.eventbrite_link!="" %}
+      {% elif event.hasOwnProperty('eventbrite_link') and event.eventbrite_link!="" %}
         <div class="row event-eventbrite-link">
           <div class="col s11">
             <a href="{{event.eventbrite_link}}" onclick="InfiniteAnalytics('{{ id }}', 'eventbrite_view', '', '{{ site_url }}')" target="_new">Eventbrite Link</a>
           </div>
         </div>
-      {% endif %}
+      {% else %}
 
-      {% if event.hasOwnProperty('ticket_link') and event.ticket_link!="" %}
+      {% endif %}
+      <!-- end of Eventbrite Link -->
+
+
+      <!-- Ticket Link -->
+      {% if event.hasOwnProperty('ticket_link') and event.ticket_link=="none" %}
+
+      {% elif event.hasOwnProperty('ticket_link') and event.ticket_link!="" %}
         <div class="row event-ticket-link">
             <div class="col s11">
               <a href="{{event.ticket_link}}" id="twitter-wjs" onclick="InfiniteAnalytics('{{ id }}', 'ticket_view', '', '{{ site_url }}')" target="_new">Buy Tickets</a>
             </div>
         </div>
+      {% else %}
+
       {% endif %}
+      <!-- end of Ticket Link -->
 
     </div>
 
