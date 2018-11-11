@@ -1,8 +1,8 @@
 <template>
   <div class="sidebar">
     <ul id="nav-list">
-       <li v-for="item in getVisibleItems(nav_items)" :key="item.title" @click.stop="RouteTo(item)" style="cursor: pointer">
-         {{ item.title }}
+       <li v-for="item in getVisibleItems(nav_items)" :key="item.title">
+          <a :href="item.route" @click="RouteTo(item, $event)">{{ item.title }}</a>
        </li>
     </ul>
     <div id="nav-social-media" style="text-align:center;">
@@ -69,18 +69,22 @@
 
         return navItems.filter(item => isShown(item))
       },
-      RouteTo: function(item){
+      RouteTo: function(item, event){
+        // if router is present, we're handing nav manually here
+        // so we should suppress browser nav
+        if (this.$router || item.isAuthOnly || item.isUnAuthOnly) {
+          event.preventDefault();
+        }
+
         if (item.title === 'Login') {
           login()
         } else if (item.title === 'Logout') {
           this.$store.dispatch('Logout')
-        } else if (!this.$router) {
-          // not using vue-router in server-rendered pages
-          // in those cases, handle navigation manually
-          window.location = window.location.origin + item.route;
-        } else {
+        } else if (this.$router) {
           this.$router.push({path: item.route})
         }
+
+        // if router is not present, nav will be handled by browser, so no action is necessary here
       }
     },
     computed: {
@@ -137,13 +141,19 @@
 
   }
 
-  @media only screen and (max-width: 480px) {
+@media only screen and (max-width: 480px) {
     #nav-list li {
       font-size: 1.4em;
     }
   }
 
-  #nav-list li:hover {
+  #nav-list a {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  #nav-list a:hover {
     text-decoration: underline;
   }
 
