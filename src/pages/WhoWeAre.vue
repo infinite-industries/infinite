@@ -121,10 +121,14 @@
   }
 
   a:visited, a:active, a:link {
+    color: black;
+  }
+
+  .link-block a {
     color: white;
     background-color: black;
-    padding: 4px;
-    padding-top: 2px;
+    padding: 2px 6px 4px;
+    border-radius: 5px;
   }
 
 
