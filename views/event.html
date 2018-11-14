@@ -174,8 +174,9 @@
           const title = "{{event.title}}";
           const desc = "{{event.brief_description}}";
           const location = "{{event.address}}";
-          const time_start = "{{event.time_start}}";
-          const time_end = "{{event.time_end}}";
+          const time_start = "{{event.calendar_date_times.start_time}}";
+          const time_end = "{{event.calendar_date_times.end_time}}";
+
           if (type == 0 || type == 1) { // .ics
             if (type == 0){
               InfiniteAnalytics("{{id}}", "calendar_add", "iCal", "{{site_url}}");

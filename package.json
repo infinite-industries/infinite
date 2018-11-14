@@ -38,7 +38,7 @@
     "envify": "^4.1.0",
     "express": "^4.15.4",
     "fs-js": "^1.0.6",
-    "gsap": "^2.0.1",
+    "gsap": "^2.0.2",
     "jsonwebtoken": "^8.2.1",
     "jwt-decode": "^2.2.0",
     "localforage": "^1.5.5",

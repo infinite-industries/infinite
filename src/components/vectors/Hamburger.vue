@@ -60,18 +60,18 @@
           this.iconColor = 'white'
 
           tl.to(document.getElementById("line-002"), 0.5, {autoAlpha:0})
-          .to(document.getElementById("line-001"), 0.4, {y:'+=13', transformOrigin:"50% 50%"}, 0.1)
-          .to(document.getElementById("line-003"), 0.4, {y:'-=14', transformOrigin:"50% 50%"}, 0.1)
-          .to(document.getElementById("line-001"), 0.3, {rotation:-45, transformOrigin:"50% 50%"}, 0.1)
-          .to(document.getElementById("line-003"), 0.3, {rotation:45, transformOrigin:"50% 50%"}, 0.1)
+          // .to(document.getElementById("line-001"), 0.4, {y:'+=13'}, 0.1)
+          // .to(document.getElementById("line-003"), 0.4, {y:'-=14'}, 0.1)
+          .to(document.getElementById("line-001"), 0.3, {css:{'transform':'translateY(39px) translateX(3px) rotate(-45deg)'}}, 0.1)
+          .to(document.getElementById("line-003"), 0.3, {css:{'transform':'translateY(-7px) translateX(5px) rotate(45deg)'}}, 0.1)
         }
         else {
           this.iconColor = 'white'
 
-          tl.to(document.getElementById("line-001"), 0.4, {rotation:0, transformOrigin:"50% 50%"}, 0.1)
-          .to(document.getElementById("line-003"), 0.4, {rotation: 0, transformOrigin:"50% 50%"}, 0.1)
-          .to(document.getElementById("line-001"), 0.3, {y:'-=13', transformOrigin:"50% 50%"}, 0.2)
-          .to(document.getElementById("line-003"), 0.3, {y:'+=14', transformOrigin:"50% 50%"}, 0.2)
+          tl.to(document.getElementById("line-001"), 0.4, {css:{'transform':'translateY(0px) rotate(0deg)'}}, 0.1)
+          .to(document.getElementById("line-003"), 0.4, {css:{'transform':'translateY(29px) rotate(0deg)'}}, 0.1)
+          // .to(document.getElementById("line-001"), 0.3, {y:'-=13'}, 0.2)
+          // .to(document.getElementById("line-003"), 0.3, {y:'+=14'}, 0.2)
           .to(document.getElementById("line-002"), 0.5, {autoAlpha:1})
 
         }

@@ -18,7 +18,7 @@
     <ul>
       <li>
         <h3>Chris Wininger</h3>
-        <img class="member-portrait" src="https://picsum.photos/200/300" width="150px" height="150px">
+        <img class="member-portrait" src="images/who_we_are/chris.jpg" width="150px" height="150px">
         <p class="bio">
           Chris Wininger is a software engineer, electronic artist and lover of the weird. He is one half of the two person team that birthed the <a href="https://fongphone.com/" target="_new">Fong Phone</a>, a collaborator on interactive art exhibitions such as <a href="https://www.wegotrats.com/call-and-response/" target="_new">Call and Response</a> and the artist behind <a href="https://www.wegotrats.com/rules-play-gallery-hop/" target="_new">Every Picture Tells a Story</a> He currently works at <a href="https://www.sonatype.com/" target="_new">Sonatype</a> where he is passionate about open source and develops tools that enhance the security and quality of enterprise software.
         </p>
@@ -84,7 +84,7 @@
       Apologies if we have forgotten anyone. Any omission is simply a function of cluttered minds and short deadlines.
     </p>
     <p>
-      Giant thanks to <a href="javascript:alert('?')">[Kasey’s company]</a> for marketing and promo work and <a href="https://www.visitlex.com/">VisitLex</a> for helping us out with the publicity grant.
+      Giant thanks to <a href="#">Kasey Hall</a> for marketing and promo work and <a href="https://www.visitlex.com/">VisitLex</a> for helping us out with the publicity grant.
     </p>
     <p>
       We would also like to thank Microsoft for the server space and Google for email and other digital nourishment.

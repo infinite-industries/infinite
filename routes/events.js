@@ -248,18 +248,39 @@ router.get("/:id", function(req, res) {
             }
           })
 
-          let ii_event = {
-            ...apiResp.data.event,
-            formatted_date_times
-          }
-          console.log(ii_event);
-          res.render(
-                'event',
-                { id,
-                  event: ii_event,
-                  site_url: process.env.SITE_URL
-                }
-            );
+
+        // currently create a calendar event for first date_time only
+        // super hack to get around the fact that dates come in as EST but
+        // the db query (or JS) automagically returns them as UTC
+        // NOTE: move everything to UTC in the future
+
+        let start_time = moment(apiResp.data.event.date_times[0].start_time).toString()
+        start_time = start_time.slice(0, start_time.length-1) // strip out Z suffix - UTC designator
+
+        let end_time = moment(apiResp.data.event.date_times[0].end_time).toString()
+        end_time = start_time.slice(0, end_time.length-1) // strip out Z suffix - UTC designator
+
+
+        let calendar_date_times = {
+          start_time: moment(start_time).format('YYYY-MM-DD h:mm:ss'),
+          end_time: moment(end_time).format('YYYY-MM-DD h:mm:ss')
+        }
+
+
+        let ii_event = {
+          ...apiResp.data.event,
+          formatted_date_times,
+          calendar_date_times
+        }
+
+        console.log(ii_event);
+
+        res.render(
+          'event',
+          { id,
+            event: ii_event,
+            site_url: process.env.SITE_URL
+          });
         }
     });
 })
