@@ -118,7 +118,7 @@
     position: fixed;
     right: 0;
     top: 0;
-    z-index: 10;
+    z-index: 20;
     width: 300px;
     height: 100vh;
     max-width: 90vw;
@@ -145,6 +145,11 @@
     #nav-list li {
       font-size: 1.4em;
     }
+
+    #nav-list {
+      margin-top: 105px;
+    }
+
   }
 
   #nav-list a {

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div id="toolbar">
+    <div id="toolbar" style="z-index:21">
       <ii-logo id="logo" iconColor="#fff" width="140" height="55" style="cursor: pointer" />
       <ii-subscribe v-show="nav_closed" id="subscribe" iconColor="#fff" width="140" height="55" style="cursor: pointer" />
       <ii-hamburger id="hamburger" width="55" height="55" style="cursor: pointer" />
@@ -51,8 +51,8 @@ export default {
     position: fixed;
     z-index: 15;
     top: 0px;
-    left:0px;
-    height: 75px;
+    left: 0px;
+    height: 85px;
     width: 100%;
     background: #000000;
     background: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0, rgba(0, 0, 0, 1) 20px, rgba(0, 0, 0, 0.75) 40px, rgba(0, 0, 0, 0.5) 60px, rgba(0, 0, 0, 0.25) 75px);
