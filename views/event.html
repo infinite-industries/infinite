@@ -102,10 +102,10 @@
     </div>
 
     <div class="event-time-actions row">
-      <div class="event-time col s6">
-        <div>
+      <div class="event-time col s7">
+        <!-- <div>
           <i class="fas fa-clock"></i>
-        </div>
+        </div> -->
         <div>
           {% for date_time in event.formatted_date_times %}
               <div class="date-time-container">
@@ -115,7 +115,7 @@
           {% endfor %}
         </div>
       </div>
-      <div class="col s6">
+      <div class="col s4">
         <div class="event-actions">
           <button id="calMenu" class="infinite-dropdown ii-social-button add-event-to-cal dropbtn" aria-expanded="false" onclick="toggleDropdown()">
             <i class="fas fa-calendar-alt ii-social-icon"></i>
@@ -133,7 +133,9 @@
               <span>Directions</span>
             </a>
           {% endif %}
-
+          </div>
+        </div>
+        <div class="col s1">
           <button id="shareMenu" class="infinite-dropdown ii-social-button share-event dropbtn" aria-expanded="false" onclick="toggleShare()">
             <i class="fas fa-share ii-social-icon"></i>
             <span>Share</span>
@@ -154,7 +156,6 @@
               {% endif %}
             </div>
           </button>
-        </div>
       </div>
       <script>
         var clipboard = new Clipboard('.ii-copy-btn');

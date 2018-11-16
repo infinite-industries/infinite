@@ -139,6 +139,7 @@ body {
   border: 0;
 }
 
+
 .infinite-dropdown-content .ii-social-icon {
   font-size: 1.5em;
   margin-right: 0.5em;
@@ -149,6 +150,12 @@ body {
   padding: 5px 0;
   margin: 0;
 }
+
+.ii-social-icon{
+  font-size: 2.2rem;
+  padding: 2px;
+}
+
 
 @media only screen and (min-width: 960px) {
 
@@ -211,6 +218,20 @@ body {
   font-family: 'EB Garamond', serif;
 }
 
+.date-time-container{
+  margin-top: 20px;
+}
+
 .date-time-container:not(:first-child){
   margin-top: 15px;
+}
+
+.date-time-container em{
+  font-size: 1.5rem;
+}
+
+@media only screen and (min-width: 960px) {
+  .date-time-container em{
+    font-size: 1.2rem;
+  }
 }
