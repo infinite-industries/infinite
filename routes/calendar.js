@@ -27,8 +27,8 @@ BEGIN:VEVENT
 UID:${uuidv4()}
 SUMMARY:${req.query.title}
 DTSTAMP:${moment().utc().format('YYYYMMDDTHHmmss')}Z
-DTSTART:${moment(req.query.time_start).utc().format('YYYYMMDDTHHmmss')}Z
-DTEND:${moment(req.query.time_end).utc().format('YYYYMMDDTHHmmss')}Z
+DTSTART:${moment(req.query.time_start).format('YYYYMMDDTHHmmss')}
+DTEND:${moment(req.query.time_end).format('YYYYMMDDTHHmmss')}
 DESCRIPTION:${req.query.description}
 LOCATION:${req.query.location}
 END:VEVENT
