@@ -4,7 +4,7 @@ const async = require('async')
 const { makeAPICall } = require('./utils/requestHelper')
 const bodyParser = require('body-parser')
 
-const moment = require('moment')
+const moment = require('moment-timezone')
 
 const { notify } = require('./utils/event')
 
@@ -254,16 +254,20 @@ router.get("/:id", function(req, res) {
         // the db query (or JS) automagically returns them as UTC
         // NOTE: move everything to UTC in the future
 
-        let start_time = moment(apiResp.data.event.date_times[0].start_time).toString()
-        start_time = start_time.slice(0, start_time.length-1) // strip out Z suffix - UTC designator
+        //let start_time = moment.tz(apiResp.data.event.date_times[0].start_time,"+5:00")
+        //start_time = moment.tz(start_time.slice(0, start_time.length-1),"+5:00") // strip out Z suffix - UTC designator
 
-        let end_time = moment(apiResp.data.event.date_times[0].end_time).toString()
-        end_time = start_time.slice(0, end_time.length-1) // strip out Z suffix - UTC designator
+        //let end_time = moment(apiResp.data.event.date_times[0].end_time).toString()
+        //end_time = moment.tz(end_time.slice(0, end_time.length-1),"+5:00") // strip out Z suffix - UTC designator
 
 
         let calendar_date_times = {
-          start_time: moment(start_time).format('YYYY-MM-DD h:mm:ss'),
-          end_time: moment(end_time).format('YYYY-MM-DD h:mm:ss')
+          // start_time: moment(start_time).format('YYYY-MM-DD h:mm:ss'),
+          // end_time: moment(end_time).format('YYYY-MM-DD h:mm:ss'),
+
+          start_time: apiResp.data.event.date_times[0].start_time,
+          end_time: apiResp.data.event.date_times[0].end_time
+
         }
 
 

@@ -14,6 +14,8 @@ router.get('/', function(req, res){
 
   const file_name = req.query.title + ".ics"
 
+moment.tz.setDefault('America/New_York');
+
   let cal_content =
 `BEGIN:VCALENDAR
 VERSION:2.0
@@ -25,8 +27,8 @@ BEGIN:VEVENT
 UID:${uuidv4()}
 SUMMARY:${req.query.title}
 DTSTAMP:${moment().utc().format('YYYYMMDDTHHmmss')}Z
-DTSTART:${moment.tz(req.query.time_start, "America/New_York").utc().format('YYYYMMDDTHHmmss')}Z
-DTEND:${moment.tz(req.query.time_end, "America/New_York").utc().format('YYYYMMDDTHHmmss')}Z
+DTSTART:${moment(req.query.time_start).utc().format('YYYYMMDDTHHmmss')}Z
+DTEND:${moment(req.query.time_end).utc().format('YYYYMMDDTHHmmss')}Z
 DESCRIPTION:${req.query.description}
 LOCATION:${req.query.location}
 END:VEVENT
@@ -34,7 +36,7 @@ END:VCALENDAR`
 
 
   console.log(req.query.time_start +"\n ------- \n")
-  console.log("req:"+req.query.time_start+" utc:"+moment(req.query.time_start).utc().format('YYYYMMDDTHHmmss'))
+  console.log("req:"+req.query.time_start+" utc:"+moment(req.query.time_start).format('YYYYMMDDTHHmmss'))
   console.log(req.query.time_start +"\n ------- \n")
   console.log(cal_content)
 
