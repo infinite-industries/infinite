@@ -30,7 +30,7 @@
       </li>
       <li>
         <h3>Matthew Gidcomb</h3>
-        <img class="member-portrait" src="images/who_we_are/matthew.png" width="150px" height="140px">
+        <img class="member-portrait" src="images/who_we_are/matthew.jpg" width="150px" height="150px">
         <p class="bio">Matthew is a software developer in Lexington, KY. When not working on code, he is involved in voter engagement and community organizing, browsing shelves at local bookstores, and fantasizing about having sufficient free time to play Kerbal Space Program.</p>
         <p class="link-block">
           <a href="https://github.com/MatthewGidcomb" target="_new">Github</a>
