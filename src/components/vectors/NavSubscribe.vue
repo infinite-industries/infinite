@@ -45,11 +45,4 @@
     visibility: hidden;
   }
 
-  .clickable {
-    stroke:#fff;
-    fill:#fff;
-    fill-opacity:0;
-    stroke-opacity:0;
-  }
-
 </style>
