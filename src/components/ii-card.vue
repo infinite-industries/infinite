@@ -59,10 +59,11 @@
         // console.log(calType);
         if (calType === "iCal" || calType === "Outlook") {
           // send calendar_event data to node layer to be converted into an .ics file
-          window.open(`/calendar?title=${encodeURIComponent(this.calendar_event.title)}&description=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}&time_start=${encodeURIComponent(this.calendar_event.time_start)}&time_end=${encodeURIComponent(this.calendar_event.time_end)}`);
+
+          window.open(`/calendar?title=${encodeURIComponent(this.calendar_event.title)}&description=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}&time_start=${encodeURIComponent(this.calendar_event.date_times[0].start_time)}&time_end=${encodeURIComponent(this.calendar_event.date_times[0].end_time)}`);
         } else if (calType === "Google Calendar") {
-          var time_start_formatted = moment(this.calendar_event.time_start).format('YYYYMMDDTHHmmss');
-          var time_end_formatted = moment(this.calendar_event.time_end).format('YYYYMMDDTHHmmss');
+          var time_start_formatted = moment(this.calendar_event.date_times[0].start_time).format('YYYYMMDDTHHmmss');
+          var time_end_formatted = moment(this.calendar_event.date_times[0].end_time).format('YYYYMMDDTHHmmss');
 
           window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.calendar_event.title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}`);
         }
