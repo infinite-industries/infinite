@@ -6,10 +6,13 @@
 
     <ul>
       <li>
-        <h3>Dmitry "Dima" Strakovsky</h3>
-        <img class="member-portrait" src="images/who_we_are/dima.jpg" width="150px" height="150px">
-        <p class="bio">Dima is the Founder and Creative Director of Infinite Industries. Along with his coding and design know-how, he is a practicing artist and has run and curated a wide variety of art spaces. His experiences as a technologist and artist/curator finally united when he dreamed up Infinite Industries. Dima works with an awesome team of coders, designers and marketing folk to help bring this dream to all the screens near you.</p>
-        <div class="spacer"></div>
+        <div>
+          <img class="member-portrait" src="images/who_we_are/dima.jpg" width="150px" height="150px">
+        </div>
+        <div>
+          <h3>Dmitry "Dima" Strakovsky</h3>
+          <p class="bio">Dima is the Founder and Creative Director of Infinite Industries. Along with his coding and design know-how, he is a practicing artist and has run and curated a wide variety of art spaces. His experiences as a technologist and artist/curator finally united when he dreamed up Infinite Industries. Dima works with an awesome team of coders, designers and marketing folk to help bring this dream to all the screens near you.</p>
+        </div>
       </li>
     </ul>
 
@@ -17,36 +20,45 @@
 
     <ul>
       <li>
-        <h3>Chris Wininger</h3>
-        <img class="member-portrait" src="images/who_we_are/chris.jpg" width="150px" height="150px">
-        <p class="bio">
-          Chris Wininger is a software engineer, electronic artist and lover of the weird. He is one half of the two person team that birthed the <a href="https://fongphone.com/" target="_new">Fong Phone</a>, a collaborator on interactive art exhibitions such as <a href="https://www.wegotrats.com/call-and-response/" target="_new">Call and Response</a> and the artist behind <a href="https://www.wegotrats.com/rules-play-gallery-hop/" target="_new">Every Picture Tells a Story</a> He currently works at <a href="https://www.sonatype.com/" target="_new">Sonatype</a> where he is passionate about open source and develops tools that enhance the security and quality of enterprise software.
-        </p>
-        <p class="link-block">
-          <a href="https://github.com/chriswininger" target="_new">Github</a>
-          <a href="https://twitter.com/remembersonly" target="_new">Twitter</a>
-        </p>
-        <div class="spacer"></div>
+        <div>
+          <img class="member-portrait" src="images/who_we_are/chris.jpg" width="150px" height="150px">
+        </div>
+        <div>
+          <h3>Chris Wininger</h3>
+          <p class="bio long">
+            Chris Wininger is a software engineer, electronic artist and lover of the weird. He is one half of the two person team that birthed the <a href="https://fongphone.com/" target="_new">Fong Phone</a>, a collaborator on interactive art exhibitions such as <a href="https://www.wegotrats.com/call-and-response/" target="_new">Call and Response</a> and the artist behind <a href="https://www.wegotrats.com/rules-play-gallery-hop/" target="_new">Every Picture Tells a Story</a> He currently works at <a href="https://www.sonatype.com/" target="_new">Sonatype</a> where he is passionate about open source and develops tools that enhance the security and quality of enterprise software.
+          </p>
+          <p class="link-block">
+            <a href="https://github.com/chriswininger" target="_new">Github</a>
+            <a href="https://twitter.com/remembersonly" target="_new">Twitter</a>
+          </p>
+        </div>
       </li>
       <li>
-        <h3>Matthew Gidcomb</h3>
-        <img class="member-portrait" src="images/who_we_are/matthew.jpg" width="150px" height="150px">
-        <p class="bio">Matthew is a software developer in Lexington, KY. When not working on code, he is involved in voter engagement and community organizing, browsing shelves at local bookstores, and fantasizing about having sufficient free time to play Kerbal Space Program.</p>
-        <p class="link-block">
-          <a href="https://github.com/MatthewGidcomb" target="_new">Github</a>
-        </p>
-        <div class="spacer"></div>
+        <div>
+          <img class="member-portrait" src="images/who_we_are/matthew.jpg" width="150px" height="150px">
+        </div>
+        <div>
+          <h3>Matthew Gidcomb</h3>
+          <p class="bio">Matthew is a software developer in Lexington, KY. When not working on code, he is involved in voter engagement and community organizing, browsing shelves at local bookstores, and fantasizing about having sufficient free time to play Kerbal Space Program.</p>
+          <p class="link-block">
+            <a href="https://github.com/MatthewGidcomb" target="_new">Github</a>
+          </p>
+        </div>
       </li>
       <li>
-        <h3>Evan Heaton</h3>
-        <img class="member-portrait" src="images/who_we_are/evan.jpg" width="150px" height="150px">
-        <p class="bio">
-          Evan is a University of Kentucky grad, JavaScript enthusiast, and aspiring producer. He lives where creativity meets code.
-        </p>
-        <p class="link-block">
-          <a href="https://github.com/epheat" target="_new">Github</a> <a href="https://m.soundcloud.com/photographer-746696387" target="_new">Soundcloud</a>
-        </p>
-        <div class="spacer"></div>
+        <div>
+          <img class="member-portrait" src="images/who_we_are/evan.jpg" width="150px" height="150px">
+        </div>
+        <div>
+          <h3>Evan Heaton</h3>
+          <p class="bio">
+            Evan is a University of Kentucky grad, JavaScript enthusiast, and aspiring producer. He lives where creativity meets code.
+          </p>
+          <p class="link-block">
+            <a href="https://github.com/epheat" target="_new">Github</a> <a href="https://m.soundcloud.com/photographer-746696387" target="_new">Soundcloud</a>
+          </p>
+        </div>
       </li>
     </ul>
 
@@ -107,7 +119,12 @@
 <style scoped>
 
   ul {
-    list-style-type:none
+    list-style-type:none;
+    padding-left: 0;
+  }
+
+  ul h3 {
+    margin-top: 0;
   }
 
   .join-us {
@@ -116,12 +133,12 @@
     font-size: 1.7em;
   }
 
-  .bio {
-    padding-top: 20px;
-  }
-
   a:visited, a:active, a:link {
     color: black;
+  }
+
+  .member-portrait {
+    margin-top: 1em;
   }
 
   .link-block a {
@@ -131,24 +148,18 @@
     border-radius: 5px;
   }
 
+  @media only screen and (min-width: 600px) {
 
-  @media only screen and (min-width: 960px) {
-
-    .bio {
-      padding-left: 180px;
-    }
-
-    .link-block {
-      padding-left: 180px;
-      margin-top: 0px;
+    ul li:after {
+      content: " ";
+      display: block;
+      height: 0;
+      clear: both;
     }
 
     .member-portrait {
-      float:left;
-    }
-
-    .spacer {
-      clear: both;
+      float: left;
+      margin-right: 2em;
     }
   }
 
