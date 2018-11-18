@@ -45,10 +45,10 @@ body {
   padding: 1rem 2rem;
 }
 
-.event-time-actions .fa-clock {
+/* .event-time-actions .fa-clock {
   font-size: 3rem;
   color: #2e2d2d;
-}
+} */
 
 .event-time-actions .event-time > div {
   display: inline-block;
@@ -93,6 +93,10 @@ body {
 
 .infinite-dropdown-content a:hover {
   text-decoration: underline;
+}
+
+.calendar-dropdown {
+  min-width: 150px;
 }
 
 .infinite-dropdown[aria-expanded="true"] .infinite-dropdown-content,
@@ -146,14 +150,33 @@ body {
 }
 
 .infinite-dropdown-content .ii-social-button {
+  font-size: 1.1em;
   text-align: left;
   padding: 5px 0;
   margin: 0;
 }
 
-.ii-social-icon{
-  font-size: 2.2rem;
-  padding: 2px;
+.infinite-dropdown-content a {
+  font-size: 1.4em;
+  padding-right: 20px;
+}
+
+@media only screen and (max-width: 960px) {
+
+  .ii-social-icon{
+    font-size: 2.2rem;
+    padding: 2px;
+  }
+
+  .infinite-dropdown-content a {
+    font-size: 1.5em;
+    padding-top: 10px;
+  }
+
+  .infinite-dropdown-content .ii-social-button {
+    font-size: 1.5em;
+  }
+
 }
 
 
@@ -230,8 +253,8 @@ body {
   font-size: 1.5rem;
 }
 
-@media only screen and (min-width: 960px) {
+@media only screen and (max-width: 960px) {
   .date-time-container em{
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 }

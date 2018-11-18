@@ -102,7 +102,7 @@
     </div>
 
     <div class="event-time-actions row">
-      <div class="event-time col s7">
+      <div class="event-time col xs8 sm6">
         <!-- <div>
           <i class="fas fa-clock"></i>
         </div> -->
@@ -115,12 +115,13 @@
           {% endfor %}
         </div>
       </div>
-      <div class="col s4">
+      <div class="col xs4 sm6">
         <div class="event-actions">
+
           <button id="calMenu" class="infinite-dropdown ii-social-button add-event-to-cal dropbtn" aria-expanded="false" onclick="toggleDropdown()">
             <i class="fas fa-calendar-alt ii-social-icon"></i>
             <span>Add to Calendar</span>
-            <div id="calDropdown" class="infinite-dropdown-content">
+            <div id="calDropdown" class="infinite-dropdown-content calendar-dropdown">
               <a href='javascript:addToCalendar(0)'>iCal</a>
               <a href='javascript:addToCalendar(1)'>Outlook</a>
               <a href='javascript:addToCalendar(2)'>Google Cal</a>
@@ -133,9 +134,8 @@
               <span>Directions</span>
             </a>
           {% endif %}
-          </div>
-        </div>
-        <div class="col s1">
+
+
           <button id="shareMenu" class="infinite-dropdown ii-social-button share-event dropbtn" aria-expanded="false" onclick="toggleShare()">
             <i class="fas fa-share ii-social-icon"></i>
             <span>Share</span>
@@ -156,7 +156,10 @@
               {% endif %}
             </div>
           </button>
+
       </div>
+    </div>
+
       <script>
         var clipboard = new Clipboard('.ii-copy-btn');
         clipboard.on('success', function(e) {
@@ -197,7 +200,7 @@
 
     <!-- Admission Fee -->
     <div class="event-description">
-      {% if event.hasOwnProperty('admission_fee') and event.admission_fee!="none" %}
+      {% if event.hasOwnProperty('admission_fee') and event.admission_fee=="none" %}
 
       {% elif event.hasOwnProperty('admission_fee') and event.admission_fee!="" %}
         <div class="row event-admission-fee">

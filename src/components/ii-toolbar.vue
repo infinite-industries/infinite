@@ -2,7 +2,7 @@
   <div class="container">
     <div id="toolbar" style="z-index:21">
       <ii-logo id="logo" iconColor="#fff" width="140" height="55" style="cursor: pointer" />
-      <ii-subscribe v-show="nav_closed" id="subscribe" iconColor="#fff" width="140" height="55" style="cursor: pointer" />
+      <ii-subscribe v-if="nav_closed" id="subscribe" iconColor="#fff" width="140" height="55" style="cursor: pointer" />
       <ii-hamburger id="hamburger" width="55" height="55" style="cursor: pointer" />
     </div>
     <ii-nav />
@@ -78,7 +78,7 @@ export default {
   }
   @media only screen and (max-width: 640px) {
     #subscribe {
-      visibility: hidden;
+      display: none;
     }
   }
 

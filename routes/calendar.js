@@ -35,10 +35,10 @@ END:VEVENT
 END:VCALENDAR`
 
 
-  console.log(req.query.time_start +"\n ------- \n")
-  console.log("req:"+req.query.time_start+" utc:"+moment(req.query.time_start).format('YYYYMMDDTHHmmss'))
-  console.log(req.query.time_start +"\n ------- \n")
-  console.log(cal_content)
+  // console.log(req.query.time_start +"\n ------- \n")
+  // console.log("req:"+req.query.time_start+" utc:"+moment(req.query.time_start).format('YYYYMMDDTHHmmss'))
+  // console.log(req.query.time_start +"\n ------- \n")
+  // console.log(cal_content)
 
   res.setHeader('Content-disposition', 'attachment; filename="'+ file_name + '"')
   res.setHeader('Content-type', 'text/calendar')
