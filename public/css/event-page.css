@@ -45,10 +45,35 @@ body {
   padding: 1rem 2rem;
 }
 
-/* .event-time-actions .fa-clock {
-  font-size: 3rem;
-  color: #2e2d2d;
-} */
+@media only screen and (min-width: 600px) {
+
+  .event-time-actions {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .event-time-actions .event-time,
+  .event-time-actions .event-actions {
+    flex-basis: 50%;
+    flex-grow: 0;
+    min-width: 50%;
+  }
+}
+
+@media only screen and (min-width: 960px) {
+
+  .event-time-actions .event-time {
+    flex-basis: 33.33%;
+    flex-grow: 0;
+    min-width: 33.33%;
+  }
+
+  .event-time-actions .event-actions {
+    flex-basis: 66.67%;
+    flex-grow: 0;
+    min-width: 66.67%;
+  }
+}
 
 .event-time-actions .event-time > div {
   display: inline-block;
@@ -60,9 +85,20 @@ body {
 }
 
 .event-actions {
+  margin-top: 1em;
+  margin-left: 0.5em;
+}
+
+.event-actions-content {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   flex-wrap: wrap;
+}
+
+@media only screen and (min-width: 600px) {
+  .event-actions-content {
+    justify-content: flex-end;
+  }
 }
 
 /* stuff for makeshift dropdown menu */
