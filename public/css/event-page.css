@@ -99,6 +99,10 @@ body {
   min-width: 150px;
 }
 
+.social-dropdown{
+  min-width: 130px;
+}
+
 .infinite-dropdown[aria-expanded="true"] .infinite-dropdown-content,
 .show {
   display: block;
@@ -225,6 +229,9 @@ body {
   background-color: #5c5c5c;
 }
 
+.share-event {
+  min-width: 130px;
+}
 .event-time-actions .share-event {
   background-color: #131212;
 }
@@ -257,4 +264,14 @@ body {
   .date-time-container em{
     font-size: 1.3rem;
   }
+
+  .share-event {
+    min-width: 50px;
+  }
+
+  .social-dropdown{
+    min-width: 50px;
+  }
+
+
 }
