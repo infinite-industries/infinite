@@ -6,8 +6,9 @@
       </div>
       <div id="shim" ref="shim"></div>
     </div>
-    <div v-else>
-      <img src="/images/spinner.gif" />
+    <div v-else class="spinner-container">
+      <!-- <img src="/images/spinner.gif" /> -->
+      <ii-loader id="loader" iconColor="#fff" width="100%" height="100%" />
     </div>
   </div>
 </template>
@@ -19,6 +20,8 @@
   const VERTICAL_CARD_SIZE = 250; // 240px + 5px padding each side
 
   import Card from './ii-card.vue'
+  import Loader from './vectors/Loader.vue'
+
   export default {
     name: 'ListViewer',
     props: ['calendar_events'],
@@ -88,7 +91,8 @@
       }
     },
     components:{
-      'ii-card': Card
+      'ii-card': Card,
+      'ii-loader': Loader
     }
   }
 </script>
@@ -101,6 +105,11 @@
   #list-container {
     width: 100%;
     padding: 0px;
+  }
+
+  .spinner-container {
+    text-align: center;
+
   }
 
   @media only screen and (min-width: 481px) {
