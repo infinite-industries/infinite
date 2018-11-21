@@ -70,7 +70,7 @@
     </v-layout>
 
     <!-- Add a Venue (collapsible content)-->
-    <add-new-venue />
+    <add-new-venue @newVenue="newVenue" />
 
     <!-- Brief Description -->
     <v-layout row wrap>
@@ -332,6 +332,12 @@
         this.calendar_event.venue_id = venue.id
         this.calendar_event.address = venue.address
         this.calendar_event.venue_name = venue.name
+      },
+      newVenue: function(venue) {
+        this.calendar_event.venue_id = venue.id
+        this.calendar_event.address = venue.address
+        this.calendar_event.venue_name = venue.name
+        this.$refs.venuePicker.handleNewVenue(venue)
       },
 
       sendEmails: function() {

@@ -104,6 +104,7 @@
           this.closeVenueDropdown();
           if (response.data.status == "success") {
             this.$store.dispatch('LoadAllVenueData')
+            this.$emit("newVenue", response.data.venue);
           }
         }).catch( err => {
           console.error(err);

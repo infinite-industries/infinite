@@ -31,6 +31,9 @@ export default {
       this.hideDropdownContent();
       this.$emit("selectVenue", venue);
     },
+    handleNewVenue: function(venue) {
+      this.searchterm = venue.name;
+    },
     hitEnter: function() {
       if (this.queryResults.length == 1) {
         this.selectVenue(this.queryResults[0]);
