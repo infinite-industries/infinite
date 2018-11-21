@@ -7,40 +7,41 @@
       We care about your rights and your understanding of the legal framework of the services you use. So we are not hiding this information behind some out of the way link on our site. Here is a human-readable summary of the info in the Terms of Service and Privacy Policy.
     </p>
 
-    <p>
-      <em>Be a good human.</em> Don’t submit text or images that you don’t have legal rights to. We are very tolerant of the definitions of “derivative work” and “non-commercial use” but if the original copyright holders take issue with your usage of their material, we will take the content down.
+    <h4>Be a good human; don’t send us things that you don’t actually own.</h4>
+    <p>We’re accepting of most definitions of <em>fair use</em>, but if the original copyright holders take issue with something you have published on our site, we have to take it down.</p>
+
+    <h4>We strive to be good humans; we’ll NEVER reveal ANY personal information to a third-party.</h4>
+    <p>That is simply not in our code. This project is open-source, so this statement is truly independently verifiable. We do share anonymized aggregated data with community leaders and businesses folks; like how many shows happened at a particular zip code and all the fun economic arguments for having Art, Theater and Music around, backed up by real data.
     </p>
 
-    <p>
-      We reserve the right to review the content submitted and, in rare cases, take it down. This is really reserved for blatant spam that is entering the system. If one puts an open form somewhere on the interwebs, it eventually does get populated with some rather interesting materials.
+    <h4>Please don’t spam us.</h4>
+    <p>This is really reserved for blatant spammy stuff that is, alas, inevitable when one puts an open form up on the interwebs. But bear in mind, we’ll review the content you give us and we do reserve the right to take it down.
     </p>
 
-    <p>
-      We would like to promote both the events you submit on our service via social media, print, etc. In addition, we would like to generate reports based on events submitted. This allows us to effectively advise both private and public entities on issues related to arts and culture. For these purposes, we are asking that you give us the rights to the submitted content.
+    <h4>Please don’t scrape us.</h4>
+    <p>As in write scripts that slurp up the data on the site. Be nice and we will give you stuff for free. Don’t slam our poor servers and increase our co$ts.
     </p>
 
-    <p>
-      <em>We strive to be good humans.</em> We will never reveal ANY personal information to a third-party. That is simply not in our code. The project is open-source so this statement is truly independently verifiable.
+    <h4>We ask for some rights to the things you give us, but we have really good reasons.</h4>
+    <p> It’s mainly so we can promote your events everywhere; our web page, social media, printed materials, the works.
     </p>
 
-    <p>
-      We do not track you with our "<a href="https://www.youtube.com/watch?v=QWw7Wd2gUJk" target="_blank">cookies</a>". These are bits of code that sit on your machine and "remember" the history of your site usage. Any use of cookies or your browser’s local storage is there to help make the experience of using the site easier and more intuitive.
+    <h4>We do not "track" you with our cookies.</h4>
+    <p>Cookies are bits of code that sit on your machine and remember the history of your site usage. We use our cookies to make your experience on our site easier and more intuitive. Like remembering your favorite setting; never spying on your activities.
     </p>
 
-    <p>
-      We do use third-party software for analytics (specifically <a href="https://marketingplatform.google.com/about/analytics/" target="_blank">Google</a> and <a href="https://metrica.yandex.com" target="_blank">Yandex</a>) these guys do track you. We need them right now to get aggregated/anonymized user data.  For example, to see how many of visitors we get per week. This allows us to apply for grants and such (we are a non-profit after all) set solid internal goals, and track our own progress. The bits of code that these folks represent are scattered all over the internet. If you categorically have issues with them, we recommend using <a href="https://www.eff.org/privacybadger" target="_blank">Privacy Badger</a>, <a href="https://www.ghostery.com/" target="_blank">Ghostery</a> or similar browser tech.
+
+    <h4>We do use third-party software for analytics (specifically Google and Yandex) and these guys do track you... </h4>
+    <p>We need them right now to get aggregated, anonymized user data. For example, we can see how many visitors we get per week, but we do not know your name or what you order at Starbucks. Or if you’ve abandoned Starbucks to go local. Aggregated data helps us when we apply for grants (we are a non-profit after all), and helps us set realistic goals for growing the site. The bits of code that these folks represent are basically on every website you visit these days. If you categorically have issues with them, we recommend using <a href="https://www.eff.org/privacybadger" target="_new">Privacy Badger</a>, <a href="https://www.ghostery.com/" target="_new">Ghostery</a>, or something similar.
     </p>
 
-    <p>
-      We also use custom scripts for similar purposes. Mainly to track usage of specific UI elements, like the “add to calendar” feature. This is basically allows us to confirm that a specific feature is an important part of our service or drop its development in future versions of the site.
+    <h4>We wrote a few custom scripts for similar analytical purposes.</h4>
+    <p>These give us info on specific UI elements, like the "add to calendar" feature. This basically helps us to confirm that a specific feature is important, or if you think it’s garbage and we should abandon it for the site’s next iteration.
     </p>
 
-    <p>
-      From time to time we will need to update this document in order to keep up with the changes on the website.
-    </p>
 
     <p>
-      That’s about it. Feel free to <a href="#" @click.stop="RouteTo('/contact')">reach out</a> to us if you have any additional questions.
+      That’s about it. The stuff below is pure legalese. Feel free to <span id="link-to-contact" @click.stop="RouteTo('/contact')">reach out</span> to us if you have any additional questions.
     </p>
 
     <h2>Terms of Service</h2>
@@ -124,7 +125,7 @@
 
 <p>You are solely responsible for any User Submitted Content you submit or direct us to store, and for the consequences of its being stored and made available as part of the Service.</p>
 
-<p>By submitting User Submitted Content, furnishing a link or otherwise directing us to store or vest User Submitted Content, you grant us, under any rights that you hold therein, a perpetual, irrevocable, worldwide, non-exclusive, fully paid-up, royalty-free, sublicensable, and transferable license to use, reproduce, create derivative works based upon, transmit, distribute, perform, display, and make available the User Submitted Content, in any medium now in existence or later developed, in connection with the Service or otherwise in furtherance of our mission, including but not limited to promotional uses, and to authorize others to do the foregoing.</p>
+<p>By submitting User Submitted Content, furnishing a link or otherwise directing us to store or vest User Submitted Content, you grant us, under any rights that you hold therein, worldwide, non-exclusive, fully paid-up, royalty-free, sublicensable, and transferable license to use, reproduce, create derivative works based upon, transmit, distribute, perform, display, and make available the User Submitted Content, in any medium now in existence or later developed, in connection with the Service or otherwise in furtherance of our mission, including but not limited to promotional uses, and to authorize others to do the foregoing.</p>
 
 <p>We reserve the right, but are not obligated, to monitor use of the Service and to review, modify, take down or delete any User Submitted Content, in our sole discretion, without notice, at any time.</p>
 
@@ -178,7 +179,7 @@
 
     <p>Since our software is open-source, our usage of analytics software is completely transparent and independently verifiable. </p>
 
-    <p><em>Last updated September 28, 2018</em></p>
+    <p><em>Last updated November 20, 2018</em></p>
 
   </div>
 </template>
@@ -206,5 +207,9 @@ export default {
 
   a:link, a:hover, a:visited {
     color: black;
+  }
+
+  #link-to-contact {
+    text-decoration: underline;
   }
 </style>
