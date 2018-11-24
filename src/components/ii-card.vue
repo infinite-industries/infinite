@@ -372,6 +372,7 @@
     padding-right: 12px;
 
     margin-top: 13px;
+    min-width: 225px;
   }
 
   .card-btn {
