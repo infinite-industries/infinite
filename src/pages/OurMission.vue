@@ -9,9 +9,9 @@
     </p>
 
 
-    <h2>If it’s happening, and it’s happening, we’ll let you know about it</h2>
+    <h2>If it’s happening, and it’s happening - it’s here.</h2>
     <p>
-      Infinite Industries highlights experiments in contemporary culture so more of us can discover, share and participate. Gallery openings, punk shows, theater, street art, orchestra, retrospectives, rap shows, comedy; it’s all curated here for you to experience.
+      Infinite Industries highlights experiments in contemporary culture so more of us can discover, share and participate. Gallery openings, punk shows, theater, street art, orchestra, museums, hip-hop, dance; it’s all curated here for you to experience.
     </p>
 
     <h2>Art belongs to everyone who wants it</h2>
