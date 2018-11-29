@@ -69,7 +69,7 @@
 
     <h2>Core Design Team</h2>
 
-    <p><a class="grow" href="https://bullhorncreative.com/" target="_blank">BullHorn Creative</a> generously donated their skills and time</p>
+    <p><a class="grow" href="https://bullhorncreative.com/" target="_blank">Bullhorn</a> generously donated their skills and time</p>
     <p>UI/UX work by Ben Byrum</p>
 
 
@@ -96,7 +96,7 @@
       Apologies if we have forgotten anyone. Any omission is simply a function of cluttered minds and short deadlines.
     </p>
     <p>
-      Giant thanks to <a href="#">Kasey Hall</a> for marketing and promo work and <a href="https://www.visitlex.com/">VisitLex</a> for helping us out with the publicity grant.
+      Giant thanks to Kasey Hall for marketing and promo work and <a href="https://www.visitlex.com/">VisitLex</a> for helping us out with the publicity grant.
     </p>
     <p>
       We would also like to thank Microsoft for the server space and Google for email and other digital nourishment.

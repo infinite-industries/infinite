@@ -46,13 +46,13 @@
     position: fixed;
   } */
 
-  @media only screen and (min-width: 960px) {
+  @media only screen and (min-width: 640px) {
     #subscribe-container {
       display: none;
     }
   }
 
-  @media only screen and (max-width: 960px) {
+  @media only screen and (max-width: 640px) {
     #subscribe-container{
       position: fixed; /* Stay in place */
       z-index: 11; /* Sit on top */
