@@ -78,7 +78,7 @@ const ManageUpload = function (id, path, type, cb){
 }
 
 const AddBitlyLink = function(id, bitly_token, cb){
-  const bitly_query_url ="https://api-ssl.bitly.com/v3/shorten?access_token=" + bitly_token + "&longUrl=" + encodeURI('https://infinite.industries/event/'+id)
+  const bitly_query_url ="https://api-ssl.bitly.com/v3/shorten?access_token=" + bitly_token + "&longUrl=" + encodeURI('https://infinite.industries/events/'+id)
   request(bitly_query_url, function(error, response, body) {
     if(!error && response.statusCode == 200){
       // Bitly throws status codes into the body *shrug*
