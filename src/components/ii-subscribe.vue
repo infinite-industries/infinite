@@ -7,10 +7,11 @@
   </div> -->
 
   <div id="subscribe-container">
-    <a href="/subscribe-email">subscribe</a>
+    <a href="https://infinite.industries/subscribe-email?source='mobile-internal'">subscribe</a>
   </div>
 
 </template>
+
 
 
 <script>
