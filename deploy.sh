@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-npm run production-build
+# npm run production-build
 
 USER='ubuntu'
 
@@ -18,8 +18,8 @@ if [[ "production" = $1 ]]; then
   echo 'Installing npm packages'
   npm install --production
   echo 'Restarting'
-  #npm run server-build
-  #echo 'Building frontend js'
+  npm run production-build
+  echo 'Building frontend js'
   forever stop infinite
   rm /home/$USER/.forever/infinite.log
   forever start --uid infinite server.js
