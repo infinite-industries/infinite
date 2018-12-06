@@ -126,7 +126,7 @@
           </button>
 
           {% if event.hasOwnProperty('map_link') and event.map_link!="" %}
-            <a class="ii-social-button map-event" target="_blank" href="{{event.map_link}}" onclick="InfiniteAnalytics('{{ id }}', 'map_view', '{{ site_url }}')">
+            <a class="ii-social-button map-event" target="_blank" href="{{event.venue.g_map_link}}" onclick="InfiniteAnalytics('{{ id }}', 'map_view', '{{ site_url }}')">
               <i class="fas fa-map-marker-alt ii-social-icon"></i>
               <span>Directions</span>
             </a>

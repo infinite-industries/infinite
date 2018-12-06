@@ -232,61 +232,80 @@ router.get('/data/:id', (req, res) => {
 })
 
 router.get("/:id", function(req, res) {
-    const id = req.params.id;
+    const id = req.params.id
+    console.info('event request for "%s"', id)
+    let ii_event = {}
 
-    console.info('event request for "%s"', id);
-    makeAPICall('get', 'events/' + id, {}, null, req.token, (err, apiResp) => {
-        if (err) {
-            console.warn('error getting event (%s): %s', id, err);
-            res.status(500).send('error getting event');
-        } else {
-          // precompute when_date and when_time values
-          let formatted_date_times = apiResp.data.event.date_times.map((date_time)=>{
-            return {
-              when_date:moment(date_time.start_time).format('dddd, MMMM Do'),
-              when_time: moment(date_time.start_time).format('h:mma') + " - " + moment(date_time.end_time).format('h:mma')
+    async.waterfall([
+
+      function(callback){
+        makeAPICall('get', 'events/' + id, {}, null, req.token, (err, apiResp) => {
+            if (err) {
+                console.warn('error getting event (%s): %s', id, err)
+                res.status(500).send('error getting event')
+            } else {
+
+              // precompute when_date and when_time values
+              let formatted_date_times = apiResp.data.event.date_times.map((date_time)=>{
+                return {
+                  when_date:moment(date_time.start_time).format('dddd, MMMM Do'),
+                  when_time: moment(date_time.start_time).format('h:mma') + " - " + moment(date_time.end_time).format('h:mma')
+                }
+              })
+              let calendar_date_times = {
+                // start_time: moment(start_time).format('YYYY-MM-DD h:mm:ss'),
+                // end_time: moment(end_time).format('YYYY-MM-DD h:mm:ss'),
+
+                start_time: apiResp.data.event.date_times[0].start_time,
+                end_time: apiResp.data.event.date_times[0].end_time
+
+              }
+
+              ii_event = {
+                ...apiResp.data.event,
+                formatted_date_times,
+                calendar_date_times
+              }
+
+              callback(null)
+
             }
           })
+        },
+        function(callback){
+          makeAPICall('get', 'venues/' + ii_event.venue_id, {}, null, req.token, (err, apiResp) => {
+            if (err) {
+              console.warn('error getting venue (%s): %s', id, err)
+            } else {
 
+              ii_event = {
+                ...ii_event,
+                ...apiResp.data.venue
+              }
 
-        // currently create a calendar event for first date_time only
-        // super hack to get around the fact that dates come in as EST but
-        // the db query (or JS) automagically returns them as UTC
-        // NOTE: move everything to UTC in the future
-
-        //let start_time = moment.tz(apiResp.data.event.date_times[0].start_time,"+5:00")
-        //start_time = moment.tz(start_time.slice(0, start_time.length-1),"+5:00") // strip out Z suffix - UTC designator
-
-        //let end_time = moment(apiResp.data.event.date_times[0].end_time).toString()
-        //end_time = moment.tz(end_time.slice(0, end_time.length-1),"+5:00") // strip out Z suffix - UTC designator
-
-
-        let calendar_date_times = {
-          // start_time: moment(start_time).format('YYYY-MM-DD h:mm:ss'),
-          // end_time: moment(end_time).format('YYYY-MM-DD h:mm:ss'),
-
-          start_time: apiResp.data.event.date_times[0].start_time,
-          end_time: apiResp.data.event.date_times[0].end_time
-
+              callback(null)
+            }
+          })
         }
 
+    ], function (err) {
 
-        let ii_event = {
-          ...apiResp.data.event,
-          formatted_date_times,
-          calendar_date_times
-        }
+          if(err){
+            console.warn(err)
+          }
+          else{
+            console.log(ii_event);
+          }
 
-        console.log(ii_event);
+          res.render(
+            'event',
+            { id,
+              event: ii_event,
+              site_url: process.env.SITE_URL
+            })
 
-        res.render(
-          'event',
-          { id,
-            event: ii_event,
-            site_url: process.env.SITE_URL
-          });
-        }
-    });
+      })
+
 })
 
 router.post("/add", function(req,res){
