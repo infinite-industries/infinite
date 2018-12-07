@@ -222,7 +222,7 @@
       {% elif event.hasOwnProperty('website_link') and event.website_link!="" %}
         <div class="row event-website">
           <div class="col s11">
-            <a href="http://{{event.website_link}}" onclick="InfiniteAnalytics('{{ id }}', 'website_view', '', '{{ site_url }}')" target="_new">Event Website</a>
+            <a href="{{event.website_link}}" onclick="InfiniteAnalytics('{{ id }}', 'website_view', '', '{{ site_url }}')" target="_new">Event Website</a>
           </div>
         </div>
       {% else %}
