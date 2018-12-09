@@ -185,9 +185,9 @@ router.post("/submit-new", function(req, res){
           if (apiResp.data.status !== 'success')
             return callback('failure returned from api: ' + apiResp.data.status)
 
-          console.info('api received the event')
+          console.info('api received the event --- env: ' + process.env.ENV)
 
-          notify(event)
+          notify(event, process.env.ENV)
           callback(null, event)
         })
       }
