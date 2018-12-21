@@ -1,10 +1,11 @@
 {
   "name": "Infinite Industries",
   "short_name": "Infinite",
+  "description":"Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.",
   "lang": "en-US",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#b3d4fc",
+  "theme_color": "#fff",
   "icons": [
     {
       "src": "/images/4_manifest_192.png",

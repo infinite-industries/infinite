@@ -40,6 +40,7 @@ const users = require('./routes/users');
 const calendar = require('./routes/calendar');
 const venues = require('./routes/venues');
 
+
 app.use(express.static('public'));
 app.use('/', [JWTParser, routes]);
 app.use('/admin', [JWTParser, admin]);
