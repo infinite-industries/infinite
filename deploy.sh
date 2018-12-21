@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-npm run production-build
+#npm run production-build
 
 USER='ubuntu'
 
