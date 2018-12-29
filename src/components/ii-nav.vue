@@ -49,7 +49,8 @@
     },
     mounted () {
       TweenMax.set(this.$el, {
-        x: this.$el.offsetWidth
+        x: this.$el.offsetWidth,
+        zIndex: 20
       })
     },
     methods: {
