@@ -3,8 +3,10 @@ const slack = require('./slackNotify')
 const moment = require('moment')
 
 
+
 module.exports = {
-  notify: function (event) {
+  notify: function (event, env) {
+    console.log("sending notification to slack: " + env);
     // apply some formatting before sending to slack
     if(event.hasOwnProperty('organizer_contact')){
       this.organizer_contact = event.organizer_contact
@@ -54,7 +56,7 @@ module.exports = {
 
 
 
-    let slack_channel = process.env.ENV == 'prod' ? 'submission' : 'test'
+    let slack_channel = env == 'prod' ? 'submission' : 'test'
     slack.Notify(slack_channel, "Review Me. Copy Me. Paste Me. Deploy Me.\n" + event_payload + "\n Contact: " + this.organizer_contact);
   }
 }
