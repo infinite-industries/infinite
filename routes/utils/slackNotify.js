@@ -12,7 +12,7 @@ const SLACK_WEBHOOK_CONTACT = process.env.SLACK_WEBHOOK_CONTACT
 slackChannels['contact'] = require('slack-notify')(SLACK_WEBHOOK_CONTACT)
 
 const SLACK_WEBHOOK_EVENT_SUBMISSION = process.env.SLACK_WEBHOOK_EVENT_SUBMISSION
-slackChannels['submission'] = require('slack-notify')(SLACK_WEBHOOK_EVENT_SUBMISSION)
+slackChannels['event-submit'] = require('slack-notify')(SLACK_WEBHOOK_EVENT_SUBMISSION)
 
 const SLACK_WEBHOOK_VENUE_SUBMISSION = process.env.SLACK_WEBHOOK_VENUE_SUBMISSION
 slackChannels['venue-submission'] = require('slack-notify')(SLACK_WEBHOOK_VENUE_SUBMISSION);
@@ -20,7 +20,7 @@ slackChannels['venue-submission'] = require('slack-notify')(SLACK_WEBHOOK_VENUE_
 module.exports = {
   Notify: function(channel_name,payload){
     const _channel = '#'+channel_name
-
+    console.log("\n \n" + _channel + "\n \n")
     slackChannels[channel_name].send({
      channel: _channel,
      icon_emoji: ':computer:',
