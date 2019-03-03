@@ -1,8 +1,5 @@
 const uuidv4 = require('uuid/v4')
 const slack = require('./slackNotify')
-const moment = require('moment')
-
-
 
 module.exports = {
   notify: function (event, env) {

@@ -60,7 +60,7 @@
             <table>
             <tr v-for="(date_and_time, index) in dates_and_times" :key="date_and_time.start_time + '/' + date_and_time.end_time">
               <td>
-                <span> {{FormatedDateTime(date_and_time.start_time, date_and_time.end_time)}}</span>
+                <span> {{FormattedDateTime(date_and_time.start_time, date_and_time.end_time)}}</span>
               </td>
               <td>
                 <v-btn style="color:black" small dark outline @click="DeleteTimeSegment(index)">Delete</v-btn>
@@ -85,7 +85,15 @@
 
 <script>
 
-  import moment from 'moment'
+  const moment = require('moment-timezone');
+
+  const clientTimeZone = moment.tz.guess()
+
+  // this is how the date/time is stored in data and sent to the server
+  const dateTimeStorageFormat = 'YYYY-MM-DD HH:mm zz'
+
+  // this format is used for parsing date/times extracted from the picker before storing them
+  const dateTimePickerFormat = 'YYYY-MM-DD hh:mm:a zz'
 
   export default {
     name: 'date-time-picker',
@@ -115,10 +123,12 @@
         if(moment(val).isSameOrAfter(moment().subtract(1,'d'))) return val
       },
 
-      FormatedDateTime: function(start,end){
-        console.log(start)
-        return moment(start).format('dddd, MMMM Do, h:mma - ') + moment(end).format('h:mma')
+      /* Converts start and end times stored in data to formatted strings for display in the ui */
+      FormattedDateTime: function(start,end) {
+        return moment.tz(start, dateTimeStorageFormat, clientTimeZone).format('dddd, MMMM Do, h:mma') + ' - '
+          + moment.tz(end, dateTimeStorageFormat, clientTimeZone).format('h:mma')
       },
+
       CheckForFocusOutHour: function(type) {
         let which_hour = (type==="START") ? "start_hour" : "end_hour"
         let which_hour_invalid = (type==="START") ? "start_hour_invalid" : "end_hour_invalid"
@@ -183,25 +193,12 @@
       UpdateTimeSegment: function(which_segment){
         let formated_start_time = this.check_start_time
         let formated_end_time = this.check_end_time
-        // let formated_start_time = moment(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`, `YYYY-MM-DD hh:mm:a`)
-        // let formated_end_time = moment(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`, `YYYY-MM-DD hh:mm:a`)
-        //
-        // if((this.start_ampm === "pm")&&(this.end_ampm === "am")){
-        //   formated_end_time = moment(formated_end_time).add(1, 'd')
-        // }
-        //
-        // if(formated_start_time.diff(formated_end_time)>=0){
-        //   console.log("no can do - check the time you put in");
-        //   return false
-        // }
-        // else {
-        //   console.log(moment(formated_start_time).format('YYYY-MM-DD HH:mm') + " and " + moment(formated_end_time).format('YYYY-MM-DD HH:mm'))
 
           this.$store.dispatch('UpdateCurrentTimeSegment', {
             current_time_segment: which_segment,
             optional_title: '',   // add later afer consulting with users
-            start_time: moment(formated_start_time).format('YYYY-MM-DD HH:mm:ss'),
-            end_time: moment(formated_end_time).format('YYYY-MM-DD HH:mm:ss')
+            start_time: moment.tz(formated_start_time, clientTimeZone).format(dateTimeStorageFormat),
+            end_time: moment.tz(formated_end_time, clientTimeZone).format(dateTimeStorageFormat)
           })
 
           this.picker = null
@@ -254,10 +251,12 @@
         return this.$store.getters.GetAllDateTimes
       },
       check_start_time: function(){
-        return moment(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`, `YYYY-MM-DD hh:mm:a`)
+        return moment.tz(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`,
+          dateTimePickerFormat, clientTimeZone)
       },
       check_end_time: function(){
-        let temp_date_time = moment(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`, `YYYY-MM-DD hh:mm:a`)
+        let temp_date_time = moment(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`,
+          dateTimePickerFormat, clientTimeZone)
 
         if((this.start_ampm === "pm")&&(this.end_ampm === "am")){
           return moment(temp_date_time).add(1, 'd')

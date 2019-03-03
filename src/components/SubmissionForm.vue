@@ -357,11 +357,23 @@
           console.error(`could not fetch venue ${ii_event.venue_id}: "${ex}"`)
         }
 
-        let when_date = moment(ii_event.time_start).format('dddd, MMMM Do, YYYY')
-        let when_time = moment(ii_event.time_start).format('h:mma') + " - " + moment(ii_event.time_end).format('h:mma')
+        const clientTimeZone = moment.tz.guess()
+        const dateTimeStorageFormat = 'YYYY-MM-DD HH:mm zz'
+
+        const strWhen = ii_event.date_times.map(dtEntry => {
+          const when_date = moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
+            .format('dddd, MMMM Do, YYYY')
+          const when_time =  moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
+              .format('h:mma')
+
+          const end_time = moment.tz(dtEntry.end_time, dateTimeStorageFormat, clientTimeZone)
+              .format('h:mma')
+
+          return `${when_date} - ${when_time} to ${end_time}`
+        }).join('; ')
 
         this.promoHTML = `<h2>${ii_event.title}</h2>`
-        this.promoHTML += `<p><b>When: </b>${when_date} ${when_time}</p>`
+        this.promoHTML += `<p><b>When: </b>${strWhen}</p>`
         this.promoHTML += `<p><b>Location: </b>${venue ? venue.address : 'none'}</p> <p><br></p>`
         this.promoHTML += `<img src="${ii_event.image}" width="450px" height="auto">`
 
