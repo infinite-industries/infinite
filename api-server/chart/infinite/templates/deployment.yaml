@@ -1,0 +1,29 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "Helpers.release_fullname" . }}-svc
+  namespace: {{ template "Helpers.namespace" . }}
+  labels:
+    app: {{ template "Helpers.app_name" . }}
+    chart: {{ template "Helpers.chart" . }}
+    release: {{ .Release.Name }}
+  annotations:
+    helm.release.name: {{ .Release.Name }}
+    helm.release.namespace: {{ .Release.Namespace }}
+    helm.release.revision: "{{ .Release.Revision }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "Helpers.app_name" . }}
+      release: {{ .Release.Name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.7.9
+        ports:
+        - containerPort: 80

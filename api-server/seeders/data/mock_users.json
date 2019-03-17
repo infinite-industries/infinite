@@ -1,0 +1,20 @@
+{
+  "id": "99af7550-f3e6-11e7-8279-f30c6795f584",
+  "identifier": "dimastrakovsky",
+  "name": "shifting.planes@gmail",
+  "nickname": "Dima",
+  "settings":{
+    "fist_name": "Dima",
+    "last_name": "Strakovsky",
+    "user_name": "Digi-D",
+    "contact_email":"shifting.planes@gmail",
+    "home_event_area": "kentucky_lexington",
+    "facebook":"fb link",
+    "twitter":"twitter link",
+    "instagram": "none"
+  },
+  "permissions_edit_lists": {},
+  "permissions_post_as_venues": {},
+  "lists_my": ["feaea5b0-f3dd-11e7-9986-13e9e40ddffe", "0a5eaf80-f3e4-11e7-9946-cbdccd345d9e"],
+  "lists_follow": ["c8fc81a0-f890-11e7-85c3-3949696a30fc", "c6d9a1a0-f890-11e7-85c3-3949696a30fc"]
+}

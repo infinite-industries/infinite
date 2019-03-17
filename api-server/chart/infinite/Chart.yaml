@@ -1,0 +1,8 @@
+name: infinite
+apiVersion: v1
+appVersion: "1.0"
+version: 0.0.1
+description: Helm package for infinite project
+maintainers:
+  - name: Yevhen Lukin
+    email: yevhen.lukin@gmail.com

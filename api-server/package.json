@@ -1,0 +1,57 @@
+{
+  "name": "infinite-api",
+  "version": "1.0.0",
+  "description": "database and for art work/event management and presentation",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "start-dev": "nodemon ./index.js",
+    "start-docker": "npm run setup-dev && npm run start",
+    "start-test": "jwtPEM=\"./keys/1nfinite_testing.pem\" nodemon ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watchify": "watchify -vd -p browserify -e ./src/main.js -o ./public/js/dist.js",
+    "deploy": "./deploy.sh production",
+    "createTestDevKey": "./scripts/createDevKey.js --user tester --org InfiniteTest --id 2019529e-7f8c-44f9-8996-f52a88b2a314",
+    "setup-create-db": "sequelize db:create",
+    "setup-drop-db": "sequelize db:drop",
+    "setup-migrate-db": "sequelize db:migrate",
+    "setup-dev": "sequelize db:migrate:undo:all && sequelize db:migrate && npm run createTestDevKey && sequelize db:seed:all && npm run setup-seed-from-prod",
+    "setup-refresh-db": "npm run setup-drop-db && npm run setup-create-db && npm run setup-dev",
+    "setup-seed-from-prod": "node ./scripts/populateDatabaseFromPublic.js"
+  },
+  "keywords": [
+    "art",
+    "api"
+  ],
+  "author": "Infinite Industries",
+  "license": "MIT",
+  "browserify": {
+    "transform": [
+      "babelify",
+      "vueify"
+    ]
+  },
+  "devDependencies": {
+    "frisby": "^2.0.1",
+    "jest-cli": "^20.0.4",
+    "nodemon": "^1.15.0"
+  },
+  "dependencies": {
+    "async": "^2.5.0",
+    "axios": "^0.16.2",
+    "body-parser": "^1.17.2",
+    "debug": "^3.0.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.4",
+    "nconf": "^0.8.5",
+    "passport": "^0.4.0",
+    "passport-localapikey": "0.0.3",
+    "path": "^0.12.7",
+    "pg": "^7.4.1",
+    "sequelize": "^4.35.5",
+    "sequelize-cli": "^4.0.0",
+    "slack-notify": "^0.1.6"
+  }
+}

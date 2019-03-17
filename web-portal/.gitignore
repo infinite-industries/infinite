@@ -1,0 +1,13 @@
+.config
+.glitch-assets
+node_modules
+.env
+notes.local
+.DS_Store
+prep.txt
+public/js/*
+!.gitkeep
+.idea
+analytics.sqlite
+clientConfig.js
+cypress.env.json
