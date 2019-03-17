@@ -12,7 +12,7 @@
         <div id="display-time-date">
           <transition name="fade">
             <p style="max-width: 700px;">
-              Pick the date for your event. If it's a multi-day event, like a festival or a series of theater performances, pick the first day and you will have a chance to add more later.
+              <span class="required-field">*</span>Pick the date for your event. If it's a multi-day event, like a festival or a series of theater performances, pick the first day and you will have a chance to add more later.
             </p>
           </transition>
           <div style="min-height:100px; max-width: 700px; border: 1px solid black; padding:15px;">
@@ -329,6 +329,11 @@
   .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
     transform: translateY(-20px);
     opacity: 0;
+  }
+
+  .required-field {
+    color: red;
+    font-weight: bold;
   }
 
 </style>

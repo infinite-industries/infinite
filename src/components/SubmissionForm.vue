@@ -394,7 +394,19 @@
         let regex = /\S+@\S+\.\S+/
         return regex.test(text)
       },
-
+      hasValidDateTimes: function() {
+        if(this.calendar_event.hasOwnProperty('date_times')){
+          if(this.calendar_event.date_times.length > 0){
+            return true
+          }
+          else {
+            return false
+          }
+        }
+        else{
+          return false
+        }
+      },
       addDate: function() {
         this.calendar_event.additional_dates.push({ time_start: "", time_end: "", title: `Day ${this.calendar_event.additional_dates.length+2}`})
         this.calendar_event.multi_day = true;
@@ -444,9 +456,10 @@
      },
      eventRequiredFields: function() {
        return this.calendar_event.title != "" &&
-          this.calendar_event.date != "" &&
-          this.calendar_event.time_start != "" &&
-          this.calendar_event.time_end != "" &&
+          // this.calendar_event.date != "" &&
+          // this.calendar_event.time_start != "" &&
+          // this.calendar_event.time_end != "" &&
+          this.hasValidDateTimes() &&
           this.calendar_event.venue_id != "" &&
           this.calendar_event.organizer_contact != "" &&
           this.isEmail(this.calendar_event.organizer_contact) &&
@@ -454,7 +467,6 @@
           this.calendar_event.brief_description != "";
       }
    },
-
    components: {
      'vue-editor': VueEditor,
      'venue-picker': VenuePicker,
