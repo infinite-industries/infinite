@@ -10,7 +10,8 @@
     "watchify": "concurrently \"watchify -vd -p browserify -t envify -d -e ./src/main.js -o ./public/js/dist.js\" \"watchify -vd -p browserify -t envify -d -e ./src/light_main.js -o ./public/js/light_dist.js\"",
     "production-build": "NODE_ENV=production browserify -t envify -e ./src/main.js | uglifyjs -c -m > ./public/js/dist.js && NODE_ENV=production browserify -t envify -e ./src/light_main.js | uglifyjs -c -m > ./public/js/light_dist.js",
     "test-open": "./node_modules/.bin/cypress open",
-    "test": "concurrently \"npm run start-test\" \"npm run test-open\""
+    "test": "concurrently \"npm run start-test\" \"npm run test-open\"",
+    "lint": "eslint ./"
   },
   "browserify": {
     "transform": [
