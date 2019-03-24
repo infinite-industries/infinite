@@ -21,38 +21,38 @@ export default {
   },
   data: function() {
     return {
-      hour: "",
-      minute: "",
-      ampm: "am",
+      hour: '',
+      minute: '',
+      ampm: 'am',
       invalid_hour: false,
       invalid_min: false
     }
   },
   methods: {
     checkForFocusOutHour: function(e) {
-      this.invalid_hour = false;
+      this.invalid_hour = false
       if (this.hour.length >= 2) {
         if (this.hour >= 1 && this.hour <= 12) {
           // this.$refs.minInput.focus();
         } else {
-          this.invalid_hour = true;
+          this.invalid_hour = true
         }
       }
     },
     checkForFocusOutMin: function(e) {
-      this.invalid_min = false;
+      this.invalid_min = false
       if (this.minute.length >= 2) {
         if (this.minute >= 0 && this.minute <= 59) {
           // this.$refs.ampm.focus();
         } else {
-          this.invalid_min = true;
+          this.invalid_min = true
         }
       }
     },
     recomputeFormatted: function() {
-      var formatted = moment(`${this.date} ${this.hour}:${this.minute}:${this.ampm}`, `YYYY-MM-DD hh:mm:a`);
-      var formattedString = formatted.format('YYYY-MM-DD HH:mm:ss');
-      this.$emit('changeTime', formattedString);
+      var formatted = moment(`${this.date} ${this.hour}:${this.minute}:${this.ampm}`, 'YYYY-MM-DD hh:mm:a')
+      var formattedString = formatted.format('YYYY-MM-DD HH:mm:ss')
+      this.$emit('changeTime', formattedString)
     }
   },
   computed: {
@@ -64,16 +64,16 @@ export default {
   },
   watch: {
     date: function() {
-      this.recomputeFormatted();
+      this.recomputeFormatted()
     },
     hour: function() {
-      this.recomputeFormatted();
+      this.recomputeFormatted()
     },
     minute: function() {
-      this.recomputeFormatted();
+      this.recomputeFormatted()
     },
     ampm: function() {
-      this.recomputeFormatted();
+      this.recomputeFormatted()
     }
   }
 }

@@ -19,98 +19,98 @@
 </template>
 
 <script>
-  import { TweenMax, Power4 } from 'gsap'
-  import { isLoggedIn, login, isAdmin } from '../helpers/Auth.js'
+import { TweenMax, Power4 } from 'gsap'
+import { isLoggedIn, login, isAdmin } from '../helpers/Auth.js'
 
-  import NavSubscribe from './vectors/NavSubscribe.vue'
-  import Facebook from './vectors/Facebook.vue'
-  import Instagram from './vectors/Instagram.vue'
-  import Twitter from './vectors/Twitter.vue'
+import NavSubscribe from './vectors/NavSubscribe.vue'
+import Facebook from './vectors/Facebook.vue'
+import Instagram from './vectors/Instagram.vue'
+import Twitter from './vectors/Twitter.vue'
 
-  export default {
-    name: 'ii-nav',
-    props: ['nav_elements'],
-    data () {
-      return {
-        nav_items: [
-          { title: 'Home', route:'/' },
-          { title: 'Our Mission', route: '/our-mission'},
-          { title: 'Submit Event', route:'/submit-event' },
-          { title: 'Login', route: '/login', isUnAuthOnly: true },
-          { title: 'Admin', route: '/admin', isAdminOnly: true },
-          { title: 'Who We Are', route: '/who-we-are'},
-          { title: 'Legal', route: '/legal'},
-          //{ title: 'Your Events', route: '/your-events', isAdminOnly: true }, // isAuthOnly: true
-          // { title: 'Your Settings', route: '/your-settings'},
-          { title: 'Logout', route: '/logout', isAuthOnly: true },
-          { title: 'Contact', route: '/contact'},
-        ]
-      }
-    },
-    mounted () {
-      TweenMax.set(this.$el, {
-        x: this.$el.offsetWidth,
-        zIndex: 20
-      })
-    },
-    methods: {
-      getVisibleItems(navItems) {
-        const loggedIn = isLoggedIn()
-        const isShown = item => {
-          if (item.isAdminOnly && (!loggedIn || !isAdmin())) {
-            return false
-          } else if (item.isAuthOnly && !loggedIn)
-            return false
-
-          if (item.isUnAuthOnly &&  loggedIn)
-            return false
-
-          return true
-        }
-
-        return navItems.filter(item => isShown(item))
-      },
-      RouteTo: function(item, event){
-        // if router is present, we're handing nav manually here
-        // so we should suppress browser nav
-        if (this.$router || item.isAuthOnly || item.isUnAuthOnly) {
-          event.preventDefault();
-        }
-
-        if (item.title === 'Login') {
-          login()
-        } else if (item.title === 'Logout') {
-          this.$store.dispatch('Logout')
-        } else if (this.$router) {
-          this.$router.push({path: item.route})
-        }
-
-        // if router is not present, nav will be handled by browser, so no action is necessary here
-      }
-    },
-    computed: {
-      open () {
-        return this.$store.state.ui.sidebarOpen
-      }
-    },
-    watch: {
-      open: function (open) {
-        const dX = open ? 0 : this.$el.offsetWidth
-
-        TweenMax.to(this.$el, 0.6, {
-          x: dX,
-          ease: Power4.easeOut
-        })
-
-      }
-    },
-    components: {
-      'ii-nav-subscribe': NavSubscribe,
-      'facebook-icon': Facebook,
-      'instagram-icon': Instagram,
-      'twitter-icon': Twitter
+export default {
+  name: 'ii-nav',
+  props: ['nav_elements'],
+  data () {
+    return {
+      nav_items: [
+        { title: 'Home', route:'/' },
+        { title: 'Our Mission', route: '/our-mission'},
+        { title: 'Submit Event', route:'/submit-event' },
+        { title: 'Login', route: '/login', isUnAuthOnly: true },
+        { title: 'Admin', route: '/admin', isAdminOnly: true },
+        { title: 'Who We Are', route: '/who-we-are'},
+        { title: 'Legal', route: '/legal'},
+        //{ title: 'Your Events', route: '/your-events', isAdminOnly: true }, // isAuthOnly: true
+        // { title: 'Your Settings', route: '/your-settings'},
+        { title: 'Logout', route: '/logout', isAuthOnly: true },
+        { title: 'Contact', route: '/contact'},
+      ]
     }
+  },
+  mounted () {
+    TweenMax.set(this.$el, {
+      x: this.$el.offsetWidth,
+      zIndex: 20
+    })
+  },
+  methods: {
+    getVisibleItems(navItems) {
+      const loggedIn = isLoggedIn()
+      const isShown = item => {
+        if (item.isAdminOnly && (!loggedIn || !isAdmin())) {
+          return false
+        } else if (item.isAuthOnly && !loggedIn)
+          return false
+
+        if (item.isUnAuthOnly &&  loggedIn)
+          return false
+
+        return true
+      }
+
+      return navItems.filter(item => isShown(item))
+    },
+    RouteTo: function(item, event){
+      // if router is present, we're handing nav manually here
+      // so we should suppress browser nav
+      if (this.$router || item.isAuthOnly || item.isUnAuthOnly) {
+        event.preventDefault()
+      }
+
+      if (item.title === 'Login') {
+        login()
+      } else if (item.title === 'Logout') {
+        this.$store.dispatch('Logout')
+      } else if (this.$router) {
+        this.$router.push({path: item.route})
+      }
+
+      // if router is not present, nav will be handled by browser, so no action is necessary here
+    }
+  },
+  computed: {
+    open () {
+      return this.$store.state.ui.sidebarOpen
+    }
+  },
+  watch: {
+    open: function (open) {
+      const dX = open ? 0 : this.$el.offsetWidth
+
+      TweenMax.to(this.$el, 0.6, {
+        x: dX,
+        ease: Power4.easeOut
+      })
+
+    }
+  },
+  components: {
+    'ii-nav-subscribe': NavSubscribe,
+    'facebook-icon': Facebook,
+    'instagram-icon': Instagram,
+    'twitter-icon': Twitter
   }
+}
 </script>
 
 <style scoped>

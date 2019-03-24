@@ -20,24 +20,24 @@
 <script>
 import EventsList from '../components/EventsList.vue'
 
-  export default {
-    props:['id','type'],
-    data: function () {
-      return {
-        //
-      }
-    },
-    computed:{
-      list_metadata: function(){
-        return this.$store.getters.GetCurrentList
-      }
-    },
-    mounted: function(){
-      this.$store.dispatch('LoadListData',this.id)
-    },
-    components:{
-      'events-list': EventsList
+export default {
+  props:['id','type'],
+  data: function () {
+    return {
+      //
     }
+  },
+  computed:{
+    list_metadata: function(){
+      return this.$store.getters.GetCurrentList
+    }
+  },
+  mounted: function(){
+    this.$store.dispatch('LoadListData',this.id)
+  },
+  components:{
+    'events-list': EventsList
   }
+}
 
 </script>

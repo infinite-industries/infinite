@@ -228,253 +228,253 @@
 </template>
 
 <script>
-  import Axios from 'axios'
-  import moment from 'moment'
-  import { VueEditor, Quill } from 'vue2-editor'
+import Axios from 'axios'
+import moment from 'moment'
+import { VueEditor, Quill } from 'vue2-editor'
 
-  import VenuePicker from './VenuePicker.vue'
-  import DateTimePicker from './DateTimePicker.vue'
-  import AddNewVenue from './AddNewVenue.vue'
-  // import uploadcare from 'uploadcare-widget'
+import VenuePicker from './VenuePicker.vue'
+import DateTimePicker from './DateTimePicker.vue'
+import AddNewVenue from './AddNewVenue.vue'
+// import uploadcare from 'uploadcare-widget'
 
-  export default {
-    props:['event_id', 'user_role', 'user_action'],
-    // user_role --> admin, venue, regular
-    // user_action --> upload, edit
-    data: function () {
-      return {
-        dialog: false,
+export default {
+  props:['event_id', 'user_role', 'user_action'],
+  // user_role --> admin, venue, regular
+  // user_action --> upload, edit
+  data: function () {
+    return {
+      dialog: false,
 
-        // calendar_event: {},
-        imageChosen: false,
-        showPromoTools: false,
-        showSubmitError: false,
-        promoHTML: "",
-        eventSubmitted: false,
-        content: "",
-        showEventLoadingSpinner: false,
-        send_summary: false,
-        send_summary_to: "",
-        send_summary_others: false,
-        send_summary_others_emails: ""
-      }
+      // calendar_event: {},
+      imageChosen: false,
+      showPromoTools: false,
+      showSubmitError: false,
+      promoHTML: '',
+      eventSubmitted: false,
+      content: '',
+      showEventLoadingSpinner: false,
+      send_summary: false,
+      send_summary_to: '',
+      send_summary_others: false,
+      send_summary_others_emails: ''
+    }
+  },
+  methods: {
+    TestMe: function(){
+      console.log(this.calendar_event.title)
     },
-    methods: {
-      TestMe: function(){
-        console.log(this.calendar_event.title);
-      },
-      RouteTo: function(route_to_page){
-        this.$router.push({path: route_to_page })
-      },
-      UpdateEvent: function(){
-        console.log(this.calendar_event);
-        this.$store.dispatch('UpdateEvent', {id:this.calendar_event.id, event_data:this.calendar_event})
-      },
-      ConfirmDeleteEvent: function(){
-        this.dialog = true
-      },
-      DeleteEvent: function(){
-        this.dialog = false
-        this.$store.dispatch('DeleteEvent', {id:this.calendar_event.id})
-        this.RouteTo('/admin')
-      },
-      VerifyEvent: function(){
-        this.$store.dispatch('VerifyEvent', {id:this.calendar_event.id})
-        this.RouteTo('/admin')
-      },
-      UploadEvent: function(){
+    RouteTo: function(route_to_page){
+      this.$router.push({path: route_to_page })
+    },
+    UpdateEvent: function(){
+      console.log(this.calendar_event)
+      this.$store.dispatch('UpdateEvent', {id:this.calendar_event.id, event_data:this.calendar_event})
+    },
+    ConfirmDeleteEvent: function(){
+      this.dialog = true
+    },
+    DeleteEvent: function(){
+      this.dialog = false
+      this.$store.dispatch('DeleteEvent', {id:this.calendar_event.id})
+      this.RouteTo('/admin')
+    },
+    VerifyEvent: function(){
+      this.$store.dispatch('VerifyEvent', {id:this.calendar_event.id})
+      this.RouteTo('/admin')
+    },
+    UploadEvent: function(){
 
-        // this is a hack, I think
-        // since only dates array gets modified and saved to store,
-        // we need to grab it from the store and add it to current calendar event
-        this.calendar_event.date_times = this.$store.getters.GetAllDateTimes
+      // this is a hack, I think
+      // since only dates array gets modified and saved to store,
+      // we need to grab it from the store and add it to current calendar event
+      this.calendar_event.date_times = this.$store.getters.GetAllDateTimes
 
-        console.log("Uploading: -------- :\n"+JSON.stringify(this.calendar_event));
+      console.log('Uploading: -------- :\n'+JSON.stringify(this.calendar_event))
 
-        // this.adjustTimeEnd(this.calendar_event);
-        // this.calendar_event.additional_dates.forEach( eventDate => {
-        //   this.adjustTimeEnd(eventDate);
-        // })
+      // this.adjustTimeEnd(this.calendar_event);
+      // this.calendar_event.additional_dates.forEach( eventDate => {
+      //   this.adjustTimeEnd(eventDate);
+      // })
 
-        const formData = new FormData()
+      const formData = new FormData()
 
-        // console.log(this.$store.getters.GetAllDateTimes);
-        // formData.append('dates', this.$store.getters.GetAllDateTimes)
+      // console.log(this.$store.getters.GetAllDateTimes);
+      // formData.append('dates', this.$store.getters.GetAllDateTimes)
 
-        formData.append('event_data', JSON.stringify({
-          ... this.calendar_event,
-          organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : []
-        }))
+      formData.append('event_data', JSON.stringify({
+        ... this.calendar_event,
+        organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : []
+      }))
 
-        formData.append('image', document.getElementById('event-image').files[0])
-        formData.append('social_image', document.getElementById('event-social-image').files[0])
+      formData.append('image', document.getElementById('event-image').files[0])
+      formData.append('social_image', document.getElementById('event-social-image').files[0])
 
-        this.showEventLoadingSpinner = true;
-        this.eventSubmitted = true; // to disable button and prevent multiple submissions
-        this.showSubmitError = false;
+      this.showEventLoadingSpinner = true
+      this.eventSubmitted = true // to disable button and prevent multiple submissions
+      this.showSubmitError = false
 
-        Axios.post('/events/submit-new', formData).then( response => {
-            this.showEventLoadingSpinner = false;
-            this.showPromoTools = true;
-            console.log("GOT BACK - " + JSON.stringify(response.data.data));
-            this.parseEventToHTML(response.data.data);
-            this.$SmoothScroll(this.$refs.promoTools);
-          })
-          .catch( error => {
-            console.log(error)
-            this.showEventLoadingSpinner = false;
-            this.eventSubmitted = false;
-            this.showSubmitError = true;
-          })
-      },
-      selectVenue: function(venue) {
-        //console.log(venue)
-        this.calendar_event.venue_id = venue.id
-        this.calendar_event.address = venue.address
-        this.calendar_event.venue_name = venue.name
-      },
-      newVenue: function(venue) {
-        this.calendar_event.venue_id = venue.id
-        this.calendar_event.address = venue.address
-        this.calendar_event.venue_name = venue.name
-        this.$refs.venuePicker.handleNewVenue(venue)
-      },
+      Axios.post('/events/submit-new', formData).then( response => {
+        this.showEventLoadingSpinner = false
+        this.showPromoTools = true
+        console.log('GOT BACK - ' + JSON.stringify(response.data.data))
+        this.parseEventToHTML(response.data.data)
+        this.$SmoothScroll(this.$refs.promoTools)
+      })
+        .catch( error => {
+          console.log(error)
+          this.showEventLoadingSpinner = false
+          this.eventSubmitted = false
+          this.showSubmitError = true
+        })
+    },
+    selectVenue: function(venue) {
+      //console.log(venue)
+      this.calendar_event.venue_id = venue.id
+      this.calendar_event.address = venue.address
+      this.calendar_event.venue_name = venue.name
+    },
+    newVenue: function(venue) {
+      this.calendar_event.venue_id = venue.id
+      this.calendar_event.address = venue.address
+      this.calendar_event.venue_name = venue.name
+      this.$refs.venuePicker.handleNewVenue(venue)
+    },
 
-      sendEmails: function() {
-        console.log("Allan please send emails.") // Who is Allan?
-      },
-      // for use in promo tools. Takes an event object and makes it into pretty html
-      parseEventToHTML: async function(ii_event) {
-        //console.log(ii_event)
+    sendEmails: function() {
+      console.log('Allan please send emails.') // Who is Allan?
+    },
+    // for use in promo tools. Takes an event object and makes it into pretty html
+    parseEventToHTML: async function(ii_event) {
+      //console.log(ii_event)
 
-        let venueResp
-        let venue
+      let venueResp
+      let venue
 
-        try {
-          venueResp = await Axios.get(`/venues/${ii_event.venue_id}`)
-          venue = venueResp.data && venueResp.data.venue
-        } catch (ex) {
-          console.error(`could not fetch venue ${ii_event.venue_id}: "${ex}"`)
+      try {
+        venueResp = await Axios.get(`/venues/${ii_event.venue_id}`)
+        venue = venueResp.data && venueResp.data.venue
+      } catch (ex) {
+        console.error(`could not fetch venue ${ii_event.venue_id}: "${ex}"`)
+      }
+
+      const clientTimeZone = moment.tz.guess()
+      const dateTimeStorageFormat = 'YYYY-MM-DD HH:mm zz'
+
+      const strWhen = ii_event.date_times.map(dtEntry => {
+        const when_date = moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
+          .format('dddd, MMMM Do, YYYY')
+        const when_time =  moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
+          .format('h:mma')
+
+        const end_time = moment.tz(dtEntry.end_time, dateTimeStorageFormat, clientTimeZone)
+          .format('h:mma')
+
+        return `${when_date} - ${when_time} to ${end_time}`
+      }).join('; ')
+
+      this.promoHTML = `<h2>${ii_event.title}</h2>`
+      this.promoHTML += `<p><b>When: </b>${strWhen}</p>`
+      this.promoHTML += `<p><b>Location: </b>${venue ? venue.address : 'none'}</p> <p><br></p>`
+      this.promoHTML += `<img src="${ii_event.image}" width="450px" height="auto">`
+
+      this.promoHTML += `<p><b>Admission: </b>${(ii_event.admission_fee || 'none')}</p>`
+
+      this.promoHTML += `<p><b>Description: </b>${(ii_event.description || '')}</p>`
+      this.promoHTML += `<p><b>Link for More Info: </b><a href="${ii_event.bitly_link}">${ii_event.bitly_link}</a></p>`
+      this.promoHTML += `<p><b>Organizer Contact: </b>${ii_event.organizer_contact}</p>`
+
+      // console.log(this.promoHTML)
+
+    },
+    onFileChange: function() {
+      // files.length will be a 0 for no image, 1 for image
+      this.imageChosen = this.$refs.eventImage.files.length
+    },
+    isEmail: function(text) {
+      let regex = /\S+@\S+\.\S+/
+      return regex.test(text)
+    },
+    hasValidDateTimes: function() {
+      if(this.calendar_event.hasOwnProperty('date_times')){
+        if(this.calendar_event.date_times.length > 0){
+          return true
         }
-
-        const clientTimeZone = moment.tz.guess()
-        const dateTimeStorageFormat = 'YYYY-MM-DD HH:mm zz'
-
-        const strWhen = ii_event.date_times.map(dtEntry => {
-          const when_date = moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
-            .format('dddd, MMMM Do, YYYY')
-          const when_time =  moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
-              .format('h:mma')
-
-          const end_time = moment.tz(dtEntry.end_time, dateTimeStorageFormat, clientTimeZone)
-              .format('h:mma')
-
-          return `${when_date} - ${when_time} to ${end_time}`
-        }).join('; ')
-
-        this.promoHTML = `<h2>${ii_event.title}</h2>`
-        this.promoHTML += `<p><b>When: </b>${strWhen}</p>`
-        this.promoHTML += `<p><b>Location: </b>${venue ? venue.address : 'none'}</p> <p><br></p>`
-        this.promoHTML += `<img src="${ii_event.image}" width="450px" height="auto">`
-
-        this.promoHTML += `<p><b>Admission: </b>${(ii_event.admission_fee || 'none')}</p>`
-
-        this.promoHTML += `<p><b>Description: </b>${(ii_event.description || '')}</p>`
-        this.promoHTML += `<p><b>Link for More Info: </b><a href="${ii_event.bitly_link}">${ii_event.bitly_link}</a></p>`
-        this.promoHTML += `<p><b>Organizer Contact: </b>${ii_event.organizer_contact}</p>`
-
-        // console.log(this.promoHTML)
-
-      },
-      onFileChange: function() {
-        // files.length will be a 0 for no image, 1 for image
-        this.imageChosen = this.$refs.eventImage.files.length
-      },
-      isEmail: function(text) {
-        let regex = /\S+@\S+\.\S+/
-        return regex.test(text)
-      },
-      hasValidDateTimes: function() {
-        if(this.calendar_event.hasOwnProperty('date_times')){
-          if(this.calendar_event.date_times.length > 0){
-            return true
-          }
-          else {
-            return false
-          }
-        }
-        else{
+        else {
           return false
         }
-      },
-      addDate: function() {
-        this.calendar_event.additional_dates.push({ time_start: "", time_end: "", title: `Day ${this.calendar_event.additional_dates.length+2}`})
-        this.calendar_event.multi_day = true;
-      },
-      removeAdditionalDate: function(index) {
-        this.calendar_event.additional_dates.splice(index, 1);
-        if (this.calendar_event.additional_dates.length == 0) {
-          this.calendar_event.multi_day = false;
-        }
-      },
-      adjustTimeEnd: function(eventDate) {
-        // if time_end is before time_start, assume that time_end should be during the next calendar day
-        if (moment(eventDate.time_end).isBefore(moment(eventDate.time_start))) {
-            eventDate.time_end = moment(eventDate.time_end).add(1, 'd').format('YYYY-MM-DD HH:mm:ss');
-        }
-      }
-    },
-    mounted: function() {
-
-      if(this.user_action==='edit'){
-        this.$store.dispatch('LoadCurrentEvent', this.event_id)
       }
       else{
-        this.$store.dispatch('CreateNewEvent')
-        console.log("ready to input event");
+        return false
+      }
+    },
+    addDate: function() {
+      this.calendar_event.additional_dates.push({ time_start: '', time_end: '', title: `Day ${this.calendar_event.additional_dates.length+2}`})
+      this.calendar_event.multi_day = true
+    },
+    removeAdditionalDate: function(index) {
+      this.calendar_event.additional_dates.splice(index, 1)
+      if (this.calendar_event.additional_dates.length == 0) {
+        this.calendar_event.multi_day = false
+      }
+    },
+    adjustTimeEnd: function(eventDate) {
+      // if time_end is before time_start, assume that time_end should be during the next calendar day
+      if (moment(eventDate.time_end).isBefore(moment(eventDate.time_start))) {
+        eventDate.time_end = moment(eventDate.time_end).add(1, 'd').format('YYYY-MM-DD HH:mm:ss')
+      }
+    }
+  },
+  mounted: function() {
+
+    if(this.user_action==='edit'){
+      this.$store.dispatch('LoadCurrentEvent', this.event_id)
+    }
+    else{
+      this.$store.dispatch('CreateNewEvent')
+      console.log('ready to input event')
+    }
+
+  },
+
+  computed: {
+    venues: function() {
+      if (!this.$store.getters.GetAllVenues) {
+        return []
       }
 
-   },
+      return this.$store.getters.GetAllVenues
+    },
 
-   computed: {
-     venues: function() {
-       if (!this.$store.getters.GetAllVenues) {
-         return []
-       }
+    calendar_event: function(){
+      if(this.$store.getters.GetCurrentEvent===undefined){
+        return {}
+      }
+      else{
+        return this.$store.getters.GetCurrentEvent
+      }
 
-       return this.$store.getters.GetAllVenues
-     },
-
-     calendar_event: function(){
-       if(this.$store.getters.GetCurrentEvent===undefined){
-         return {}
-       }
-       else{
-         return this.$store.getters.GetCurrentEvent
-       }
-
-     },
-     eventRequiredFields: function() {
-       return this.calendar_event.title != "" &&
+    },
+    eventRequiredFields: function() {
+      return this.calendar_event.title != '' &&
           // this.calendar_event.date != "" &&
           // this.calendar_event.time_start != "" &&
           // this.calendar_event.time_end != "" &&
           this.hasValidDateTimes() &&
-          this.calendar_event.venue_id != "" &&
-          this.calendar_event.organizer_contact != "" &&
+          this.calendar_event.venue_id != '' &&
+          this.calendar_event.organizer_contact != '' &&
           this.isEmail(this.calendar_event.organizer_contact) &&
           this.imageChosen > 0 &&
-          this.calendar_event.brief_description != "";
-      }
-   },
-   components: {
-     'vue-editor': VueEditor,
-     'venue-picker': VenuePicker,
-     'add-new-venue': AddNewVenue,
-     'date-time-picker': DateTimePicker
-   }
-
+          this.calendar_event.brief_description != ''
+    }
+  },
+  components: {
+    'vue-editor': VueEditor,
+    'venue-picker': VenuePicker,
+    'add-new-venue': AddNewVenue,
+    'date-time-picker': DateTimePicker
   }
+
+}
 </script>
 
 

@@ -28,33 +28,33 @@
 
 <script>
 
-  export default {
-    data: function() {
-      return {
-        valid: false,
-        list_name: "",
-        list_description: "",
-        nameRules: [
-          (v) => !!v || 'List Name is required'
-        ]
-      }
-    },
-    methods:{
-      CreateList: function(){
-        this.$store.dispatch('CreateNewList',{
-          name:this.list_name,
-          description: this.list_description
-        })
-        this.list_name = "..."
-        this.list_description = "..."
-        this.$emit("close")
-      },
-      Cancel: function(){
-        this.$emit("close")
-      }
+export default {
+  data: function() {
+    return {
+      valid: false,
+      list_name: '',
+      list_description: '',
+      nameRules: [
+        (v) => !!v || 'List Name is required'
+      ]
     }
-
+  },
+  methods:{
+    CreateList: function(){
+      this.$store.dispatch('CreateNewList',{
+        name:this.list_name,
+        description: this.list_description
+      })
+      this.list_name = '...'
+      this.list_description = '...'
+      this.$emit('close')
+    },
+    Cancel: function(){
+      this.$emit('close')
+    }
   }
+
+}
 
 
 </script>

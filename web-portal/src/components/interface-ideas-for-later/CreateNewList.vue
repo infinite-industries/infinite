@@ -11,33 +11,33 @@
 </template>
 
 <script>
-  import PopUpDialog from './PopUpDialog.vue'
+import PopUpDialog from './PopUpDialog.vue'
 
-  export default {
-    props: ['visibility'],
-    data: function () {
-      return {
-        //
-      }
-    },
-    // updated: function(){
-    //   this.$nextTick(function () {
-    //     console.log("TickTock", this.visibility);
-    //   })
-    // },
-    // computed:{
-    //   CheckVisibility: function(){
-    //     if(this.visibility===true){
-    //       return true
-    //     }
-    //     else {
-    //       return false
-    //     }
-    //   }
-    // },
-    components:{
-      'pop-up-dialog': PopUpDialog
+export default {
+  props: ['visibility'],
+  data: function () {
+    return {
+      //
     }
+  },
+  // updated: function(){
+  //   this.$nextTick(function () {
+  //     console.log("TickTock", this.visibility);
+  //   })
+  // },
+  // computed:{
+  //   CheckVisibility: function(){
+  //     if(this.visibility===true){
+  //       return true
+  //     }
+  //     else {
+  //       return false
+  //     }
+  //   }
+  // },
+  components:{
+    'pop-up-dialog': PopUpDialog
   }
+}
 
 </script>

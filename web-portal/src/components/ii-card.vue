@@ -32,90 +32,90 @@
 
 
 <script>
-  import Location from './vectors/Location.vue'
-  import Calendar from './vectors/Calendar.vue'
+import Location from './vectors/Location.vue'
+import Calendar from './vectors/Calendar.vue'
 
-  import moment from 'moment'
+import moment from 'moment'
 
-  export default {
-    name: 'Card',
-    props: ['calendar_event'],
-    data: function(){
-      return {
-        showCalendars: false
-      }
-    },
-    methods: {
-      OpenCalendars: function(){
-        this.showCalendars = true
-      },
-      CloseCalendars: function(){
-        this.showCalendars = false
-      },
-      ShowEvent: function(event_id){
-        window.location.assign('/events/'+ event_id)
-      },
-      AddEventToCalendar(calType) {
-        // console.log(calType);
-        if (calType === "iCal" || calType === "Outlook") {
-          // send calendar_event data to node layer to be converted into an .ics file
-
-          window.open(`/calendar?title=${encodeURIComponent(this.calendar_event.title)}&description=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}&time_start=${encodeURIComponent(this.calendar_event.date_times[0].start_time)}&time_end=${encodeURIComponent(this.calendar_event.date_times[0].end_time)}`);
-        } else if (calType === "Google Calendar") {
-          var time_start_formatted = moment(this.calendar_event.date_times[0].start_time).format('YYYYMMDDTHHmmss');
-          var time_end_formatted = moment(this.calendar_event.date_times[0].end_time).format('YYYYMMDDTHHmmss');
-
-          window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.calendar_event.title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}`);
-        }
-      }
-    },
-    mounted: function(){
-      console.log('card loaded:', this.calendar_event);
-    },
-    computed:{
-      backGroundImage: function(){
-        return "background: url('"+this.calendar_event.image+"') center center / cover no-repeat; cursor: pointer;"
-      },
-      venue_info: function() {
-        let all_venues = this.$store.getters.GetAllVenues
-
-        let current_venue = all_venues.find((venue) => {
-          return venue.id === this.calendar_event.venue_id
-        })
-
-        if(current_venue === undefined){
-          return {}
-        }
-        else{
-          return current_venue
-        }
-
-      },
-      when_date: function() {
-        const calendar = this.calendar_event
-        const dateTimes = calendar.date_times
-        const firstDay = dateTimes[0]
-        return moment(firstDay.start_time).format('dddd, MMMM Do')
-      },
-      when_time: function() {
-        const calendar = this.calendar_event
-        const dateTimes = calendar.date_times
-        const firstDay = dateTimes[0]
-        let output_string = moment(firstDay.start_time).format('h:mma - ')+moment(firstDay.end_time).format('h:mma')
-        return output_string
-      },
-    },
-    filters: {
-      truncate: function(text, stop, clamp){
-      	return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
-      }
-    },
-    components:{
-      'ii-location': Location,
-      'ii-calendar': Calendar
+export default {
+  name: 'Card',
+  props: ['calendar_event'],
+  data: function(){
+    return {
+      showCalendars: false
     }
+  },
+  methods: {
+    OpenCalendars: function(){
+      this.showCalendars = true
+    },
+    CloseCalendars: function(){
+      this.showCalendars = false
+    },
+    ShowEvent: function(event_id){
+      window.location.assign('/events/'+ event_id)
+    },
+    AddEventToCalendar(calType) {
+      // console.log(calType);
+      if (calType === 'iCal' || calType === 'Outlook') {
+        // send calendar_event data to node layer to be converted into an .ics file
 
+        window.open(`/calendar?title=${encodeURIComponent(this.calendar_event.title)}&description=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}&time_start=${encodeURIComponent(this.calendar_event.date_times[0].start_time)}&time_end=${encodeURIComponent(this.calendar_event.date_times[0].end_time)}`)
+      } else if (calType === 'Google Calendar') {
+        var time_start_formatted = moment(this.calendar_event.date_times[0].start_time).format('YYYYMMDDTHHmmss')
+        var time_end_formatted = moment(this.calendar_event.date_times[0].end_time).format('YYYYMMDDTHHmmss')
+
+        window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.calendar_event.title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}`)
+      }
+    }
+  },
+  mounted: function(){
+    console.log('card loaded:', this.calendar_event)
+  },
+  computed:{
+    backGroundImage: function(){
+      return 'background: url(\''+this.calendar_event.image+'\') center center / cover no-repeat; cursor: pointer;'
+    },
+    venue_info: function() {
+      let all_venues = this.$store.getters.GetAllVenues
+
+      let current_venue = all_venues.find((venue) => {
+        return venue.id === this.calendar_event.venue_id
+      })
+
+      if(current_venue === undefined){
+        return {}
+      }
+      else{
+        return current_venue
+      }
+
+    },
+    when_date: function() {
+      const calendar = this.calendar_event
+      const dateTimes = calendar.date_times
+      const firstDay = dateTimes[0]
+      return moment(firstDay.start_time).format('dddd, MMMM Do')
+    },
+    when_time: function() {
+      const calendar = this.calendar_event
+      const dateTimes = calendar.date_times
+      const firstDay = dateTimes[0]
+      let output_string = moment(firstDay.start_time).format('h:mma - ')+moment(firstDay.end_time).format('h:mma')
+      return output_string
+    },
+  },
+  filters: {
+    truncate: function(text, stop, clamp){
+      	return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
+    }
+  },
+  components:{
+    'ii-location': Location,
+    'ii-calendar': Calendar
   }
+
+}
 </script>
 
 <style scoped>

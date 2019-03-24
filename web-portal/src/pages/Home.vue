@@ -27,7 +27,7 @@ export default {
   },
   mounted: function() {
     this.$store.dispatch('LoadAllLocalEventData')
-    console.log("TEST HOME");
+    console.log('TEST HOME')
 
     // axios.get('/venues').then( response => {
     //   this.venues = response.data.venues;

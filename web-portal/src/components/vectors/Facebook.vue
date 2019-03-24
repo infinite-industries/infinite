@@ -33,14 +33,14 @@
 
 // Created by https://github.com/konsav/social-icons
 
-  export default {
-    props: ['width', 'height', 'iconColor'],
-    data: function(){
-      return{
-        //
-      }
+export default {
+  props: ['width', 'height', 'iconColor'],
+  data: function(){
+    return{
+      //
     }
   }
+}
 </script>
 
 <style scoped>

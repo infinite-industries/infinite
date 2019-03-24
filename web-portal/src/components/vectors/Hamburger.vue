@@ -27,52 +27,52 @@
 </template>
 
 <script>
-  import {TweenMax} from 'gsap'
+import {TweenMax} from 'gsap'
 
-  export default {
-    props: ['width', 'height'],
-    data: function(){
-      return{
-        iconColor: 'white'
-      }
+export default {
+  props: ['width', 'height'],
+  data: function(){
+    return{
+      iconColor: 'white'
+    }
 
-    },
-    methods:{
-      ToggleNav: function(){
-        this.$store.dispatch('toggleSidebar')
-      }
-    },
-    computed: {
-      open () {
-        return this.$store.state.ui.sidebarOpen
-      }
-    },
-    watch: {
-      open: function (open) {
-        let tl = new TimelineMax({delay:0.2});
+  },
+  methods:{
+    ToggleNav: function(){
+      this.$store.dispatch('toggleSidebar')
+    }
+  },
+  computed: {
+    open () {
+      return this.$store.state.ui.sidebarOpen
+    }
+  },
+  watch: {
+    open: function (open) {
+      let tl = new TimelineMax({delay:0.2})
 
-        if(open){
-          this.iconColor = 'white'
+      if(open){
+        this.iconColor = 'white'
 
-          tl.to(this.$refs.line2, 0.5, {autoAlpha:0})
+        tl.to(this.$refs.line2, 0.5, {autoAlpha:0})
           // .to(this.$refs.line1, 0.4, {y:'+=13'}, 0.1)
           // .to(this.$refs.line3, 0.4, {y:'-=14'}, 0.1)
           .to(this.$refs.line1, 0.3, {css:{'transform':'translateY(39px) translateX(3px) rotate(-45deg)'}}, 0.1)
           .to(this.$refs.line3, 0.3, {css:{'transform':'translateY(-7px) translateX(5px) rotate(45deg)'}}, 0.1)
-        }
-        else {
-          this.iconColor = 'white'
+      }
+      else {
+        this.iconColor = 'white'
 
-          tl.to(this.$refs.line1, 0.4, {css:{'transform':'translateY(0px) rotate(0deg)'}}, 0.1)
+        tl.to(this.$refs.line1, 0.4, {css:{'transform':'translateY(0px) rotate(0deg)'}}, 0.1)
           .to(this.$refs.line3, 0.4, {css:{'transform':'translateY(29px) rotate(0deg)'}}, 0.1)
           // .to(this.$refs.line1, 0.3, {y:'-=13'}, 0.2)
           // .to(this.$refs.line3, 0.3, {y:'+=14'}, 0.2)
           .to(this.$refs.line2, 0.5, {autoAlpha:1})
 
-        }
       }
     }
   }
+}
 </script>
 
 

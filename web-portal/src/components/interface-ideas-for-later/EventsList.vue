@@ -44,97 +44,97 @@
 <script>
 
 import EventCard from './EventCard.vue'
-import { isLoggedIn } from "../helpers/Auth";
+import { isLoggedIn } from '../helpers/Auth'
 
 export default {
-    name:'EventsList',
-    props: ['type', 'standalone','id'],
-    data: function() {
-      return {
-        dialog: false,
-        active_event:{},
-      }
-    },
-    methods:{
-      CallEventCard: function(){
-
-        // this.$bus.$emit(event_id, {action:'hide'})
-      },
-      AddEventToMyList: function(list_id){
-        this.$store.dispatch('AddEventToMyList', {list_id:list_id, event_data:this.active_event})
-        this.dialog = false
-      },
-      RemoveEventFromList: function(){
-        this.dialog = false
-
-        // this.events = this.events.filter(list => list.id !== this.active_event)
-        // this.$bus.$emit(this.active_event, {action:'hide'})
-        this.$store.dispatch('RemoveEventFromList', {list_id:this.id, event_id:this.active_event.id})
-      },
-
-      AlreadyOnTheList: function(list_id){
-        const selected_list = this.$store.getters.GetMyLists.filter(list => list.list_id === list_id)
-        // TODO complete this feature
-        // selected_list this.active_event
-        return false
-      }
-    },
-    computed:{
-      events_from_current_list: function(){
-        if(this.$store.state.loaded_from_api){
-          if(this.type === 'mine'){
-            // let my_lists = this.$store.getters.GetMyLists
-            // return my_lists.filter(list => list.id === this.id)
-            return this.$store.getters.GetCurrentList.events
-          }
-          else if(this.type === 'following'){
-            // let followed_lists = this.$store.getters.GetListsIFollow
-            // return followed_lists.filter(list => list.id === this.id)
-            return this.$store.getters.GetCurrentList.events
-          }
-          else {
-            return this.$store.getters.GetAllLocalEvents
-          }
-        }
-
-      },
-      my_lists: function(){
-        if (!isLoggedIn()) {
-          return []
-        }
-
-        return this.$store.getters.GetMyLists
-      },
-      my_other_lists: function(){
-        if (!isLoggedIn()) {
-          return []
-        }
-
-        // This list excludes current active list
-        if(this.$store.state.loaded_from_api){
-          const all_lists = this.$store.getters.GetMyLists
-          return all_lists.filter(list => list.id !== this.id)
-        }
-        else{
-          return this.$store.getters.GetMyLists
-        }
-
-      }
-    },
-    beforeUpdate: function(){
-      //
-    },
-    $bus: {
-      'OPEN_OPTIONS_DIALOG' : function(payload){
-        this.dialog = true
-        this.active_event = payload.calling_event
-        console.log(this.active_event)
-
-        //this.CallEventCard(this.active_event)
-      }
-    },
-    components:{
-      'event-card': EventCard
+  name:'EventsList',
+  props: ['type', 'standalone','id'],
+  data: function() {
+    return {
+      dialog: false,
+      active_event:{},
     }
+  },
+  methods:{
+    CallEventCard: function(){
+
+      // this.$bus.$emit(event_id, {action:'hide'})
+    },
+    AddEventToMyList: function(list_id){
+      this.$store.dispatch('AddEventToMyList', {list_id:list_id, event_data:this.active_event})
+      this.dialog = false
+    },
+    RemoveEventFromList: function(){
+      this.dialog = false
+
+      // this.events = this.events.filter(list => list.id !== this.active_event)
+      // this.$bus.$emit(this.active_event, {action:'hide'})
+      this.$store.dispatch('RemoveEventFromList', {list_id:this.id, event_id:this.active_event.id})
+    },
+
+    AlreadyOnTheList: function(list_id){
+      const selected_list = this.$store.getters.GetMyLists.filter(list => list.list_id === list_id)
+      // TODO complete this feature
+      // selected_list this.active_event
+      return false
+    }
+  },
+  computed:{
+    events_from_current_list: function(){
+      if(this.$store.state.loaded_from_api){
+        if(this.type === 'mine'){
+          // let my_lists = this.$store.getters.GetMyLists
+          // return my_lists.filter(list => list.id === this.id)
+          return this.$store.getters.GetCurrentList.events
+        }
+        else if(this.type === 'following'){
+          // let followed_lists = this.$store.getters.GetListsIFollow
+          // return followed_lists.filter(list => list.id === this.id)
+          return this.$store.getters.GetCurrentList.events
+        }
+        else {
+          return this.$store.getters.GetAllLocalEvents
+        }
+      }
+
+    },
+    my_lists: function(){
+      if (!isLoggedIn()) {
+        return []
+      }
+
+      return this.$store.getters.GetMyLists
+    },
+    my_other_lists: function(){
+      if (!isLoggedIn()) {
+        return []
+      }
+
+      // This list excludes current active list
+      if(this.$store.state.loaded_from_api){
+        const all_lists = this.$store.getters.GetMyLists
+        return all_lists.filter(list => list.id !== this.id)
+      }
+      else{
+        return this.$store.getters.GetMyLists
+      }
+
+    }
+  },
+  beforeUpdate: function(){
+    //
+  },
+  $bus: {
+    'OPEN_OPTIONS_DIALOG' : function(payload){
+      this.dialog = true
+      this.active_event = payload.calling_event
+      console.log(this.active_event)
+
+      //this.CallEventCard(this.active_event)
+    }
+  },
+  components:{
+    'event-card': EventCard
   }
+}
 </script>

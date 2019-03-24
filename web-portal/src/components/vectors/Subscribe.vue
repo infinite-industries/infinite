@@ -22,21 +22,21 @@
 </template>
 
 <script>
-  import {TweenMax} from 'gsap'
+import {TweenMax} from 'gsap'
 
-  export default {
-    props: ['width', 'height', 'iconColor'],
-    data: function(){
-      return{
-        //
-      }
-    },
-    mounted:function(){
-      let tl = new TimelineMax({delay:0.5});
-
-      tl.to(this.$refs.line, 1, {autoAlpha:1})
+export default {
+  props: ['width', 'height', 'iconColor'],
+  data: function(){
+    return{
+      //
     }
+  },
+  mounted:function(){
+    let tl = new TimelineMax({delay:0.5})
+
+    tl.to(this.$refs.line, 1, {autoAlpha:1})
   }
+}
 </script>
 
 <style scoped>

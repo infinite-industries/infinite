@@ -40,58 +40,58 @@
 
 <script>
 
-  import Axios from 'axios'
+import Axios from 'axios'
 
-  export default {
-    data: function() {
-      return {
-        comment: '',
-        valid: false,
-        name: '',
-        nameRules: [
-          (v) => !!v || 'Name is required'
-        ],
-        email: '',
-        emailRules: [
-          (v) => !!v || 'E-mail is required',
-          (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
-        ]
-      }
+export default {
+  data: function() {
+    return {
+      comment: '',
+      valid: false,
+      name: '',
+      nameRules: [
+        (v) => !!v || 'Name is required'
+      ],
+      email: '',
+      emailRules: [
+        (v) => !!v || 'E-mail is required',
+        (v) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(v) || 'E-mail must be valid'
+      ]
+    }
+  },
+  methods: {
+    RouteTo: function(route_to_page){
+      this.$router.push({ path: route_to_page })
     },
-    methods: {
-      RouteTo: function(route_to_page){
-        this.$router.push({ path: route_to_page })
-      },
 
-      ContactUs: function(){
-        Axios.post('/contact', { name: this.name, email: this.email, comment: this.comment })
-          .then((_response) => {
-            // EventBus.$emit('SHOW_NOTIFICATION',{
-            //   visible: true,
-            //   type: 'info',
-            //   message: "Message sent. Thank you!",
-            // })
+    ContactUs: function(){
+      Axios.post('/contact', { name: this.name, email: this.email, comment: this.comment })
+        .then((_response) => {
+          // EventBus.$emit('SHOW_NOTIFICATION',{
+          //   visible: true,
+          //   type: 'info',
+          //   message: "Message sent. Thank you!",
+          // })
 
-            this.ResetForm();
+          this.ResetForm()
 
-          })
-          .catch(function (error) {
-            console.log(error);
-            // EventBus.$emit('SHOW_NOTIFICATION',{
-            //   visible: true,
-            //   type: 'info',
-            //   message: "Hrrmm... unable to send your data. Email us directly at info@infinite.industries and we will look into this asap.",
-            // })
-          });
-      },
-      ResetForm: function(){
-        this.name = '';
-        this.email = '';
-        this.comment = '';
-        this.$refs.form.reset(); // resets form validation
-      }
+        })
+        .catch(function (error) {
+          console.log(error)
+          // EventBus.$emit('SHOW_NOTIFICATION',{
+          //   visible: true,
+          //   type: 'info',
+          //   message: "Hrrmm... unable to send your data. Email us directly at info@infinite.industries and we will look into this asap.",
+          // })
+        })
+    },
+    ResetForm: function(){
+      this.name = ''
+      this.email = ''
+      this.comment = ''
+      this.$refs.form.reset() // resets form validation
     }
   }
+}
 </script>
 
 <style scoped>

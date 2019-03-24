@@ -14,25 +14,25 @@
 </template>
 
 <script>
-  export default {
-    name:'AdminEventsList',
-    props: ['calendar_events'],
-    data: function() {
-      return {
+export default {
+  name:'AdminEventsList',
+  props: ['calendar_events'],
+  data: function() {
+    return {
 
-      }
-    },
-    methods:{
-      EditEvent: function(calendar_event_to_edit){
-        // console.log(`/admin-event-edit/${calendar_event_to_edit.id}`);
-        this.$router.push({ path: `/admin-event-edit/${calendar_event_to_edit.id}` })
-      },
-      ShowEventDates: function(ii_calendar_event){
-        //let when_date = moment(ii_calendar_event.time_start).format('dddd, MMMM Do, YYYY')
-        //let when_time = moment(ii_calendar_event.time_start).format('h:mma') + " - " + moment(ii_calendar_event.time_end).format('h:mma')
-        return "time range work in progress";
-      }
     }
+  },
+  methods:{
+    EditEvent: function(calendar_event_to_edit){
+      // console.log(`/admin-event-edit/${calendar_event_to_edit.id}`);
+      this.$router.push({ path: `/admin-event-edit/${calendar_event_to_edit.id}` })
+    },
+    ShowEventDates: function(ii_calendar_event){
+      //let when_date = moment(ii_calendar_event.time_start).format('dddd, MMMM Do, YYYY')
+      //let when_time = moment(ii_calendar_event.time_start).format('h:mma') + " - " + moment(ii_calendar_event.time_end).format('h:mma')
+      return 'time range work in progress'
+    }
+  }
 }
 </script>
 

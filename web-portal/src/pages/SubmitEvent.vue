@@ -6,15 +6,15 @@
 </template>
 
 <script>
-  import SubmissionForm from '../components/SubmissionForm.vue'
-  export default {
-    data: function () {
-      return {
-        venues: [],
-      }
-    },
-    components:{
-      'submission-form': SubmissionForm
+import SubmissionForm from '../components/SubmissionForm.vue'
+export default {
+  data: function () {
+    return {
+      venues: [],
     }
+  },
+  components:{
+    'submission-form': SubmissionForm
   }
+}
 </script>

@@ -100,42 +100,42 @@
 
 <script>
 
-  export default {
-      data: function(){
-        return{
-          dialog: false
-        }
-      },
-      props:['id'],
-      mounted:function() {
-        this.$store.dispatch('LoadCurrentEvent', this.id)
-      },
-      computed: {
-        values_to_edit: function() {
-          return this.$store.getters.GetCurrentEvent
-        }
-      },
-      methods: {
-        RouteTo: function(route_to_page){
-          this.$router.push({path: route_to_page })
-        },
-        UpdateEvent: function(){
-          this.$store.dispatch('UpdateEvent', {id:this.values_to_edit.id, event_data:this.values_to_edit})
-        },
-        ConfirmDeleteEvent: function(){
-          this.dialog = true
-        },
-        DeleteEvent: function(){
-          this.dialog = false
-          this.$store.dispatch('DeleteEvent', {id:this.values_to_edit.id})
-          this.RouteTo('/admin')
-        },
-        VerifyEvent: function(){
-          // DISPATCH vuex
-          //EventBus.$emit('VERIFY_EVENT', {_id:this.values_to_edit.id});
-          this.$store.dispatch('VerifyEvent', {id:this.values_to_edit.id})
-          this.RouteTo('/admin')
-        }
-      }
+export default {
+  data: function(){
+    return{
+      dialog: false
+    }
+  },
+  props:['id'],
+  mounted:function() {
+    this.$store.dispatch('LoadCurrentEvent', this.id)
+  },
+  computed: {
+    values_to_edit: function() {
+      return this.$store.getters.GetCurrentEvent
+    }
+  },
+  methods: {
+    RouteTo: function(route_to_page){
+      this.$router.push({path: route_to_page })
+    },
+    UpdateEvent: function(){
+      this.$store.dispatch('UpdateEvent', {id:this.values_to_edit.id, event_data:this.values_to_edit})
+    },
+    ConfirmDeleteEvent: function(){
+      this.dialog = true
+    },
+    DeleteEvent: function(){
+      this.dialog = false
+      this.$store.dispatch('DeleteEvent', {id:this.values_to_edit.id})
+      this.RouteTo('/admin')
+    },
+    VerifyEvent: function(){
+      // DISPATCH vuex
+      //EventBus.$emit('VERIFY_EVENT', {_id:this.values_to_edit.id});
+      this.$store.dispatch('VerifyEvent', {id:this.values_to_edit.id})
+      this.RouteTo('/admin')
+    }
   }
+}
 </script>

@@ -12,53 +12,53 @@
 
 <script>
 export default {
-  props: ["venues", "initial_venue_id"],
+  props: ['venues', 'initial_venue_id'],
   data: function() {
     return {
-      searchterm: "",
+      searchterm: '',
       show: false
     }
   },
   methods: {
     showDropdownContent: function() {
-      this.show = true;
+      this.show = true
     },
     hideDropdownContent: function() {
-      this.show = false;
+      this.show = false
     },
     selectVenue: function(venue) {
-      this.searchterm = venue.name;
-      this.hideDropdownContent();
-      this.$emit("selectVenue", venue);
+      this.searchterm = venue.name
+      this.hideDropdownContent()
+      this.$emit('selectVenue', venue)
     },
     handleNewVenue: function(venue) {
-      this.searchterm = venue.name;
+      this.searchterm = venue.name
     },
     hitEnter: function() {
       if (this.queryResults.length == 1) {
-        this.selectVenue(this.queryResults[0]);
+        this.selectVenue(this.queryResults[0])
       }
     },
     initToVenueId: function() {
-      let venue = this.venues.find((v) => v.id === this.initial_venue_id);
-      this.searchterm = venue && venue.name || this.searchterm;
+      let venue = this.venues.find((v) => v.id === this.initial_venue_id)
+      this.searchterm = venue && venue.name || this.searchterm
     }
   },
   mounted: function(){
     // for some reason these props aren't set when we get here
     // they _should_ be, though
     if (this.initial_venue_id && this.venues) {
-      this.initToVenueId();
+      this.initToVenueId()
     }
   },
   computed: {
     queryResults: function() {
       if (this.venues == undefined) {
-        return [];
+        return []
       } else {
         return this.venues.filter( venue => {
           return venue.name.toLowerCase().includes(this.searchterm.toLowerCase())
-          || venue.address.toLowerCase().includes(this.searchterm.toLowerCase());
+          || venue.address.toLowerCase().includes(this.searchterm.toLowerCase())
         })
       }
     }
@@ -68,13 +68,13 @@ export default {
       // this works around timing issues where this component's props aren't initialized at mount time
       // should only try to do this once, when initial_venue_id is populated
       if (!old_venue_id && initial_venue_id && this.venues && this.venues.length > 0) {
-        this.initToVenueId();
+        this.initToVenueId()
       }
     },
     venues: function(venues, old_venues) {
       // more timing issues; need to rethink the way we're loading this data
       if ((!old_venues || old_venues.length === 0) && venues && venues.length > 0 && this.initial_venue_id) {
-        this.initToVenueId();
+        this.initToVenueId()
       }
     }
   }

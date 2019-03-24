@@ -26,7 +26,7 @@ import Notifications from './components/ii-notifications.vue'
 import IphoneSaveButton from './components/ii-iphone-save-button.vue'
 import Subscribe from './components/ii-subscribe.vue'
 import Modal from './components/ii-modal.vue'
-import 'babel-polyfill';
+import 'babel-polyfill'
 
 //import EventsFromStore from './helpers/ComponentEventBus.js'
 
@@ -47,8 +47,8 @@ export default {
   // setting access token in created, so that it comes before mounted hooks in child components
   created: function() {
     if (isLoggedIn()) {
-      this.$store.dispatch('Login');
-      setAxiosConfig();
+      this.$store.dispatch('Login')
+      setAxiosConfig()
     }
   },
   mounted: function(){
@@ -74,10 +74,10 @@ export default {
   },
   methods: {
     OpenEventSubmitter: function(){
-      window.location.assign('https://event-add.glitch.me/');
+      window.location.assign('https://event-add.glitch.me/')
     },
     OpenEmailSubscribe: function() {
-      window.location.assign('/subscribe-email');
+      window.location.assign('/subscribe-email')
     },
     RouteTo: function(route_to_page){
       this.$router.push({ path: route_to_page })

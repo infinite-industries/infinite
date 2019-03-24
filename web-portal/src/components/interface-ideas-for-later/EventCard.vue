@@ -54,72 +54,72 @@
 
 <script>
 
-  import moment from 'moment'
+import moment from 'moment'
 
-  export default {
-    name:'EventCard',
-    props: ['event'],
-    data: function() {
-      return {
-        fab: false,
-        added_to_list:false,
-        card_visibility: true,
-        calTypes: ["iCal", "Outlook", "Google Calendar"]
-      }
-    },
-    methods: {
-      OpenOptionsDialog: function(){
-        this.$bus.$emit('OPEN_OPTIONS_DIALOG', {calling_event:this.event})
-        //call EventsList to open a dialog to add event to another list or remove from current
-      },
-      ShowEvent: function(event_id){
-        console.log(event_id);
-        window.location.assign('/events/'+ event_id)
-      },
-      AddEventToCalendar(calType) {
-        console.log(calType);
-        if (calType === "iCal" || calType === "Outlook") {
-          // send event data to node layer to be converted into an .ics file
-          window.open(`/calendar?title=${encodeURIComponent(this.event.title)}&description=${encodeURIComponent(this.event.brief_description)}&location=${encodeURIComponent(this.event.address)}&time_start=${encodeURIComponent(this.event.time_start)}&time_end=${encodeURIComponent(this.event.time_end)}`);
-        } else if (calType === "Google Calendar") {
-          var time_start_formatted = moment(this.event.time_start).format('YYYYMMDDTHHmmss');
-          var time_end_formatted = moment(this.event.time_end).format('YYYYMMDDTHHmmss');
-
-          window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.event.title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(this.event.brief_description)}&location=${encodeURIComponent(this.event.address)}`);
-        }
-      }
-    },
-    computed: {
-      trimmedDescription: function() {
-        if (this.event.brief_description.length > 200) {
-          return this.event.brief_description.substring(0, 200) + "...";
-        } else {
-          return this.event.brief_description;
-        }
-      },
-      userIsAdmin: function() {
-        return this.$store.getters.GetUser.admin_role;
-      },
-      when_date: function() {
-        return moment(this.event.time_start).format('dddd, MMMM Do, YYYY');
-      },
-      when_time: function() {
-        return moment(this.event.time_start).format('h:mma') + " - " + moment(this.event.time_end).format('h:mma');
-      }
-    },
-    mounted: function(){
-
-      const event_id = this.event.id
-      this.$bus.$on(event_id, payload => {
-
-        if(payload.action === 'hide'){
-          // console.log("initial state", _self.card_visibility);
-          this.card_visibility = false
-          // console.log("confirmed action");
-        }
-      })
+export default {
+  name:'EventCard',
+  props: ['event'],
+  data: function() {
+    return {
+      fab: false,
+      added_to_list:false,
+      card_visibility: true,
+      calTypes: ['iCal', 'Outlook', 'Google Calendar']
     }
+  },
+  methods: {
+    OpenOptionsDialog: function(){
+      this.$bus.$emit('OPEN_OPTIONS_DIALOG', {calling_event:this.event})
+      //call EventsList to open a dialog to add event to another list or remove from current
+    },
+    ShowEvent: function(event_id){
+      console.log(event_id)
+      window.location.assign('/events/'+ event_id)
+    },
+    AddEventToCalendar(calType) {
+      console.log(calType)
+      if (calType === 'iCal' || calType === 'Outlook') {
+        // send event data to node layer to be converted into an .ics file
+        window.open(`/calendar?title=${encodeURIComponent(this.event.title)}&description=${encodeURIComponent(this.event.brief_description)}&location=${encodeURIComponent(this.event.address)}&time_start=${encodeURIComponent(this.event.time_start)}&time_end=${encodeURIComponent(this.event.time_end)}`)
+      } else if (calType === 'Google Calendar') {
+        var time_start_formatted = moment(this.event.time_start).format('YYYYMMDDTHHmmss')
+        var time_end_formatted = moment(this.event.time_end).format('YYYYMMDDTHHmmss')
+
+        window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.event.title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(this.event.brief_description)}&location=${encodeURIComponent(this.event.address)}`)
+      }
+    }
+  },
+  computed: {
+    trimmedDescription: function() {
+      if (this.event.brief_description.length > 200) {
+        return this.event.brief_description.substring(0, 200) + '...'
+      } else {
+        return this.event.brief_description
+      }
+    },
+    userIsAdmin: function() {
+      return this.$store.getters.GetUser.admin_role
+    },
+    when_date: function() {
+      return moment(this.event.time_start).format('dddd, MMMM Do, YYYY')
+    },
+    when_time: function() {
+      return moment(this.event.time_start).format('h:mma') + ' - ' + moment(this.event.time_end).format('h:mma')
+    }
+  },
+  mounted: function(){
+
+    const event_id = this.event.id
+    this.$bus.$on(event_id, payload => {
+
+      if(payload.action === 'hide'){
+        // console.log("initial state", _self.card_visibility);
+        this.card_visibility = false
+        // console.log("confirmed action");
+      }
+    })
   }
+}
 </script>
 
 <style scoped>

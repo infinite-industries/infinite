@@ -8,29 +8,29 @@
 
 import ComponentEventBus from '../helpers/ComponentEventBus.js'
 
-  export default {
-    name:'NotifyUser',
-    data: function() {
-      return {
-        notification: {
-          visible: false,
-          message: ''
-        }
+export default {
+  name:'NotifyUser',
+  data: function() {
+    return {
+      notification: {
+        visible: false,
+        message: ''
       }
-    },
-    mounted: function() {
-      const _self = this
-      ComponentEventBus.$on('SHOW_ALERT', function(payload){
-        //change color!!!
-        _self.notification.visible = true
-        _self.notification.message = payload.message
-      })
-
-      ComponentEventBus.$on('SHOW_INFO', function(payload){
-        //change color!!!
-        _self.notification.visible = true
-        _self.notification.message = payload.message
-      })
     }
+  },
+  mounted: function() {
+    const _self = this
+    ComponentEventBus.$on('SHOW_ALERT', function(payload){
+      //change color!!!
+      _self.notification.visible = true
+      _self.notification.message = payload.message
+    })
+
+    ComponentEventBus.$on('SHOW_INFO', function(payload){
+      //change color!!!
+      _self.notification.visible = true
+      _self.notification.message = payload.message
+    })
   }
+}
 </script>

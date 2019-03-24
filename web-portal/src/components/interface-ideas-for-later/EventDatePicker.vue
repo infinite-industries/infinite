@@ -49,42 +49,42 @@
     </v-layout>
 </template>
 <script>
-import TimePicker from "./TimePicker.vue";
+import TimePicker from './TimePicker.vue'
 
 export default {
-    // value: { title, time_start, time_end }
-    props: ["value"],
-    data: function() {
-        return {
-            date: undefined,
-            real_time_end: ""
-        }
-    },
-    methods: {
-        changeStartTime: function(formatted) {
-            this.value.time_start = formatted
-            this.emitChange()
-        },
-        changeEndTime: function(formatted) {
-            this.value.time_end = formatted
-            this.emitChange()
-        },
-        emitChange: function() {
-            this.$emit('input', this.value)
-        },
-        adjustTimeEnd: function() {
-            // if time_end is before time_start, assume that time_end should be during the next calendar day
-            // if (moment(this.value.time_end).isBefore(moment(this.value.time_start))) {
-            //     this.value.time_end = moment(this.value.time_end).add(1, 'd').format('YYYY-MM-DD HH:mm:ss');
-            // }
-        }
-    },
-    computed: {
-
-    },
-    components: {
-        'time-picker': TimePicker
+  // value: { title, time_start, time_end }
+  props: ['value'],
+  data: function() {
+    return {
+      date: undefined,
+      real_time_end: ''
     }
+  },
+  methods: {
+    changeStartTime: function(formatted) {
+      this.value.time_start = formatted
+      this.emitChange()
+    },
+    changeEndTime: function(formatted) {
+      this.value.time_end = formatted
+      this.emitChange()
+    },
+    emitChange: function() {
+      this.$emit('input', this.value)
+    },
+    adjustTimeEnd: function() {
+      // if time_end is before time_start, assume that time_end should be during the next calendar day
+      // if (moment(this.value.time_end).isBefore(moment(this.value.time_start))) {
+      //     this.value.time_end = moment(this.value.time_end).add(1, 'd').format('YYYY-MM-DD HH:mm:ss');
+      // }
+    }
+  },
+  computed: {
+
+  },
+  components: {
+    'time-picker': TimePicker
+  }
 }
 </script>
 <style scoped>

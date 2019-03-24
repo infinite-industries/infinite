@@ -16,7 +16,7 @@
 
 <script>
 
-  export default {
-      // empty
-  }
+export default {
+  // empty
+}
 </script>

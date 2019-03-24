@@ -21,26 +21,26 @@ y="0px">
 </template>
 
 <script>
-  // Image created by Iconfun from the Noun Project
-  // https://thenounproject.com/iconfun/collection/calendar/?i=1794960
+// Image created by Iconfun from the Noun Project
+// https://thenounproject.com/iconfun/collection/calendar/?i=1794960
 
-  export default {
-    props: ['width', 'height', 'iconColor'],
-    data: function(){
-      return{
-        //
-      }
-    },
-    methods:{
-
-    },
-    methods:{
-
-    },
-    mounted:function(){
-
+export default {
+  props: ['width', 'height', 'iconColor'],
+  data: function(){
+    return{
+      //
     }
+  },
+  methods:{
+
+  },
+  methods:{
+
+  },
+  mounted:function(){
+
   }
+}
 </script>
 
 <style scoped>

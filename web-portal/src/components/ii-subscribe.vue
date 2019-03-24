@@ -16,24 +16,24 @@
 
 <script>
 
-  export default {
-    name: 'Subscribe',
-    data: function(){
-      return {
-        //stuff
-      }
-    },
-    methods:{
-      CloseModal: function(){
-        this.$store.dispatch('showModal',{open:false})
-      }
-    },
-    computed: {
-      modal: function() {
-        return this.$store.getters.modalData
-      }
+export default {
+  name: 'Subscribe',
+  data: function(){
+    return {
+      //stuff
+    }
+  },
+  methods:{
+    CloseModal: function(){
+      this.$store.dispatch('showModal',{open:false})
+    }
+  },
+  computed: {
+    modal: function() {
+      return this.$store.getters.modalData
     }
   }
+}
 </script>
 
 <style scoped>

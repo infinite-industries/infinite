@@ -41,32 +41,32 @@
 </template>
 
 <script>
-  import CreateNewList from '../components/CreateNewList.vue'
-  import ListOfLists from '../components/ListOfLists.vue'
+import CreateNewList from '../components/CreateNewList.vue'
+import ListOfLists from '../components/ListOfLists.vue'
 
-  export default {
-    data: function(){
-      return {
-        create_new_list_visible: false,
-      }
-    },
-    computed:{
-      my_lists: function(){
-        return this.$store.getters.GetMyLists
-      },
-      lists_i_follow: function(){
-        return this.$store.getters.GetListsIFollow
-      }
-    },
-    methods: {
-      RouteTo: function(route_to_page){
-        this.$router.push({ path: route_to_page })
-      }
-    },
-    components:{
-      'create-new-list': CreateNewList,
-      'list-of-lists': ListOfLists
+export default {
+  data: function(){
+    return {
+      create_new_list_visible: false,
     }
-
+  },
+  computed:{
+    my_lists: function(){
+      return this.$store.getters.GetMyLists
+    },
+    lists_i_follow: function(){
+      return this.$store.getters.GetListsIFollow
+    }
+  },
+  methods: {
+    RouteTo: function(route_to_page){
+      this.$router.push({ path: route_to_page })
+    }
+  },
+  components:{
+    'create-new-list': CreateNewList,
+    'list-of-lists': ListOfLists
   }
+
+}
 </script>

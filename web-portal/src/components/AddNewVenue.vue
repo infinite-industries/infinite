@@ -65,53 +65,53 @@
 </template>
 
 <script>
-  import Axios from 'axios'
+import Axios from 'axios'
 
-  export default {
-    data: function () {
-      return {
-        showAddVenue: [false],
-        showVenueLoadingSpinner: false,    // maybe
-        new_venue: {
-          name: "",
-          address: "",
-          city: "",
-          zip: "",
-          neighborhood: "",
-          google_maps_link: ""
-        }
-      }
-    },
-    computed: {
-      venueRequiredFields: function() {
-        return this.new_venue.name != "" &&
-          this.new_venue.address != "" &&
-          this.new_venue.city != "" &&
-          this.new_venue.zip != "";
-      }
-    },
-    methods: {
-      toggleVenueDropdown: function() {
-        this.showAddVenue[0] = !this.showAddVenue[0]
-      },
-      closeVenueDropdown: function() {
-        this.showAddVenue = [];
-      },
-      submitNewVenue: function() {
-        this.showVenueLoadingSpinner = true;
-        Axios.post('/venues/submit-new', this.new_venue).then( response => {
-          this.showVenueLoadingSpinner = false;
-          this.closeVenueDropdown();
-          if (response.data.status == "success") {
-            this.$store.dispatch('LoadAllVenueData')
-            this.$emit("newVenue", response.data.venue);
-          }
-        }).catch( err => {
-          console.error(err);
-        })
+export default {
+  data: function () {
+    return {
+      showAddVenue: [false],
+      showVenueLoadingSpinner: false,    // maybe
+      new_venue: {
+        name: '',
+        address: '',
+        city: '',
+        zip: '',
+        neighborhood: '',
+        google_maps_link: ''
       }
     }
+  },
+  computed: {
+    venueRequiredFields: function() {
+      return this.new_venue.name != '' &&
+          this.new_venue.address != '' &&
+          this.new_venue.city != '' &&
+          this.new_venue.zip != ''
+    }
+  },
+  methods: {
+    toggleVenueDropdown: function() {
+      this.showAddVenue[0] = !this.showAddVenue[0]
+    },
+    closeVenueDropdown: function() {
+      this.showAddVenue = []
+    },
+    submitNewVenue: function() {
+      this.showVenueLoadingSpinner = true
+      Axios.post('/venues/submit-new', this.new_venue).then( response => {
+        this.showVenueLoadingSpinner = false
+        this.closeVenueDropdown()
+        if (response.data.status == 'success') {
+          this.$store.dispatch('LoadAllVenueData')
+          this.$emit('newVenue', response.data.venue)
+        }
+      }).catch( err => {
+        console.error(err)
+      })
+    }
   }
+}
 
 </script>
 <style scoped>

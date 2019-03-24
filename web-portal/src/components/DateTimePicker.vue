@@ -85,206 +85,206 @@
 
 <script>
 
-  const moment = require('moment-timezone');
+const moment = require('moment-timezone')
 
-  const clientTimeZone = moment.tz.guess()
+const clientTimeZone = moment.tz.guess()
 
-  // this is how the date/time is stored in data and sent to the server
-  const dateTimeStorageFormat = 'YYYY-MM-DD HH:mm zz'
+// this is how the date/time is stored in data and sent to the server
+const dateTimeStorageFormat = 'YYYY-MM-DD HH:mm zz'
 
-  // this format is used for parsing date/times extracted from the picker before storing them
-  const dateTimePickerFormat = 'YYYY-MM-DD hh:mm:a zz'
+// this format is used for parsing date/times extracted from the picker before storing them
+const dateTimePickerFormat = 'YYYY-MM-DD hh:mm:a zz'
 
-  export default {
-    name: 'date-time-picker',
-    data: function(){
-      return {
-        introduction: true,
+export default {
+  name: 'date-time-picker',
+  data: function(){
+    return {
+      introduction: true,
 
-        picker: null,
+      picker: null,
 
-        edit_mode: false,
-        time_segment_index: 0,
+      edit_mode: false,
+      time_segment_index: 0,
 
-        start_hour:"",
-        start_minute:"",
-        start_ampm:"pm",
+      start_hour:'',
+      start_minute:'',
+      start_ampm:'pm',
 
-        end_hour:"",
-        end_minute:"",
-        end_ampm:"pm"
+      end_hour:'',
+      end_minute:'',
+      end_ampm:'pm'
+    }
+  },
+  mounted: function(){
+    // stuff
+  },
+  methods:{
+    AllowedDates: function(val){
+      if(moment(val).isSameOrAfter(moment().subtract(1,'d'))) return val
+    },
+
+    /* Converts start and end times stored in data to formatted strings for display in the ui */
+    FormattedDateTime: function(start,end) {
+      return moment.tz(start, dateTimeStorageFormat, clientTimeZone).format('dddd, MMMM Do, h:mma') + ' - '
+          + moment.tz(end, dateTimeStorageFormat, clientTimeZone).format('h:mma')
+    },
+
+    CheckForFocusOutHour: function(type) {
+      let which_hour = (type==='START') ? 'start_hour' : 'end_hour'
+      let which_hour_invalid = (type==='START') ? 'start_hour_invalid' : 'end_hour_invalid'
+
+
+      if (this.$data[which_hour].length >= 2) {
+        if (this.$data[which_hour] >= 1 && this.$data[which_hour] <= 12) {
+          return false
+        } else {
+          return true
+        }
       }
     },
-    mounted: function(){
-      // stuff
+    CheckForFocusOutMin: function(type) {
+      let which_minute = (type==='START') ? 'start_minute' : 'end_minute'
+      let which_minute_invalid = (type==='START') ? 'start_minute_invalid' : 'end_minute_invalid'
+
+      if (this.$data[which_minute].length >= 2) {
+
+        if (this.$data[which_minute] >= 0 && this.$data[which_minute] <= 59) {
+          return false
+        } else {
+          return true
+        }
+      }
     },
-    methods:{
-      AllowedDates: function(val){
-        if(moment(val).isSameOrAfter(moment().subtract(1,'d'))) return val
-      },
 
-      /* Converts start and end times stored in data to formatted strings for display in the ui */
-      FormattedDateTime: function(start,end) {
-        return moment.tz(start, dateTimeStorageFormat, clientTimeZone).format('dddd, MMMM Do, h:mma') + ' - '
-          + moment.tz(end, dateTimeStorageFormat, clientTimeZone).format('h:mma')
-      },
+    // CreateTestCalendarEvent: function(){
+    //   this.$store.dispatch('CreateNewEvent')
+    // },
 
-      CheckForFocusOutHour: function(type) {
-        let which_hour = (type==="START") ? "start_hour" : "end_hour"
-        let which_hour_invalid = (type==="START") ? "start_hour_invalid" : "end_hour_invalid"
-
-
-        if (this.$data[which_hour].length >= 2) {
-          if (this.$data[which_hour] >= 1 && this.$data[which_hour] <= 12) {
-            return false
-          } else {
-            return true
-          }
-        }
-      },
-      CheckForFocusOutMin: function(type) {
-        let which_minute = (type==="START") ? "start_minute" : "end_minute"
-        let which_minute_invalid = (type==="START") ? "start_minute_invalid" : "end_minute_invalid"
-
-        if (this.$data[which_minute].length >= 2) {
-
-          if (this.$data[which_minute] >= 0 && this.$data[which_minute] <= 59) {
-            return false
-          } else {
-            return true
-          }
-        }
-      },
-
-      // CreateTestCalendarEvent: function(){
-      //   this.$store.dispatch('CreateNewEvent')
-      // },
-
-      EditTimeSegment: function(which_segment){
-        /* this.$store.dispatch('DeleteTimeSegment', {
+    EditTimeSegment: function(which_segment){
+      /* this.$store.dispatch('DeleteTimeSegment', {
           index: which_segment
         }) */
-        this.edit_mode = true
-        this.time_segment_index = which_segment
-        let time_segment = this.$store.getters.GetAllDateTimes[which_segment]
-        // console.log(time_segment);
-        this.picker = moment(time_segment.start_time).format("YYYY-MM-DD")
-        this.start_hour = moment(time_segment.start_time).format("hh")
-        this.start_minute = moment(time_segment.start_time).format("mm")
-        this.start_ampm = moment(time_segment.start_time).format("a")
+      this.edit_mode = true
+      this.time_segment_index = which_segment
+      let time_segment = this.$store.getters.GetAllDateTimes[which_segment]
+      // console.log(time_segment);
+      this.picker = moment(time_segment.start_time).format('YYYY-MM-DD')
+      this.start_hour = moment(time_segment.start_time).format('hh')
+      this.start_minute = moment(time_segment.start_time).format('mm')
+      this.start_ampm = moment(time_segment.start_time).format('a')
 
-        this.end_hour = moment(time_segment.end_time).format("hh")
-        this.end_minute = moment(time_segment.end_time).format("mm")
-        this.end_ampm = moment(time_segment.end_time).format("a")
-      },
-      DeleteTimeSegment: function(which_segment){
-        this.$store.dispatch('DeleteTimeSegment', {
-          index: which_segment
-        })
-      },
-      AddTimeSegment: function(){
-        this.$store.dispatch('AddNewTimeSegment')
-        this.time_segment_index = this.$store.getters.GetAllDateTimes.length - 1
-        if(this.UpdateTimeSegment(this.time_segment_index)) {
-          this.time_segment_index++
-        }
-
-      },
-      UpdateTimeSegment: function(which_segment){
-        let formated_start_time = this.check_start_time
-        let formated_end_time = this.check_end_time
-
-          this.$store.dispatch('UpdateCurrentTimeSegment', {
-            current_time_segment: which_segment,
-            optional_title: '',   // add later afer consulting with users
-            start_time: moment.tz(formated_start_time, clientTimeZone).format(dateTimeStorageFormat),
-            end_time: moment.tz(formated_end_time, clientTimeZone).format(dateTimeStorageFormat)
-          })
-
-          this.picker = null
-          this.introduction = false
-          this.edit_mode = false   //if edit mode is active turn it off
-          return true
-        //}
-
-      },
-
-      Cancel: function(){
-        this.picker = null
+      this.end_hour = moment(time_segment.end_time).format('hh')
+      this.end_minute = moment(time_segment.end_time).format('mm')
+      this.end_ampm = moment(time_segment.end_time).format('a')
+    },
+    DeleteTimeSegment: function(which_segment){
+      this.$store.dispatch('DeleteTimeSegment', {
+        index: which_segment
+      })
+    },
+    AddTimeSegment: function(){
+      this.$store.dispatch('AddNewTimeSegment')
+      this.time_segment_index = this.$store.getters.GetAllDateTimes.length - 1
+      if(this.UpdateTimeSegment(this.time_segment_index)) {
+        this.time_segment_index++
       }
 
     },
-    computed:{
-      start_hour_invalid: function(){
-        return this.CheckForFocusOutHour('START')
-      },
-      start_minute_invalid: function(){
-        return this.CheckForFocusOutMin('START')
-      },
-      end_hour_invalid: function(){
-        return this.CheckForFocusOutHour('END')
-      },
-      end_minute_invalid: function(){
-        return this.CheckForFocusOutMin('END')
-      },
-      chrono_order_invalid: function(){
+    UpdateTimeSegment: function(which_segment){
+      let formated_start_time = this.check_start_time
+      let formated_end_time = this.check_end_time
 
-        if((this.check_start_time._isValid)&&(this.check_end_time._isValid)){
-          if((this.start_hour!=="")&&(this.end_hour!=="")){
-            if(this.check_start_time.isAfter(this.check_end_time)){
-              return true
-              // TODO deal with the case when hours are the same and minutes are being entered
-            }
-            else{
-              return false
-            }
-          }
-          else{
-            return false
-          }
-        }
-        else{
-          return false
-        }
-      },
-      dates_and_times: function(){
-        return this.$store.getters.GetAllDateTimes
-      },
-      check_start_time: function(){
-        return moment.tz(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`,
-          dateTimePickerFormat, clientTimeZone)
-      },
-      check_end_time: function(){
-        let temp_date_time = moment(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`,
-          dateTimePickerFormat, clientTimeZone)
+      this.$store.dispatch('UpdateCurrentTimeSegment', {
+        current_time_segment: which_segment,
+        optional_title: '',   // add later afer consulting with users
+        start_time: moment.tz(formated_start_time, clientTimeZone).format(dateTimeStorageFormat),
+        end_time: moment.tz(formated_end_time, clientTimeZone).format(dateTimeStorageFormat)
+      })
 
-        if((this.start_ampm === "pm")&&(this.end_ampm === "am")){
-          return moment(temp_date_time).add(1, 'd')
-        }
-        else{
-          return temp_date_time
-        }
-      },
-      validate_time: function() {
+      this.picker = null
+      this.introduction = false
+      this.edit_mode = false   //if edit mode is active turn it off
+      return true
+      //}
 
-        // if(this.start_hour!==''){
-        //   console.log("start: ", this.start_hour);
-        // }
+    },
 
-        if(!this.chrono_order_invalid){
-          if((this.start_hour!=="")&&(this.end_hour!=="")){
+    Cancel: function(){
+      this.picker = null
+    }
+
+  },
+  computed:{
+    start_hour_invalid: function(){
+      return this.CheckForFocusOutHour('START')
+    },
+    start_minute_invalid: function(){
+      return this.CheckForFocusOutMin('START')
+    },
+    end_hour_invalid: function(){
+      return this.CheckForFocusOutHour('END')
+    },
+    end_minute_invalid: function(){
+      return this.CheckForFocusOutMin('END')
+    },
+    chrono_order_invalid: function(){
+
+      if((this.check_start_time._isValid)&&(this.check_end_time._isValid)){
+        if((this.start_hour!=='')&&(this.end_hour!=='')){
+          if(this.check_start_time.isAfter(this.check_end_time)){
             return true
+            // TODO deal with the case when hours are the same and minutes are being entered
           }
           else{
             return false
           }
         }
-        else {
+        else{
           return false
         }
+      }
+      else{
+        return false
+      }
+    },
+    dates_and_times: function(){
+      return this.$store.getters.GetAllDateTimes
+    },
+    check_start_time: function(){
+      return moment.tz(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`,
+        dateTimePickerFormat, clientTimeZone)
+    },
+    check_end_time: function(){
+      let temp_date_time = moment(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`,
+        dateTimePickerFormat, clientTimeZone)
+
+      if((this.start_ampm === 'pm')&&(this.end_ampm === 'am')){
+        return moment(temp_date_time).add(1, 'd')
+      }
+      else{
+        return temp_date_time
+      }
+    },
+    validate_time: function() {
+
+      // if(this.start_hour!==''){
+      //   console.log("start: ", this.start_hour);
+      // }
+
+      if(!this.chrono_order_invalid){
+        if((this.start_hour!=='')&&(this.end_hour!=='')){
+          return true
+        }
+        else{
+          return false
+        }
+      }
+      else {
+        return false
       }
     }
   }
+}
 </script>
 
 <style scoped>

@@ -26,7 +26,7 @@ export default {
     this.$store.dispatch('LoadUnverifiedEvents')
   },
   components:{
-      'admin-events-list': AdminEventsList
+    'admin-events-list': AdminEventsList
   }
 }
 </script>

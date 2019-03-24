@@ -16,14 +16,14 @@
 
 <script>
 
-  export default {
-    name:'FullScreenDialog',
-    props: ['title', 'description'],
-    data: function() {
-      return {
-        visible: true
+export default {
+  name:'FullScreenDialog',
+  props: ['title', 'description'],
+  data: function() {
+    return {
+      visible: true
 
-      }
     }
   }
+}
 </script>

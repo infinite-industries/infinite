@@ -52,10 +52,10 @@ export default {
   methods: {
     FillInTheBlank: function(status){
       if(status==='ON'){
-        this.show_blank=false;
+        this.show_blank=false
       }
       else {
-        this.show_blank=true;
+        this.show_blank=true
       }
     }
   }

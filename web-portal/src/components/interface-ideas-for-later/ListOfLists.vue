@@ -21,37 +21,37 @@
    </v-list>
  </template>
 
- <script>
+<script>
 
-   export default {
-     name:'ListOfLists',
-     props: ['lists','type','title'],
-     data: function() {
-       return {
+export default {
+  name:'ListOfLists',
+  props: ['lists','type','title'],
+  data: function() {
+    return {
 
-       }
-     },
-     mounted: function(){
-      console.log(this.lists)
+    }
+  },
+  mounted: function(){
+    console.log(this.lists)
+  },
+  methods: {
+    ShowIfType: function(type){
+      return this.type===type ? true : false
     },
-     methods: {
-       ShowIfType: function(type){
-         return this.type===type ? true : false
-       },
-       RouteTo: function(route_to_page){
-         this.$router.push({ path: route_to_page })
-       },
-       ShowList: function(list_id){
-         this.$router.push({ path: `/list-viewer/${list_id}/${this.type}` })
-       },
-       FollowList: function(list_id){
-         // DISPATCH to vuex
-         //EventBus.$emit('FOLLOW_LIST', {_id:list_id});
-       },
-       UnFollowList: function(list_id){
-         // DISPATCH to vuex
-         //EventBus.$emit('UNFOLLOW_LIST', {_id:list_id});
-       }
-     }
-   }
+    RouteTo: function(route_to_page){
+      this.$router.push({ path: route_to_page })
+    },
+    ShowList: function(list_id){
+      this.$router.push({ path: `/list-viewer/${list_id}/${this.type}` })
+    },
+    FollowList: function(list_id){
+      // DISPATCH to vuex
+      //EventBus.$emit('FOLLOW_LIST', {_id:list_id});
+    },
+    UnFollowList: function(list_id){
+      // DISPATCH to vuex
+      //EventBus.$emit('UNFOLLOW_LIST', {_id:list_id});
+    }
+  }
+}
 </script>

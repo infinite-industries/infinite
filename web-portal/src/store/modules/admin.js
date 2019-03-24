@@ -20,7 +20,7 @@ const actions = {
           context.commit('POPULATE_CURRENT_EVENT', response.data.event, { root: true })
       })
   },
-  LoadUnverifiedEvents:(context, payload) => {
+  LoadUnverifiedEvents:(context) => {
     //Axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken');
     Axios.get('/admin/list-unverified')
       .then(function (_response) {
