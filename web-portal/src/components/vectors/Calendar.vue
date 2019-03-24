@@ -34,9 +34,6 @@ export default {
   methods:{
 
   },
-  methods:{
-
-  },
   mounted:function(){
 
   }

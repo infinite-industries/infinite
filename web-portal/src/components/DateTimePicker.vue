@@ -131,8 +131,6 @@ export default {
 
     CheckForFocusOutHour: function(type) {
       let which_hour = (type==='START') ? 'start_hour' : 'end_hour'
-      let which_hour_invalid = (type==='START') ? 'start_hour_invalid' : 'end_hour_invalid'
-
 
       if (this.$data[which_hour].length >= 2) {
         if (this.$data[which_hour] >= 1 && this.$data[which_hour] <= 12) {
@@ -144,7 +142,6 @@ export default {
     },
     CheckForFocusOutMin: function(type) {
       let which_minute = (type==='START') ? 'start_minute' : 'end_minute'
-      let which_minute_invalid = (type==='START') ? 'start_minute_invalid' : 'end_minute_invalid'
 
       if (this.$data[which_minute].length >= 2) {
 

@@ -1,4 +1,3 @@
-const uuidv4 = require('uuid/v4')
 const slack = require('./slackNotify')
 
 module.exports = {

@@ -23,7 +23,6 @@
 
 import Toolbar from './components/ii-toolbar.vue'
 import Notifications from './components/ii-notifications.vue'
-import IphoneSaveButton from './components/ii-iphone-save-button.vue'
 import Subscribe from './components/ii-subscribe.vue'
 import Modal from './components/ii-modal.vue'
 import 'babel-polyfill'
@@ -96,7 +95,6 @@ export default {
   components: {
     'ii-toolbar': Toolbar,
     'ii-notifications': Notifications,
-    'ii-iphone-save-button': IphoneSaveButton,
     'ii-modal': Modal,
     'ii-subscribe': Subscribe
   }

@@ -12,10 +12,14 @@
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly",
         "cy": "readonly",
-        "descirbe": "readonly",
+        "describe": "readonly",
         "it": "readonly",
         "before": "readonly",
-        "after": "readonly"
+        "after": "readonly",
+        "Cypress": "readonly",
+        "process": "readonly",
+        "__dirname": "readonly",
+        "Buffer": "readonly"
     },
     "parserOptions": {
         "ecmaVersion": 2018

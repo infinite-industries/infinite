@@ -1,8 +1,6 @@
 const express = require('express')
 const jwtAuthenticator = require(__dirname + '/utils/jwtAuthenticator')
-const JWTParser = require(__dirname + '/utils/JWTParser')
 const router = express.Router()
-const axios = require('axios')
 const bodyParser = require('body-parser')
 const {makeAPICall} = require('./utils/requestHelper')
 

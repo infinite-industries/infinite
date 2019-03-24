@@ -35,7 +35,7 @@ router.post('/create-new', [jwtAuthenticator()], function(req, res){
 
       const list_id = resAPI.data.id
 
-      makeAPICall('put', 'users/addList/' + '99af7550-f3e6-11e7-8279-f30c6795f584' + '/' + list_id, {}, process.env.API_KEY, req.token, (err, resAPI) => {
+      makeAPICall('put', 'users/addList/' + '99af7550-f3e6-11e7-8279-f30c6795f584' + '/' + list_id, {}, process.env.API_KEY, req.token, (err) => {
         if (err) {
           console.warn(err)
         } else {

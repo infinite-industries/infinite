@@ -13,7 +13,6 @@ const dotenv = require('dotenv')
 dotenv.load()
 
 const aws = require('aws-sdk')
-const util = require('util')
 const fs = require('fs')
 const uuidv4 = require('uuid/v4')
 const multiparty = require('multiparty')
@@ -156,7 +155,7 @@ router.post('/submit-new', function(req, res){
       // If hero image present, upload it to S3
       function(event, callback){
         if((Object.keys(files).length > 0)&&(files.hasOwnProperty('image'))){
-          ManageUpload(event.id, files.image[0].path, 'hero', function(err, data){
+          ManageUpload(event.id, files.image[0].path, 'hero', function(err){
             event.image = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET +'/uploads/'+event.id+'.jpg'
             callback(err, event)
           })

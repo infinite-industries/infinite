@@ -1,5 +1,3 @@
-const uuidv4 = require('uuid/v4')
-
 const Venue = function(init_obj){
 
   //required attributes

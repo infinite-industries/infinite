@@ -230,7 +230,7 @@
 <script>
 import Axios from 'axios'
 import moment from 'moment'
-import { VueEditor, Quill } from 'vue2-editor'
+import { VueEditor } from 'vue2-editor'
 
 import VenuePicker from './VenuePicker.vue'
 import DateTimePicker from './DateTimePicker.vue'

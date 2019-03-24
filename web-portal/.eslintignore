@@ -1,3 +1,5 @@
 /node_modules
 /public/js
+/cypress/plugins/index.js
+/src/components/interface-ideas-for-later
 

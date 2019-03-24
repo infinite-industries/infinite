@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import {TweenMax} from 'gsap'
+import {TimelineMax} from 'gsap'
 
 export default {
   props: ['width', 'height', 'iconColor'],
