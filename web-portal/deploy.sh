@@ -6,32 +6,33 @@ USER='ubuntu'
 
 SERVER=''
 if [[ "production" = $1 ]]; then
-  ROOT='/home/ubuntu/front_end_infinite'
-  SERVER='infinite.industries'
-
-  ssh $USER@$SERVER bash --login -i << EOF
-  cd $ROOT
-  echo 'Updating sources'
-  git reset --hard HEAD
-  git checkout master
-  git pull
-  echo 'Installing npm packages'
-  npm install --production
-  echo 'Restarting'
-  #npm run server-build
-  #echo 'Building frontend js'
-  forever stop infinite
-  rm /home/$USER/.forever/infinite.log
-  forever start --uid infinite server.js
-  echo 'Done!'
+  # ROOT='/home/ubuntu/front_end_infinite'
+  # SERVER='infinite.industries'
+  #
+  # ssh $USER@$SERVER bash --login -i << EOF
+  # cd $ROOT
+  # echo 'Updating sources'
+  # git reset --hard HEAD
+  # git checkout master
+  # git pull
+  # echo 'Installing npm packages'
+  # npm install --production
+  # echo 'Restarting'
+  # #npm run server-build
+  # #echo 'Building frontend js'
+  # forever stop infinite
+  # rm /home/$USER/.forever/infinite.log
+  # forever start --uid infinite server.js
+  echo 'Have not implemented prod for this deploy process'
 EOF
 elif [[ "staging" = $1 ]]; then
-  ROOT='/home/ubuntu/front_end_infinite'
+  # ROOT='/home/ubuntu/front_end_infinite'
+  ROOT='/home/ubuntu'
   SERVER='staging.infinite.industries'
 
   ssh $USER@$SERVER bash --login -i  << EOF
 
-  cd $ROOT
+  cd $ROOT/temp
   echo 'Updating sources'
   git reset --hard HEAD
   git checkout development
@@ -40,6 +41,9 @@ elif [[ "staging" = $1 ]]; then
   npm install --production
   echo 'Building frontend js'
   npm run production-build
+
+  cp $ROOT/web-portal/* -R 
+
   echo 'Restarting'
   forever stop infinite
   rm /home/$USER/.forever/infinite.log
