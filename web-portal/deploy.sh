@@ -32,22 +32,26 @@ elif [[ "staging" = $1 ]]; then
 
   ssh $USER@$SERVER bash --login -i  << EOF
 
-  cd $ROOT/temp
+  cd $ROOT/temp-infinite/infinite
   echo 'Updating sources'
   git reset --hard HEAD
   git checkout development
   git pull
+
+  cd ./web-portal
+  cp * -r $ROOT/front_end_infinite/.
+  cd $ROOT/front_end_infinite
+  
   echo 'Installing npm packages'
   npm install --production
   echo 'Building frontend js'
   npm run production-build
 
-  cp $ROOT/web-portal/* -R 
-
   echo 'Restarting'
   forever stop infinite
-  rm /home/$USER/.forever/infinite.log
-  forever start --uid infinite server.js
+  rm $ROOT/.forever/infinite.log
+
+  forever start --uid infinite ./server.js
   echo 'Done!'
 EOF
 else
