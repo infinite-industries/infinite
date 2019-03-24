@@ -4,7 +4,7 @@
  *
  * Just need the navigation "toolbar"
  */
-import Vue from 'vue';
+import Vue from 'vue'
 
 import Toolbar from './components/ii-toolbar.vue'
 import { store } from './store/store.js'
@@ -12,4 +12,4 @@ import { store } from './store/store.js'
 const app = new Vue({
   store: store,
   render: createEle => createEle(Toolbar)
-}).$mount('#Toolbar');
+}).$mount('#Toolbar')

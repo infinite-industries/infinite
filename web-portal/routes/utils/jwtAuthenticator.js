@@ -10,7 +10,7 @@ module.exports = (requiresAdmin = true) => {
       res.status(403).json({
         status: 'fail',
         message: 'admin permission required'
-      });
+      })
     } else if (!req.token) {
       // no token found
       console.warn(`no valid token found (${req.url})`
@@ -18,7 +18,7 @@ module.exports = (requiresAdmin = true) => {
       res.status(403).json({
         status: 'fail',
         message: 'failed to authenticate token'
-      });
+      })
     } else {
       // success
       next()

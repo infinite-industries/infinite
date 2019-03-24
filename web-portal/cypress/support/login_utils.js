@@ -1,5 +1,5 @@
-import { CLIENT_ID, CLIENT_DOMAIN } from '../../src/clientConfig';
-import { sign } from 'jsonwebtoken';
+import { CLIENT_ID, CLIENT_DOMAIN } from '../../src/clientConfig'
+import { sign } from 'jsonwebtoken'
 
 /**
  * constructs an JWT ID token for a given user's information
@@ -10,8 +10,8 @@ import { sign } from 'jsonwebtoken';
 export function getIDTokenForUser(user, cert) {
   return sign(Object.assign({}, user, {
     aud: CLIENT_ID,
-    iss: "https://infinite.industries/"
-  }), cert, { algorithm: 'RS256', expiresIn: 60 * 15 });
+    iss: 'https://infinite.industries/'
+  }), cert, { algorithm: 'RS256', expiresIn: 60 * 15 })
 }
 
 /**
@@ -22,9 +22,9 @@ export function getIDTokenForUser(user, cert) {
  */
 export function getAccessTokenForUser(user, cert) {
   return sign({
-    iss: "https://infinite.industries/",
+    iss: 'https://infinite.industries/',
     sub: user.name,
     azp: CLIENT_ID,
-    scope: "openid profile"
-  }, cert, { algorithm: 'RS256', expiresIn: 60 * 60 });
+    scope: 'openid profile'
+  }, cert, { algorithm: 'RS256', expiresIn: 60 * 60 })
 }

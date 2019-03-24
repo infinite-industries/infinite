@@ -6,15 +6,15 @@ const uuidv4 = require('uuid/v4')
 const moment = require('moment-timezone')
 
 router.use(bodyParser.urlencoded({
-    extended: true
-}));
+  extended: true
+}))
 
 router.get('/', function(req, res){
   // generate an ICS file for iCal and Outlook
 
-  const file_name = req.query.title + ".ics"
+  const file_name = req.query.title + '.ics'
 
-moment.tz.setDefault('America/New_York');
+  moment.tz.setDefault('America/New_York')
 
   let cal_content =
 `BEGIN:VCALENDAR
@@ -49,4 +49,4 @@ END:VCALENDAR`
 
 })
 
-module.exports = router;
+module.exports = router

@@ -2,7 +2,7 @@
 //    vue-bus v0.9.1
 //    (c) 2017 fffixed
 //*********************************************
-;(function() {
+(function() {
 
 
   var vueBus = {}

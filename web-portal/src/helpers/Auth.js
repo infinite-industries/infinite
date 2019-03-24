@@ -57,11 +57,11 @@ export function getConfigForReq () {
 }
 
 export function setAxiosConfig() {
-  axios.defaults.headers.common['x-access-token'] = getIdToken();
+  axios.defaults.headers.common['x-access-token'] = getIdToken()
 }
 // resets the default axios config to no longer include local jwt in request headers
 export function resetAxiosConfig() {
-  delete axios.defaults.headers.common['x-access-token'];
+  delete axios.defaults.headers.common['x-access-token']
 }
 
 export function getAccessToken () {

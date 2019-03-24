@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require('express')
 const jwtAuthenticator = require(__dirname + '/utils/jwtAuthenticator')
 const JWTParser = require(__dirname + '/utils/JWTParser')
-const router = express.Router();
+const router = express.Router()
 const axios = require('axios')
 const bodyParser = require('body-parser')
 const {makeAPICall} = require('./utils/requestHelper')
@@ -9,18 +9,18 @@ const {makeAPICall} = require('./utils/requestHelper')
 router.use(bodyParser.json())
 
 router.use(bodyParser.urlencoded({
-    extended: true
-}));
+  extended: true
+}))
 
 // List unverified non-expired events
 router.get('/list-unverified', [jwtAuthenticator()], function(req, res) {
   makeAPICall('get', 'events/current/non-verified', {}, null, req.token, (err, apiRes) => {
     if (err) {
-      console.warn('error retrieving events:' + err);
-      res.status(500).json({"error": "error retrieving events: " + err})
+      console.warn('error retrieving events:' + err)
+      res.status(500).json({'error': 'error retrieving events: ' + err})
     } else {
-      console.info('success: ' + req.url + "\n events returned: " + JSON.stringify(apiRes.data, null, 4));
-      res.json({"status": "success", "events": apiRes.data.events});
+      console.info('success: ' + req.url + '\n events returned: ' + JSON.stringify(apiRes.data, null, 4))
+      res.json({'status': 'success', 'events': apiRes.data.events})
     }
   })
 })
@@ -57,7 +57,7 @@ router.post('/update-event', [jwtAuthenticator()], function(req, res){
 // Delete specific event
 router.post('/delete-event', [jwtAuthenticator()], function(req, res){
   let id = req.body.id
-  console.log('sending delete event', req.token);
+  console.log('sending delete event', req.token)
   makeAPICall('delete', `events/${id}`, null, process.env.API_KEY, req.token, err => {
     if (err)
       return res.status(500).json({ status: 'fail', error: err })
@@ -78,4 +78,4 @@ router.post('/verify-event/:id', [jwtAuthenticator()], (req, res) => {
   })
 })
 
-module.exports = router;
+module.exports = router

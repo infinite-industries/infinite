@@ -17,8 +17,8 @@ describe('Testing event submission flow', function() {
       // event should no longer be present
       cy.visit('/')
       cy.contains('.infinite-card h3', EVENT_NAME).should('not.exist')
-    });
-  });
+    })
+  })
 
   it('Inputs dummy data into event submission form', function(){
     cy.visit('/submit-event')
@@ -30,23 +30,23 @@ describe('Testing event submission flow', function() {
     cy.wait(1000) // wait for calendar animation to complete
     cy.get('#cal-container .v-date-picker-table button').contains('1').click()
 
-    cy.get('.start-hour').type("9")
-    cy.get('.start-minute').type("00")
+    cy.get('.start-hour').type('9')
+    cy.get('.start-minute').type('00')
     cy.get('select[name=start_ampm]').select('PM')
 
-    cy.get('.end-hour').type("10")
-    cy.get('.end-minute').type("00")
+    cy.get('.end-hour').type('10')
+    cy.get('.end-minute').type('00')
     cy.get('select[name=end_ampm]').select('PM')
     cy.get('.time-confirm:not([disabled])').click()
 
     // selectFile is a custom command; see cypress/support/commands.js
-    cy.get('#event-image').selectFile('images/event_sample_image.jpg');
+    cy.get('#event-image').selectFile('images/event_sample_image.jpg')
 
     cy.get('.venue').focus()
     cy.get('.results-container > :first-child').click()
 
-    cy.get('.brief-description input').type("still testing")
-    cy.get('.submitter-email input').type("test@te.st")
+    cy.get('.brief-description input').type('still testing')
+    cy.get('.submitter-email input').type('test@te.st')
 
     // submit event and wait for promo tools section to expand on success
     cy.get('.submit-container button').click()

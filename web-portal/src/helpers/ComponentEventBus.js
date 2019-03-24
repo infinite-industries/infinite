@@ -1,6 +1,6 @@
 // ComponentEventBus.js
-import Vue from 'vue';
+import Vue from 'vue'
 
-const ComponentEventBus = new Vue();
+const ComponentEventBus = new Vue()
 
-export default ComponentEventBus;
+export default ComponentEventBus
