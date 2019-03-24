@@ -64,6 +64,8 @@
   "devDependencies": {
     "concurrently": "3.5.1",
     "cypress": "^3.1.5",
+    "eslint": "^5.15.3",
+    "eslint-plugin-vue": "^5.2.2",
     "nodemon": "1.18.3",
     "watchify": "^3.11.1"
   },
