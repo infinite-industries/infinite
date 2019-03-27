@@ -11,7 +11,7 @@ describe('Testing event submission flow', function() {
       cy.visit('/admin-event-edit/' + url.split('/').pop())
 
       // delete the event
-      cy.get('button').contains('Delete').click()
+      cy.get('.edit-container button').contains('Delete').click()
       cy.get('.v-dialog.v-dialog--active button').contains('Kill').click()
 
       // event should no longer be present
