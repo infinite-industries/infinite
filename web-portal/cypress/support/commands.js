@@ -29,10 +29,11 @@
 // for security reasons; it can be overridden with a FileList, which cannot
 // be created on its own, but we can get one from a DataTransfer object
 // (used with drop events)
-Cypress.Commands.add('selectFile', { prevSubject: 'element' }, (subject, file, options) => {
+import { basename } from 'path'
+Cypress.Commands.add('selectFile', { prevSubject: 'element' }, (subject, file) => {
   cy.fixture(file).then(function(res) {
     var dt = new DataTransfer()
-    dt.items.add(new File([res], 'event_sample_image.jpg'))
+    dt.items.add(new File([res], basename(file)))
     subject[0].files = dt.files
     subject[0].dispatchEvent(new Event('change', { bubbles: true }))
   })
@@ -40,7 +41,7 @@ Cypress.Commands.add('selectFile', { prevSubject: 'element' }, (subject, file, o
 
 import { getIDTokenForUser, getAccessTokenForUser } from './login_utils'
 
-Cypress.Commands.add('visitAsUser', {}, (url, user, options) => {
+Cypress.Commands.add('visitAsUser', {}, (url, user) => {
   // load private key for signing token (can't get `fs` to work in this context)
   cy.fixture(Cypress.env('auth_token_signing_key')).then(function(key) {
   // get user info from file
