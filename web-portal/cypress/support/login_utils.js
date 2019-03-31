@@ -1,4 +1,4 @@
-import { CLIENT_ID, CLIENT_DOMAIN } from '../../src/clientConfig'
+import { CLIENT_ID } from '../../src/clientConfig'
 import { sign } from 'jsonwebtoken'
 
 /**
