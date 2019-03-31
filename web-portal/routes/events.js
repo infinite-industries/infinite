@@ -231,24 +231,25 @@ router.get('/data/:id', (req, res) => {
 })
 
 router.get('/:id', function(req, res) {
+  const displayTimeZone = 'America/New_York'
   const id = req.params.id
   console.info('event request for "%s"', id)
   let ii_event = {}
 
   async.waterfall([
 
-    function(callback){
+    function(callback) {
       makeAPICall('get', 'events/' + id, {}, null, req.token, (err, apiResp) => {
         if (err) {
           console.warn('error getting event (%s): %s', id, err)
           res.status(500).send('error getting event')
         } else {
-
           // precompute when_date and when_time values
-          let formatted_date_times = apiResp.data.event.date_times.map((date_time)=>{
+          let formatted_date_times = apiResp.data.event.date_times.map((date_time)=> {
             return {
-              when_date:moment(date_time.start_time).format('dddd, MMMM Do'),
-              when_time: moment(date_time.start_time).format('h:mma') + ' - ' + moment(date_time.end_time).format('h:mma')
+              when_date: moment.tz(date_time.start_time, displayTimeZone).format('dddd, MMMM Do'),
+              when_time: moment.tz(date_time.start_time, displayTimeZone).format('h:mma') + ' - ' +
+                  moment.tz(date_time.end_time, displayTimeZone).format('h:mma')
             }
           })
           let calendar_date_times = {
