@@ -122,6 +122,7 @@ router.beforeResolve((to, from, next) => {
   next()
 })
 
+// eslint-disable-next-line no-unused-vars
 const app = new Vue({
   router: router,
   store: store,

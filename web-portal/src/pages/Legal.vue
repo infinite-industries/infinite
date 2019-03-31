@@ -30,7 +30,6 @@
     <p>Cookies are bits of code that sit on your machine and remember the history of your site usage. We use our cookies to make your experience on our site easier and more intuitive. Like remembering your favorite setting; never spying on your activities.
     </p>
 
-
     <h4>We do use third-party software for analytics (specifically Google and Yandex) and these guys do track you... </h4>
     <p>We need them right now to get aggregated, anonymized user data. For example, we can see how many visitors we get per week, but we do not know your name or what you order at Starbucks. Or if you’ve abandoned Starbucks to go local. Aggregated data helps us when we apply for grants (we are a non-profit after all), and helps us set realistic goals for growing the site. The bits of code that these folks represent are basically on every website you visit these days. If you categorically have issues with them, we recommend using <a href="https://www.eff.org/privacybadger" target="_new">Privacy Badger</a>, <a href="https://www.ghostery.com/" target="_new">Ghostery</a>, or something similar.
     </p>
@@ -38,7 +37,6 @@
     <h4>We wrote a few custom scripts for similar analytical purposes.</h4>
     <p>These give us info on specific UI elements, like the "add to calendar" feature. This basically helps us to confirm that a specific feature is important, or if you think it’s garbage and we should abandon it for the site’s next iteration.
     </p>
-
 
     <p>
       That’s about it. The stuff below is pure legalese. Feel free to <span id="link-to-contact" @click.stop="RouteTo('/contact')">reach out</span> to us if you have any additional questions.
@@ -52,91 +50,71 @@
 
     <p>If any of these Terms of Service is unacceptable to you, do not use the Site.</p>
 
+    <h4>Changes to Terms of Service Are Binding; Other Policies</h4>
+    <ul>
+      <li>
+        We may change these Terms of Service from time to time without advance notice. Your use of the Site or Service after any changes have been made will constitute your agreement to the modified Terms of Service and all of the changes. Accordingly, you should read the Terms of Service from time to time for any changes. We will provide a link to the current Terms of Service on the Site, and will show the date on which the Terms of Service were last updated.
+      </li>
+      <li>
+        In addition to reviewing this Agreement, you should read our Privacy Policy
+      </li>
+    </ul>
+
+    <h4>Rules of Usage</h4>
     <p>
-      <h4>Changes to Terms of Service Are Binding; Other Policies</h4>
-      <p>
-        <ul>
-          <li>
-            We may change these Terms of Service from time to time without advance notice. Your use of the Site or Service after any changes have been made will constitute your agreement to the modified Terms of Service and all of the changes. Accordingly, you should read the Terms of Service from time to time for any changes. We will provide a link to the current Terms of Service on the Site, and will show the date on which the Terms of Service were last updated.
-          </li>
-          <li>
-            In addition to reviewing this Agreement, you should read our Privacy Policy
-          </li>
-        </ul>
-      </p>
+      Use of the Service is subject to the following restrictions and obligations:
+    </p>
+    <ul>
+      <li>You may not impersonate, imitate, or pretend to be someone else when using the Service.</li>
+      <li>You agree not to access links or content that you are not authorized to access.</li>
+      <li>You agree not to log into a server or account that you are not authorized to access.</li>
+      <li>You may not attempt to probe, scan or test the vulnerability of a system or network to breach security or authentication measures without authorization.</li>
+      <li>You may not disrupt, overwhelm, attack, modify, reverse engineer, or interfere with the Service or associated software or hardware in any way. You agree not to attempt to gain unauthorized access to our servers by any means – including, without limitation, by using administrator passwords or by posing as an administrator while using the Service or otherwise.</li>
+    </ul>
+
+    <h4>Account Creation, Maintenance, and Termination</h4>
+    <ul>
+      <li>
+        In order to use certain portions of the Service, you will need to register with us and create an account. When registering for an account with us, you will be asked to provide personal information such as your name, email address, and institutional affiliation. You represent and warrant that all information provided in establishing an account, and at other points as required in the use of the Service, is current, accurate, and complete, and that you will maintain the accuracy and completeness of this information. If we previously terminated your account, you may not register for another account. You agree that we may contact you from time to time in reference to the Service.
+      </li>
+      <li>
+        As a registered account holder, you must maintain the confidentiality and security of your username(s) and password(s). You agree not to share, transfer, or authorize others to use your username and password or your account without our prior written approval. Any attempt to do so will be considered a violation of these Terms of Service.
+      </li>
+      <li>
+        You agree that you are solely responsible for all usage or activity on your account, including, but not limited to, use of the account by another person, with or without authorization. You agree to notify us immediately if you have reason to believe that your account is no longer secure.
+      </li>
+      <li>
+        We reserve the right to terminate or restrict access to your account and to delete or disable access to any links created and/or content stored in connection with the account, in our sole discretion, without advance notice, and shall have no liability for doing so. We will terminate your account in appropriate circumstances if you are determined to be a repeat infringer.
+      </li>
+    </ul>
+
+    <h4>Links to Third-Party Sites</h4>
+    <p>
+      The Site and Service provide links to third-party websites (“Third Party Sites”). We do not control and have not reviewed all material made available through Third-Party Sites linked from the Site. We do not endorse, are not affiliated with, and are not responsible for the availability of Third-Party Sites. You agree that use of Third Party Sites is at the your own risk and that we have no responsibility or liability, directly or indirectly, for any content accessed at or any damage or losses you incur in connection with any Third-Party Site. We encourage you to be aware of the terms and conditions and privacy policies of any Third-Party Sites that you visit.
     </p>
 
+    <h4>User Submitted Content</h4>
     <p>
-      <h4>Rules of Usage</h4>
-      <p>
-        Use of the Service is subject to the following restrictions and obligations:
-      </p>
-      <p>
-        <ul>
-          <li>You may not impersonate, imitate, or pretend to be someone else when using the Service.</li>
-          <li>You agree not to access links or content that you are not authorized to access.</li>
-          <li>You agree not to log into a server or account that you are not authorized to access.</li>
-          <li>You may not attempt to probe, scan or test the vulnerability of a system or network to breach security or authentication measures without authorization.</li>
-          <li>You may not disrupt, overwhelm, attack, modify, reverse engineer, or interfere with the Service or associated software or hardware in any way. You agree not to attempt to gain unauthorized access to our servers by any means – including, without limitation, by using administrator passwords or by posing as an administrator while using the Service or otherwise.</li>
-        </ul>
-      </p>
+      Some portions of the Service enable users to direct us to store content ("User Submitted Content") and make it available. With respect to any and all User Submitted Content that you may direct us to store, you represent and warrant as follows:
     </p>
-
-    <p>
-        <h4>Account Creation, Maintenance, and Termination</h4>
-        <p>
-          <ul>
-            <li>
-              In order to use certain portions of the Service, you will need to register with us and create an account. When registering for an account with us, you will be asked to provide personal information such as your name, email address, and institutional affiliation. You represent and warrant that all information provided in establishing an account, and at other points as required in the use of the Service, is current, accurate, and complete, and that you will maintain the accuracy and completeness of this information. If we previously terminated your account, you may not register for another account. You agree that we may contact you from time to time in reference to the Service.
-            </li>
-            <li>
-              As a registered account holder, you must maintain the confidentiality and security of your username(s) and password(s). You agree not to share, transfer, or authorize others to use your username and password or your account without our prior written approval. Any attempt to do so will be considered a violation of these Terms of Service.
-            </li>
-            <li>
-              You agree that you are solely responsible for all usage or activity on your account, including, but not limited to, use of the account by another person, with or without authorization. You agree to notify us immediately if you have reason to believe that your account is no longer secure.
-            </li>
-            <li>
-              We reserve the right to terminate or restrict access to your account and to delete or disable access to any links created and/or content stored in connection with the account, in our sole discretion, without advance notice, and shall have no liability for doing so. We will terminate your account in appropriate circumstances if you are determined to be a repeat infringer.
-            </li>
-          </ul>
-        </p>
-    </p>
-
-    <p>
-      <h4>Links to Third-Party Sites</h4>
-      <p>
-        The Site and Service provide links to third-party websites (“Third Party Sites”). We do not control and have not reviewed all material made available through Third-Party Sites linked from the Site. We do not endorse, are not affiliated with, and are not responsible for the availability of Third-Party Sites. You agree that use of Third Party Sites is at the your own risk and that we have no responsibility or liability, directly or indirectly, for any content accessed at or any damage or losses you incur in connection with any Third-Party Site. We encourage you to be aware of the terms and conditions and privacy policies of any Third-Party Sites that you visit.
-      </p>
-    </p>
-
-<p>
-  <h4>User Submitted Content</h4>
-  <p>
-    Some portions of the Service enable users to direct us to store content ("User Submitted Content") and make it available. With respect to any and all User Submitted Content that you may direct us to store, you represent and warrant as follows:
-  </p>
-  <p>
     <ul>
       <li>that you lawfully acquired any User Submitted Content you provide us to upload;</li>
       <li>that you have all rights necessary both to direct us to store the User Submitted Content and to grant any rights granted by you pursuant to these Terms of Service; and</li>
       <li>that our storage, use, display and making available of the User Submitted Content in connection with the Service does not and will not infringe or violate the copyrights or other rights of any third party.</li>
     </ul>
-  </p>
-</p>
 
-<p>You are solely responsible for any User Submitted Content you submit or direct us to store, and for the consequences of its being stored and made available as part of the Service.</p>
+    <p>You are solely responsible for any User Submitted Content you submit or direct us to store, and for the consequences of its being stored and made available as part of the Service.</p>
 
-<p>By submitting User Submitted Content, furnishing a link or otherwise directing us to store or vest User Submitted Content, you grant us, under any rights that you hold therein, worldwide, non-exclusive, fully paid-up, royalty-free, sublicensable, and transferable license to use, reproduce, create derivative works based upon, transmit, distribute, perform, display, and make available the User Submitted Content, in any medium now in existence or later developed, in connection with the Service or otherwise in furtherance of our mission, including but not limited to promotional uses, and to authorize others to do the foregoing.</p>
+    <p>By submitting User Submitted Content, furnishing a link or otherwise directing us to store or vest User Submitted Content, you grant us, under any rights that you hold therein, worldwide, non-exclusive, fully paid-up, royalty-free, sublicensable, and transferable license to use, reproduce, create derivative works based upon, transmit, distribute, perform, display, and make available the User Submitted Content, in any medium now in existence or later developed, in connection with the Service or otherwise in furtherance of our mission, including but not limited to promotional uses, and to authorize others to do the foregoing.</p>
 
-<p>We reserve the right, but are not obligated, to monitor use of the Service and to review, modify, take down or delete any User Submitted Content, in our sole discretion, without notice, at any time.</p>
+    <p>We reserve the right, but are not obligated, to monitor use of the Service and to review, modify, take down or delete any User Submitted Content, in our sole discretion, without notice, at any time.</p>
 
-<p>We will take down or delete any content that you have previously submitted from our Service upon your written request. </p>
+    <p>We will take down or delete any content that you have previously submitted from our Service upon your written request. </p>
 
-<p>THE SITE AND THE CONTENT ARE PROVIDED ON AN “AS IS” AND “AS AVAILABLE” BASIS. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, WE DISCLAIM ALL WARRANTIES OF ANY KIND (EXPRESS, IMPLIED OR OTHERWISE) REGARDING THE SITE, THE SERVICE OR ANY SITE CONTENT, INCLUDING BUT NOT LIMITED TO ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE MAKE NO WARRANTY ABOUT THE ACCURACY, RELIABILITY, COMPLETENESS, TIMELINESS, SUFFICIENCY, QUALITY OR SECURITY OF THE SITE, THE SERVICE OR ANY SITE CONTENT. WE DO NOT WARRANT THAT THE SITE WILL OPERATE WITHOUT ERROR OR INTERRUPTION, OR THAT THE SITE OR ITS SERVER IS FREE OF COMPUTER VIRUSES OR OTHER HARMFUL MATERIALS. WE MAKE THE SITE AND THE SERVICE AVAILABLE FREE OF CHARGE. YOUR USE OF THE SITE, THE SERVICE AND THE SITE CONTENT IS AT YOUR OWN SOLE RISK. </p>
+    <p>THE SITE AND THE CONTENT ARE PROVIDED ON AN “AS IS” AND “AS AVAILABLE” BASIS. TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, WE DISCLAIM ALL WARRANTIES OF ANY KIND (EXPRESS, IMPLIED OR OTHERWISE) REGARDING THE SITE, THE SERVICE OR ANY SITE CONTENT, INCLUDING BUT NOT LIMITED TO ANY IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE MAKE NO WARRANTY ABOUT THE ACCURACY, RELIABILITY, COMPLETENESS, TIMELINESS, SUFFICIENCY, QUALITY OR SECURITY OF THE SITE, THE SERVICE OR ANY SITE CONTENT. WE DO NOT WARRANT THAT THE SITE WILL OPERATE WITHOUT ERROR OR INTERRUPTION, OR THAT THE SITE OR ITS SERVER IS FREE OF COMPUTER VIRUSES OR OTHER HARMFUL MATERIALS. WE MAKE THE SITE AND THE SERVICE AVAILABLE FREE OF CHARGE. YOUR USE OF THE SITE, THE SERVICE AND THE SITE CONTENT IS AT YOUR OWN SOLE RISK. </p>
 
 
-<p>
-  <h4>General; Entire Agreement</h4>
-  <p>
+    <h4>General; Entire Agreement</h4>
     <ul>
       <li>
         If any provision of these Terms of Use is held to be invalid or unenforceable, that provision, to the extent unenforceable, shall be struck, and shall not affect the validity or enforceability of the remaining provisions.
@@ -157,9 +135,6 @@
         These Terms of Use set forth the entire understanding and agreement between you and us with respect to the subject matter hereof, and supersede and replace any prior or contemporaneous understandings or agreements, whether written or oral, regarding the subject matter hereof.
       </li>
     </ul>
-  </p>
-</p>
-
 
     <h2>Privacy</h2>
 

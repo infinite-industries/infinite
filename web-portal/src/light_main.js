@@ -9,6 +9,7 @@ import Vue from 'vue'
 import Toolbar from './components/ii-toolbar.vue'
 import { store } from './store/store.js'
 
+// eslint-disable-next-line no-unused-vars
 const app = new Vue({
   store: store,
   render: createEle => createEle(Toolbar)
