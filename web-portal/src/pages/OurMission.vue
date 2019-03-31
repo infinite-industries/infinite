@@ -24,20 +24,20 @@
     <p>
       Culture isn’t fixed. It ebbs, flows, transforms, doubles back. Experimentation is the path for its creation and eventually, we find our lives redefined. Infinite Industries focuses on the experimentation that untethers us from the everyday. It keeps life interesting, and assists in making our collective future more human, more inhabitable, more
 
-        <span id="fill-in-the-blank"
+      <span id="fill-in-the-blank"
         v-on:mouseenter="FillInTheBlank('ON')"
         v-on:click="FillInTheBlank('ON')"
         v-on:mouseleave="FillInTheBlank('OFF')">
-          <span v-if="show_blank">____________</span>
-          <span v-else style="color:white;background-color:black;">...what are the values you'd like to see in the world that are conspicuously absent now, that you believe art can help usher in?</span>
-        </span>
-      </p>
+        <span v-if="show_blank">____________</span>
+        <span v-else style="color:white;background-color:black;">...what are the values you'd like to see in the world that are conspicuously absent now, that you believe art can help usher in?</span>
+      </span>
+    </p>
 
-      <h2>And finally, why the name?</h2>
+    <h2>And finally, why the name?</h2>
 
-      <p>
-        Artists constantly evolve, inventing new genres and redefining their methods. The processes and mediums of the past aren’t always sufficient for the challenges of the future. We can thank artists for an <em>infinity</em> of possibilities. Production trends organize beneath the umbrella term <em>"industry,"</em> creating an <em>infinity</em> of industries and our special name ;)
-      </p>
+    <p>
+      Artists constantly evolve, inventing new genres and redefining their methods. The processes and mediums of the past aren’t always sufficient for the challenges of the future. We can thank artists for an <em>infinity</em> of possibilities. Production trends organize beneath the umbrella term <em>"industry,"</em> creating an <em>infinity</em> of industries and our special name ;)
+    </p>
 
   </div>
 </template>
