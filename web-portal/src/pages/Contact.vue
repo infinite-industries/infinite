@@ -65,7 +65,7 @@ export default {
 
     ContactUs: function(){
       Axios.post('/contact', { name: this.name, email: this.email, comment: this.comment })
-        .then((_response) => {
+        .then(() => {
           // EventBus.$emit('SHOW_NOTIFICATION',{
           //   visible: true,
           //   type: 'info',
