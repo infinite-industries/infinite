@@ -10,17 +10,6 @@ router.use(bodyParser.urlencoded({
   extended: true
 }))
 
-router.get('/', (req, res) => {
-  makeAPICall('get', 'venues', {}, process.env.API_KEY, req.token, (err, apiResp) => {
-    if (err) {
-      console.warn(err)
-      res.status(500).json({ status: 'error getting venues'})
-    } else {
-      res.json(apiResp.data)
-    }
-  })
-})
-
 router.get('/:id', (req, res) => {
   makeAPICall('get', `venues/${req.params.id}`, {}, process.env.API_KEY, req.token, (err, apiResp) => {
     if (err) {
