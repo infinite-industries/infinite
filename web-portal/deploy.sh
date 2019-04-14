@@ -32,16 +32,18 @@ elif [[ "staging" = $1 ]]; then
 
   ssh $USER@$SERVER bash --login -i  << EOF
 
-  cd $ROOT/temp-infinite/infinite
+  cd $ROOT/temp-infinite
   echo 'Updating sources'
   git reset --hard HEAD
-  git checkout development
-  git pull
+  #git checkout development
+  #git pull
+
+  git pull origin development
 
   cd ./web-portal
   cp * -r $ROOT/front_end_infinite/.
   cd $ROOT/front_end_infinite
-  
+
   echo 'Installing npm packages'
   npm install --production
   echo 'Building frontend js'
