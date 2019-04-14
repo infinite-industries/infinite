@@ -33,20 +33,14 @@ app.set('view engine', 'html')
 
 const routes = require('./routes/index')
 
-const admin = require('./routes/admin')
 const events = require('./routes/events')
-const lists = require('./routes/lists')
-const users = require('./routes/users')
 const calendar = require('./routes/calendar')
 const venues = require('./routes/venues')
 
 
 app.use(express.static('public'))
 app.use('/', [JWTParser, routes])
-app.use('/admin', [JWTParser, admin])
 app.use('/events', [JWTParser, events])
-app.use('/lists', [JWTParser, lists])
-app.use('/users', [JWTParser, users])
 app.use('/calendar', [JWTParser, calendar])
 app.use('/venues', [JWTParser, venues])
 app.use((req, res) => {

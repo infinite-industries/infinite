@@ -27,12 +27,12 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
     const updateMiddleware = options.updateMiddleware || JWTAuthChain // by default admin only
 
 	router.use('/', function(req, res, next) {
-		res.header('Access-Control-Allow-Origin', '*');
-		res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-		res.header('Access-Control-Allow-Headers',
-			'Content-Type, Authorization, Content-Length, X-Requested-With');
-		next();
-	});
+		res.header('Access-Control-Allow-Origin', '*')
+		res.header('Access-Control-Allow-Methods', 'GET,PUT,HEAD,POST,DELETE,OPTIONS')
+		res.header('Access-Control-Allow-Headers', '*')
+    res.header('Access-Control-Allow-Credentials', 'true')
+		next()
+	})
 
     debug('establishing router "/" for router "%s"', router_name);
     router.get("/", readMiddleware, function(req, res) {

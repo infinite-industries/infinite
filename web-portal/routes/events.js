@@ -95,20 +95,6 @@ const AddBitlyLink = function(id, bitly_token, cb){
   })
 }
 
-router.get('/', function(req, res) {
-  // get all current verified events
-  makeAPICall('get','events/current/verified/', {}, null, req.token, (err, apiRes) => {
-    if (err) {
-      console.warn('error retrieving events:' + err)
-      res.status(500).json({'error': 'error retrieving events: ' + err})
-    } else {
-      console.info('success: ' + req.url)
-      res.json({'status':'success', 'events': apiRes.data.events })
-    }
-  })
-})
-
-
 router.post('/submit-new', function(req, res){
 
   const form = new multiparty.Form()
@@ -208,28 +194,6 @@ router.post('/submit-new', function(req, res){
   })
 })
 
-
-router.post('/promo-new', function(req, res) {
-  res.json({'yo':'yo'})
-
-  // mail to UKY address to figure out email weirdness
-
-})
-
-router.get('/data/:id', (req, res) => {
-  const id = req.params.id
-
-  console.info(`event data request for ${id}`)
-  makeAPICall('get', 'events/' + id, {}, null, req.token, (err, apiResp) => {
-    if (err) {
-      console.warn(`error getting event (${id}): ${err}`)
-      res.status(500).send('error getting event')
-    } else {
-      res.json(apiResp.data)
-    }
-  })
-})
-
 router.get('/:id', function(req, res) {
   const displayTimeZone = 'America/New_York'
   const id = req.params.id
@@ -306,30 +270,6 @@ router.get('/:id', function(req, res) {
 
   })
 
-})
-
-router.post('/add', function(req,res){
-  console.log('Data recieved: list - '+req.body.list_id+' event - '+req.body.event_id)
-
-  const listID = req.body.list_id
-  const eventID = req.body.event_id
-
-  console.log('Data received: list - '+ req.body.list_id+' event - ' + req.body.event_id)
-
-  makeAPICall('put', 'event-lists/addEvent/' + listID +  '/' + eventID, {}, process.env.API_KEY, req.token, (err, apiResp) => {
-    res.json(apiResp.data)
-  })
-})
-
-router.post('/remove', function(req,res){
-  const listID = req.body.list_id
-  const eventID = req.body.event_id
-
-  console.log('Data received: list - '+ req.body.list_id+' event - ' + req.body.event_id)
-
-  makeAPICall('put', 'event-lists/removeEvent/' + listID +  '/' + eventID, {}, process.env.API_KEY, req.token, (err, apiResp) => {
-    res.json(apiResp.data)
-  })
 })
 
 module.exports = router

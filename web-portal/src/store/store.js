@@ -8,6 +8,7 @@ import admin from './modules/admin'
 import ui from './modules/ui'
 
 import {getIdToken, isAdmin, logout} from '../helpers/Auth'
+import {ApiService} from '../services/ApiService'
 
 Vue.use(Vuex)
 
@@ -225,7 +226,11 @@ export const store = new Vuex.Store({
 
     CreateNewList: (context, payload) => {
       // Hit API to create a list
-      Axios.post('/lists/create-new', { list_name:payload.name, description:payload.description })
+      ApiService.post('/event-lists/', { list_name:payload.name, description:payload.description })
+        .then(_response => {
+          // this is almost definitely wrong (hard coded id should probably be user id)
+          return ApiService.put(`/users/addList/'99af7550-f3e6-11e7-8279-f30c6795f584'/${_response.data.id}`)
+        })
         .then(function (_response) {
           console.log(_response.data)
           if(_response.data.status === 'success'){
@@ -257,7 +262,7 @@ export const store = new Vuex.Store({
       // TODO
     },
     AddEventToMyList: (context, payload) => {
-      Axios.post('/events/add',{ event_id:payload.event_data.id, list_id:payload.list_id })
+      ApiService.post(`/event-lists/addEvent/${payload.list_id}/${payload.event_data.id}`)
         .then(function (_response) {
           if(_response.data.status === 'success'){
             context.commit('PUSH_NEW_EVENT_TO_MY_LIST', {list_id:payload.list_id, event_data:payload.event_data})
@@ -282,7 +287,7 @@ export const store = new Vuex.Store({
         })
     },
     RemoveEventFromList: (context, payload) => {
-      Axios.post('/events/remove',{ event_id:payload.event_id, list_id:payload.list_id })
+      ApiService.post(`/event-lists/removeEvent/${payload.list_id}/${payload.event_id}`)
         .then(function (_response) {
           if(_response.data.status === 'success'){
             context.commit('REMOVE_FROM_CURRENT_LIST', _response.data)
@@ -318,7 +323,7 @@ export const store = new Vuex.Store({
         return showWelcome()
       }
 
-      Axios.get('/users/1234556')
+      ApiService.get('/users/current')
         .then(function (_response) {
           context.commit('UPDATE_USER_DATA', _response.data)
           showWelcome()
@@ -336,43 +341,38 @@ export const store = new Vuex.Store({
           showWelcome()
         })
     },
+
     LoadAllLocalEventData: (context) => {
       context.commit('SET_LOADING_STATUS', true)
-      Axios.get('/events')
-        .then(function (_response) {
+      ApiService.get('/events/current/verified/')
+        .then(_response => {
           context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
           context.commit('SET_LOADING_STATUS', false)
         })
-        .catch(function (error) {
-          console.log(error)
+        .catch(error => {
+          console.error(error)
           ComponentEventBus.$emit('SHOW_ALERT', {
             message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.'
           })
-
         })
     },
     LoadAllVenueData: (context) => {
-      // Axios.get('/events/current/verified')
-      Axios.get('/venues')
-        .then(function (_response) {
-          console.log(_response.data)
+      ApiService.get('/venues')
+        .then(_response => {
           context.commit('UPDATE_ALL_VENUES', _response.data.venues)
         })
-        .catch(function (error) {
-          console.log(error)
+        .catch(error => {
+          console.error(error)
           ComponentEventBus.$emit('SHOW_ALERT', {
             message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.'
           })
-
         })
     },
 
-    LoadListData:(context, id) => {
+    LoadListData: (context, id) => {
       // set current_list that we will be operating on
-      const req_url = '/lists/' + id
-
-      Axios.get(req_url)
-        .then(function (_response) {
+      ApiService.get(`/event-lists/${id}`)
+        .then(_response => {
           // console.log("data from server: ",response.data.events);
           if(_response.data.status === 'success'){
             console.log(_response.data)
@@ -384,7 +384,7 @@ export const store = new Vuex.Store({
             })
           }
         })
-        .catch(function (error) {
+        .catch(error => {
           console.log(error)
           ComponentEventBus.$emit('SHOW_ALERT', {
             message: 'Hrrmm... unable to get list data. Please contact us and we will figure out what went wrong. Code: #11007'
