@@ -35,14 +35,11 @@ const routes = require('./routes/index')
 
 const events = require('./routes/events')
 const calendar = require('./routes/calendar')
-const venues = require('./routes/venues')
-
 
 app.use(express.static('public'))
 app.use('/', [JWTParser, routes])
 app.use('/events', [JWTParser, events])
 app.use('/calendar', [JWTParser, calendar])
-app.use('/venues', [JWTParser, venues])
 app.use((req, res) => {
   // catch all, returns index so that we can let the spa decide what to do
   res.render('index')

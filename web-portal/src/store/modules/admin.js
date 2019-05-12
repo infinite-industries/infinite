@@ -1,6 +1,5 @@
 // Admin specific store module
 
-import Axios from 'axios'
 import ComponentEventBus from '../../helpers/ComponentEventBus.js'
 import {ApiService} from '../../services/ApiService'
 

@@ -24,6 +24,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
     options = options || {};
     const readMiddleware = options.readMiddleware || []; // by default parse any tokens, don't require them
     const createMiddleware = options.createMiddleware || JWTAuthChain // by default admin only
+    const createAfterMethod = options.createAfterMethod || (() => null)
     const updateMiddleware = options.updateMiddleware || JWTAuthChain // by default admin only
 
 	router.use('/', function(req, res, next) {
@@ -151,7 +152,12 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
                     console.warn('error creating "%s"', router_name_singular + ': ' + err);
                     return res.status(500).json({ status: err });
                 }
-                res.status(200).json({ status: 'success', id: postJSON.id });
+
+                const responseData = { status: 'success', id: postJSON.id }
+
+                createAfterMethod(req, responseData)
+
+                res.status(200).json(responseData);
             });
 	});
 

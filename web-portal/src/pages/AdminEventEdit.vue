@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import Axios from 'axios'
 import SubmissionForm from '../components/SubmissionForm.vue'
+import {ApiService} from '../services/ApiService'
 
 export default {
   data: function(){
@@ -16,7 +16,7 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    Axios.get('/venues').then( response => {     // need to move into vuex
+    ApiService.get('/venues').then( response => {     // need to move into vuex
       next(vm => vm.venues = response.data.venues)
     })
       .catch(function(error) {
