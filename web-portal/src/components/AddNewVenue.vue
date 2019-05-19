@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import Axios from 'axios'
+import {ApiService} from '../services/ApiService'
 
 export default {
   data: function () {
@@ -99,16 +99,17 @@ export default {
     },
     submitNewVenue: function() {
       this.showVenueLoadingSpinner = true
-      Axios.post('/venues/submit-new', this.new_venue).then( response => {
-        this.showVenueLoadingSpinner = false
-        this.closeVenueDropdown()
-        if (response.data.status == 'success') {
-          this.$store.dispatch('LoadAllVenueData')
-          this.$emit('newVenue', response.data.venue)
-        }
-      }).catch( err => {
-        console.error(err)
-      })
+      ApiService.post('/venues/', { venue: { ...this.new_venue }})
+        .then( response => {
+          this.showVenueLoadingSpinner = false
+          this.closeVenueDropdown()
+          if (response.data.status == 'success') {
+            this.$store.dispatch('LoadAllVenueData')
+            this.$emit('newVenue', { ...this.new_venue, id: response.data.id })
+          }
+        }).catch( err => {
+          console.error(err)
+        })
     }
   }
 }
