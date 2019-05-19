@@ -45,7 +45,8 @@ elif [[ "staging" = $1 ]]; then
   cd $ROOT/front_end_infinite
 
   echo 'Installing npm packages'
-  npm install --production
+  npm install                     # this is super hacky since it brings giant crap like cypress to the server :(
+  #npm install --production
   echo 'Building frontend js'
   npm run production-build
 
