@@ -87,6 +87,27 @@ During testing, this key pair substitutes for the real Auth0 key pair, allowing 
 
 `npm test` starts the Portal application in test mode, using the above-mentioned key pair for verifying auth tokens, and launches the Cypress test runner. You will also need to run the API server.
 
+## DOCKER/RELEASE PROCESS
+
+#### Build Container
+
+To build the development branch run:
+
+`docker build -t infinite-web-portal --build-arg GIT_VERSION=development ./`
+
+To run the development image execute (assuming all environment variables set on host):
+
+```
+docker run -d --name infinite-web-portal \
+--env LIVE_MAILGUN_API_KEY=$LIVE_MAILGUN_API_KEY \
+--env BILLY_TOKEN=$BILLY_TOKEN \
+--env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+--env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+--volume '/Users/chris/projects/infinite-industries/infinite/web-portal/keys/' \
+-p 7779:7779 \
+infinite-web-portal:latest
+```
+
 ## License
 
 MIT
