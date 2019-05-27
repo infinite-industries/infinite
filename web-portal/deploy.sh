@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-#npm run production-build
+# script to deploy the web-api to a production or staging server
+# the script makes the following assumptions:
+#   * The environment of the host has values for LIVE_MAILGUN_API_KEY, BILLY_TOKEN,AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+#   * The host has a directory containing valid certs (same certs used for the web api)
+#   * docker is installed
+#   * the user is part of the docker group
 
 USER='ubuntu'
 
@@ -29,57 +34,31 @@ elif [[ "staging" = $1 ]]; then
   # ROOT='/home/ubuntu/front_end_infinite'
   ROOT='/home/ubuntu'
   SERVER='staging.infinite.industries'
+  VERSION="0.0.1"
 
-  npm run production-build
+  docker build -t infiniteindustries/infinite-web-portal-staging:latest \
+  --build-arg GIT_VERSION=development \
+  --build-arg REDIRECT='http://$SERVER:7779/callback' ./
+
+  docker push infiniteindustries/infinite-web-portal-staging:latest
 
   ssh $USER@$SERVER bash --login -i  << EOF
+  docker stop infinite-web-portal
+  docker rm infinite-web-portal
+  sudo docker run -d --name infinite-web-portal \
+  --env LIVE_MAILGUN_API_KEY=$LIVE_MAILGUN_API_KEY \
+  --env BILLY_TOKEN=$BILLY_TOKEN \
+  --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+  --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+  --volume ~/front_end_infinite/keys/ \
+  -p 7779:7779 \
+  infiniteindustries/infinite-web-portal-staging:latest
+elif [[ "local" = $1 ]]; then
+  # should be pretty much same as above, but we can build REDIRECT going to localhost host, change api, override API_URL,
+  # change image tag and skip the ssh remote bit
+EOF
 
-  echo "ROOT: $ROOT"
-  mkdir -p $ROOT/temp-in
-  cd $ROOT/temp-infinite
-
-  if [ -d "./.git" ]
-  then
-    echo "cloning repository"
-    git clone https://github.com/infinite-industries/infinite.git ./
-  else
-    echo 'Updating sources'
-    git reset --hard HEAD
-    git pull origin development
-  fi
-
-  git checkout origin development
-
-  mkdir -p $ROOT/front_end_infinite/web-portal/public
-  cd ./web-portal
-  cp * -r $ROOT/front_end_infinite/.
-  cd $ROOT/front_end_infinite
-
-  if [ -d "$ROOT/front_end_infinite/public" ]
-  then
-    rm -R $ROOT/front_end_infinite/public
-  fi
-
-  echo 'Installing npm packages'
-  npm install --production # this is super hacky since it brings giant crap like cypress to the server :(
-
-  echo 'Restarting'
-  forever stop infinite
-
-  if [ -f "$ROOT/.forever/infinite.log" ]
-  then
-    rm $ROOT/.forever/infinite.log
-  fi
-
-  forever start --uid infinite ./server.js
   echo 'Done!'
-EOF
-
-  sftp $USER@$SERVER << EOF
-  mkdir $ROOT/front_end_infinite/public
-  cd $ROOT/front_end_infinite/
-  put -r public
-EOF
 else
   echo Please specify environment to deploy to.
   echo Usage: ./deploy.sh environment

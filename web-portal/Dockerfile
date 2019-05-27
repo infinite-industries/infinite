@@ -9,7 +9,7 @@ ARG AUDIENCE='https://1nfinite.auth0.com/api/v2/'
 ARG GIT_VERSION
 
 # Server Side
-ENV ARG ENV=prod
+ENV ENV=prod
 ENV SITE_URL=https://staging.infinite.industries
 ENV SLACK_WEBHOOK_TEST=https://hooks.slack.com/services/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
 ENV SLACK_WEBHOOK_CONTACT=https://hooks.slack.com/services/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
@@ -40,9 +40,9 @@ RUN echo "export const CLIENT_DOMAIN = '${CLIENT_DOMAIN}'\n" >> /build-dir/web-p
 RUN echo "export const REDIRECT = '${REDIRECT}'\n" >> /build-dir/web-portal/src/clientConfig.js
 RUN echo "export const AUDIENCE = '${AUDIENCE}'\n" >> /build-dir/web-portal/src/clientConfig.js
 
-RUN npm install ci
+RUN npm ci
 RUN npm run production-build
-RUN npm install ci --production
+RUN npm ci --production
 
 RUN rm ./.env
 COPY ./ /usr/src/app

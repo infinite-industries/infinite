@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# SLACK_WEBHOOK_TEST
+# SLACK_WEBHOOK_CONTACT
+# SLACK_WEBHOOK_EVENT_SUBMISSION
+# SLACK_WEBHOOK_VENUE_SUBMISSION
+# staging-api.infinite.industries
+
 ROOT='/home/ubuntu'
 USER='ubuntu'
 
