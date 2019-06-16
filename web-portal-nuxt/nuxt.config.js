@@ -15,12 +15,19 @@ export default {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/png', sizes: '192X192', href: '/images/favicon_192.png' },
+      { rel: 'apple-touch-icon', type: 'image/png', sizes: '192X192', href: '/images/4favicon_192.png' },
+      { rel: 'icon', type: 'image/png', sizes: '512X512', href: '/images/favicon_512.png' },
+      { rel: 'apple-touch-icon', type: 'image/png', sizes: '512X512', href: '/images/favicon_512.png' },
       {
         rel: 'stylesheet',
         href:
-          'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons'
+          'https://fonts.googleapis.com/icon?family=Material+Icons'
       }
+      // {
+      //   rel: 'stylesheet',
+      //   href: 'https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,600,600i,700'
+      // }
     ]
   },
   /*
@@ -44,7 +51,9 @@ export default {
     '@nuxtjs/vuetify',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    // '@nuxtjs/auth',
     '@nuxtjs/pwa',
+    '@nuxtjs/google-gtag', // TODO: need to install @nuxtjs/google-gtag
     '@nuxtjs/eslint-module'
   ],
   /*
@@ -52,6 +61,28 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
+  },
+  /*
+  ** Auth configuration
+  */
+  // auth: {
+  //   strategies: {
+  //     local: false,
+  //     auth0: {
+  //       domain: process.env.AUTH0_CLIENT_DOMAIN,
+  //       client_id: process.env.AUTH0_CLIENT_ID,
+  //       redirect_uri: process.env.AUTH0_CALLBACK
+  //     }
+  //   }
+  // },
+  /*
+  ** Google Analytics configuration
+  */
+  'google-gtag': {
+    id: process.env.GOOGLE_ANALYTICS_ID,
+    config: {
+      anonymize_ip: true // TODO: can we do this?
+    }
   },
   /*
   ** vuetify module configuration
