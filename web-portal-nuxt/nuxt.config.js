@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import 'dotenv/config'
 
 export default {
   mode: 'universal',
@@ -76,5 +77,12 @@ export default {
     */
     extend(config, ctx) {
     }
+  },
+  env: {
+    CLIENT_ID: process.env.CLIENT_ID,
+    CLIENT_DOMAIN: process.env.CLIENT_DOMAIN,
+    REDIRECT: process.env.REDIRECT,
+    AUDIENCE: process.env.AUDIENCE,
+    API_URL: process.env.API_URL
   }
 }

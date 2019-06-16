@@ -100,3 +100,4 @@ public/js/*
 analytics.sqlite
 clientConfig.js
 cypress.env.json
+keys
