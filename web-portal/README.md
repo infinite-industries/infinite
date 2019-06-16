@@ -1,10 +1,10 @@
-# Infinite Industries Portal Application
+# Infinite Industries Portal Web Application
 
 Front-end web application for [Infinite Industries](https://infinite.industries).
 
 ## Features
 
-- **TODO**: someone should fill in this list
+- **TODO**: [refer to Project Page] (https://github.com/infinite-industries/infinite/projects/1)
 
 ## Development Environment Setup
 
@@ -14,11 +14,6 @@ You will need the following tools:
 
 - [Node.js](https://nodejs.org/en/): 8.9.4 or higher
 - [npm](https://www.npmjs.com/get-npm): 5.6.0 or higher
-- Vue.js: [vue-cli 3.0](https://github.com/vuejs/vue-cli)
-
-  ```bash
-  npm install -g @vue/cli
-  ```
 
 ### Recommended
 
@@ -35,57 +30,56 @@ This application communicates with an [API server](https://github.com/infinite-i
 1. Download the current version of Infinite Industries from GitHub
 
   ```bash
-  git clone https://github.com/infinite-industries/front_end_infinite.git
+  git clone https://github.com/infinite-industries/infinite.git
   ```
 
 2. Install dependencies
 
   ```bash
+  cd web-portal-nuxt
   npm install
   ```
 
-3. Set up the env file and client config file. Sample files are provided with a `.sample` suffix. A core team member can send you the dev secrets via the Infinite Industries Slack.
+3. Set up the env file. Sample files are provided with a `.sample` suffix. A core team member can send you the dev secrets via the Infinite Industries Slack.
 
  ```bash
  cp .env.sample .env    # main env file
- cp src/clientConfig.sample.js src/clientConfig.js  # Auth0 config that needs to be included in the JS bundle
  ```
 
-4. Get the Auth0 public key from a core team member and copy it to the `keys/` directory. The name is configurable in the env file but defaults to `keys/1nfinite.pem`
+4. Start the server
+ ```bash
+ npm run dev
+ ```
 
-5. Start the server
+5. If you have not already done so, start the API server. The API server can also be started prior to the portal server.
 
-  ```bash
-  npm run start-dev
-  ```
+6. Point your browser to `http://localhost:7779`
 
-  This sets up watchers to rebuild the client-side JS on changes and starts the server using nodemon to restart on changes; if you need to do these steps separately consult `package.json` to see how `start-dev` works.
+## Building for Production
 
-6. If you have not already done so, start the API server. The API server can also be started prior to the portal server.
+1. Run the Nuxt build
+ ```bash
+ npm run build
+ ```
 
-7. Point your browser to `http://localhost:7779`
+2. Start the Nuxt production server
+ ```bash
+ npm run start
+ ```
 
 ## Running Tests
 
 The first time you run the tests you will need to configure [Cypress](https://cypress.io).
 
-1. Set up the cypress environment file.
+### Running Integration Tests
 
-  ```bash
-  cp cypress.env.json.sample cypress.env.json
-  ```
-
-2. Copy the testing private key into the `keys/` directory
-
-  ```bash
-  cp cypress/fixtures/keys/1nfinite_testing.key keys/1nfinite_testing.key
-  ```
-
-During testing, this key pair substitutes for the real Auth0 key pair, allowing the tests to generate valid JWTs for ad-hoc authentication without contacting Auth0.
-
-**NOTE**: the `1nfinite_testing` key pair is provided in source control for convenience and should not be used in any production context.
-
-`npm test` starts the Portal application in test mode, using the above-mentioned key pair for verifying auth tokens, and launches the Cypress test runner. You will also need to run the API server.
+1. You'll need to copy cypress.evn.json.sample to cypress.env.json and fill in missing values
+2. Have a postgres db up and running
+    a. `docker run --name infinite-db -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=xxx -e POSTGRES_DB=infinite-api -d postgres:9.6.2-alpine`
+3. run `db:refresh:it` from inside the api-server directory (WARNING THIS WILL ERASE DATA IN YOUR DB)
+2. start the api-server `npm run start:dev`
+3. start the web-portal server `npm run start:dev`
+4. run `npm run test:it` from the web-portal directory
 
 ## License
 

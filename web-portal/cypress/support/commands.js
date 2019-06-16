@@ -1,57 +1,54 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This is will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
-
-// custom command for populating an input for file upload
-// it's hard to programmatically change an input[type=file]'s files property
-// for security reasons; it can be overridden with a FileList, which cannot
-// be created on its own, but we can get one from a DataTransfer object
-// (used with drop events)
 import { basename } from 'path'
+
 Cypress.Commands.add('selectFile', { prevSubject: 'element' }, (subject, file) => {
   cy.fixture(file).then(function(res) {
-    var dt = new DataTransfer()
+    const dt = new DataTransfer()
+
     dt.items.add(new File([res], basename(file)))
+
     subject[0].files = dt.files
     subject[0].dispatchEvent(new Event('change', { bubbles: true }))
   })
 })
 
-import { getIDTokenForUser, getAccessTokenForUser } from './login_utils'
+Cypress.Commands.add('visitAsUser', {}, (username, password, url) => {
+  Cypress.log({
+    name: 'loginViaAuth0'
+  })
 
-Cypress.Commands.add('visitAsUser', {}, (url, user) => {
-  // load private key for signing token (can't get `fs` to work in this context)
-  cy.fixture(Cypress.env('auth_token_signing_key')).then(function(key) {
-  // get user info from file
-    cy.fixture('users/' + user + '.json').then(function(res) {
-      cy.visit(url, {
-        onBeforeLoad: function(win) {
-          win.localStorage.setItem('access_token', getAccessTokenForUser(res, key))
-          win.localStorage.setItem('id_token', getIDTokenForUser(res, key))
-        }
-      })
+  const options = {
+    method: 'POST',
+    url: Cypress.env('auth_url'),
+    body: {
+      grant_type: 'password',
+      username: username,
+      password: password,
+      audience: Cypress.env('auth_audience'),
+      scope: 'openid profile',
+      client_id: Cypress.env('auth_client_id'),
+      client_secret: Cypress.env('auth_client_secret')
+    }
+  }
+
+  return cy.request(options).then((resp) => {
+    return resp.body
+  }).then(async (body) => {
+    const { access_token, expires_in, id_token } = body
+
+    const auth0State = {
+      nonce: '',
+      state: 'some-random-state'
+    }
+
+    const callbackUrl = `/callback#access_token=${access_token}&scope=openid&id_token=${id_token}` +
+      `&expires_in=${expires_in}&token_type=Bearer&state=${auth0State.state}`
+
+    await cy.visit(callbackUrl, {
+      onBeforeLoad(win) {
+        win.document.cookie = 'com.auth0.auth.some-random-state=' + JSON.stringify(auth0State)
+      }
     })
+
+    cy.visit(url)
   })
 })

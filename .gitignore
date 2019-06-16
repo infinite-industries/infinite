@@ -11,3 +11,5 @@
 *.sw*
 
 prep.txt
+*.code-workspace
+

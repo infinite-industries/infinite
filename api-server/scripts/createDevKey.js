@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+/**
+ * This code is deprecated. It comes from when used to require a dev key to talk to the api. This is no longer the way
+ * the auth system works.
+ *
+ */
+
 /*
 	requires:
 		--user <username>

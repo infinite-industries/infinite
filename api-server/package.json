@@ -5,19 +5,18 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
-    "start-dev": "nodemon ./index.js",
-    "start-docker": "npm run setup-dev && npm run start",
-    "start-test": "jwtPEM=\"./keys/1nfinite_testing.pem\" nodemon ./index.js",
+    "start:dev": "nodemon ./index.js",
+    "start:docker": "npm run setup-dev && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watchify": "watchify -vd -p browserify -e ./src/main.js -o ./public/js/dist.js",
     "deploy": "./deploy.sh production",
-    "createTestDevKey": "./scripts/createDevKey.js --user tester --org InfiniteTest --id 2019529e-7f8c-44f9-8996-f52a88b2a314",
-    "setup-create-db": "sequelize db:create",
-    "setup-drop-db": "sequelize db:drop",
-    "setup-migrate-db": "sequelize db:migrate",
-    "setup-dev": "sequelize db:migrate:undo:all && sequelize db:migrate && npm run createTestDevKey && sequelize db:seed:all && npm run setup-seed-from-prod",
-    "setup-refresh-db": "npm run setup-drop-db && npm run setup-create-db && npm run setup-dev",
-    "setup-seed-from-prod": "node ./scripts/populateDatabaseFromPublic.js"
+    "db:create": "sequelize db:create",
+    "db:drop": "sequelize db:drop",
+    "db:migrate": "sequelize db:migrate",
+    "db:seed": "sequelize db:seed:all",
+    "db:seed:venues": "sequelize db:seed --seed 20190929142748-venues.js",
+    "db:refresh": "npm run db:drop && npm run db:create && npm run db:migrate",
+    "db:refresh:it": "npm run db:refresh && npm run db:seed:venues"
   },
   "keywords": [
     "art",
@@ -32,13 +31,14 @@
     ]
   },
   "devDependencies": {
+    "faker": "^4.1.0",
     "frisby": "^2.0.1",
     "jest-cli": "^20.0.4",
     "nodemon": "^1.15.0"
   },
   "dependencies": {
     "async": "^2.5.0",
-    "axios": "^0.16.2",
+    "axios": "^0.19.0",
     "body-parser": "^1.17.2",
     "debug": "^3.0.1",
     "dotenv": "^4.0.0",

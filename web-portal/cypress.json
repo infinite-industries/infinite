@@ -1,3 +1,8 @@
 {
-  "baseUrl": "http://localhost:7779"
+  "baseUrl": "http://localhost:7779",
+  "env": {
+    "auth_url": "https://1nfinite.auth0.com/oauth/token",
+    "auth_audience": "https://1nfinite.auth0.com/api/v2/",
+    "auth_client_id": "PYKhof4U0jKE3v4h8xKSgihHz9atBE5O"
+  }
 }

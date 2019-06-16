@@ -1,9 +1,16 @@
 {
-  "presets": ["es2015"],
-  "plugins": [
-    "transform-es2015-spread",
-    "transform-object-rest-spread",
-    "transform-async-to-generator",
-    ["babel-plugin-dotenv", { "replacedModuleName": "babel-dotenv" }]
-  ]
+  "env": {
+    "test": {
+      "presets": [
+        [
+          "@babel/preset-env",
+          {
+            "targets": {
+              "node": "current"
+            }
+          }
+        ]
+      ]
+    }
+  }
 }
