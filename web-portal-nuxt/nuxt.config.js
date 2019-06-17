@@ -16,7 +16,7 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/png', sizes: '192X192', href: '/images/favicon_192.png' },
-      { rel: 'apple-touch-icon', type: 'image/png', sizes: '192X192', href: '/images/4favicon_192.png' },
+      { rel: 'apple-touch-icon', type: 'image/png', sizes: '192X192', href: '/images/favicon_192.png' },
       { rel: 'icon', type: 'image/png', sizes: '512X512', href: '/images/favicon_512.png' },
       { rel: 'apple-touch-icon', type: 'image/png', sizes: '512X512', href: '/images/favicon_512.png' },
       {
