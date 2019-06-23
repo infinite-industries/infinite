@@ -97,20 +97,20 @@ export default {
   },
   methods: {
     getVisibleItems(navItems) {
-      // !!! TODO Fix auth
-      return true
-      // const loggedIn = isLoggedIn()
-      // const isShown = (item) => {
-      //   if (item.isAdminOnly && (!loggedIn || !isAdmin())) {
-      //     return false
-      //   } else if (item.isAuthOnly && !loggedIn) { return false }
-      //
-      //   if (item.isUnAuthOnly && loggedIn) { return false }
-      //
-      //   return true
-      // }
-      //
-      // return navItems.filter(item => isShown(item))
+      // !!! FIX AUTH (CAW)
+      const loggedIn = true // isLoggedIn()
+      const admin = true // isAdmin()
+      const isShown = (item) => {
+        if (item.isAdminOnly && (!loggedIn || admin)) {
+          return false
+        } else if (item.isAuthOnly && !loggedIn) { return false }
+
+        if (item.isUnAuthOnly && loggedIn) { return false }
+
+        return true
+      }
+
+      return navItems.filter(item => isShown(item))
     },
     RouteTo: function (item, event) {
       // if router is present, we're handing nav manually here
