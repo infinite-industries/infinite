@@ -1,5 +1,5 @@
 <template>
-  <div v-show="notification && notification.open" id="container">
+  <div v-show="notification.open" id="container">
     <div id="notify">
       <div id="close-notify" @click="CloseNotifications()">
         X
@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     notification: function () {
-      return this.$store.getters.notificationsData
+      return this.$store.getters['ui/notificationsData']
     }
   },
   mounted: function () {

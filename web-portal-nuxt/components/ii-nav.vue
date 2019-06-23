@@ -76,7 +76,7 @@ export default {
   },
   computed: {
     open() {
-      return this.$store.state.ui.sidebarOpen
+      return this.$store.getters['ui/sidebarOpen']
     }
   },
   watch: {

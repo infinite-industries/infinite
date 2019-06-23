@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     open() {
-      return this.$store.state.ui.sidebarOpen
+      return this.$store.getters['ui/sidebarOpen']
     }
   },
   watch: {
@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     ToggleNav: function () {
-      this.$store.dispatch('toggleSidebar')
+      this.$store.dispatch('ui/toggleSidebar')
     }
   }
 }

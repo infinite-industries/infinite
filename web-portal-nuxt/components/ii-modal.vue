@@ -1,5 +1,5 @@
 <template>
-  <div v-if="modal && modal.open" id="modal-container">
+  <div v-if="modal.open" id="modal-container">
     <div id="modal">
       <div id="close-modal" @click="CloseModal()">
         X
@@ -21,7 +21,7 @@ export default {
   },
   computed: {
     modal: function () {
-      return this.$store.getters.modalData
+      return this.$store.getters['ui/modalData']
     }
   },
   methods: {

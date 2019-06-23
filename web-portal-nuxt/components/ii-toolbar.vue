@@ -39,7 +39,7 @@ export default {
   },
   computed: {
     nav_closed: function () {
-      return !this.$store.state.ui.sidebarOpen
+      return !this.$store.getters['ui/sidebarOpen']
     }
   },
   methods: {
