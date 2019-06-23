@@ -1,4 +1,4 @@
-import { getIdToken, isAdmin, logout } from '../helpers/Auth'
+// import { getIdToken, isAdmin, logout } from './helpers/Auth'
 import { ApiService } from '../services/ApiService'
 import ComponentEventBus from '../helpers/ComponentEventBus'
 
@@ -187,11 +187,13 @@ export const mutations = {
 
 export const actions = {
   Logout: (context) => {
-    logout()
-    context.commit('LOGOUT')
+    // TODO (CAW) Fix Auth
+    // logout()
+    // context.commit('LOGOUT')
   },
   Login: (context) => {
-    context.commit('LOGIN', { admin_role: isAdmin() })
+    // TODO (CAW) Fix Auth
+    // context.commit('LOGIN', { admin_role: isAdmin() })
   },
   CreateNewEvent: (context) => {
     context.commit('CREATE_NEW_EVENT')
@@ -298,9 +300,10 @@ export const actions = {
       })
     }
 
-    if (!getIdToken()) {
-      return showWelcome()
-    }
+    // !!! TODO (CAW) Fix Auth
+    // if (!getIdToken()) {
+    //   return showWelcome()
+    // }
 
     ApiService.get('/users/current')
       .then(function (_response) {
