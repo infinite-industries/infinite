@@ -7,14 +7,53 @@ export default {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    // TODO: how much of this should be pulled from env / another config?
+    //       important consideration for reusability
+    //       if we put some of this in .env, anything non-sensitive could be
+    //       supplied in .env.sample
+    titleTemplate: '%s - Infinite Industries',
+    title: 'Infinite Industries',
     meta: [
       { charset: 'utf-8' },
+      { 'http-equiv': 'Content-Type', content: 'text/html; charset=utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+
+      { name: 'title', content: 'Infinite Industries' },
+      { name: 'description', content: 'Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.' },
+      { name: 'referrer', content: 'unsafe-url' },
+
+      { property: 'author', content: 'infinte industries' },
+
+      { hid: 'fb:app_id', property: 'fb:app_id', content: process.env.FACEBOOK_APP_ID },
+      { hid: 'og:title', property: 'og:title', content: 'Infinite Industries' },
+      { hid: 'og:site_name', property: 'og:site_name', content: 'Infinite Industries' },
+      { hid: 'og:url', property: 'og:url', content: 'https://infinite.industries' },
+      { hid: 'og:type', property: 'og:type', content: 'article' },
+      { hid: 'og:description', property: 'og:description', content: 'Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.' },
+      { hid: 'og:image', property: 'og:image', content: 'https://infinite.industries/images/default.jpg' },
+      { hid: 'og:image:alt', property: 'og:image:alt', content: 'Infinite Industries' },
+
+      { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
+      { hid: 'twitter:site', name: 'twitter:site', content: '@1nfinite_1' },
+      { hid: 'twitter:creator', name: 'twitter:creator', content: '@1nfinite_1' },
+      { hid: 'twitter:title', name: 'twitter:title', content: 'Infinite Industries' },
+      { hid: 'twitter:description', name: 'twitter:description', content: 'Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.' },
+      { hid: 'twitter:image:src', name: 'twitter:image:src', content: 'https://infinite.industries/images/default.jpg' },
+
+      { name: 'mobile-web-app-capable', content: 'yes' },
+      { name: 'apple-mobile-web-app-capable', content: 'yes' },
+      { name: 'application-name', content: 'Infinite' },
+      { name: 'apple-mobile-web-app-title', content: 'Infinite' },
+      { name: 'theme-color', content: '#ffffff' },
+      { name: 'msapplication-navbutton-color', content: '#ffffff' },
+      { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+      { name: 'msapplication-starturl', content: '/' }
     ],
     link: [
+      // TODO: should canonical link pull base URL from env / other config?
+      { hid: 'canonical', rel:'canonical', href: 'https://infinite.industries/' },
+      { rel: 'me', href: 'https://twitter.com/1nfinite_1' },
+
       { rel: 'icon', type: 'image/png', sizes: '192X192', href: '/images/favicon_192.png' },
       { rel: 'apple-touch-icon', type: 'image/png', sizes: '192X192', href: '/images/favicon_192.png' },
       { rel: 'icon', type: 'image/png', sizes: '512X512', href: '/images/favicon_512.png' },
@@ -24,6 +63,7 @@ export default {
         href:
           'https://fonts.googleapis.com/icon?family=Material+Icons'
       }
+      // TODO: this may or not be necessary, depending on whether we keep this in the App SFC stylesheet
       // {
       //   rel: 'stylesheet',
       //   href: 'https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,600,600i,700'
