@@ -77,7 +77,7 @@ export default {
   computed: {
     open() {
       return this.$store.getters['ui/sidebarOpen']
-    }
+    },
   },
   watch: {
     open: function (open) {
@@ -98,7 +98,7 @@ export default {
   methods: {
     getVisibleItems(navItems) {
       // !!! FIX AUTH (CAW)
-      const loggedIn = true // isLoggedIn()
+      const loggedIn = this.isLoggedIn()
       const admin = true // isAdmin()
       const isShown = (item) => {
         if (item.isAdminOnly && (!loggedIn || admin)) {
@@ -112,6 +112,9 @@ export default {
 
       return navItems.filter(item => isShown(item))
     },
+    isLoggedIn() {
+      return this.$auth.loggedIn
+    }
     RouteTo: function (item, event) {
       // if router is present, we're handing nav manually here
       // so we should suppress browser nav
