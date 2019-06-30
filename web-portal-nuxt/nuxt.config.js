@@ -51,7 +51,7 @@ export default {
     ],
     link: [
       // TODO: should canonical link pull base URL from env / other config?
-      { hid: 'canonical', rel:'canonical', href: 'https://infinite.industries/' },
+      { hid: 'canonical', rel: 'canonical', href: 'https://infinite.industries/' },
       { rel: 'me', href: 'https://twitter.com/1nfinite_1' },
 
       { rel: 'icon', type: 'image/png', sizes: '192X192', href: '/images/favicon_192.png' },
