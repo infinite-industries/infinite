@@ -6,9 +6,14 @@
     <!-- Toolbar and Nav -->
     <ii-toolbar />
 
-    <div id="ii-container">
-      <!-- Content -->
-    </div>
+    <v-content>
+      <v-container>
+        <div id="ii-container">
+          <!-- Content -->
+          <nuxt />
+        </div>
+      </v-container>
+    </v-content>
     <!-- PopUps and Modals -->
     <!-- Regular Old Modal -->
     <ii-modal />
@@ -57,7 +62,7 @@ export default {
     // const _self = this
 
     // Inhale mock user data
-    this.$store.dispatch('LoadAllUserData')
+    // this.$store.dispatch('LoadAllUserData')
     this.$store.dispatch('LoadAllVenueData')
 
     console.log(this.$store.getters.GetLoadingStatus)

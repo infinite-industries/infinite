@@ -2,7 +2,7 @@
   <div class="sidebar">
     <ul id="nav-list">
       <li v-for="item in getVisibleItems(nav_items)" :key="item.title">
-        <a :href="item.route" @click="RouteTo(item, $event)">{{ item.title }}</a>
+        <a :href="item.route">{{ item.title }}</a>
       </li>
     </ul>
     <div id="nav-social-media" style="text-align:center;">
@@ -41,8 +41,7 @@
 
 <script>
 import { TweenMax, Power4 } from 'gsap'
-// import { isLoggedIn, login, isAdmin } from './helpers/Auth.js'
-
+import { isAdmin } from '../helpers/Auth'
 import NavSubscribe from './vectors/NavSubscribe.vue'
 import Facebook from './vectors/Facebook.vue'
 import Instagram from './vectors/Instagram.vue'
@@ -77,7 +76,7 @@ export default {
   computed: {
     open() {
       return this.$store.getters['ui/sidebarOpen']
-    },
+    }
   },
   watch: {
     open: function (open) {
@@ -97,42 +96,21 @@ export default {
   },
   methods: {
     getVisibleItems(navItems) {
-      // !!! FIX AUTH (CAW)
-      const loggedIn = this.isLoggedIn()
-      const admin = true // isAdmin()
-      const isShown = (item) => {
-        if (item.isAdminOnly && (!loggedIn || admin)) {
-          return false
-        } else if (item.isAuthOnly && !loggedIn) { return false }
+      const userIsAdmin = isAdmin()
 
-        if (item.isUnAuthOnly && loggedIn) { return false }
+      const isShown = (item) => {
+        if (item.isAuthOnly && !this.$auth.loggedIn) {
+          return false
+        } else if (item.isUnAuthOnly && this.$auth.loggedIn) {
+          return false
+        } else if (item.isAdminOnly && !userIsAdmin) {
+          return false
+        }
 
         return true
       }
 
       return navItems.filter(item => isShown(item))
-    },
-    isLoggedIn() {
-      return this.$auth.loggedIn
-    }
-    RouteTo: function (item, event) {
-      // if router is present, we're handing nav manually here
-      // so we should suppress browser nav
-      if (this.$router || item.isAuthOnly || item.isUnAuthOnly) {
-        event.preventDefault()
-      }
-
-      if (item.title === 'Login') {
-        // !!! TODO (CAW) Fix Auth
-        // login()
-      } else if (item.title === 'Logout') {
-        // !!! TODO (CAW) Fix Auth
-        // this.$store.dispatch('Logout')
-      } else if (this.$router) {
-        this.$router.push({ path: item.route })
-      }
-
-      // if router is not present, nav will be handled by browser, so no action is necessary here
     }
   }
 }

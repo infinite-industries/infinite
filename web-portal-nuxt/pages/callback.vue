@@ -3,3 +3,9 @@
     ...authorizing
   </div>
 </template>
+
+<style>
+  body {
+    color: white;
+  }
+</style>
