@@ -20,80 +20,81 @@
 
 <script>
 
-import Toolbar from '../components/ii-toolbar'
-import Notifications from '../components/ii-notifications.vue'
-import Subscribe from '../components/ii-subscribe.vue'
-import Modal from '../components/ii-modal.vue'
+  import Toolbar from '../components/ii-toolbar'
+  import Notifications from '../components/ii-notifications.vue'
+  import Subscribe from '../components/ii-subscribe.vue'
+  import Modal from '../components/ii-modal.vue'
 
-// !!! TODO (CAW): fix auth and axiosConfig
-// import { isLoggedIn, setAxiosConfig } from './helpers/Auth'
+  // !!! TODO (CAW): fix auth and axiosConfig
+  // import { isLoggedIn, setAxiosConfig } from './helpers/Auth'
 
-export default {
-  components: {
-    'ii-toolbar': Toolbar,
-    'ii-notifications': Notifications,
-    'ii-modal': Modal,
-    'ii-subscribe': Subscribe
-  },
-  data() {
-    return {
-      // notification: {
-      //   visible: false,
-      //   type: '',
-      //   message: '',
-      //   timeout: false
+  export default {
+    components: {
+      'ii-toolbar': Toolbar,
+      'ii-notifications': Notifications,
+      'ii-modal': Modal,
+      'ii-subscribe': Subscribe
+    },
+    data() {
+      return {
+        // notification: {
+        //   visible: false,
+        //   type: '',
+        //   message: '',
+        //   timeout: false
+        // }
+      }
+    },
+    // setting access token in created, so that it comes before mounted hooks in child components
+    created: function () {
+      // !!! TODO (CAW): fix auth and axiosConfig
+      // if (isLoggedIn()) {
+      //   this.$store.dispatch('Login')
+      //   setAxiosConfig()
       // }
-    }
-  },
-  // setting access token in created, so that it comes before mounted hooks in child components
-  created: function () {
-    // !!! TODO (CAW): fix auth and axiosConfig
-    // if (isLoggedIn()) {
-    //   this.$store.dispatch('Login')
-    //   setAxiosConfig()
-    // }
-  },
-  mounted: function () {
-    // const _self = this
-
-    // Inhale mock user data
-    this.$store.dispatch('LoadAllUserData')
-    this.$store.dispatch('LoadAllVenueData')
-
-    console.log(this.$store.getters.GetLoadingStatus)
-
-    // // Clean up localForage if admin pannel deletes an event
-    // EventsFromStore.$on('CALENDAR_EVENT_DELETED', function(data){
-    //   console.log("Delete the Event ", data.id);
-    // })
-    //
-    // // Clean up localForage if admin verifies the event
-    // EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
-    //   console.log("EVENT CENTRAL cleanup --- Remove Verified Event", data.id);
-    // })
-  },
-  methods: {
-    OpenEventSubmitter: function () {
-      window.location.assign('https://event-add.glitch.me/')
     },
-    OpenEmailSubscribe: function () {
-      window.location.assign('/subscribe-email')
-    },
-    RouteTo: function (route_to_page) {
-      this.$router.push({ path: route_to_page })
-    }
-    // ConfirmAction: function(action_confirmation_message){
-    //   // DISPATCH vuex
-    //   // EventBus.$emit(action_confirmation_message);
-    //   // this.notification = {
-    //   //   visible: true,
-    //   //   type: 'info',
-    //   //   message: action_confirmation_message
-    //   // }
-    // }
+    mounted: function () {
+      // const _self = this
 
+      // Inhale mock user data
+      // TODO: does this belong in the layout, or should it be in route-level component?
+      this.$store.dispatch('LoadAllUserData')
+      this.$store.dispatch('LoadAllVenueData')
+
+      console.log(this.$store.getters.GetLoadingStatus)
+
+      // // Clean up localForage if admin pannel deletes an event
+      // EventsFromStore.$on('CALENDAR_EVENT_DELETED', function(data){
+      //   console.log("Delete the Event ", data.id);
+      // })
+      //
+      // // Clean up localForage if admin verifies the event
+      // EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
+      //   console.log("EVENT CENTRAL cleanup --- Remove Verified Event", data.id);
+      // })
+    },
+    methods: {
+      OpenEventSubmitter: function () {
+        window.location.assign('https://event-add.glitch.me/')
+      },
+      OpenEmailSubscribe: function () {
+        window.location.assign('/subscribe-email')
+      },
+      RouteTo: function (route_to_page) {
+        this.$router.push({ path: route_to_page })
+      }
+      // ConfirmAction: function(action_confirmation_message){
+      //   // DISPATCH vuex
+      //   // EventBus.$emit(action_confirmation_message);
+      //   // this.notification = {
+      //   //   visible: true,
+      //   //   type: 'info',
+      //   //   message: action_confirmation_message
+      //   // }
+      // }
+
+    }
   }
-}
 </script>
 
 <style>

@@ -12,24 +12,24 @@
 </template>
 
 <script>
-export default {
-  name: 'Subscribe',
-  data: function () {
-    return {
-      // stuff
-    }
-  },
-  computed: {
-    modal: function () {
-      return this.$store.getters.modalData
-    }
-  },
-  methods: {
-    CloseModal: function () {
-      this.$store.dispatch('showModal', { open: false })
+  export default {
+    name: 'Subscribe',
+    data: function () {
+      return {
+        // stuff
+      }
+    },
+    computed: {
+      modal: function () {
+        return this.$store.getters.modalData
+      }
+    },
+    methods: {
+      CloseModal: function () {
+        this.$store.dispatch('showModal', { open: false })
+      }
     }
   }
-}
 </script>
 
 <style scoped>

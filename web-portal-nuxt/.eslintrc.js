@@ -14,6 +14,15 @@ module.exports = {
   // add your custom rules here
   rules: {
     "no-console": "off",
-    "camelcase": "off"
-  }
+    "camelcase": "off",
+    'vue/script-indent': ['error', 2, {
+      baseIndent: 1
+    }]
+  },
+  overrides: [
+    {
+      files: ['*.vue'],
+      rules: { indent: 'off' }
+    }
+  ],
 }

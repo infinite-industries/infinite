@@ -103,19 +103,19 @@
 </template>
 
 <script>
-export default {
-  props: ['width', 'height', 'iconColor'],
-  data: function () {
-    return {
-      //
-    }
-  },
-  methods: {
-    NavigateTo: function (route_name) {
-      window.location = route_name
+  export default {
+    props: ['width', 'height', 'iconColor'],
+    data: function () {
+      return {
+        //
+      }
+    },
+    methods: {
+      NavigateTo: function (route_name) {
+        window.location = route_name
+      }
     }
   }
-}
 </script>
 
 <style scoped>

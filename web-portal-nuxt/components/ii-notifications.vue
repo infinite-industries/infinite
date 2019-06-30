@@ -11,32 +11,32 @@
 
 <script>
 
-export default {
-  name: 'Notifications',
-  data: function () {
-    return {
-      // stuff
-    }
-  },
-  computed: {
-    notification: function () {
-      return this.$store.getters['ui/notificationsData']
-    }
-  },
-  mounted: function () {
-    const margin = Math.floor((window.innerWidth - window.innerWidth * 0.8) / 2)
-    // this is strongly coupled to the size of the countainer
-    // currently 80%
-    // and does not yet work with resizing the screen
-    console.log(margin)
-    document.getElementById('container').style.left = margin + 'px'
-  },
-  methods: {
-    CloseNotifications: function () {
-      this.$store.dispatch('showNotifications', { open: false })
+  export default {
+    name: 'Notifications',
+    data: function () {
+      return {
+        // stuff
+      }
+    },
+    computed: {
+      notification: function () {
+        return this.$store.getters['ui/notificationsData']
+      }
+    },
+    mounted: function () {
+      const margin = Math.floor((window.innerWidth - window.innerWidth * 0.8) / 2)
+      // this is strongly coupled to the size of the countainer
+      // currently 80%
+      // and does not yet work with resizing the screen
+      console.log(margin)
+      document.getElementById('container').style.left = margin + 'px'
+    },
+    methods: {
+      CloseNotifications: function () {
+        this.$store.dispatch('showNotifications', { open: false })
+      }
     }
   }
-}
 </script>
 
 <style scoped>

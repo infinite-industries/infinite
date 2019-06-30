@@ -21,23 +21,23 @@
 </template>
 
 <script>
-// Image created by Raden Situbondo from the Noun Project
-// https://thenounproject.com/search/?q=location&i=1842589
+  // Image created by Raden Situbondo from the Noun Project
+  // https://thenounproject.com/search/?q=location&i=1842589
 
-export default {
-  props: ['width', 'height', 'iconColor'],
-  data: function () {
-    return {
-      //
+  export default {
+    props: ['width', 'height', 'iconColor'],
+    data: function () {
+      return {
+        //
+      }
+    },
+    mounted: function () {
+
+    },
+    methods: {
+
     }
-  },
-  mounted: function () {
-
-  },
-  methods: {
-
   }
-}
 </script>
 
 <style scoped>

@@ -11,25 +11,24 @@
 </template>
 
 <script>
-
-export default {
-  name: 'Modal',
-  data: function () {
-    return {
-      // stuff
-    }
-  },
-  computed: {
-    modal: function () {
-      return this.$store.getters['ui/modalData']
-    }
-  },
-  methods: {
-    CloseModal: function () {
-      this.$store.dispatch('showModal', { open: false })
+  export default {
+    name: 'Modal',
+    data: function () {
+      return {
+        // stuff
+      }
+    },
+    computed: {
+      modal: function () {
+        return this.$store.getters['ui/modalData']
+      }
+    },
+    methods: {
+      CloseModal: function () {
+        this.$store.dispatch('showModal', { open: false })
+      }
     }
   }
-}
 </script>
 
 <style scoped>

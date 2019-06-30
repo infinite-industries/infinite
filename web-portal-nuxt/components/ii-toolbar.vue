@@ -17,38 +17,37 @@
 </template>
 
 <script>
+  import Logo from './vectors/Logo.vue'
+  import Subscribe from './vectors/Subscribe.vue'
+  import Hamburger from './vectors/Hamburger.vue'
 
-import Logo from './vectors/Logo.vue'
-import Subscribe from './vectors/Subscribe.vue'
-import Hamburger from './vectors/Hamburger.vue'
+  import Navigation from './ii-nav.vue'
 
-import Navigation from './ii-nav.vue'
-
-export default {
-  name: 'Toolbar',
-  components: {
-    'ii-logo': Logo,
-    'ii-subscribe': Subscribe,
-    'ii-hamburger': Hamburger,
-    'ii-nav': Navigation
-  },
-  data: function () {
-    return {
-      // stuff
-    }
-  },
-  computed: {
-    nav_closed: function () {
-      return !this.$store.getters['ui/sidebarOpen']
-    }
-  },
-  methods: {
-    NavigateTo: function (route_name) {
-      console.log('clicked')
-      window.alert('Open page --> ' + route_name)
+  export default {
+    name: 'Toolbar',
+    components: {
+      'ii-logo': Logo,
+      'ii-subscribe': Subscribe,
+      'ii-hamburger': Hamburger,
+      'ii-nav': Navigation
+    },
+    data: function () {
+      return {
+        // stuff
+      }
+    },
+    computed: {
+      nav_closed: function () {
+        return !this.$store.getters['ui/sidebarOpen']
+      }
+    },
+    methods: {
+      NavigateTo: function (route_name) {
+        console.log('clicked')
+        window.alert('Open page --> ' + route_name)
+      }
     }
   }
-}
 </script>
 
 <style scoped>

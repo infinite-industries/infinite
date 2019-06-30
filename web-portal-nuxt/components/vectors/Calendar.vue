@@ -22,23 +22,23 @@
 </template>
 
 <script>
-// Image created by Iconfun from the Noun Project
-// https://thenounproject.com/iconfun/collection/calendar/?i=1794960
+  // Image created by Iconfun from the Noun Project
+  // https://thenounproject.com/iconfun/collection/calendar/?i=1794960
 
-export default {
-  props: ['width', 'height', 'iconColor'],
-  data: function () {
-    return {
-      //
+  export default {
+    props: ['width', 'height', 'iconColor'],
+    data: function () {
+      return {
+        //
+      }
+    },
+    mounted: function () {
+
+    },
+    methods: {
+
     }
-  },
-  mounted: function () {
-
-  },
-  methods: {
-
   }
-}
 </script>
 
 <style scoped>
