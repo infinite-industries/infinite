@@ -3,7 +3,9 @@
     <div class="card-overlay" v-show="showCalendars" @click.stop="CloseCalendars()"></div>
     <div class="infinite-card">
         <div class="image-container">
-          <div class="image-surface" :style="backGroundImage" @click.stop="ShowEvent(calendar_event.id)"></div>
+          <nuxt-link :to="{ name: 'events-id', params: { id: calendar_event.id } } ">
+            <div class="image-surface" :style="backGroundImage"></div>
+          </nuxt-link>
         </div>
         <div class="info-container">
           <h3>{{calendar_event.title | truncate(40)}}</h3>
@@ -16,7 +18,7 @@
 
           <div class="btn-actions">
             <!-- TODO: "More Info" button should be a nuxt-link -->
-            <span class="card-btn more-info" style="cursor: pointer" @click.stop="ShowEvent(calendar_event.id)">More Info</span>
+            <nuxt-link class="card-btn more-info" :to="{ name: 'events-id', params: { id: calendar_event.id } }">More Info</nuxt-link>
             <span class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="17" height="17" class="ii-calendar"/>Add to Calendar</span>
           </div>
 
@@ -51,9 +53,6 @@
       },
       CloseCalendars: function () {
         this.showCalendars = false
-      },
-      ShowEvent: function (event_id) {
-        window.location.assign('/events/' + event_id)
       },
       AddEventToCalendar(calType) {
         // console.log(calType);
@@ -260,7 +259,9 @@
   }
 
   .more-info {
+    color: white;
     background-color: #000;
+    text-decoration: none;
   }
 
   .drop-down{
