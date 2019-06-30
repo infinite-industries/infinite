@@ -24,7 +24,6 @@
 </template>
 
 <script>
-
   import Toolbar from '../components/ii-toolbar'
   import Notifications from '../components/ii-notifications.vue'
   import Subscribe from '../components/ii-subscribe.vue'
@@ -63,9 +62,10 @@
 
       // Inhale mock user data
       // TODO: does this belong in the layout, or should it be in route-level component?
+      //       Looks like the answer is route-level, because this doesn't run if you change this to `fetch`
       // TODO: '!!! fix auth
       // this.$store.dispatch('LoadAllUserData')
-      this.$store.dispatch('LoadAllVenueData')
+      // this.$store.dispatch('LoadAllVenueData')
 
       console.log(this.$store.getters.GetLoadingStatus)
 

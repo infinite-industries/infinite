@@ -326,7 +326,7 @@ export const actions = {
 
   LoadAllLocalEventData: (context) => {
     context.commit('SET_LOADING_STATUS', true)
-    ApiService.get('/events/current/verified/')
+    return ApiService.get('/events/current/verified/')
       .then((_response) => {
         context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
         context.commit('SET_LOADING_STATUS', false)
@@ -339,7 +339,7 @@ export const actions = {
       })
   },
   LoadAllVenueData: (context) => {
-    ApiService.get('/venues')
+    return ApiService.get('/venues')
       .then((_response) => {
         context.commit('UPDATE_ALL_VENUES', _response.data.venues)
       })
