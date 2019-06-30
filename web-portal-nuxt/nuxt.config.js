@@ -91,7 +91,7 @@ export default {
     '@nuxtjs/vuetify',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    // '@nuxtjs/auth',
+    '@nuxtjs/auth',
     '@nuxtjs/pwa',
     '@nuxtjs/google-gtag', // TODO: need to install @nuxtjs/google-gtag
     '@nuxtjs/eslint-module'
@@ -105,16 +105,21 @@ export default {
   /*
   ** Auth configuration
   */
-  // auth: {
-  //   strategies: {
-  //     local: false,
-  //     auth0: {
-  //       domain: process.env.AUTH0_CLIENT_DOMAIN,
-  //       client_id: process.env.AUTH0_CLIENT_ID,
-  //       redirect_uri: process.env.AUTH0_CALLBACK
-  //     }
-  //   }
-  // },
+  auth: {
+    strategies: {
+      local: false,
+      auth0: {
+        scope: ['openid', 'profile'],
+        response_type: 'token id_token',
+        token_key: 'id_token',
+        userinfo_endpoint: false,
+        audience: process.env.AUTH0_AUDIENCE,
+        domain: process.env.AUTH0_CLIENT_DOMAIN,
+        client_id: process.env.AUTH0_CLIENT_ID,
+        redirect_uri: process.env.AUTH0_CALLBACK
+      }
+    }
+  },
   /*
   ** Google Analytics configuration
   */
