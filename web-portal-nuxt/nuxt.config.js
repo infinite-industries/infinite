@@ -18,8 +18,8 @@ export default {
       { 'http-equiv': 'Content-Type', content: 'text/html; charset=utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
 
-      { name: 'title', content: 'Infinite Industries' },
-      { name: 'description', content: 'Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.' },
+      { hid: 'title', name: 'title', content: 'Infinite Industries' },
+      { hid: 'description', name: 'description', content: 'Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.' },
       { name: 'referrer', content: 'unsafe-url' },
 
       { property: 'author', content: 'infinte industries' },
