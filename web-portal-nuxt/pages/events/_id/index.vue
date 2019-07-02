@@ -28,19 +28,42 @@
   export default {
     props: {
       id: {
-        type: String,
-        required: true
+        type: String
       }
     },
     head() {
+      const eventId = this.event && this.event.id ? this.event.id : null
+      const title = this.event && this.event.title ? this.event.title : 'no event loaded'
+      // TODO: current view sanitizes brief_description; does vue-meta do that automatically?
+      const description = this.event && this.event.brief_description ? this.event.brief_description : ''
+      const defaultImage = 'https://infinite.industries/images/default.jpg'
+      const socialImage = this.event && this.event.social_image && this.event.social_image !== 'none'
+        ? this.event.social_image
+        : defaultImage
       return {
-        title: this.event ? this.event.title : 'no event loaded',
+        title,
         meta: [
-          { hid: 'title', name: 'title', content: this.event && this.event.title },
-          // TODO: current view sanitizes brief_description; does vue-meta do that automatically?
-          { hid: 'description', name: 'description', content: this.event && this.event.brief_description },
+          { hid: 'title', name: 'title', content: title },
+          { hid: 'description', name: 'description', content: description },
+
+          { hid: 'og:title', property: 'og:title', content: title },
+          { hid: 'og:description', property: 'og:description', content: description },
+          { hid: 'og:url', property: 'og:url', content: 'https://infinite.industries/event/' + eventId },
+          { hid: 'og:type', property: 'og:type', content: 'article' },
+          { hid: 'og:image', property: 'og:image', content: socialImage },
+          { hid: 'og:image:alt', property: 'og:image:alt', content: 'Check out ' + title },
+
+          { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
+          { hid: 'twitter:title', name: 'twitter:title', content: title },
+          { hid: 'twitter:description', name: 'twitter:description', content: description },
+          { hid: 'twitter:image:src', name: 'twitter:image:src', content: socialImage },
+
           // TODO: is this setting actually what we want?
           { hid: 'robots', name: 'robots', content: 'index, noarchive, nocache' }
+        ],
+        link: [
+          // TODO: should canonical link pull base URL from env / other config?
+          { hid: 'canonical', rel: 'canonical', href: 'https://infinite.industries/event/' + eventId }
         ]
       }
     },
