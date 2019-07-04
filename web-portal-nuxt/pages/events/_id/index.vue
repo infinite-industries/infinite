@@ -26,11 +26,6 @@
   import { ApiService } from '@/services/ApiService'
 
   export default {
-    props: {
-      id: {
-        type: String
-      }
-    },
     head() {
       const eventId = this.event && this.event.id ? this.event.id : null
       const title = this.event && this.event.title ? this.event.title : 'no event loaded'
@@ -66,6 +61,9 @@
           { hid: 'canonical', rel: 'canonical', href: 'https://infinite.industries/event/' + eventId }
         ]
       }
+    },
+    validate({ params }) {
+      return !!params.id
     },
     data() {
       return {
