@@ -31,6 +31,11 @@
         <div class="col s11">
           <em>Admission Fee: {{ event.admission_fee }}</em>
         </div>
+        <div class="row event-description-content">
+          <!-- TODO (NUXT): this is supposed to be markup, right? -->
+          <!-- what does the "safe" filter (?) in the old template do? -->
+          <div class="col s11" v-html="event.description"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -206,5 +211,13 @@
     .date-time-container em {
       font-size: 1.3rem;
     }
+  }
+
+  .event-description {
+    padding: 1rem 2rem 1rem 2rem;
+  }
+
+  .event-description .event-description-content {
+    font-family: 'EB Garamond', serif;
   }
 </style>
