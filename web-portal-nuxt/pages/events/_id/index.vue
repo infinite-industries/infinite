@@ -9,7 +9,21 @@
       </div>
     </div>
     <div class="event-time-actions">
-      <div class="event-time"></div>
+      <div class="event-time">
+        <div>
+          <!-- TODO (NUXT): we were generating formatted times on the server -->
+          <!-- how do we want to handle that going forward? -->
+          <div
+            v-for="(date_time, index) in formattedDates"
+            :key="index"
+            class="date-time-container"
+          >
+            <em>{{ date_time.when_date }}</em> <br />
+            <em>{{ date_time.when_time }}</em> <i>Eastern Time</i>
+          </div>
+        </div>
+
+      </div>
       <div class="event-actions"></div>
     </div>
     <div class="event-description">
@@ -70,6 +84,18 @@
         event: null
       }
     },
+    computed: {
+      formattedDates() {
+        if (this.event && this.event.date_times) {
+          return this.event.date_times.map((dt) => {
+            return {
+              when_date: (new Date(dt.start_time)).toLocaleDateString(),
+              when_time: `${(new Date(dt.start_time)).toLocaleTimeString()} - ${(new Date(dt.end_time)).toLocaleTimeString()}`
+            }
+          })
+        } else return []
+      }
+    },
     asyncData({ error, params }) {
       // TODO: can we enforce this param as required?
       //       pages are structured as docs say to do but it's
@@ -119,5 +145,66 @@
     object-fit: cover;
     object-position: center;
     border-radius: 10px 10px 0 0;
+  }
+
+  .event-time-actions {
+    padding: 1rem 2rem;
+  }
+
+  @media only screen and (min-width: 600px) {
+
+    .event-time-actions {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .event-time-actions .event-time,
+    .event-time-actions .event-actions {
+      flex-basis: 50%;
+      flex-grow: 0;
+      min-width: 50%;
+    }
+  }
+
+  @media only screen and (min-width: 960px) {
+
+    .event-time-actions .event-time {
+      flex-basis: 33.33%;
+      flex-grow: 0;
+      min-width: 33.33%;
+    }
+
+    .event-time-actions .event-actions {
+      flex-basis: 66.67%;
+      flex-grow: 0;
+      min-width: 66.67%;
+    }
+  }
+
+  .event-time-actions .event-time > div {
+    display: inline-block;
+    margin-left: 0.5em;
+  }
+
+  .event-time-actions .event-time > div:first-child {
+    vertical-align: top;
+  }
+
+  .date-time-container {
+    margin-top: 20px;
+  }
+
+  .date-time-container:not(:first-child) {
+    margin-top: 15px;
+  }
+
+  .date-time-container em {
+    font-size: 1.5rem;
+  }
+
+  @media only screen and (max-width: 960px) {
+    .date-time-container em {
+      font-size: 1.3rem;
+    }
   }
 </style>
