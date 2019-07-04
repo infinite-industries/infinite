@@ -24,17 +24,68 @@
         </div>
 
       </div>
-      <div class="event-actions"></div>
+      <div class="event-actions">
+        <!-- TODO (NUXT): calendar menu here -->
+
+        <!-- TODO: what does the analytics call actually need to do? -->
+        <!-- InfiniteAnalytics('{{ id }}', 'map_view', '{{ site_url }}') -->
+        <a
+          v-if="event.map_link"
+          class="ii-social-button map-event"
+          :href="event.venue.g_map_link"
+          target="_blank"
+          @click="() => null"
+        >
+          <i class="fas fa-map-marker-alt ii-social-icon" />
+          <span>Directions</span>
+        </a>
+
+        <!-- TODO (NUXT): share menu here -->
+      </div>
     </div>
     <div class="event-description">
       <div v-if="event.admission_fee && event.admission_fee !== 'none'" class="row event-admission-fee">
         <div class="col s11">
           <em>Admission Fee: {{ event.admission_fee }}</em>
         </div>
-        <div class="row event-description-content">
-          <!-- TODO (NUXT): this is supposed to be markup, right? -->
-          <!-- what does the "safe" filter (?) in the old template do? -->
-          <div class="col s11" v-html="event.description"></div>
+      </div>
+      <div class="row event-description-content">
+        <!-- TODO (NUXT): this is supposed to be markup, right? -->
+        <!-- what does the "safe" filter (?) in the old template do? -->
+        <div class="col s11" v-html="event.description"></div>
+      </div>
+      <div v-if="event.website_link && event.website_link !== 'none'" class="row event-website">
+        <div class="col s11">
+          <!-- TODO (NUXT): what does the analytics call actually need to do? -->
+          <!-- InfiniteAnalytics('{{ id }}', 'website_view', '', '{{ site_url }}') -->
+          <a
+            :href="event.website_link"
+            target="_new"
+            @click="() => null"
+          >
+            Event Website
+          </a>
+        </div>
+      </div>
+      <div v-if="event.fb_event_link && event.fb_event_link !== 'none'" class="row event-fb-link">
+        <div class="col s11">
+          <!-- TODO (NUXT): analytics call -->
+          <!-- InfiniteAnalytics('{{ id }}', 'facebook_view', '', '{{ site_url }}') -->
+          <a :href="event.fb_event_link" target="_new" @click="() => null">Facebook Event Link</a>
+        </div>
+      </div>
+      <div v-if="event.eventbrite_link && event.eventbrite_link !== 'none'" class="row event-eventbrite-link">
+        <div class="col s11">
+          <!-- TODO (NUXT): analytics call -->
+          <!-- InfiniteAnalytics('{{ id }}', 'eventbrite_view', '', '{{ site_url }}') -->
+          <a :href="event.eventbrite_link" target="_new" @click="() => null">Eventbrite Link</a>
+        </div>
+      </div>
+      <div v-if="event.ticket_link && event.ticket_link !== 'none'" class="row event-ticket-link">
+        <div class="col s11">
+          <!-- TODO (NUXT): analytics call -->
+          <!-- InfiniteAnalytics('{{ id }}', 'ticket_view', '', '{{ site_url }}') -->
+          <a :href="event.ticket_link" target="_new" @click="() => null">Buy Tickets</a>
         </div>
       </div>
     </div>
@@ -211,6 +262,27 @@
     .date-time-container em {
       font-size: 1.3rem;
     }
+  }
+
+  .event-actions {
+    margin-top: 1em;
+    margin-left: 0.5em;
+  }
+
+  .event-actions-content {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  @media only screen and (min-width: 600px) {
+    .event-actions-content {
+      justify-content: flex-end;
+    }
+  }
+
+  .event-time-actions .map-event {
+    background-color: #5c5c5c;
   }
 
   .event-description {
