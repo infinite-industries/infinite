@@ -136,6 +136,24 @@
     max-width: 900px;
   }
 
+  .statement {
+    font-weight: bold;
+    font-size: 1.5em;
+  }
+  h4{
+    font-family: "Open Sans", sans-serif;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+
+  a:link, a:hover, a:visited {
+    color: black;
+  }
+
+  #link-to-contact {
+    text-decoration: underline;
+  }
+
   @media only screen and (min-width: 993px) {
     .info-page {
       width: 70%;
@@ -164,5 +182,17 @@
   .info-page p {
     font-family: "EB Garamond";
     font-size: 1.25em;
+  }
+
+  .info-list {
+    font-family: "EB Garamond";
+    font-size: 1.25em;
+    margin-bottom: 20px;
+  }
+  .info-list li {
+    margin-bottom: 10px;
+  }
+  .people-cards {
+    list-style: none;
   }
 </style>
