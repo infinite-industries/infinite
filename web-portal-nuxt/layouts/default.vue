@@ -160,6 +160,12 @@
     }
   }
 
+  @media only screen and (max-width: 576px) {
+    .info-page {
+        margin-bottom: 30px;
+    }
+  }
+
   h1, h2, h3 {
     font-family: "Open Sans", sans-serif;
     letter-spacing: .02em;

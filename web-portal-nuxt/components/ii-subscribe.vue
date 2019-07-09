@@ -7,7 +7,9 @@
   </div> -->
 
   <div id="subscribe-container">
-    <a href="https://infinite.industries/subscribe-email?source='mobile-internal'">subscribe</a>
+    <NuxtLink to="/subscribe?source='internal'">
+        Subscribe
+    </NuxtLink>
   </div>
 </template>
 
