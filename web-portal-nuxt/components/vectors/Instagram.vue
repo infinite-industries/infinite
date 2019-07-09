@@ -1,6 +1,6 @@
 // Instagram Icon
 <template>
-  <a href="https://www.instagram.com/1nfinite_1ndustries/">
+  <a href="https://www.instagram.com/1nfinite1ndustries/">
     <svg
       :width="width"
       :height="height"
