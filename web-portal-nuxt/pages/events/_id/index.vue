@@ -42,7 +42,7 @@
         <!-- TODO: what does the analytics call actually need to do? -->
         <!-- InfiniteAnalytics('{{ id }}', 'map_view', '{{ site_url }}') -->
         <a
-          v-if="event.map_link"
+          v-if="event.venue && event.venue.g_map_link"
           class="ii-social-button map-event"
           :href="event.venue.g_map_link"
           target="_blank"
@@ -417,6 +417,7 @@
     cursor: pointer;
     text-align: center;
     color: white;
+    text-decoration: none;
     margin-left: 0.75em;
     margin-bottom: 5px;
     padding: 5px 10px;
