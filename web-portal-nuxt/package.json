@@ -23,7 +23,9 @@
     "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "nuxt-clipboard2": "^0.2.1",
+    "vue-clipboard2": "^0.3.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",

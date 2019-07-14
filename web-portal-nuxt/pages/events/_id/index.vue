@@ -74,17 +74,16 @@
               <i class="fab fa-twitter ii-social-icon" />
               <span>Tweet</span>
             </a>
-            <!-- TODO (NUXT): Try to make it work (it wasn't working on old system) -->
-            <!--
             <div
               v-if="event.bitly_link"
+              v-clipboard:copy="event.bitly_link"
+              v-clipboard:success="onCopySuccess"
+              v-clipboard:error="onCopyError"
               class="ii-social-button ii-copy-btn"
-              :data-clipboard-text="event.bitly_link"
             >
               <i class="fas fa-link ii-social-icon" />
               <span>Copy Link</span>
             </div>
-            -->
           </div>
         </button>
       </div>
@@ -224,6 +223,15 @@
       },
       toggleShare() {
         this.showShareDropdown = !this.showShareDropdown
+      },
+      onCopySuccess(e) {
+        console.info('Copied to clipboard:', e.text)
+        window.alert('Copied the URL. Now you can paste it into emails, tweets or any other announcements. Enjoy!')
+      },
+      onCopyError(e) {
+        console.error('Action:', e.action)
+        console.error('Trigger:', e.trigger)
+        window.alert('We were unable to copy URL. Here it is for reference:\n' + this.event.bitly_link)
       }
     }
   }
@@ -437,6 +445,10 @@
     text-align: left;
     padding: 5px 0;
     margin: 0;
+  }
+
+  .infinite-dropdown-content .ii-social-button:hover {
+    text-decoration: underline;
   }
 
   .infinite-dropdown-content a {

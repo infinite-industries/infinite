@@ -93,8 +93,9 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/auth',
     '@nuxtjs/pwa',
-    '@nuxtjs/google-gtag', // TODO: need to install @nuxtjs/google-gtag
-    '@nuxtjs/eslint-module'
+    '@nuxtjs/google-gtag',
+    '@nuxtjs/eslint-module',
+    'nuxt-clipboard2'
   ],
   /*
   ** Axios module configuration
