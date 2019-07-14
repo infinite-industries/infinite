@@ -39,14 +39,11 @@
           </div>
         </button>
 
-        <!-- TODO: what does the analytics call actually need to do? -->
-        <!-- InfiniteAnalytics('{{ id }}', 'map_view', '{{ site_url }}') -->
         <a
           v-if="event.venue && event.venue.g_map_link"
           class="ii-social-button map-event"
           :href="event.venue.g_map_link"
           target="_blank"
-          @click="() => null"
         >
           <i class="fas fa-map-marker-alt ii-social-icon" />
           <span>Directions</span>
@@ -61,8 +58,6 @@
           <i class="fas fa-share ii-social-icon" />
           <span>Share</span>
           <div v-show="showShareDropdown" id="shareDropdown" class="infinite-dropdown-content social-dropdown">
-            <!-- TODO (NUXT): analytics call -->
-            <!-- @click="InfiniteAnalytics('{{ id }}', 'facebook_share', '{{ site_url }}')" -->
             <a
               class="ii-social-button"
               target="_new"
@@ -71,8 +66,6 @@
               <i class="fab fa-facebook-square ii-social-icon" />
               <span>Share</span>
             </a>
-            <!-- TODO (NUXT): analytics -->
-            <!-- @click="InfiniteAnalytics('{{ id }}', 'twitter_share', '{{ site_url }}')" -->
             <a
               class="ii-social-button"
               target="_new"
@@ -81,9 +74,7 @@
               <i class="fab fa-twitter ii-social-icon" />
               <span>Tweet</span>
             </a>
-            <!-- TODO (NUXT): why was this commented out? -->
-            <!-- TODO (NUXT): if restoring, analytics -->
-            <!-- @click="InfiniteAnalytics('{{ id }}', 'bitly_view', '{{ site_url }}')" -->
+            <!-- TODO (NUXT): Try to make it work (it wasn't working on old system) -->
             <!--
             <div
               v-if="event.bitly_link"
@@ -111,12 +102,9 @@
       </div>
       <div v-if="event.website_link && event.website_link !== 'none'" class="row event-website">
         <div class="col s11">
-          <!-- TODO (NUXT): what does the analytics call actually need to do? -->
-          <!-- InfiniteAnalytics('{{ id }}', 'website_view', '', '{{ site_url }}') -->
           <a
             :href="event.website_link"
             target="_new"
-            @click="() => null"
           >
             Event Website
           </a>
@@ -124,23 +112,17 @@
       </div>
       <div v-if="event.fb_event_link && event.fb_event_link !== 'none'" class="row event-fb-link">
         <div class="col s11">
-          <!-- TODO (NUXT): analytics call -->
-          <!-- InfiniteAnalytics('{{ id }}', 'facebook_view', '', '{{ site_url }}') -->
-          <a :href="event.fb_event_link" target="_new" @click="() => null">Facebook Event Link</a>
+          <a :href="event.fb_event_link" target="_new">Facebook Event Link</a>
         </div>
       </div>
       <div v-if="event.eventbrite_link && event.eventbrite_link !== 'none'" class="row event-eventbrite-link">
         <div class="col s11">
-          <!-- TODO (NUXT): analytics call -->
-          <!-- InfiniteAnalytics('{{ id }}', 'eventbrite_view', '', '{{ site_url }}') -->
-          <a :href="event.eventbrite_link" target="_new" @click="() => null">Eventbrite Link</a>
+          <a :href="event.eventbrite_link" target="_new">Eventbrite Link</a>
         </div>
       </div>
       <div v-if="event.ticket_link && event.ticket_link !== 'none'" class="row event-ticket-link">
         <div class="col s11">
-          <!-- TODO (NUXT): analytics call -->
-          <!-- InfiniteAnalytics('{{ id }}', 'ticket_view', '', '{{ site_url }}') -->
-          <a :href="event.ticket_link" target="_new" @click="() => null">Buy Tickets</a>
+          <a :href="event.ticket_link" target="_new">Buy Tickets</a>
         </div>
       </div>
     </div>
@@ -227,10 +209,6 @@
       }
     },
     asyncData({ error, params }) {
-      // TODO: can we enforce this param as required?
-      //       pages are structured as docs say to do but it's
-      //       still routing without it
-      if (!params.id) return error({ status: 404, message: 'Not Found' })
       return ApiService.get('/events/' + params.id).then((response) => {
         return { event: response.data.event }
       }).catch((err) => {
@@ -242,10 +220,6 @@
         this.showCalendarDropdown = !this.showCalendarDropdown
       },
       addToCalendar(type) {
-        // TODO (NUXT): analytics call
-        // maybe this should go at the end so it's not called on failure?
-        // InfiniteAnalytics(this.event.id, 'calendar_add', type, site_url)
-
         CalendarService.generate(this.event, type)
       },
       toggleShare() {
