@@ -1,5 +1,5 @@
 <template>
-  <div class="container event">
+  <div class="event">
     <div class="event-heading">
       <img :src="event.image" alt="" width="100%" height="auto">
       <div class="event-heading-text">
@@ -24,76 +24,78 @@
         </div>
       </div>
       <div class="event-actions">
-        <button
-          id="calMenu"
-          class="infinite-dropdown ii-social-button add-event-to-cal dropbtn"
-          :aria-expanded="showCalendarDropdown.toString()"
-          @click="toggleCalendar"
-        >
-          <i class="fas fa-calendar-alt ii-social-icon" />
-          <span>Add to Calendar</span>
-          <div v-show="showCalendarDropdown" id="calDropdown" class="infinite-dropdown-content calendar-dropdown">
-            <a href="#" @click.prevent="addToCalendar('iCal')">iCal</a>
-            <a href="#" @click.prevent="addToCalendar('Outlook')">Outlook</a>
-            <a href="#" @click.prevent="addToCalendar('Google Cal')">Google Cal</a>
-          </div>
-        </button>
-
-        <a
-          v-if="event.venue && event.venue.g_map_link"
-          class="ii-social-button map-event"
-          :href="event.venue.g_map_link"
-          target="_blank"
-        >
-          <i class="fas fa-map-marker-alt ii-social-icon" />
-          <span>Directions</span>
-        </a>
-
-        <button
-          id="shareMenu"
-          class="infinite-dropdown ii-social-button share-event dropbtn"
-          :aria-expanded="showShareDropdown.toString()"
-          @click="toggleShare"
-        >
-          <!-- <i class="fas fa-share ii-social-icon" /> -->
-        <share-icon
-            id="share"
-            class="social-media-icon"
-            icon-color="#fff"
-            width="20"
-            height="20"
-            style="cursor: pointer"
-        />
-          <span>Share</span>
-          <div v-show="showShareDropdown" id="shareDropdown" class="infinite-dropdown-content social-dropdown">
-            <a
-              class="ii-social-button"
-              target="_new"
-              :href="`https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F${event.id}`"
-            >
-              <i class="fab fa-facebook-square ii-social-icon" />
-              <span>Share</span>
-            </a>
-            <a
-              class="ii-social-button"
-              target="_new"
-              :href="`https://twitter.com/intent/tweet?text=Check%20out%20this%20event:&url=${event.bitly_link}`"
-            >
-              <i class="fab fa-twitter ii-social-icon" />
-              <span>Tweet</span>
-            </a>
-            <div
-              v-if="event.bitly_link"
-              v-clipboard:copy="event.bitly_link"
-              v-clipboard:success="onCopySuccess"
-              v-clipboard:error="onCopyError"
-              class="ii-social-button ii-copy-btn"
-            >
-              <i class="fas fa-link ii-social-icon" />
-              <span>Copy Link</span>
+        <div class="event-actions-content">
+          <button
+            id="calMenu"
+            class="infinite-dropdown ii-social-button add-event-to-cal dropbtn"
+            :aria-expanded="showCalendarDropdown.toString()"
+            @click="toggleCalendar"
+          >
+            <i class="fas fa-calendar-alt ii-social-icon" />
+            <span>Add to Calendar</span>
+            <div v-show="showCalendarDropdown" id="calDropdown" class="infinite-dropdown-content calendar-dropdown">
+              <a href="#" @click.prevent="addToCalendar('iCal')">iCal</a>
+              <a href="#" @click.prevent="addToCalendar('Outlook')">Outlook</a>
+              <a href="#" @click.prevent="addToCalendar('Google Cal')">Google Cal</a>
             </div>
-          </div>
-        </button>
+          </button>
+
+          <a
+            v-if="event.venue && event.venue.g_map_link"
+            class="ii-social-button map-event"
+            :href="event.venue.g_map_link"
+            target="_blank"
+          >
+            <i class="fas fa-map-marker-alt ii-social-icon" />
+            <span>Directions</span>
+          </a>
+
+          <button
+            id="shareMenu"
+            class="infinite-dropdown ii-social-button share-event dropbtn"
+            :aria-expanded="showShareDropdown.toString()"
+            @click="toggleShare"
+          >
+            <!-- <i class="fas fa-share ii-social-icon" /> -->
+            <share-icon
+              id="share"
+              class="social-media-icon"
+              icon-color="#fff"
+              width="20"
+              height="20"
+              style="cursor: pointer"
+            />
+            <span>Share</span>
+            <div v-show="showShareDropdown" id="shareDropdown" class="infinite-dropdown-content social-dropdown">
+              <a
+                class="ii-social-button"
+                target="_new"
+                :href="`https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F${event.id}`"
+              >
+                <i class="fab fa-facebook-square ii-social-icon" />
+                <span>Share</span>
+              </a>
+              <a
+                class="ii-social-button"
+                target="_new"
+                :href="`https://twitter.com/intent/tweet?text=Check%20out%20this%20event:&url=${event.bitly_link}`"
+              >
+                <i class="fab fa-twitter ii-social-icon" />
+                <span>Tweet</span>
+              </a>
+              <div
+                v-if="event.bitly_link"
+                v-clipboard:copy="event.bitly_link"
+                v-clipboard:success="onCopySuccess"
+                v-clipboard:error="onCopyError"
+                class="ii-social-button ii-copy-btn"
+              >
+                <i class="fas fa-link ii-social-icon" />
+                <span>Copy Link</span>
+              </div>
+            </div>
+          </button>
+        </div>
       </div>
     </div>
     <div class="event-description">
@@ -250,10 +252,17 @@
   }
 </script>
 
+<style>
+  /* TODO (NUXT): figure out a way to avoid this */
+  #ii-container {
+    padding-top: 50px;
+  }
+</style>
+
 <style scoped>
   .event {
+    max-width: 900px;
     padding: 0;
-    margin-top: 75px;
     border-radius: 10px;
     color: black;
     background-color: white;
@@ -263,9 +272,9 @@
 
   @media only screen and (min-width: 960px) {
 
-    /* horizontally center event container with extra top and bottom margin on larger screens */
+    /* horizontally center event container */
     .event {
-      margin: 8rem auto;
+      margin: auto auto 6rem;
     }
   }
 
@@ -287,6 +296,20 @@
     border-radius: 10px 10px 0 0;
   }
 
+  .event-heading-text h1 {
+    margin: 5px 0;
+    line-height: 110%;
+  }
+
+  .event-heading-text h2,
+  .event-heading-text h3 {
+    margin-top: 5px;
+    margin-bottom: 16px;
+    font-size: 1.2em;
+    font-weight: lighter;
+    line-height: 110%;
+  }
+
   .event-time-actions {
     padding: 1rem 2rem;
   }
@@ -296,6 +319,8 @@
     .event-time-actions {
       display: flex;
       flex-direction: row;
+      font-family: "Open Sans", sans-serif;
+      line-height: 1.5;
     }
 
     .event-time-actions .event-time,
@@ -340,6 +365,7 @@
 
   .date-time-container em {
     font-size: 1.5rem;
+    font-weight: 400;
   }
 
   @media only screen and (max-width: 960px) {
@@ -397,10 +423,6 @@
 
   .calendar-dropdown {
     min-width: 150px;
-  }
-
-  .social-dropdown {
-    min-width: 130px;
   }
 
   .infinite-dropdown[aria-expanded="true"] .infinite-dropdown-content,
@@ -530,15 +552,24 @@
     background-color: #5c5c5c;
   }
 
-  .share-event {
-    min-width: 130px;
+  .event-time-actions .share-event,
+  .event-time-actions .social-dropdown {
+    min-width: 50px;
   }
+
   .event-time-actions .share-event {
     background-color: #131212;
   }
 
   .share-event .infinite-dropdown-content {
     background-color: #212020;
+  }
+
+  @media screen and (min-width: 960px) {
+    .event-time-actions .share-event,
+    .event-time-actions .social-dropdown {
+      min-width: 130px;
+    }
   }
 
   .event-description {

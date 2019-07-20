@@ -104,7 +104,7 @@
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,600,600i,700');
+  @import url('https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,400i,600,600i,700');
 
   body {
     background-color: black;
