@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <ii-list-viewer :calendar_events="events"/>
-  </div>
+  <ii-list-viewer :calendar_events="events"/>
 </template>
 
 <script>

@@ -143,6 +143,9 @@
     width: 240px;
     min-height: 400px;
 
+    margin-left: auto;
+    margin-right: auto;
+
     border-radius: 10px;
 
     background-color: white;
