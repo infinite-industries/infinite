@@ -56,7 +56,7 @@
   @supports (display: grid) {
     #list-viewer {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
 }
 

@@ -55,7 +55,15 @@
           :aria-expanded="showShareDropdown.toString()"
           @click="toggleShare"
         >
-          <i class="fas fa-share ii-social-icon" />
+          <!-- <i class="fas fa-share ii-social-icon" /> -->
+        <share-icon
+            id="share"
+            class="social-media-icon"
+            icon-color="#fff"
+            width="20"
+            height="20"
+            style="cursor: pointer"
+        />
           <span>Share</span>
           <div v-show="showShareDropdown" id="shareDropdown" class="infinite-dropdown-content social-dropdown">
             <a
@@ -131,6 +139,8 @@
 <script>
   import { ApiService } from '@/services/ApiService'
   import CalendarService from '@/services/CalendarService'
+
+  import Share from '@/components/vectors/Share.vue'
 
   export default {
     head() {
@@ -233,6 +243,9 @@
         console.error('Trigger:', e.trigger)
         window.alert('We were unable to copy URL. Here it is for reference:\n' + this.event.bitly_link)
       }
+    },
+    components: {
+      'share-icon': Share
     }
   }
 </script>

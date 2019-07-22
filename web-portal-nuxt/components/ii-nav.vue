@@ -19,8 +19,8 @@
           id="twitter"
           class="social-media-icon"
           icon-color="#fff"
-          width="40"
-          height="40"
+          width="35"
+          height="35"
           style="cursor: pointer"
         />
         <instagram-icon
