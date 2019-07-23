@@ -31,7 +31,7 @@
             :aria-expanded="showCalendarDropdown.toString()"
             @click="toggleCalendar"
           >
-            <i class="fas fa-calendar-alt ii-social-icon" />
+            <ii-calendar-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
             <span>Add to Calendar</span>
             <div v-show="showCalendarDropdown" id="calDropdown" class="infinite-dropdown-content calendar-dropdown">
               <a href="#" @click.prevent="addToCalendar('iCal')">iCal</a>
@@ -46,7 +46,7 @@
             :href="event.venue.g_map_link"
             target="_blank"
           >
-            <i class="fas fa-map-marker-alt ii-social-icon" />
+            <ii-location-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
             <span>Directions</span>
           </a>
 
@@ -56,14 +56,12 @@
             :aria-expanded="showShareDropdown.toString()"
             @click="toggleShare"
           >
-            <!-- <i class="fas fa-share ii-social-icon" /> -->
-            <share-icon
+            <ii-share-icon
               id="share"
-              class="social-media-icon"
+              class="ii-social-icon"
               icon-color="#fff"
               width="20"
               height="20"
-              style="cursor: pointer"
             />
             <span>Share</span>
             <div v-show="showShareDropdown" id="shareDropdown" class="infinite-dropdown-content social-dropdown">
@@ -72,7 +70,7 @@
                 target="_new"
                 :href="`https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F${event.id}`"
               >
-                <i class="fab fa-facebook-square ii-social-icon" />
+                <ii-facebook-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
                 <span>Share</span>
               </a>
               <a
@@ -80,7 +78,7 @@
                 target="_new"
                 :href="`https://twitter.com/intent/tweet?text=Check%20out%20this%20event:&url=${event.bitly_link}`"
               >
-                <i class="fab fa-twitter ii-social-icon" />
+                <ii-twitter-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
                 <span>Tweet</span>
               </a>
               <div
@@ -90,7 +88,7 @@
                 v-clipboard:error="onCopyError"
                 class="ii-social-button ii-copy-btn"
               >
-                <i class="fas fa-link ii-social-icon" />
+                <ii-link-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
                 <span>Copy Link</span>
               </div>
             </div>
@@ -142,7 +140,12 @@
   import { ApiService } from '@/services/ApiService'
   import CalendarService from '@/services/CalendarService'
 
+  import Calendar from '@/components/vectors/Calendar.vue'
+  import Facebook from '@/components/vectors/Facebook.vue'
+  import Link from '@/components/vectors/Link.vue'
+  import Location from '@/components/vectors/Location.vue'
   import Share from '@/components/vectors/Share.vue'
+  import Twitter from '@/components/vectors/Twitter.vue'
 
   export default {
     head() {
@@ -247,7 +250,12 @@
       }
     },
     components: {
-      'share-icon': Share
+      'ii-calendar-icon': Calendar,
+      'ii-facebook-icon': Facebook,
+      'ii-link-icon': Link,
+      'ii-location-icon': Location,
+      'ii-share-icon': Share,
+      'ii-twitter-icon': Twitter
     }
   }
 </script>
@@ -455,6 +463,10 @@
 
   .ii-social-button .infinite-dropdown-content {
     margin-top: 5px;
+  }
+
+  .ii-social-button .ii-social-icon {
+    vertical-align: text-top;
   }
 
   /* content of social buttons is hidden on small screens */

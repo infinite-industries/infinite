@@ -19,7 +19,7 @@
           <div class="btn-actions">
             <!-- TODO: "More Info" button should be a nuxt-link -->
             <nuxt-link class="card-btn more-info" :to="{ name: 'events-id', params: { id: calendar_event.id } }">More Info</nuxt-link>
-            <span class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="17" height="17" class="ii-calendar"/>Add to Calendar</span>
+            <span class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar"/>Add to Calendar</span>
           </div>
 
           <div class="drop-down" v-show="showCalendars">
@@ -248,8 +248,8 @@
 
   .ii-calendar {
     position: relative;
-    top: 5px;
-    margin-right: 3px;
+    top: 3px;
+    margin-right: 5px;
   }
   .card-btn {
     border-radius: 5px;
