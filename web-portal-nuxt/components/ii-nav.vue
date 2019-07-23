@@ -7,30 +7,37 @@
     </ul>
     <div id="nav-social-media" style="text-align:center;">
       <div>
-        <facebook-icon
-          id="facebook"
-          class="social-media-icon"
-          icon-color="#fff"
-          width="40"
-          height="40"
-          style="cursor: pointer"
-        />
-        <twitter-icon
-          id="twitter"
-          class="social-media-icon"
-          icon-color="#fff"
-          width="35"
-          height="35"
-          style="cursor: pointer"
-        />
-        <instagram-icon
-          id="instagram"
-          class="social-media-icon"
-          icon-color="#fff"
-          width="40"
-          height="40"
-          style="cursor: pointer"
-        />
+        <!-- TODO: move social URLs to config for easier customization -->
+        <a href="https://www.facebook.com/infinite.dot.industries/">
+          <facebook-icon
+            id="facebook"
+            class="social-media-icon"
+            icon-color="#fff"
+            width="40"
+            height="40"
+            style="cursor: pointer"
+          />
+        </a>
+        <a href="https://twitter.com/1nfinite_1">
+          <twitter-icon
+            id="twitter"
+            class="social-media-icon"
+            icon-color="#fff"
+            width="35"
+            height="35"
+            style="cursor: pointer"
+          />
+        </a>
+        <a href="https://www.instagram.com/1nfinite_1ndustries/">
+          <instagram-icon
+            id="instagram"
+            class="social-media-icon"
+            icon-color="#fff"
+            width="40"
+            height="40"
+            style="cursor: pointer"
+          />
+        </a>
       </div>
       <div style="text-align:center;">
         <ii-nav-subscribe id="subscribe" icon-color="#fff" width="140" height="55" style="cursor: pointer" />
