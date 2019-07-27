@@ -11,15 +11,13 @@
     <div class="event-time-actions">
       <div class="event-time">
         <div>
-          <!-- TODO (NUXT): we were generating formatted times on the server -->
-          <!-- how do we want to handle that going forward? -->
-          <div
-            v-for="(date_time, index) in formattedDates"
-            :key="index"
-            class="date-time-container"
-          >
-            <em>{{ date_time.when_date }}</em> <br>
-            <em>{{ date_time.when_time }}</em> <i>Eastern Time</i>
+          <div v-for="(date_time, index) in event.date_times" :key="index" class="date-time-container">
+            <!-- TODO: do we need to consider timezones? If so, this might be useful: -->
+            <!-- https://stackoverflow.com/a/57022505 -->
+            <!-- TODO: should we consider Luxon instead of Moment? -->
+            <em>{{ date_time.start_time | moment('dddd, MMMM Do') }}</em>
+            <br>
+            <em>{{ date_time.start_time | moment('h:mma') }} - {{ date_time.end_time | moment('h:mma') }}</em>
           </div>
         </div>
       </div>
@@ -211,16 +209,7 @@
       }
     },
     computed: {
-      formattedDates() {
-        if (this.event && this.event.date_times) {
-          return this.event.date_times.map((dt) => {
-            return {
-              when_date: (new Date(dt.start_time)).toLocaleDateString(),
-              when_time: `${(new Date(dt.start_time)).toLocaleTimeString()} - ${(new Date(dt.end_time)).toLocaleTimeString()}`
-            }
-          })
-        } else return []
-      }
+
     },
     asyncData({ error, params }) {
       return ApiService.get('/events/' + params.id).then((response) => {
