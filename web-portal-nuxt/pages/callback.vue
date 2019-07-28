@@ -1,9 +1,6 @@
 <script>
-  import { setAxiosConfig } from '../helpers/Auth'
-
   export default {
     mounted() {
-      setAxiosConfig()
       this.$store.dispatch('LoadAllUserData')
     }
   }

@@ -1,7 +1,5 @@
-// import { getIdToken, isAdmin, logout } from './helpers/Auth'
 import { ApiService } from '../services/ApiService'
 import ComponentEventBus from '../helpers/ComponentEventBus'
-import { getIdToken } from '../helpers/Auth'
 
 export const state = () => {
   return {
@@ -15,12 +13,7 @@ export const state = () => {
 
     all_venues: [],
 
-    user_settings: {
-      logged_in: false,
-      admin_role: false,
-      username: '',
-      associated_venues: []
-    },
+    user_data: {},
 
     current_list: {},
 
@@ -62,7 +55,11 @@ export const getters = {
     // TODO
   },
   GetUser: (state) => {
-    return state.user_settings
+    return state.user_data
+  },
+
+  IsUserAdmin: (state) => {
+    return !!state.user_data && state.user_data.isInfiniteAdmin
   }
 }
 
@@ -71,11 +68,8 @@ export const mutations = {
     state.util.loading = payload
   },
 
-  UPDATE_USER_DATA: (state, user_data) => {
-    state.user_settings = { ...state.user_settings, ...user_data, username: user_data.name }
-    state.lists_my = user_data.lists_my
-    state.lists_follow = user_data.lists_follow
-
+  UPDATE_USER_DATA: (state, userData) => {
+    state.user_data = { ...userData }
     state.loaded_from_api = true
   },
 
@@ -147,8 +141,6 @@ export const mutations = {
       return list.id === payload.list_id
     })
 
-    console.log('index now is', list_index)
-
     state.lists_my[list_index].events.push(payload.event_data)
   },
   POPULATE_CURRENT_LIST: (state, payload) => {
@@ -156,7 +148,6 @@ export const mutations = {
   },
 
   REMOVE_FROM_CURRENT_LIST: (state, payload) => {
-    console.log('MY CURRENT LIST:', state.current_list)
     state.current_list.events = state.current_list.events.filter(event => event.id !== payload.id)
   },
 
@@ -173,7 +164,7 @@ export const mutations = {
   //   state.calendar_event = event
   // },
   LOGOUT: (state) => {
-    state.user_settings = {}
+    state.user_data = {}
   }
 }
 
@@ -279,27 +270,12 @@ export const actions = {
   },
 
   LoadAllUserData: (context) => {
-    const showWelcome = () => {
-      // Greet users who are not logged in
-      ComponentEventBus.$emit('SHOW_INFO', {
-        message: 'Welcome! Check out the local cultural awesomeness! ' +
-          'Please log in to start saving and sharing event lists. If we accidentally missed something cool and cultural ' +
-          'in your area, feel free to submit your own event via submissions page.'
-      })
-    }
-
-    if (!getIdToken()) {
-      return showWelcome()
-    }
-
     ApiService.get('/users/current')
       .then(function (_response) {
-        context.commit('UPDATE_USER_DATA', _response.data)
-        showWelcome()
+        context.commit('UPDATE_USER_DATA', _response.data.user)
       })
       .catch(function (error) {
         console.error(`no user data: ${error}`)
-        showWelcome()
       })
   },
 

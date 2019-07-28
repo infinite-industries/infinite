@@ -48,7 +48,6 @@
 
 <script>
   import { TweenMax, Power4 } from 'gsap'
-  import { isAdmin } from '../helpers/Auth'
   import NavSubscribe from './vectors/NavSubscribe.vue'
   import Facebook from './vectors/Facebook.vue'
   import Instagram from './vectors/Instagram.vue'
@@ -103,7 +102,7 @@
     },
     methods: {
       getVisibleItems(navItems) {
-        const userIsAdmin = isAdmin()
+        const userIsAdmin = this.$store.getters.IsUserAdmin
 
         const isShown = (item) => {
           if (item.isAuthOnly && !this.$auth.loggedIn) {
