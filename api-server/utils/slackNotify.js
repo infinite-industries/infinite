@@ -18,7 +18,6 @@ module.exports = {
   Notify: function(channel_name,payload){
     const _channel = '#'+channel_name
 
-    console.log('!!! do it: ' + channel_name)
     slackChannels[channel_name].send({
       channel: _channel,
       icon_emoji: ':computer:',
