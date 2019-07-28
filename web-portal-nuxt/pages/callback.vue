@@ -1,3 +1,14 @@
+<script>
+  import { setAxiosConfig } from '../helpers/Auth'
+
+  export default {
+    mounted() {
+      setAxiosConfig()
+      this.$store.dispatch('LoadAllUserData')
+    }
+  }
+</script>
+
 <template>
   <div class="container d-flex align-items-center justify-content-center flex-column">
     ...authorizing

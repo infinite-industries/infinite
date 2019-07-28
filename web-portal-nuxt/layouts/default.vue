@@ -28,6 +28,7 @@
   import Notifications from '../components/ii-notifications.vue'
   import Subscribe from '../components/ii-subscribe.vue'
   import Modal from '../components/ii-modal.vue'
+  import { setAxiosConfig } from '../helpers/Auth'
 
   // !!! TODO (CAW): fix auth and axiosConfig
   // import { isLoggedIn, setAxiosConfig } from './helpers/Auth'
@@ -51,20 +52,16 @@
     },
     // setting access token in created, so that it comes before mounted hooks in child components
     created: function () {
-      // !!! TODO (CAW): fix auth and axiosConfig
-      // if (isLoggedIn()) {
-      //   this.$store.dispatch('Login')
-      //   setAxiosConfig()
-      // }
+      if (this.$auth.loggedIn) {
+        setAxiosConfig()
+      }
     },
     mounted: function () {
-      // const _self = this
-
       // Inhale mock user data
       // TODO: does this belong in the layout, or should it be in route-level component?
       //       Looks like the answer is route-level, because this doesn't run if you change this to `fetch`
-      // TODO: '!!! fix auth
-      // this.$store.dispatch('LoadAllUserData')
+
+      this.$store.dispatch('LoadAllUserData')
       // this.$store.dispatch('LoadAllVenueData')
 
       console.log(this.$store.getters.GetLoadingStatus)

@@ -1,6 +1,7 @@
 // import { getIdToken, isAdmin, logout } from './helpers/Auth'
 import { ApiService } from '../services/ApiService'
 import ComponentEventBus from '../helpers/ComponentEventBus'
+import { getIdToken } from '../helpers/Auth'
 
 export const state = () => {
   return {
@@ -171,29 +172,14 @@ export const mutations = {
   //   //Vue.set(state.calendar_event, 'title', event.title)
   //   state.calendar_event = event
   // },
-  LOGIN: (state, payload) => {
-    state.user_settings.logged_in = true
-    state.user_settings.admin_role = payload.admin_role
-  },
   LOGOUT: (state) => {
-    state.user_settings = {
-      logged_in: false,
-      admin_role: false,
-      username: '',
-      associated_venues: []
-    }
+    state.user_settings = {}
   }
 }
 
 export const actions = {
   Logout: (context) => {
-    // TODO (CAW) Fix Auth
-    // logout()
-    // context.commit('LOGOUT')
-  },
-  Login: (context) => {
-    // TODO (CAW) Fix Auth
-    // context.commit('LOGIN', { admin_role: isAdmin() })
+    context.commit('LOGOUT')
   },
   CreateNewEvent: (context) => {
     context.commit('CREATE_NEW_EVENT')
@@ -296,14 +282,15 @@ export const actions = {
     const showWelcome = () => {
       // Greet users who are not logged in
       ComponentEventBus.$emit('SHOW_INFO', {
-        message: 'Welcome! Check out the local cultural awesomeness! Please log in to start saving and sharing event lists. If we accidently missed something cool and cultural in your area, feel free to submit your own event via submissions page.'
+        message: 'Welcome! Check out the local cultural awesomeness! ' +
+          'Please log in to start saving and sharing event lists. If we accidentally missed something cool and cultural ' +
+          'in your area, feel free to submit your own event via submissions page.'
       })
     }
 
-    // !!! TODO (CAW) Fix Auth
-    // if (!getIdToken()) {
-    //   return showWelcome()
-    // }
+    if (!getIdToken()) {
+      return showWelcome()
+    }
 
     ApiService.get('/users/current')
       .then(function (_response) {
@@ -312,14 +299,6 @@ export const actions = {
       })
       .catch(function (error) {
         console.error(`no user data: ${error}`)
-        context.commit('UPDATE_USER_DATA', {
-          user_settings: {
-            logged_in: false,
-            admin_role: false,
-            username: '',
-            associated_venues: []
-          }
-        })
         showWelcome()
       })
   },

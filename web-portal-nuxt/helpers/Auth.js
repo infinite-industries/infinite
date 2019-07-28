@@ -8,7 +8,13 @@ export function getIdToken() {
     return null
   }
 
-  return localStorage.getItem(ID_TOKEN_KEY) || undefined
+  const token = localStorage.getItem(ID_TOKEN_KEY)
+
+  if (!token || token === 'false') {
+    return null
+  } else {
+    return token
+  }
 }
 
 // returns a config object for axios posts with token set
@@ -20,7 +26,11 @@ export function getConfigForReq() {
 }
 
 export function setAxiosConfig() {
-  axios.defaults.headers.common['x-access-token'] = getIdToken()
+  const idToken = getIdToken()
+  if (idToken) {
+    const idTokenStripped = idToken.replace('Bearer ', '')
+    axios.defaults.headers.common['x-access-token'] = idTokenStripped
+  }
 }
 // resets the default axios config to no longer include local jwt in request headers
 export function resetAxiosConfig() {
