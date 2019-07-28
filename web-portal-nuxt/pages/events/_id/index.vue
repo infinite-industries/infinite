@@ -295,6 +295,7 @@
 
   .event-heading-text h1 {
     margin: 5px 0;
+    font-size: 2em;
     line-height: 110%;
   }
 
@@ -577,7 +578,21 @@
     padding: 1rem 2rem 1rem 2rem;
   }
 
+  .event-description .row {
+    margin-bottom: 20px;
+  }
+
+  .event-description .event-admission-fee {
+    font-family: "Open Sans", sans-serif;
+  }
+
   .event-description .event-description-content {
     font-family: 'EB Garamond', serif;
+  }
+
+  .event-description .row a {
+    font-family: "Open Sans", sans-serif;
+    color: #039be5;
+    text-decoration: none;
   }
 </style>
