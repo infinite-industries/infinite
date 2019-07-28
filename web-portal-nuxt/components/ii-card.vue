@@ -222,7 +222,7 @@
 
   .info-container .date, .info-container .time {
     font-family: 'Open Sans', sans-serif;
-    font-weight: 200;
+    font-weight: 600;
     font-style: italic;
     font-size: 11px;
     margin-bottom: 0px;
