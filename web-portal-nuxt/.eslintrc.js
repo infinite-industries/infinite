@@ -15,6 +15,16 @@ module.exports = {
   rules: {
     "no-console": "off",
     "camelcase": "off",
+    // TODO: re-enable as many of these as possible after the Nuxt refactor
+    // leave vue/script-indent along, though -- that one's set up like we want it
+    'vue/attribute-hyphenation': 'off',
+    'vue/attributes-order': 'off',
+    'vue/html-self-closing': 'off',
+    'vue/multiline-html-element-content-newline': 'off',
+    'vue/order-in-components': 'off',
+    'vue/prop-name-casing': 'off',
+    'vue/require-prop-types': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
     'vue/script-indent': ['error', 2, {
       baseIndent: 1
     }]
