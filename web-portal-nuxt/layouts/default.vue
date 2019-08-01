@@ -109,6 +109,12 @@
 <style>
   @import url('https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,400i,600,600i,700');
 
+  /* TODO: this is related to upgrading Vuetify during the Nuxt refactor */
+  /* The version we used to use set the base font to 16px, but the current version uses 14px */
+  html {
+    font-size: 16px;
+  }
+
   body {
     background-color: black;
   }
