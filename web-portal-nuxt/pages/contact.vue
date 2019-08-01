@@ -1,8 +1,7 @@
 <template>
   <div class="container info-page">
-
-    <div v-show = "dialog" id = "confirmation-message">
-      <div id = "close" @click = "DialogClose" style='font-family: "Open Sans", sans-serif; font-size: 0.8em;'>X</div>
+    <div v-show="dialog" id="confirmation-message">
+      <div id="close" @click="DialogClose" style="font-family: 'Open Sans', sans-serif; font-size: 0.8em;">X</div>
       <p>Thank you for contacting us!</p>
       <p>:)</p>
       <p>We will try to get back to you within 24hours.</p>
@@ -11,36 +10,32 @@
     <h1>Contact Us</h1>
 
     <p>
-    Comments, suggestions and bug reports highly appreciated!
+      Comments, suggestions and bug reports highly appreciated!
     </p>
 
     <div class="container">
-    <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="ContactUs()">
-
+      <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="ContactUs()">
         <v-layout row>
-        <v-flex xs12 sm11>
+          <v-flex xs12 sm11>
             <v-text-field label="Your Name" v-model="name" :rules="nameRules" required></v-text-field>
-        </v-flex>
+          </v-flex>
         </v-layout>
 
         <v-layout row>
-        <v-flex xs12 sm11>
+          <v-flex xs12 sm11>
             <v-text-field label="Your E-mail" v-model="email" :rules="emailRules" required></v-text-field>
-        </v-flex>
+          </v-flex>
         </v-layout>
 
         <v-layout row>
-        <v-flex xs12 sm11>
+          <v-flex xs12 sm11>
             <v-textarea label="Your Text" v-model="comment" multi-line></v-textarea>
-        </v-flex>
+          </v-flex>
         </v-layout>
 
         <v-btn color="grey" type="submit">Send</v-btn>
-
-    </v-form>
-
+      </v-form>
     </div>
-
   </div>
 </template>
 

@@ -103,6 +103,7 @@
       <div class="row event-description-content">
         <!-- TODO (NUXT): this is supposed to be markup, right? -->
         <!-- what does the "safe" filter (?) in the old template do? -->
+        <!-- eslint-disable-next-line vue/no-v-html -->
         <div class="col s11" v-html="event.description" />
       </div>
       <div v-if="event.website_link && event.website_link !== 'none'" class="row event-website">
