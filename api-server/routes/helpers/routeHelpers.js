@@ -30,7 +30,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
 	router.use('/', function(req, res, next) {
 		res.header('Access-Control-Allow-Origin', '*')
 		res.header('Access-Control-Allow-Methods', 'GET,PUT,HEAD,POST,DELETE,OPTIONS')
-		res.header('Access-Control-Allow-Headers', '*')
+		res.header('Access-Control-Allow-Headers', 'x-access-token, *')
     res.header('Access-Control-Allow-Credentials', 'true')
 		next()
 	})
