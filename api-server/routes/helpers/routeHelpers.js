@@ -26,6 +26,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
     const createMiddleware = options.createMiddleware || JWTAuthChain // by default admin only
     const createAfterMethod = options.createAfterMethod || (() => null)
     const updateMiddleware = options.updateMiddleware || JWTAuthChain // by default admin only
+    const readFilter = options.readFilter
 
 	router.use('/', function(req, res, next) {
 		res.header('Access-Control-Allow-Origin', '*')
@@ -71,6 +72,11 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
                 }
 
                 const resp = { status: constants.success_status };
+
+                if (readFilter) {
+                  readFilter(req, data)
+                }
+
                 resp[router_name] = data;
                 res.status(200).json(resp);
             }
@@ -97,9 +103,14 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
                     res.status(404).json({"status":"no_such_id"});
                 }
                 else {
-                    const resp = { status: constants.success_status };
-                    resp[router_name_singular] = data;
-                    res.status(200).json(resp);
+                  const resp = { status: constants.success_status };
+
+                  if (readFilter) {
+                    readFilter(req, data)
+                  }
+
+                  resp[router_name_singular] = data;
+                  res.status(200).json(resp);
                 }
             })
         }

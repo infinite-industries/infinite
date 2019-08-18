@@ -6,12 +6,25 @@ const { literal } = require('sequelize')
 const JWTAuthenticator = require(__dirname + '/../utils/JWTAuthenticator')
 const DatesToISO = require(__dirname + '/middleware/datesToISO')
 
+const filterContactInfo = (req, data) => {
+	if (req.isInfiniteAdmin) {
+		return
+	} else if (Array.isArray(data)) {
+		data.forEach(item => {
+			item.set('organizer_contact', undefined)
+		})
+	} else if (!!data) {
+		data.set('organizer_contact', undefined)
+	}
+}
+
 const router = getDefaultRouter("events", "event", EventController, { verified: false }, {
-    // provides special controller methods for getters to merge data from multiple tables
-    allMethod: EventController.allAndMergeWithVenues,
+	// provides special controller methods for getters to merge data from multiple tables
+	allMethod: EventController.allAndMergeWithVenues,
 	byIDMethod: EventController.findByIDAndMergeWithVenues,
 	createMiddleware: [DatesToISO], // anyone can create a new event; Dates will be converted form local to UTC/ISO
-  	updateMiddleware: [JWTAuthenticator(true)] // requires admin token to update (put)
+	updateMiddleware: [JWTAuthenticator(true)], // requires admin token to update (put)
+	readFilter: filterContactInfo // strip contact info
 });
 
 // get current non or un-verified events
@@ -51,6 +64,8 @@ router.get('/current/verified',
 			console.warn('error getting current/verified events: ' + err);
 			return res.status(501).json({ status: 'failed: ' + err });
 		}
+
+		filterContactInfo(req, events)
 
 		res.status(200).json({ status: 'success', events });
 	}, query);
