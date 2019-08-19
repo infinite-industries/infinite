@@ -6,8 +6,8 @@
       <th>ACTION</th>
     </tr>
     <tr v-for="calendar_event in calendar_events" :key="calendar_event.id">
-      <td>{{calendar_event.title}}</td>
-      <td>{{ShowEventDates(calendar_event)}}</td>
+      <td>{{ calendar_event.title }}</td>
+      <td>{{ ShowEventDates(calendar_event) }}</td>
       <td><v-btn @click="EditEvent(calendar_event)">Edit</v-btn></td>
     </tr>
   </table>
