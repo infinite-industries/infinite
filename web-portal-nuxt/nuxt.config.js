@@ -148,6 +148,12 @@ export default {
     }
   },
   /*
+  ** Server middleware
+  */
+  serverMiddleware: [
+    { path: '/internal-api/images', handler: '~/internal-api/upload-images.js' }
+  ],
+  /*
   ** Build configuration
   */
   build: {
