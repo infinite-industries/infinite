@@ -257,6 +257,9 @@
   import AddNewVenue from './AddNewVenue.vue'
   // import uploadcare from 'uploadcare-widget'
 
+  import { ApiService } from '@/services/ApiService'
+  import ImageUploadService from '@/services/ImageUploadService'
+
   export default {
     props: ['event_id', 'user_role', 'user_action'],
     // user_role --> admin, venue, regular
@@ -315,36 +318,34 @@
         //   this.adjustTimeEnd(eventDate);
         // })
 
-        const formData = new FormData()
-
-        // console.log(this.$store.getters.GetAllDateTimes);
-        // formData.append('dates', this.$store.getters.GetAllDateTimes)
-
-        formData.append('event_data', JSON.stringify({
-          ...this.calendar_event,
-          organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : []
-        }))
-
-        formData.append('image', document.getElementById('event-image').files[0])
-        formData.append('social_image', document.getElementById('event-social-image').files[0])
-
         this.showEventLoadingSpinner = true
         this.eventSubmitted = true // to disable button and prevent multiple submissions
         this.showSubmitError = false
 
-        Axios.post('/events/submit-new', formData).then((response) => {
+        ImageUploadService.forEvent(
+          document.getElementById('event-image').files[0],
+          document.getElementById('event-social-image').files[0]
+        ).then((response) => {
+          const event = {
+            ...this.calendar_event,
+            organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
+            image: response.data.hero
+          }
+          if (response.data.social) event.social_image = response.data.social
+
+          return ApiService.post('/events', { event })
+        }).then((response) => {
           this.showEventLoadingSpinner = false
           this.showPromoTools = true
           console.log('GOT BACK - ' + JSON.stringify(response.data.data))
           this.parseEventToHTML(response.data.data)
           this.$SmoothScroll(this.$refs.promoTools)
+        }).catch((error) => {
+          console.log(error)
+          this.showEventLoadingSpinner = false
+          this.eventSubmitted = false
+          this.showSubmitError = true
         })
-          .catch((error) => {
-            console.log(error)
-            this.showEventLoadingSpinner = false
-            this.eventSubmitted = false
-            this.showSubmitError = true
-          })
       },
       selectVenue: function (venue) {
         // console.log(venue)
@@ -406,6 +407,7 @@
       },
       onFileChange: function () {
         // files.length will be a 0 for no image, 1 for image
+        console.log('onFileChange', this.$refs.eventImage.files)
         this.imageChosen = this.$refs.eventImage.files.length
       },
       isEmail: function (text) {
@@ -459,6 +461,7 @@
       },
 
       calendar_event: function () {
+        console.log(this.$store.getters.GetCurrentEvent)
         if (this.$store.getters.GetCurrentEvent === undefined) {
           return {}
         } else {
