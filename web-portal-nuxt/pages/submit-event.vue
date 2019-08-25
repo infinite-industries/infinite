@@ -2,17 +2,17 @@
 
   <div class="container info-page">
     <v-app>
-        <h1>Submit Your Event</h1>
+      <h1>Submit Your Event</h1>
 
-        <p>
+      <p>
         Please enter your event information below.
         As soon as we review your submission, we will post it to the site and send you a confurmation email.
-        </p>
-        <no-ssr>
-            <div>
-                <submission-form :user_action="'upload'" :user_role="'regular'" :venues="venues"></submission-form>
-            </div>
-        </no-ssr>
+      </p>
+      <no-ssr>
+        <div>
+          <submission-form :user_action="'upload'" :user_role="'regular'" :venues="venues"></submission-form>
+        </div>
+      </no-ssr>
     </v-app>
   </div>
 
