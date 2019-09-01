@@ -18,7 +18,7 @@
         </v-flex>
       </v-layout>
 
-      <date-time-picker />
+      <date-time-picker v-model="calendar_event.date_times" />
 
       <!-- Event Image -->
       <v-layout row wrap>
@@ -268,7 +268,7 @@
       return {
         dialog: false,
 
-        // calendar_event: {},
+        calendar_event: null,
         imageChosen: false,
         showPromoTools: false,
         showSubmitError: false,
@@ -282,10 +282,13 @@
         send_summary_others_emails: ''
       }
     },
+    created: function () {
+      const new_event = this.$store.getters.GetCurrentEvent
+      this.calendar_event = Object.assign({}, new_event, {
+        date_times: new_event.date_times.map(dt => ({ ...dt }))
+      })
+    },
     methods: {
-      TestMe: function () {
-        console.log(this.calendar_event.title)
-      },
       RouteTo: function (route_to_page) {
         this.$router.push({ path: route_to_page })
       },
@@ -306,11 +309,6 @@
         this.RouteTo('/admin')
       },
       UploadEvent: function () {
-        // this is a hack, I think
-        // since only dates array gets modified and saved to store,
-        // we need to grab it from the store and add it to current calendar event
-        this.calendar_event.date_times = this.$store.getters.GetAllDateTimes
-
         console.log('Uploading: -------- :\n' + JSON.stringify(this.calendar_event))
 
         // this.adjustTimeEnd(this.calendar_event);
@@ -442,14 +440,16 @@
         }
       }
     },
-    mounted: function () {
-      if (this.user_action === 'edit') {
-        this.$store.dispatch('LoadCurrentEvent', this.event_id)
-      } else {
-        this.$store.dispatch('CreateNewEvent')
-        console.log('ready to input event')
-      }
-    },
+    // TODO: we can't rely on this because of SSR considerations
+    //       keeping for reference but should go away after implementing AdminEditEvent
+    // mounted: function () {
+    //   if (this.user_action === 'edit') {
+    //     this.$store.dispatch('LoadCurrentEvent', this.event_id)
+    //   } else {
+    //     this.$store.dispatch('CreateNewEvent')
+    //     console.log('ready to input event')
+    //   }
+    // },
 
     computed: {
       venues: function () {
@@ -460,14 +460,6 @@
         return this.$store.getters.GetAllVenues
       },
 
-      calendar_event: function () {
-        console.log(this.$store.getters.GetCurrentEvent)
-        if (this.$store.getters.GetCurrentEvent === undefined) {
-          return {}
-        } else {
-          return this.$store.getters.GetCurrentEvent
-        }
-      },
       eventRequiredFields: function () {
         return this.calendar_event.title !== '' &&
           // this.calendar_event.date != "" &&

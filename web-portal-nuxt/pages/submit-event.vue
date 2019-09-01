@@ -31,6 +31,7 @@
 
     },
     fetch: function ({ store }) {
+      store.dispatch('CreateNewEvent')
       return Promise.all([
         store.dispatch('LoadAllVenueData')
       ])

@@ -31,6 +31,9 @@ export const getters = {
   GetAllDateTimes: (state) => {
     return state.calendar_event.date_times
   },
+  GetCurrentEvent: (state) => {
+    return state.calendar_event
+  },
   GetAllVenues: (state) => {
     return state.all_venues
   },
@@ -88,7 +91,7 @@ export const mutations = {
       social_image: '',
       organizers: '',
       admission_fee: 'none',
-      venue: {
+      venue: { // TODO: this may be bad
         name: '',
         id: '',
         slug: '',

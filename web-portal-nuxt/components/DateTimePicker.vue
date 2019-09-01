@@ -170,8 +170,30 @@
   // this format is used for parsing date/times extracted from the picker before storing them
   const dateTimePickerFormat = 'YYYY-MM-DD hh:mm:a zz'
 
+  const createTimeSegment = (formatted_start_time, formatted_end_time) => {
+    return {
+      optional_title: '', // add later afer consulting with users
+      start_time: moment.tz(
+        formatted_start_time, clientTimeZone
+      ).format(dateTimeStorageFormat),
+      end_time: moment.tz(
+        formatted_end_time, clientTimeZone
+      ).format(dateTimeStorageFormat)
+    }
+  }
+
   export default {
     name: 'DateTimePicker',
+    props: {
+      value: {
+        type: Array,
+        default: () => []
+      }
+    },
+    model: {
+      prop: 'value',
+      event: 'change'
+    },
     data: function () {
       return {
         introduction: true,
@@ -237,7 +259,7 @@
         }) */
         this.edit_mode = true
         this.time_segment_index = which_segment
-        const time_segment = this.$store.getters.GetAllDateTimes[which_segment]
+        const time_segment = this.value[which_segment]
         // console.log(time_segment);
         this.picker = moment(time_segment.start_time).format('YYYY-MM-DD')
         this.start_hour = moment(time_segment.start_time).format('hh')
@@ -249,27 +271,27 @@
         this.end_ampm = moment(time_segment.end_time).format('a')
       },
       DeleteTimeSegment: function (which_segment) {
-        this.$store.dispatch('DeleteTimeSegment', {
-          index: which_segment
-        })
+        const newValue = [ ...this.value ]
+        newValue.splice(which_segment, 1)
+        this.$emit('change', newValue)
       },
       AddTimeSegment: function () {
-        this.$store.dispatch('AddNewTimeSegment')
-        this.time_segment_index = this.$store.getters.GetAllDateTimes.length - 1
-        if (this.UpdateTimeSegment(this.time_segment_index)) {
-          this.time_segment_index++
-        }
+        const newValue = [ ...this.value ]
+        newValue.push(createTimeSegment(this.check_start_time, this.check_end_time))
+        this.time_segment_index = newValue.length
+        this.$emit('change', newValue)
+
+        this.picker = null
+        this.introduction = false
+        this.edit_mode = false // if edit mode is active turn it off
       },
       UpdateTimeSegment: function (which_segment) {
         const formated_start_time = this.check_start_time
         const formated_end_time = this.check_end_time
 
-        this.$store.dispatch('UpdateCurrentTimeSegment', {
-          current_time_segment: which_segment,
-          optional_title: '', // add later afer consulting with users
-          start_time: moment.tz(formated_start_time, clientTimeZone).format(dateTimeStorageFormat),
-          end_time: moment.tz(formated_end_time, clientTimeZone).format(dateTimeStorageFormat)
-        })
+        const newValue = [ ...this.value ]
+        newValue[which_segment] = createTimeSegment(formated_start_time, formated_end_time)
+        this.$emit('change', newValue)
 
         this.picker = null
         this.introduction = false
@@ -299,7 +321,7 @@
       chrono_order_invalid: function () {
         if ((this.check_start_time._isValid) && (this.check_end_time._isValid)) {
           if ((this.start_hour !== '') && (this.end_hour !== '')) {
-            if (this.check_start_time.isAfter(this.check_end_time)) {
+            if (this.check_start_time.isSameOrAfter(this.check_end_time)) {
               return true
             // TODO deal with the case when hours are the same and minutes are being entered
             } else {
@@ -313,7 +335,7 @@
         }
       },
       dates_and_times: function () {
-        return this.$store.getters.GetAllDateTimes
+        return this.value
       },
       check_start_time: function () {
         return moment.tz(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`,
