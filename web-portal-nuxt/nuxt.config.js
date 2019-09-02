@@ -84,6 +84,7 @@ export default {
   */
   plugins: [
     '~/plugins/vue-moment',
+    '~/plugins/vue-smoothscroll',
     { src: '~/plugins/vue-editor', ssr: false }
   ],
   /*

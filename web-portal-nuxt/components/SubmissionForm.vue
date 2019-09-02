@@ -190,7 +190,7 @@
         <!-- LOADING INDICATOR -->
         <v-flex xs12>
           <div class="col-12 text-xs-center">
-            <img v-if="showEventLoadingSpinner" class="loading-spinner" src="images/spinner.gif">
+            <img v-if="showEventLoadingSpinner" class="loading-spinner" src="~/assets/images/spinner.gif">
           </div>
         </v-flex>
       </v-layout>
@@ -248,7 +248,6 @@
 </template>
 
 <script>
-  import Axios from 'axios'
   import moment from 'moment'
   // import VueEditor from 'vue2-editor'
 
@@ -320,23 +319,24 @@
         this.eventSubmitted = true // to disable button and prevent multiple submissions
         this.showSubmitError = false
 
+        const event = {
+          ...this.calendar_event,
+          organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : []
+        }
+
         ImageUploadService.forEvent(
           document.getElementById('event-image').files[0],
           document.getElementById('event-social-image').files[0]
         ).then((response) => {
-          const event = {
-            ...this.calendar_event,
-            organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
-            image: response.data.hero
-          }
+          event.image = response.data.hero
           if (response.data.social) event.social_image = response.data.social
 
           return ApiService.post('/events', { event })
         }).then((response) => {
           this.showEventLoadingSpinner = false
           this.showPromoTools = true
-          console.log('GOT BACK - ' + JSON.stringify(response.data.data))
-          this.parseEventToHTML(response.data.data)
+          console.log('GOT BACK - ' + JSON.stringify(response.data))
+          this.parseEventToHTML(event)
           this.$SmoothScroll(this.$refs.promoTools)
         }).catch((error) => {
           console.log(error)
@@ -369,7 +369,8 @@
         let venue
 
         try {
-          venueResp = await Axios.get(`/venues/${ii_event.venue_id}`)
+          // TODO: shouldn't be necessary to pull this from server
+          venueResp = await ApiService.get(`/venues/${ii_event.venue_id}`)
           venue = venueResp.data && venueResp.data.venue
         } catch (ex) {
           console.error(`could not fetch venue ${ii_event.venue_id}: "${ex}"`)
@@ -398,14 +399,14 @@
         this.promoHTML += `<p><b>Admission: </b>${(ii_event.admission_fee || 'none')}</p>`
 
         this.promoHTML += `<p><b>Description: </b>${(ii_event.description || '')}</p>`
-        this.promoHTML += `<p><b>Link for More Info: </b><a href="${ii_event.bitly_link}">${ii_event.bitly_link}</a></p>`
+        // TODO: change this back to bitly link later, maybe
+        // this.promoHTML += `<p><b>Link for More Info: </b><a href="${ii_event.bitly_link}">${ii_event.bitly_link}</a></p>`
         this.promoHTML += `<p><b>Organizer Contact: </b>${ii_event.organizer_contact}</p>`
 
       // console.log(this.promoHTML)
       },
       onFileChange: function () {
         // files.length will be a 0 for no image, 1 for image
-        console.log('onFileChange', this.$refs.eventImage.files)
         this.imageChosen = this.$refs.eventImage.files.length
       },
       isEmail: function (text) {
