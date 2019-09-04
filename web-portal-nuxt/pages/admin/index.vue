@@ -13,7 +13,7 @@
   export default {
     name: 'Admin',
     middleware: 'auth',
-    metaInfo: {
+    head: {
       title: 'Unverified Events - Infinite Industries'
     },
     data: function () {
