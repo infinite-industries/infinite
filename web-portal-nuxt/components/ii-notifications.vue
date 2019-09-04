@@ -33,7 +33,7 @@
     },
     methods: {
       CloseNotifications: function () {
-        this.$store.dispatch('showNotifications', { open: false })
+        this.$store.dispatch('ui/showNotifications', { open: false })
       }
     }
   }

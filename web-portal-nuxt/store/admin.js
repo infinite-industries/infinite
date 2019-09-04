@@ -12,7 +12,7 @@ export const getters = {
 
 export const actions = {
   LoadCurrentEvent: (context, id) => {
-    ApiService.get('/events/' + id)
+    return ApiService.get('/events/' + id)
       .then((response) => {
         if (response.data.status === 'success') { context.commit('POPULATE_CURRENT_EVENT', response.data.event, { root: true }) }
       })
@@ -38,15 +38,15 @@ export const actions = {
       })
   },
   VerifyEvent: (context, payload) => {
-    ApiService.put(`/events/verify/${payload.id}`)
+    return ApiService.put(`/events/verify/${payload.id}`)
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if (_response.data.status === 'success') {
           context.commit('CHANGE_STATE_TO_VERIFIED', payload, { root: true })
 
-          context.commit('SHOW_NOTIFICATIONS', { open: true, message: 'Event was successfuly verified.' })
+          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Event was successfuly verified.' }, { root: true })
         } else {
-          context.commit('SHOW_NOTIFICATIONS', { open: true, message: 'Unable to verify the event.' })
+          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Unable to verify the event.' }, { root: true })
         }
       })
       .catch(function (error) {
@@ -58,15 +58,15 @@ export const actions = {
   },
 
   UpdateEvent: (context, payload) => {
-    ApiService.put(`/events/${payload.id}`, { event: { ...payload.event_data } })
+    return ApiService.put(`/events/${payload.id}`, { event: { ...payload.event_data } })
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if (_response.data.status === 'success') {
           console.log('event updated')
 
-          context.commit('SHOW_NOTIFICATIONS', { open: true, message: 'Content of the event updated.' })
+          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Content of the event updated.' }, { root: true })
         } else {
-          context.commit('SHOW_NOTIFICATIONS', { open: true, message: 'Unable to update :(' })
+          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Unable to update :(' }, { root: true })
         }
       })
       .catch(function (error) {
@@ -78,7 +78,7 @@ export const actions = {
   },
 
   DeleteEvent: (context, payload) => {
-    ApiService.delete(`/events/${payload.id}`)
+    return ApiService.delete(`/events/${payload.id}`)
       .then(function (_response) {
         console.log('Trying to delete event \n data from server: ', _response.data.events)
         if (_response.data.status === 'success') {

@@ -293,19 +293,32 @@
       },
       UpdateEvent: function () {
         console.log(this.calendar_event)
-        this.$store.dispatch('UpdateEvent', { id: this.calendar_event.id, event_data: this.calendar_event })
+        this.showEventLoadingSpinner = true
+        this.$store.dispatch('admin/UpdateEvent', {
+          id: this.calendar_event.id,
+          event_data: this.calendar_event
+        }).finally(() => { this.showEventLoadingSpinner = false })
       },
       ConfirmDeleteEvent: function () {
         this.dialog = true
       },
       DeleteEvent: function () {
         this.dialog = false
-        this.$store.dispatch('DeleteEvent', { id: this.calendar_event.id })
-        this.RouteTo('/admin')
+        this.showEventLoadingSpinner = true
+        this.$store.dispatch('admin/DeleteEvent', { id: this.calendar_event.id })
+          .then(() => { this.$router.push('/admin') })
+          .finally(() => { this.showEventLoadingSpinner = false })
       },
       VerifyEvent: function () {
-        this.$store.dispatch('VerifyEvent', { id: this.calendar_event.id })
-        this.RouteTo('/admin')
+        this.showEventLoadingSpinner = true
+        this.$store.dispatch('admin/VerifyEvent', { id: this.calendar_event.id })
+          .then(() => {
+            this.showEventLoadingSpinner = false
+            this.$router.push('/admin')
+          })
+          .catch(() => {
+            this.showEventLoadingSpinner = false
+          })
       },
       UploadEvent: function () {
         console.log('Uploading: -------- :\n' + JSON.stringify(this.calendar_event))
