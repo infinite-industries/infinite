@@ -49,7 +49,7 @@ module.exports = {
       },
       verified: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        // allowNull: false,
         set(val) {
           if (!val) // cast any undefined to false
             val = false
