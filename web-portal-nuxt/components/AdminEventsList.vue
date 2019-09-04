@@ -1,15 +1,19 @@
 <template>
   <table class="calendar-events-table">
-    <tr>
-      <th>TITLE</th>
-      <th>WHEN</th>
-      <th>ACTION</th>
-    </tr>
-    <tr v-for="calendar_event in calendar_events" :key="calendar_event.id">
-      <td>{{ calendar_event.title }}</td>
-      <td>{{ ShowEventDates(calendar_event) }}</td>
-      <td><v-btn @click="EditEvent(calendar_event)">Edit</v-btn></td>
-    </tr>
+    <thead>
+      <tr>
+        <th>TITLE</th>
+        <th>WHEN</th>
+        <th>ACTION</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="calendar_event in calendar_events" :key="calendar_event.id">
+        <td>{{ calendar_event.title }}</td>
+        <td>{{ ShowEventDates(calendar_event) }}</td>
+        <td><v-btn @click="EditEvent(calendar_event)">Edit</v-btn></td>
+      </tr>
+    </tbody>
   </table>
 </template>
 
