@@ -252,8 +252,10 @@
 
 <style>
   /* TODO (NUXT): figure out a way to avoid this */
-  #ii-container {
-    padding-top: 50px;
+  /* hide the "subscribe" banner even on smaller screens */
+  /* so as not to cut off the bottom of events */
+  #subscribe-container {
+    display: none;
   }
 </style>
 

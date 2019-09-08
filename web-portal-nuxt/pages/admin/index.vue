@@ -36,9 +36,15 @@
 </script>
 
 <style scoped>
-    .admin-page {
+  .admin-page {
     background: white;
     color: black;
     border-radius: 10px;
+  }
+
+  @media only screen and (min-width: 993px) {
+    .admin-page {
+      max-width: 80%;
+    }
   }
 </style>

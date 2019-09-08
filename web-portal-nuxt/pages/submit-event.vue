@@ -41,7 +41,8 @@
 </script>
 
 <style scoped>
-    .container {
-        width: 95%;
-    }
+  .container {
+    width: 95%;
+    max-width: unset;
+  }
 </style>

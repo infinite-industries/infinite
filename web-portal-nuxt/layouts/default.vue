@@ -6,14 +6,10 @@
     <!-- Toolbar and Nav -->
     <ii-toolbar />
 
-    <v-content>
-      <v-container>
-        <div id="ii-container">
-          <!-- Content -->
-          <nuxt />
-        </div>
-      </v-container>
-    </v-content>
+    <main>
+      <!-- Content -->
+      <nuxt />
+    </main>
     <!-- PopUps and Modals -->
     <!-- Regular Old Modal -->
     <ii-modal />
@@ -126,8 +122,8 @@
 
   }
 
-  #ii-container {
-    padding-top: 90px;
+  main {
+    padding-top: 55px;
   }
 
   .info-page {
@@ -150,7 +146,7 @@
 
   @media only screen and (min-width: 993px) {
     .info-page {
-      max-width: 95%;
+      max-width: 80%;
     }
   }
 

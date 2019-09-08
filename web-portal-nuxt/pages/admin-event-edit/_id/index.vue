@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container admin-page">
     <no-ssr>
-      <submission-form :user_action="'edit'" :user_role="'admin'" :event_id="id" :venues="venues"></submission-form>
+      <submission-form :user_action="'edit'" :user_role="'admin'" :event_id="id"></submission-form>
     </no-ssr>
   </div>
 </template>
@@ -52,3 +52,13 @@
     }
   }
 </script>
+
+<style scoped>
+  .admin-page {
+    background: white;
+    color: black;
+    border-radius: 10px;
+    width: 95%;
+    max-width: unset;
+  }
+</style>
