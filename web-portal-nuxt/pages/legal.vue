@@ -38,7 +38,7 @@
     </p>
 
     <p>
-      That’s about it. The stuff below is pure legalese. Feel free to <span id="link-to-contact" @click.stop="RouteTo('/contact')">reach out</span> to us if you have any additional questions.
+      That’s about it. The stuff below is pure legalese. Feel free to <nuxt-link class="contact-link" to="/contact">reach out</nuxt-link> to us if you have any additional questions.
     </p>
 
     <h2>Terms of Service</h2>
@@ -163,5 +163,23 @@
 </script>
 
 <style scoped>
+  .statement {
+    font-weight: bold;
+    font-size: 1.5em;
+  }
 
+  .info-list {
+    /* can't handle this in layout without messing up other views */
+    font-family: "EB Garamond";
+    font-size: 1.25em;
+    margin-bottom: 20px;
+  }
+
+  .info-list li {
+    margin-bottom: 10px;
+  }
+
+  .contact-link {
+    text-decoration: underline;
+  }
 </style>

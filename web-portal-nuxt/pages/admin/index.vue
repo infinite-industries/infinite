@@ -34,3 +34,11 @@
     }
   }
 </script>
+
+<style scoped>
+    .admin-page {
+    background: white;
+    color: black;
+    border-radius: 10px;
+  }
+</style>

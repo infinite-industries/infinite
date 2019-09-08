@@ -112,5 +112,43 @@
 </script>
 
 <style scoped>
+  .people-cards {
+    list-style-type: none;
+  }
 
+  .people-cards h3 {
+    margin-top: 0;
+  }
+
+  .people-cards .member-portrait {
+    margin-top: 1em;
+  }
+
+  .people-cards .link-block a {
+    color: white;
+    background-color: black;
+    padding: 2px 6px 4px;
+    border-radius: 5px;
+  }
+
+  @media only screen and (min-width: 600px) {
+
+    .people-cards li:after {
+      content: " ";
+      display: block;
+      height: 0;
+      clear: both;
+    }
+
+    .people-cards .member-portrait {
+      float: left;
+      margin-right: 2em;
+    }
+  }
+
+  .join-us {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 1.7em;
+  }
 </style>
