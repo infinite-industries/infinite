@@ -54,6 +54,8 @@ export default {
       { hid: 'canonical', rel: 'canonical', href: 'https://infinite.industries/' },
       { rel: 'me', href: 'https://twitter.com/1nfinite_1' },
 
+      { rel: 'manifest', href: '/manifest.json' },
+
       { rel: 'icon', type: 'image/png', sizes: '192X192', href: '/images/favicon_192.png' },
       { rel: 'apple-touch-icon', type: 'image/png', sizes: '192X192', href: '/images/favicon_192.png' },
       { rel: 'icon', type: 'image/png', sizes: '512X512', href: '/images/favicon_512.png' },
