@@ -141,8 +141,7 @@
     color: black;
     border-radius: 10px;
 
-    width: 85%;
-    max-width: 900px;
+    max-width: 95%;
   }
 
   .statement {
@@ -165,7 +164,7 @@
 
   @media only screen and (min-width: 993px) {
     .info-page {
-      width: 70%;
+      max-width: 95%;
     }
   }
 
