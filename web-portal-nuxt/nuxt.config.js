@@ -70,6 +70,9 @@ export default {
       //   rel: 'stylesheet',
       //   href: 'https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,600,600i,700'
       // }
+    ],
+    script: [
+      { src: '/workers/workers.js?v="1.0.02"' }
     ]
   },
   /*
