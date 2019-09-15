@@ -154,6 +154,12 @@ export default {
     }
   },
   /*
+  ** Server configuration
+  */
+  server: {
+    port: 7779
+  },
+  /*
   ** Server middleware
   */
   serverMiddleware: [
