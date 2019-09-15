@@ -14,9 +14,6 @@ You will need the following tools:
 
 - [Node.js](https://nodejs.org/en/): 8.9.4 or higher
 - [npm](https://www.npmjs.com/get-npm): 5.6.0 or higher
-- Vue.js: [vue-cli 3.0](https://github.com/vuejs/vue-cli)
-- NUXT [nuxt 2.0.0](https://nuxtjs.org/)
-
 
 ### Recommended
 
@@ -57,3 +54,35 @@ This application communicates with an [API server](https://github.com/infinite-i
 5. If you have not already done so, start the API server. The API server can also be started prior to the portal server.
 
 6. Point your browser to `http://localhost:7779`
+
+## Building for Production
+
+1. Run the Nuxt build
+ ```bash
+ npm run build
+ ```
+
+2. Start the Nuxt production server
+ ```bash
+ npm run start
+ ```
+
+## Running Tests
+
+The first time you run the tests you will need to configure [Cypress](https://cypress.io).
+
+1. Set up the cypress environment file.
+
+  ```bash
+  cp cypress.env.json.sample cypress.env.json
+  ```
+
+2. **TODO: still need to fix auth for tests**
+
+  ```bash
+  cp cypress/fixtures/keys/1nfinite_testing.key keys/1nfinite_testing.key
+  ```
+
+## License
+
+MIT
