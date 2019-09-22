@@ -4,6 +4,7 @@ require('dotenv').config()
 module.exports = function getConnection() {
     const sequelize = new Sequelize(process.env.POSTGRES_DB, process.env.POSTGRES_USER, process.env.POSTGRES_PW, {
         host: process.env.POSTGRES_HOST,
+        port: process.env.POSTGRES_PORT,
         dialect: 'postgres',
         operatorsAliases: false,
         /*ssl: {
@@ -17,7 +18,7 @@ module.exports = function getConnection() {
             acquire: 30000,
             idle: 10000
         },
-        logging: true
+        logging: false
     })
 
     sequelize.event = sequelize.import(__dirname + '/../models/event');

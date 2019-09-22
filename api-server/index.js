@@ -1,28 +1,29 @@
 // working on seeding the database
 
+require('dotenv')
+
 const JWTParser = require(__dirname + '/utils/JWTParser')
 const userController = require(__dirname + '/controllers/users')
-var express = require('express');
-var bodyParser = require('body-parser');
-var dotenv = require('dotenv');
-const passport = require('passport');
-const getAPIKeyStrategy = require('./expressMiddleWare/DevTokenAuthStrategy');
+const express = require('express')
+const bodyParser = require('body-parser')
+const passport = require('passport')
+const getAPIKeyStrategy = require('./expressMiddleWare/DevTokenAuthStrategy')
 const fs = require('fs')
 const sequelize = require('./utils/connection')()
-const secretString = fs.readFileSync(process.env.jwtPEM || './keys/1nfinite.pem');
-const events = require('./routes/events');
-const venues = require("./routes/venues");
-const eventLists = require("./routes/eventLists");
-const users = require("./routes/users");
+const secretString = fs.readFileSync(process.env.jwtPEM || './keys/1nfinite.pem')
+const events = require('./routes/events')
+const venues = require("./routes/venues")
+const eventLists = require("./routes/eventLists")
+const users = require("./routes/users")
 
-var app = express();
+const app = express()
 
 app.set('db', sequelize)
-app.set('superSecret', secretString);
+app.set('superSecret', secretString)
 
-app.use(bodyParser.json());
-app.use(passport.initialize());
-passport.use(getAPIKeyStrategy(sequelize));
+app.use(bodyParser.json())
+app.use(passport.initialize())
+passport.use(getAPIKeyStrategy(sequelize))
 
 app.use(JWTParser)
 app.use((req, res, next) => {
@@ -47,13 +48,14 @@ app.use((req, res, next) => {
     next()
   }
 })
-app.use("/events", events);
-app.use("/venues", venues);
-app.use("/event-lists", eventLists);
-app.use("/users", users);
+app.use("/events", events)
+app.use("/venues", venues)
+app.use("/event-lists", eventLists)
+app.use("/users", users)
 
-var appPort = process.env.PORT || '3003';
+const appPort = process.env.PORT || '3003';
 
+console.info('Connecting to database')
 sequelize
   .authenticate()
   .then(() => {

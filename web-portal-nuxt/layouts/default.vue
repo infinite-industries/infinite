@@ -43,19 +43,27 @@
         // }
       }
     },
+
     // setting access token in created, so that it comes before mounted hooks in child components
     created: function () {
       if (this.$auth.loggedIn) {
         this.setAxiosConfig()
       }
     },
-    mounted: function () {
+    mounted: async function () {
       // Inhale mock user data
       // TODO: does this belong in the layout, or should it be in route-level component?
       //       Looks like the answer is route-level, because this doesn't run if you change this to `fetch`
-
       if (this.$auth.loggedIn) {
-        this.$store.dispatch('LoadAllUserData')
+        try {
+          await this.$store.dispatch('LoadAllUserData')
+        } catch (error) {
+          console.log(`error fetching user data: "${error}"`)
+          if (error.response && error.response.status === 403) {
+            // clear tokens they are not valid
+            this.$auth.logout()
+          }
+        }
       }
 
       // this.$store.dispatch('LoadAllVenueData')

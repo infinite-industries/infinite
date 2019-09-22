@@ -83,6 +83,13 @@ The first time you run the tests you will need to configure [Cypress](https://cy
   cp cypress/fixtures/keys/1nfinite_testing.key keys/1nfinite_testing.key
   ```
 
+## Running Integration Tests
+
+1. You'll need to copy cypress.json.sample to cypress.jon and fill in missing values
+2. start the api-server
+3. start the web-portal server
+4. run npm run cypress:open from the web-portal directory
+
 ## License
 
 MIT

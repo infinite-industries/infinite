@@ -172,6 +172,15 @@ export const mutations = {
 }
 
 export const actions = {
+  nuxtServerInit: (ctx, { req }) => {
+    return ApiService.get('/users/current')
+      .then(function (_response) {
+        ctx.commit('UPDATE_USER_DATA', _response.data.user)
+      })
+      .catch(function (error) {
+        console.error(`no user data: ${error}`)
+      })
+  },
   Logout: (context) => {
     context.commit('LOGOUT')
   },
@@ -273,12 +282,9 @@ export const actions = {
   },
 
   LoadAllUserData: (context) => {
-    ApiService.get('/users/current')
+    return ApiService.get('/users/current')
       .then(function (_response) {
         context.commit('UPDATE_USER_DATA', _response.data.user)
-      })
-      .catch(function (error) {
-        console.error(`no user data: ${error}`)
       })
   },
 

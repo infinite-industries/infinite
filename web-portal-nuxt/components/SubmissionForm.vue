@@ -200,7 +200,7 @@
         <v-flex xs12>
           <div class="text-xs-center">
             <v-btn @click="UpdateEvent()">Save</v-btn>
-            <v-btn @click="VerifyEvent()" v-if="user_role==='admin'">Verify</v-btn>
+            <v-btn @click="VerifyEvent()" v-if="user_role==='admin'" class="btn-verify">Verify</v-btn>
             <v-btn @click="ConfirmDeleteEvent()">Delete</v-btn>
           </div>
         </v-flex>
