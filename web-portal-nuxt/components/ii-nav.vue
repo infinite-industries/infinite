@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar">
+  <div class="sidebar" :class="{ '-initial': internalInitialRender }">
     <ul id="nav-list">
       <li v-for="item in getVisibleItems(nav_items)" :key="item.title">
         <a :href="item.route">{{ item.title }}</a>
@@ -76,7 +76,8 @@
           // { title: 'Your Settings', route: '/your-settings'},
           { title: 'Logout', route: '/logout', isAuthOnly: true },
           { title: 'Contact', route: '/contact' }
-        ]
+        ],
+        internalInitialRender: false // this is used to suppress the nav bar during SSR
       }
     },
     computed: {
@@ -94,11 +95,15 @@
         })
       }
     },
+    created() {
+      this.internalInitialRender = true
+    },
     mounted() {
       TweenMax.set(this.$el, {
         x: this.$el.offsetWidth,
         zIndex: 20
       })
+      this.internalInitialRender = false
     },
     methods: {
       getVisibleItems(navItems) {
@@ -135,6 +140,10 @@
     background-color: rgba(10,10,10,0.95);
     /* opacity: 0.95; */
     color: white;
+  }
+
+  .sidebar.-initial {
+    transform: matrix(1, 0, 0, 1, 300, 0);
   }
 
   #nav-list {
