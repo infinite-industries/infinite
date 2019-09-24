@@ -138,6 +138,7 @@
 <script>
   import { ApiService } from '@/services/ApiService'
   import CalendarService from '@/services/CalendarService'
+  import PageMetaService from '@/services/PageMetaService'
 
   import Calendar from '@/components/vectors/Calendar.vue'
   import Facebook from '@/components/vectors/Facebook.vue'
@@ -152,6 +153,7 @@
       const title = this.event && this.event.title ? this.event.title : 'no event loaded'
       // TODO: current view sanitizes brief_description; does vue-meta do that automatically?
       const description = this.event && this.event.brief_description ? this.event.brief_description : ''
+      const url = PageMetaService.urlFor('/events/' + eventId)
       const defaultImage = 'https://infinite.industries/images/default.jpg'
       const socialImage = this.event && this.event.social_image && this.event.social_image !== 'none'
         ? this.event.social_image
@@ -164,7 +166,7 @@
 
           { hid: 'og:title', property: 'og:title', content: title },
           { hid: 'og:description', property: 'og:description', content: description },
-          { hid: 'og:url', property: 'og:url', content: 'https://infinite.industries/event/' + eventId },
+          { hid: 'og:url', property: 'og:url', content: url },
           { hid: 'og:type', property: 'og:type', content: 'article' },
           { hid: 'og:image', property: 'og:image', content: socialImage },
           { hid: 'og:image:alt', property: 'og:image:alt', content: 'Check out ' + title },
@@ -178,8 +180,7 @@
           { hid: 'robots', name: 'robots', content: 'index, noarchive, nocache' }
         ],
         link: [
-          // TODO: should canonical link pull base URL from env / other config?
-          { hid: 'canonical', rel: 'canonical', href: 'https://infinite.industries/event/' + eventId } // ,
+          { hid: 'canonical', rel: 'canonical', href: url } // ,
           // TODO (NUXT): this is probably the time to drop this
           //              we can't control the order in which stylesheets load,
           //              which messes up selector precedence

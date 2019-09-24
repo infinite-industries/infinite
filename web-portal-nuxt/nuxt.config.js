@@ -27,10 +27,10 @@ export default {
       { hid: 'fb:app_id', property: 'fb:app_id', content: process.env.FACEBOOK_APP_ID },
       { hid: 'og:title', property: 'og:title', content: 'Infinite Industries' },
       { hid: 'og:site_name', property: 'og:site_name', content: 'Infinite Industries' },
-      { hid: 'og:url', property: 'og:url', content: 'https://infinite.industries' },
+      { hid: 'og:url', property: 'og:url', content: process.env.APP_URL },
       { hid: 'og:type', property: 'og:type', content: 'article' },
       { hid: 'og:description', property: 'og:description', content: 'Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.' },
-      { hid: 'og:image', property: 'og:image', content: 'https://infinite.industries/images/default.jpg' },
+      { hid: 'og:image', property: 'og:image', content: process.env.APP_URL + '/images/default.jpg' },
       { hid: 'og:image:alt', property: 'og:image:alt', content: 'Infinite Industries' },
 
       { hid: 'twitter:card', name: 'twitter:card', content: 'summary_large_image' },
@@ -38,7 +38,7 @@ export default {
       { hid: 'twitter:creator', name: 'twitter:creator', content: '@1nfinite_1' },
       { hid: 'twitter:title', name: 'twitter:title', content: 'Infinite Industries' },
       { hid: 'twitter:description', name: 'twitter:description', content: 'Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.' },
-      { hid: 'twitter:image:src', name: 'twitter:image:src', content: 'https://infinite.industries/images/default.jpg' },
+      { hid: 'twitter:image:src', name: 'twitter:image:src', content: process.env.APP_URL + '/images/default.jpg' },
 
       { name: 'mobile-web-app-capable', content: 'yes' },
       { name: 'apple-mobile-web-app-capable', content: 'yes' },
@@ -50,8 +50,7 @@ export default {
       { name: 'msapplication-starturl', content: '/' }
     ],
     link: [
-      // TODO: should canonical link pull base URL from env / other config?
-      { hid: 'canonical', rel: 'canonical', href: 'https://infinite.industries/' },
+      { hid: 'canonical', rel: 'canonical', href: process.env.APP_URL + '/' },
       { rel: 'me', href: 'https://twitter.com/1nfinite_1' },
 
       { rel: 'manifest', href: '/manifest.json' },
@@ -180,6 +179,7 @@ export default {
     CLIENT_DOMAIN: process.env.CLIENT_DOMAIN,
     REDIRECT: process.env.REDIRECT,
     AUDIENCE: process.env.AUDIENCE,
+    APP_URL: process.env.APP_URL,
     API_URL: process.env.API_URL
   }
 }
