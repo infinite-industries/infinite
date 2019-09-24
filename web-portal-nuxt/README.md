@@ -71,24 +71,12 @@ This application communicates with an [API server](https://github.com/infinite-i
 
 The first time you run the tests you will need to configure [Cypress](https://cypress.io).
 
-1. Set up the cypress environment file.
+### Running Integration Tests
 
-  ```bash
-  cp cypress.env.json.sample cypress.env.json
-  ```
-
-2. **TODO: still need to fix auth for tests**
-
-  ```bash
-  cp cypress/fixtures/keys/1nfinite_testing.key keys/1nfinite_testing.key
-  ```
-
-## Running Integration Tests
-
-1. You'll need to copy cypress.json.sample to cypress.jon and fill in missing values
+1. You'll need to copy cypress.json.sample to cypress.json and fill in missing values
 2. start the api-server
 3. start the web-portal server
-4. run npm run cypress:open from the web-portal directory
+4. run `npm run cypress:open` from the web-portal directory
 
 ## License
 
