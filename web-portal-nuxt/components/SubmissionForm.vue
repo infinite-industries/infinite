@@ -454,16 +454,6 @@
         }
       }
     },
-    // TODO: we can't rely on this because of SSR considerations
-    //       keeping for reference but should go away after implementing AdminEditEvent
-    // mounted: function () {
-    //   if (this.user_action === 'edit') {
-    //     this.$store.dispatch('LoadCurrentEvent', this.event_id)
-    //   } else {
-    //     this.$store.dispatch('CreateNewEvent')
-    //     console.log('ready to input event')
-    //   }
-    // },
 
     computed: {
       venues: function () {

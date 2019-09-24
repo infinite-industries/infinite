@@ -180,11 +180,7 @@
           { hid: 'robots', name: 'robots', content: 'index, noarchive, nocache' }
         ],
         link: [
-          { hid: 'canonical', rel: 'canonical', href: url } // ,
-          // TODO (NUXT): this is probably the time to drop this
-          //              we can't control the order in which stylesheets load,
-          //              which messes up selector precedence
-          // { hid: 'materialize', rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css' }
+          { hid: 'canonical', rel: 'canonical', href: url }
         ],
         script: [
           // TODO (NUXT): is this a license key?

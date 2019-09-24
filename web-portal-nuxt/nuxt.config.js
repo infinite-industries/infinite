@@ -64,11 +64,6 @@ export default {
         href:
           'https://fonts.googleapis.com/icon?family=Material+Icons'
       }
-      // TODO: this may or not be necessary, depending on whether we keep this in the App SFC stylesheet
-      // {
-      //   rel: 'stylesheet',
-      //   href: 'https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,600,600i,700'
-      // }
     ],
     script: [
       { src: '/workers/workers.js?v="1.0.02"' }
