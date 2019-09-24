@@ -349,7 +349,7 @@
           this.showEventLoadingSpinner = false
           this.showPromoTools = true
           console.log('GOT BACK - ' + JSON.stringify(response.data))
-          this.parseEventToHTML(event)
+          this.parseEventToHTML(event, response.data.id)
           this.$SmoothScroll(this.$refs.promoTools)
         }).catch((error) => {
           console.log(error)
@@ -375,7 +375,7 @@
         console.log('Allan please send emails.') // Who is Allan?
       },
       // for use in promo tools. Takes an event object and makes it into pretty html
-      parseEventToHTML: async function (ii_event) {
+      parseEventToHTML: async function (ii_event, ii_event_id) {
         // console.log(ii_event)
 
         let venueResp
@@ -404,6 +404,8 @@
           return `${when_date} - ${when_time} to ${end_time}`
         }).join('; ')
 
+        const publicUrl = process.env.APP_URL + '/events/' + ii_event_id
+
         this.promoHTML = `<h2>${ii_event.title}</h2>`
         this.promoHTML += `<p><b>When: </b>${strWhen}</p>`
         this.promoHTML += `<p><b>Location: </b>${venue ? venue.address : 'none'}</p> <p><br></p>`
@@ -414,6 +416,7 @@
         this.promoHTML += `<p><b>Description: </b>${(ii_event.description || '')}</p>`
         // TODO: change this back to bitly link later, maybe
         // this.promoHTML += `<p><b>Link for More Info: </b><a href="${ii_event.bitly_link}">${ii_event.bitly_link}</a></p>`
+        this.promoHTML += `<p><b>Link for More Info: </b><a href="${publicUrl}">${publicUrl}</a></p>`
         this.promoHTML += `<p><b>Organizer Contact: </b>${ii_event.organizer_contact}</p>`
 
       // console.log(this.promoHTML)
