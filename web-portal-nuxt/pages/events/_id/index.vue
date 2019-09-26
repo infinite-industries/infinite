@@ -154,7 +154,7 @@
       // TODO: current view sanitizes brief_description; does vue-meta do that automatically?
       const description = this.event && this.event.brief_description ? this.event.brief_description : ''
       const url = PageMetaService.urlFor('/events/' + eventId)
-      const defaultImage = 'https://infinite.industries/images/default.jpg'
+      const defaultImage = PageMetaService.urlFor('/images/default.jpg')
       const socialImage = this.event && this.event.social_image && this.event.social_image !== 'none'
         ? this.event.social_image
         : defaultImage
