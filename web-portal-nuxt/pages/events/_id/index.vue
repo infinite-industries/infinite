@@ -181,18 +181,6 @@
         ],
         link: [
           { hid: 'canonical', rel: 'canonical', href: url }
-        ],
-        script: [
-          // TODO (NUXT): is this a license key?
-          //              if so, we should move the value to the env file
-          // Try this to prevent render mismatch: https://catalin.me/fontawesome-nuxt/
-          { src: 'https://use.fontawesome.com/9929e77eb0.js' },
-          {
-            src: 'https://use.fontawesome.com/releases/v5.0.9/js/all.js',
-            defer: true,
-            crossorigin: 'anonymous',
-            integrity: 'sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl'
-          }
         ]
       }
     },
