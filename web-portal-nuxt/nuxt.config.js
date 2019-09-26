@@ -64,9 +64,6 @@ export default {
         href:
           'https://fonts.googleapis.com/icon?family=Material+Icons'
       }
-    ],
-    script: [
-      { src: '/workers/workers.js?v="1.0.02"' }
     ]
   },
   /*
