@@ -236,7 +236,6 @@
 </script>
 
 <style>
-  /* TODO (NUXT): figure out a way to avoid this */
   /* hide the "subscribe" banner even on smaller screens */
   /* so as not to cut off the bottom of events */
   #subscribe-container {
