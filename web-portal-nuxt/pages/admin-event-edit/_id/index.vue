@@ -1,8 +1,8 @@
 <template>
   <div class="container admin-page">
-    <no-ssr>
+    <client-only>
       <submission-form :user_action="'edit'" :user_role="'admin'" :event_id="id"></submission-form>
-    </no-ssr>
+    </client-only>
   </div>
 </template>
 

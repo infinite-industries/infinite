@@ -236,9 +236,9 @@
           a bunch of emails for event promo and want to make this task easier. You can copy and paste the text below into your favorite email setup.
           If you have any suggestions for additional features to make your life easier just reach out to us at info[@]infinite[d0t]industries
         </p>
-        <no-ssr>
-            <vue-editor id="vue-editor2" v-model="promoHTML"></vue-editor>
-        </no-ssr>
+        <client-only>
+          <vue-editor id="vue-editor2" v-model="promoHTML"></vue-editor>
+        </client-only>
       </div>
 
     </v-container>

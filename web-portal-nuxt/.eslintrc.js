@@ -21,6 +21,9 @@ module.exports = {
     "camelcase": "off",
     // TODO: re-enable as many of these as possible after the Nuxt refactor
     // leave vue/script-indent along, though -- that one's set up like we want it
+    'array-bracket-spacing': 'off',
+    'no-prototype-builtins': 'off',
+    'quote-props': 'off',
     'vue/attribute-hyphenation': 'off',
     'vue/attributes-order': 'off',
     'vue/html-self-closing': 'off',
