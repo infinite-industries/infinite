@@ -73,10 +73,13 @@ The first time you run the tests you will need to configure [Cypress](https://cy
 
 ### Running Integration Tests
 
-1. You'll need to copy cypress.json.sample to cypress.json and fill in missing values
-2. start the api-server
-3. start the web-portal server
-4. run `npm run cypress:open` from the web-portal directory
+1. You'll need to copy cypress.evn.json.sample to cypress.env.json and fill in missing values
+2. Have a postgres db up and running
+    a. `docker run --name infinite-db -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=xxx -e POSTGRES_DB=infinite-api -d postgres:9.6.2-alpine`
+3. run `db:refresh:it` from inside the api-server directory (WARNING THIS WILL ERASE DATA IN YOUR DB)
+2. start the api-server `npm run start:dev`
+3. start the web-portal server `npm run start:dev`
+4. run `npm run test:it` from the web-portal directory
 
 ## License
 
