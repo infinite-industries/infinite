@@ -6,7 +6,7 @@
     <ul class="people-cards">
       <li>
         <div>
-          <img class="member-portrait" src="images/who_we_are/dima.jpg" width="150px" height="150px">
+          <img class="member-portrait" src="~/assets/images/who_we_are/dima.jpg" width="150px" height="150px">
         </div>
         <div>
           <h3>Dmitry "Dima" Strakovsky</h3>
@@ -20,7 +20,7 @@
     <ul class="people-cards">
       <li>
         <div>
-          <img class="member-portrait" src="images/who_we_are/chris.jpg" width="150px" height="150px">
+          <img class="member-portrait" src="~/assets/images/who_we_are/chris.jpg" width="150px" height="150px">
         </div>
         <div>
           <h3>Chris Wininger</h3>
@@ -35,7 +35,7 @@
       </li>
       <li>
         <div>
-          <img class="member-portrait" src="images/who_we_are/matthew.jpg" width="150px" height="150px">
+          <img class="member-portrait" src="~/assets/images/who_we_are/matthew.jpg" width="150px" height="150px">
         </div>
         <div>
           <h3>Matthew Gidcomb</h3>
@@ -47,7 +47,7 @@
       </li>
       <li>
         <div>
-          <img class="member-portrait" src="images/who_we_are/evan.jpg" width="150px" height="150px">
+          <img class="member-portrait" src="~/assets/images/who_we_are/evan.jpg" width="150px" height="150px">
         </div>
         <div>
           <h3>Evan Heaton</h3>
