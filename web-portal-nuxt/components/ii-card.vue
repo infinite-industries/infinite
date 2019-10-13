@@ -24,7 +24,7 @@
           <div class="drop-down" v-show="showCalendars">
             <div @click.stop="AddEventToCalendar('iCal')">iCal</div>
             <div @click.stop="AddEventToCalendar('Outlook')">Outlook</div>
-            <div @click.stop="AddEventToCalendar('Google Calendar')">Google Cal</div>
+            <div @click.stop="AddEventToCalendar('Google Cal')">Google Cal</div>
           </div>
         </div>
     </div>
@@ -37,6 +37,8 @@
 
   import Location from './vectors/Location.vue'
   import Calendar from './vectors/Calendar.vue'
+
+  import CalendarService from '@/services/CalendarService'
 
   export default {
     name: 'Card',
@@ -54,17 +56,7 @@
         this.showCalendars = false
       },
       AddEventToCalendar(calType) {
-        // console.log(calType);
-        if (calType === 'iCal' || calType === 'Outlook') {
-          // send calendar_event data to node layer to be converted into an .ics file
-
-          window.open(`/calendar?title=${encodeURIComponent(this.calendar_event.title)}&description=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}&time_start=${encodeURIComponent(this.calendar_event.date_times[0].start_time)}&time_end=${encodeURIComponent(this.calendar_event.date_times[0].end_time)}`)
-        } else if (calType === 'Google Calendar') {
-          const time_start_formatted = moment(this.calendar_event.date_times[0].start_time).format('YYYYMMDDTHHmmss')
-          const time_end_formatted = moment(this.calendar_event.date_times[0].end_time).format('YYYYMMDDTHHmmss')
-
-          window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(this.calendar_event.title)}&dates=${encodeURIComponent(time_start_formatted)}/${encodeURIComponent(time_end_formatted)}&details=${encodeURIComponent(this.calendar_event.brief_description)}&location=${encodeURIComponent(this.calendar_event.address)}`)
-        }
+        CalendarService.generate(this.calendar_event, calType)
       }
     },
     mounted: function () {

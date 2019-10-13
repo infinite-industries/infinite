@@ -172,6 +172,7 @@ export default {
     REDIRECT: process.env.REDIRECT,
     AUDIENCE: process.env.AUDIENCE,
     APP_URL: process.env.APP_URL,
-    API_URL: process.env.API_URL
+    API_URL: process.env.API_URL,
+    CALENDAR_SERVICE_URL: process.env.CALENDAR_SERVICE_URL
   }
 }
