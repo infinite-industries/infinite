@@ -6,7 +6,7 @@
 
       <p>
         Please enter your event information below.
-        As soon as we review your submission, we will post it to the site and send you a confurmation email.
+        As soon as we review your submission, we will post it to the site and send you a confirmation email.
       </p>
       <client-only>
         <submission-form :user_action="'upload'" :user_role="'regular'" :venues="venues"></submission-form>
