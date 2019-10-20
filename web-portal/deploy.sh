@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script assumes the remote host has a correctly configured .env file
+# in the root of the user directory. This is what will be used
+
 #npm run production-build
 
 USER='ubuntu'
@@ -30,55 +33,41 @@ elif [[ "staging" = $1 ]]; then
   ROOT='/home/ubuntu'
   SERVER='staging.infinite.industries'
 
-  npm run production-build
-
   ssh $USER@$SERVER bash --login -i  << EOF
 
   echo "ROOT: $ROOT"
-  mkdir -p $ROOT/temp-in
+  rm -R $ROOT/temp-infinite
+  mkdir -p $ROOT/temp-infinite
   cd $ROOT/temp-infinite
 
-  if [ -d "./.git" ]
-  then
-    echo "cloning repository"
-    git clone https://github.com/infinite-industries/infinite.git ./
-  else
-    echo 'Updating sources'
-    git reset --hard HEAD
-    git pull origin development
-  fi
-
-  git checkout origin development
-
-  mkdir -p $ROOT/front_end_infinite/web-portal/public
+  git clone https://github.com/infinite-industries/infinite.git ./
+  # git pull origin development
+  git checkout development
   cd ./web-portal
-  cp * -r $ROOT/front_end_infinite/.
-  cd $ROOT/front_end_infinite
-
-  if [ -d "$ROOT/front_end_infinite/public" ]
-  then
-    rm -R $ROOT/front_end_infinite/public
-  fi
+  cp $ROOT/.env $ROOT/temp-infinite/web-portal/ # copy .env file
 
   echo 'Installing npm packages'
-  npm install --production # this is super hacky since it brings giant crap like cypress to the server :(
+  npm install # this sucks we have to pull in cypress :-(
 
-  echo 'Restarting'
+  echo 'Build Nuxt'
+  npm run build
+
+  echo 'stop infinite'
   forever stop infinite
+
+  echo 'copying build to running directory'
+  mkdir -p $ROOT/web-portal
+  cp ./. -r $ROOT/web-portal/
+  cd $ROOT/web-portal
 
   if [ -f "$ROOT/.forever/infinite.log" ]
   then
+    echo 'deleting old log file'
     rm $ROOT/.forever/infinite.log
   fi
 
-  forever start --uid infinite ./server.js
+  forever start -a --uid infinite -c "npm start" ./
   echo 'Done!'
-EOF
-
-  sftp $USER@$SERVER << EOF
-  mkdir $ROOT/front_end_infinite/public
-  cd $ROOT/front_end_infinite/
-  put -r public
 EOF
 else
   echo Please specify environment to deploy to.
