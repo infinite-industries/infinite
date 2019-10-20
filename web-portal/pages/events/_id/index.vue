@@ -5,7 +5,7 @@
       <div class="event-heading-text">
         <h1>{{ event.title }}</h1>
         <!-- TODO: this should be an H2 or something other than a heading -->
-        <h3>{{ event.venue.name }}</h3>
+        <h3>{{ event.venue && event.venue.name }}</h3>
       </div>
     </div>
     <div class="event-time-actions">
