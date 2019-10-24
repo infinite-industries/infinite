@@ -64,6 +64,11 @@ export default {
         href:
           'https://fonts.googleapis.com/icon?family=Material+Icons'
       }
+    ],
+    script: [
+      {
+        src: '/workers/workers.js?v=\'1.0.01\''
+      }
     ]
   },
   /*
@@ -91,7 +96,7 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/auth',
-    '@nuxtjs/pwa',
+    ['@nuxtjs/pwa', { workbox: false, icon: false }],
     '@nuxtjs/google-gtag',
     '@nuxtjs/eslint-module',
     'nuxt-clipboard2'
