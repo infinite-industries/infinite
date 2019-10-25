@@ -7,9 +7,9 @@
   </div> -->
 
   <div id="subscribe-container">
-    <NuxtLink to="/subscribe?source='internal'">
-        Subscribe
-    </NuxtLink>
+    <nuxt-link to="/subscribe?source='internal'">
+      Subscribe
+    </nuxt-link>
   </div>
 </template>
 

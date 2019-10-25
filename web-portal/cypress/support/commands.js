@@ -1,7 +1,7 @@
 import { basename } from 'path'
 
 Cypress.Commands.add('selectFile', { prevSubject: 'element' }, (subject, file) => {
-  cy.fixture(file).then(function(res) {
+  cy.fixture(file).then(function (res) {
     const dt = new DataTransfer()
 
     dt.items.add(new File([res], basename(file)))

@@ -7,14 +7,14 @@
             <div class="image-surface" :style="backGroundImage"></div>
           </a>
         </div>
-        <div class="info-container">
-          <h3>{{calendar_event.title | truncate(40)}}</h3>
-          <h4>{{venue_info.name}}<ii-location iconColor="#B7B09C" width="12" height="12" /></h4>
+      <div class="info-container">
+        <h3>{{ calendar_event.title | truncate(40) }}</h3>
+        <h4>{{ venue_info.name }}<ii-location iconColor="#B7B09C" width="12" height="12" /></h4>
 
-          <p class="date">{{when_date}}</p>
-          <p class="time">{{when_time}}</p>
+        <p class="date">{{ when_date }}</p>
+        <p class="time">{{ when_time }}</p>
 
-          <p class="description">{{calendar_event.brief_description | truncate(120)}} </p>
+        <p class="description">{{ calendar_event.brief_description | truncate(120) }} </p>
 
           <div class="btn-actions">
             <a class="card-btn more-info" :href="'events/' + calendar_event.id">
@@ -23,14 +23,14 @@
             <span class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar"/>Add to Calendar</span>
           </div>
 
-          <div class="drop-down" v-show="showCalendars">
-            <div @click.stop="AddEventToCalendar('iCal')">iCal</div>
-            <div @click.stop="AddEventToCalendar('Outlook')">Outlook</div>
-            <div @click.stop="AddEventToCalendar('Google Cal')">Google Cal</div>
-          </div>
+        <div class="drop-down" v-show="showCalendars">
+          <div @click.stop="AddEventToCalendar('iCal')">iCal</div>
+          <div @click.stop="AddEventToCalendar('Outlook')">Outlook</div>
+          <div @click.stop="AddEventToCalendar('Google Cal')">Google Cal</div>
         </div>
+      </div>
     </div>
-   </div>
+  </div>
 
 </template>
 

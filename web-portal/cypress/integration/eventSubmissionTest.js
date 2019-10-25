@@ -63,7 +63,7 @@ context('Event Submission', () => {
     cy.get('.collapsible-content.expanded')
   })
 
-  it('Submitted events not displayed immediately after submission', function() {
+  it('Submitted events not displayed immediately after submission', function () {
     cy.visit('/')
     cy.contains('.infinite-card h3', EVENT_NAME).should('not.exist')
   })
@@ -83,7 +83,7 @@ context('Event Submission', () => {
     // cy.get('.alert.alert--dismissible').contains('Success! Event verified.')
   })
 
-  it('Event is displayed after verification', function() {
+  it('Event is displayed after verification', function () {
     cy.visit('/')
     cy.contains('.infinite-card h3', EVENT_NAME).should('exist')
   })
