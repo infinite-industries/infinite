@@ -2,11 +2,11 @@
   <div class="card-container">
     <div class="card-overlay" v-show="showCalendars" @click.stop="CloseCalendars()"></div>
     <div class="infinite-card">
-        <div class="image-container">
-          <a :href="'events/' + calendar_event.id">
-            <div class="image-surface" :style="backGroundImage"></div>
-          </a>
-        </div>
+      <div class="image-container">
+        <a :href="'events/' + calendar_event.id">
+          <div class="image-surface" :style="backGroundImage"></div>
+        </a>
+      </div>
       <div class="info-container">
         <h3>{{ calendar_event.title | truncate(40) }}</h3>
         <h4>{{ venue_info.name }}<ii-location iconColor="#B7B09C" width="12" height="12" /></h4>
@@ -16,12 +16,12 @@
 
         <p class="description">{{ calendar_event.brief_description | truncate(120) }} </p>
 
-          <div class="btn-actions">
-            <a class="card-btn more-info" :href="'events/' + calendar_event.id">
-              More Info
-            </a>
-            <span class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar"/>Add to Calendar</span>
-          </div>
+        <div class="btn-actions">
+          <a class="card-btn more-info" :href="'events/' + calendar_event.id">
+            More Info
+          </a>
+          <span class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar" />Add to Calendar</span>
+        </div>
 
         <div class="drop-down" v-show="showCalendars">
           <div @click.stop="AddEventToCalendar('iCal')">iCal</div>
