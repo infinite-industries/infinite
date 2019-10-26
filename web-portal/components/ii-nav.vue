@@ -2,7 +2,7 @@
   <div class="sidebar" :class="{ '-initial': internalInitialRender }">
     <ul id="nav-list">
       <li v-for="item in getVisibleItems(nav_items)" :key="item.title">
-        <a :href="item.route">{{ item.title }}</a>
+        <nuxt-link :to="item.route">{{ item.title }}</nuxt-link>
       </li>
     </ul>
     <div id="nav-social-media" style="text-align:center;">

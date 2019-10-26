@@ -3,9 +3,9 @@
     <div class="card-overlay" v-show="showCalendars" @click.stop="CloseCalendars()"></div>
     <div class="infinite-card">
       <div class="image-container">
-        <a :href="'events/' + calendar_event.id">
+        <nuxt-link :to="{ name: 'events-id', params: { id: calendar_event.id } }">
           <div class="image-surface" :style="backGroundImage"></div>
-        </a>
+        </nuxt-link>
       </div>
       <div class="info-container">
         <h3>{{ calendar_event.title | truncate(40) }}</h3>
@@ -17,9 +17,9 @@
         <p class="description">{{ calendar_event.brief_description | truncate(120) }} </p>
 
         <div class="btn-actions">
-          <a class="card-btn more-info" :href="'events/' + calendar_event.id">
+          <nuxt-link class="card-btn more-info" :to="{ name: 'events-id', params: { id: calendar_event.id } }">
             More Info
-          </a>
+          </nuxt-link>
           <span class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar" />Add to Calendar</span>
         </div>
 

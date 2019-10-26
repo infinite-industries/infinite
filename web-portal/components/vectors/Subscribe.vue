@@ -1,6 +1,6 @@
 // Subscribe graphic
 <template>
-  <a href="/subscribe?source='internal'" style="text-decoration: none;">
+  <nuxt-link to="/subscribe?source='internal'" style="text-decoration: none;">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       :width="width"
@@ -19,7 +19,7 @@
         </g>
       </g>
     </svg>
-  </a>
+  </nuxt-link>
 </template>
 
 <script>
