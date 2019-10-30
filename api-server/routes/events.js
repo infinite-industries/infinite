@@ -11,6 +11,7 @@ const uuidv1 = require('uuid/v1');
 
 const BITLY_URI ='https://api-ssl.bitly.com/v3/shorten'
 const BITLY_TOKEN = process.env.BITLY_TOKEN
+const BITLY_BASE = process.env.APP_URL || 'https://infinite.industries'
 
 const filterContactInfo = (req, data) => {
 	if (req.isInfiniteAdmin) {
@@ -105,7 +106,7 @@ async function createOverride(req, res, next) {
 	try {
 		const id = uuidv1()
 
-		const bitlyLink = await _createBitlyLink(`https://infinite.industries/events/${id}`)
+		const bitlyLink = await _createBitlyLink(`${BITLY_BASE}/events/${id}`)
 
 		const postJSON = {
 			...req.body.event,
