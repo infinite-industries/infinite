@@ -9,7 +9,10 @@
       </div>
       <div class="info-container">
         <h3>{{ calendar_event.title | truncate(40) }}</h3>
-        <h4>{{ venue_info.name }}<ii-location iconColor="#B7B09C" width="12" height="12" /></h4>
+        <h4>
+          <ii-location iconColor="#B7B09C" width="12" height="12" />
+          {{ venue_info.name }}
+        </h4>
 
         <p class="date">{{ when_date }}</p>
         <p class="time">{{ when_time }}</p>
