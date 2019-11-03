@@ -155,9 +155,11 @@
       const description = this.event && this.event.brief_description ? this.event.brief_description : ''
       const url = PageMetaService.urlFor('/events/' + eventId)
       const defaultImage = PageMetaService.urlFor('/images/default.jpg')
-      const socialImage = this.event && this.event.social_image && this.event.social_image !== 'none'
-        ? this.event.social_image
-        : defaultImage
+
+      const eventImage = this.event && this.event.image && this.event.image !== 'none' ? this.event.image : defaultImage
+      const socialImage = (this.event && this.event.social_image && this.event.social_image !== 'none'
+        ? this.event.social_image : eventImage)
+
       return {
         title,
         meta: [
