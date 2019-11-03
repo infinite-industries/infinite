@@ -56,3 +56,9 @@ This application communicates with an [API server](https://github.com/infinite-i
  ```bash
  npm run start-dev
  ```
+
+### deploying
+run: `./deploy.sh <enironment>`
+
+assumes that the server has an 1nfinite.pem and a .env in $ROOT
+
