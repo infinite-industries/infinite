@@ -58,6 +58,12 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
-}
+  }
+
+  @media only screen and (min-width: 480px) {
+    #list-container {
+      padding: 0 15px
+    }
+  }
 
 </style>
