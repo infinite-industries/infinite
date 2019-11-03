@@ -86,7 +86,8 @@ export default {
   plugins: [
     '~/plugins/vue-moment',
     '~/plugins/vue-smoothscroll',
-    { src: '~/plugins/vue-editor', ssr: false }
+    { src: '~/plugins/vue-editor', ssr: false },
+    '~/plugins/close-sidebar-on-nav.client.js' // client-only
   ],
   /*
   ** Nuxt.js modules
