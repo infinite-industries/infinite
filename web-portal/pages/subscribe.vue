@@ -2,16 +2,16 @@
   <div class="container info-page">
     <div class="container form-container">
       <div class="copy-container">
-        <h1>Subscribe to Weekly Email Event List</h1>
+        <h1>EXTRA! EXTRA! Fresh Cultural Pickins!</h1>
+        <h4> * </h4>
+        <h4>Simple. Clean. Informative. No ads. </h4>
+
         <p>
           If it’s happening, and it’s happening - it’s here.
         </p>
-        <p style="margin-top:0px;">
-          Infinite Industries highlights experiments in contemporary culture so more of us can discover, share and participate. Gallery openings, punk shows, theater, street art, orchestra, museums, hip-hop, dance; it’s all here for you to experience.
-        </p>
-        <p>
-          <b>Curated list of events delivered to your mailbox once a week.</b>
-        </p>
+
+        <h4>Curated list of arts and culture events delivered to your mailbox every Wednesday afternoon.</h4>
+
       </div>
 
       <div id="mc_embed_signup">
@@ -24,76 +24,24 @@
           target="_blank"
           novalidate
         >
-          <div id="mc_embed_signup_scroll">
-            <div class="layout row wrap">
-              <div class="flex xs12 sm3">
-                <label for="mce-EMAIL" class="form-label">Email Address:</label>
-              </div>
-              <div class="flex xs12 sm8">
-                <div class="v-input brief-description v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <input type="email" value="" name="EMAIL" id="mce-EMAIL">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="layout row wrap">
-              <div class="flex xs12 sm3">
-                <label for="mce-FNAME" class="form-label">First Name:</label>
-              </div>
-              <div class="flex xs12 sm8">
-                <div class="v-input brief-description v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <input type="text" value="" name="FNAME" id="mce-FNAME">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="layout row wrap">
-              <div class="flex xs12 sm3">
-                <label for="mce-LNAME" class="form-label">Last Name:</label>
-              </div>
-              <div class="flex xs12 sm8">
-                <div class="v-input brief-description v-text-field">
-                  <div class="v-input__control">
-                    <div class="v-input__slot">
-                      <div class="v-text-field__slot">
-                        <input type="text" value="" name="LNAME" id="mce-LNAME">
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div id="mce-responses" class="clear">
-              <div class="response" id="mce-error-response" style="display:none" />
-              <div class="response" id="mce-success-response" style="display:none" />
-            </div>
-
             <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
             <div style="position: absolute; left: -5000px;" aria-hidden="true">
-              <input type="text" name="b_55944da642302ef43bc8c0f27_f571a7e653" tabindex="-1" value="">
+                <input type="text" name="b_55944da642302ef43bc8c0f27_f571a7e653" tabindex="-1" value="">
             </div>
 
             <div class="submit-container">
-              <button type="submit" class="v-btn v-btn--depressed grey">Subscribe</button>
+                <button type="submit" class="subscribe-button">SUBSCRIBE</button>
             </div>
-          </div>
         </form>
-      </div>
     </div>
-  </div>
+    <div class="copy-container" style="padding-top:0px;">
+      <p>
+        Gallery openings, punk shows, theater, street art, orchestra, museums, hip-hop, dance; it’s all here for you to experience.
+      </p>
+    </div>
+</div>
+</div>
+
 </template>
 
 <script>
@@ -117,7 +65,28 @@
   }
 </script>
 
+<style>
+  /* hide the "subscribe" banner even on smaller screens */
+  /* so as not to cut off the bottom of events */
+  #subscribe-container {
+    display: none;
+  }
+</style>
+
 <style scoped>
+
+  .subscribe-button {
+    border: 1px black solid;
+    padding: 15px;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-family: "EB Garamond";
+    font-size: 1.25em;
+    font-weight: bold;
+    letter-spacing: 3px;
+    background-color:#B7B09C;
+  }
+
   .form-container {
     padding: 10px;
     padding-left: 20px;
@@ -133,10 +102,18 @@
 
   }
 
+  h4 {
+    font-family: "EB Garamond";
+    font-size: 1.5em;
+    text-align: center;
+    margin-top: 20px;
+  }
+
   h1{
     font-size: 1.9em;
     font-weight: bold;
     margin-bottom: 0.7em;
+    text-align: center;
   }
 
   h2, h3{
@@ -149,14 +126,20 @@
   p {
     font-family: "EB Garamond";
     font-size: 1.25em;
+    text-align:center;
   }
 
   .copy-container {
     padding:20px;
+    padding-bottom: 0px;
   }
 
   .copy-container p {
     margin-top: 30px;
+    max-width: 500px;
+    margin-right: auto;
+    margin-left: auto;
+
   }
 
   form {
