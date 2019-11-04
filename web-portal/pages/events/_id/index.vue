@@ -445,7 +445,19 @@
   }
 
   .ii-social-button .ii-social-icon {
-    vertical-align: text-top;
+    vertical-align: baseline;
+  }
+
+  .ii-social-button.add-event-to-cal .ii-social-icon {
+    vertical-align: -1px;
+  }
+
+  .ii-social-button.map-event .ii-social-icon {
+    vertical-align: -2px;
+  }
+
+  .ii-social-button.share-event .ii-social-icon {
+    vertical-align: -3px;
   }
 
   /* content of social buttons is hidden on small screens */
