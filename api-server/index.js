@@ -15,6 +15,7 @@ const events = require('./routes/events')
 const venues = require("./routes/venues")
 const eventLists = require("./routes/eventLists")
 const users = require("./routes/users")
+const createICSFile = require('./routes/createICSFile')
 
 const app = express()
 
@@ -48,10 +49,21 @@ app.use((req, res, next) => {
     next()
   }
 })
+
+// CORS Support
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,HEAD,POST,DELETE,OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'x-access-token, *')
+  res.header('Access-Control-Allow-Credentials', 'true')
+  next()
+})
+
 app.use("/events", events)
 app.use("/venues", venues)
 app.use("/event-lists", eventLists)
 app.use("/users", users)
+app.use('/create-ics-file', createICSFile)
 
 const appPort = process.env.PORT || '3003';
 
