@@ -1,5 +1,6 @@
 import colors from 'vuetify/es5/util/colors'
 import 'dotenv/config'
+import { json } from 'body-parser'
 
 export default {
   mode: 'universal',
@@ -160,7 +161,9 @@ export default {
   ** Server middleware
   */
   serverMiddleware: [
-    { path: '/internal-api/images', handler: '~/internal-api/upload-images.js' }
+    json(),
+    { path: '/internal-api/images', handler: '~/internal-api/upload-images.js' },
+    { path: '/internal-api/slack-alert', handler: '~/internal-api/slack-alert.js' }
   ],
   /*
   ** Build configuration

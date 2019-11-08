@@ -40,6 +40,8 @@
 </template>
 
 <script>
+  import ContactService from '../services/ContactService'
+
   export default {
     data: function () {
       return {
@@ -59,7 +61,7 @@
     },
     methods: {
       ContactUs: function () {
-        this.$axios.post('https://infinite-industries-aux.azurewebsites.net/api/Contact', { 'name': this.name, 'email': this.email, 'comment': this.comment })
+        ContactService.sendMessage(this.name, this.email, this.comment)
           .then(() => {
             this.ResetForm()
             this.dialog = true
