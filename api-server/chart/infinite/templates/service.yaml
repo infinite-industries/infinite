@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "Helpers.release_fullname" . }}-svc
+  namespace: {{ template "Helpers.namespace" . }}
+  labels:
+    app: {{ template "Helpers.app_name" . }}
+    chart: {{ template "Helpers.chart" . }}
+    release: {{ .Release.Name }}
+  annotations:
+    helm.release.name: {{ .Release.Name }}
+    helm.release.namespace: {{ .Release.Namespace }}
+    helm.release.revision: "{{ .Release.Revision }}"
+spec:
+  type: LoadBalancer
+  selector:
+    app: {{ template "Helpers.app_name" . }}
+    release: {{ .Release.Name }}
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80

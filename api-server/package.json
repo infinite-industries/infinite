@@ -1,0 +1,59 @@
+{
+  "name": "infinite-api",
+  "version": "1.0.0",
+  "description": "database and for art work/event management and presentation",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "start:dev": "nodemon ./index.js",
+    "start:docker": "npm run setup-dev && npm run start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watchify": "watchify -vd -p browserify -e ./src/main.js -o ./public/js/dist.js",
+    "deploy": "./deploy.sh production",
+    "db:create": "sequelize db:create",
+    "db:drop": "sequelize db:drop",
+    "db:migrate": "sequelize db:migrate",
+    "db:seed": "sequelize db:seed:all",
+    "db:seed:venues": "sequelize db:seed --seed 20190929142748-venues.js",
+    "db:refresh": "npm run db:drop && npm run db:create && npm run db:migrate",
+    "db:refresh:it": "npm run db:refresh && npm run db:seed:venues"
+  },
+  "keywords": [
+    "art",
+    "api"
+  ],
+  "author": "Infinite Industries",
+  "license": "MIT",
+  "browserify": {
+    "transform": [
+      "babelify",
+      "vueify"
+    ]
+  },
+  "devDependencies": {
+    "faker": "^4.1.0",
+    "frisby": "^2.0.1",
+    "jest-cli": "^20.0.4",
+    "moment-timezone": "^0.5.27",
+    "nodemon": "^1.15.0",
+    "uuid": "^3.3.3"
+  },
+  "dependencies": {
+    "async": "^2.5.0",
+    "axios": "^0.19.0",
+    "body-parser": "^1.17.2",
+    "debug": "^3.0.1",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.3",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.4",
+    "nconf": "^0.8.5",
+    "passport": "^0.4.0",
+    "passport-localapikey": "0.0.3",
+    "path": "^0.12.7",
+    "pg": "^7.4.1",
+    "sequelize": "^4.35.5",
+    "sequelize-cli": "^4.0.0",
+    "slack-notify": "^0.1.6"
+  }
+}

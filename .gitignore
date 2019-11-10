@@ -1,13 +1,15 @@
-.config
-.glitch-assets
-node_modules
-.env
-notes.local
 .DS_Store
-prep.txt
-public/js/*
-!.gitkeep
+.directory
+
+# Editor directories and files
 .idea
-analytics.sqlite
-clientConfig.js
-cypress.env.json
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+
+prep.txt
+*.code-workspace
+
