@@ -1,30 +1,27 @@
 #!/usr/bin/env bash
+
+# This script assumes the remote host has a correctly configured .env file
+# in the root of the user directory and .pem in the same place. This is what will be used
+
 set -e
 ROOT='/home/ubuntu'
 USER='ubuntu'
+GIT_HEAD=''
 
 SERVER=''
-if [[ "production" = $1 ]]; then
-  SERVER='api.infinite.industries'
 
-  # ssh $USER@$SERVER bash --login -i << EOF
-  #   cd $ROOT
-  #   echo 'Updating sources'
-  #   git reset --hard HEAD
-  #   git checkout master
-  #   git pull origin master
-  #   echo 'Installing npm packages'
-  #   npm install
-  #   echo 'Restarting'
-  #   forever stop infinite
-  #   rm /home/$USER/.forever/infinite.log
-  #   forever start --uid infinite index.js
-    echo 'Prod build not implemented yet!'
-EOF
+function promptUser {
+  echo "WARNING THIS IS PROD: Are you sure?"
+  select yn in "yes" "no"; do
+    case $yn in
+      yes ) doDeploy; break;;
+      no ) exit;;
+    esac
+done
+}
 
-elif [[ "staging" = $1 ]]; then
-  SERVER='staging-api.infinite.industries'  #not used yet
-
+function doDeploy {
+  echo "deploying to $SERVER"
   ssh $USER@$SERVER bash --login -i << EOF
   set +e
   rm -Rf $ROOT/temp-infinite/infinite
@@ -36,7 +33,7 @@ elif [[ "staging" = $1 ]]; then
   git clone https://github.com/infinite-industries/infinite.git ./
 
   echo 'Updating sources'
-  git checkout development
+  git checkout $GIT_HEAD
 
   echo 'Installing npm packages'
   cd $ROOT/temp-infinite/infinite/api-server
@@ -67,7 +64,17 @@ elif [[ "staging" = $1 ]]; then
   forever start -a --uid infinite index.js
   echo 'Done!'
 EOF
+  echo "Deploy Complete To $SERVER"
+}
 
+if [[ "production" = $1 ]]; then
+  SERVER='api.infinite.industries'
+  GIT_HEAD='master'
+  promptUser
+elif [[ "staging" = $1 ]]; then
+  SERVER='staging-api.infinite.industries'
+  GIT_HEAD='development'
+  doDeploy
 else
   echo Please specify environment to deploy to.
   echo Usage: ./deploy.sh environment

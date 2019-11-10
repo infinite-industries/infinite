@@ -3,36 +3,24 @@
 # This script assumes the remote host has a correctly configured .env file
 # in the root of the user directory. This is what will be used
 
-#npm run production-build
-
+set -e
+ROOT='/home/ubuntu'
 USER='ubuntu'
+GIT_HEAD=''
 
 SERVER=''
-if [[ "production" = $1 ]]; then
-  # ROOT='/home/ubuntu/front_end_infinite'
-  # SERVER='infinite.industries'
-  #
-  # ssh $USER@$SERVER bash --login -i << EOF
-  # cd $ROOT
-  # echo 'Updating sources'
-  # git reset --hard HEAD
-  # git checkout master
-  # git pull
-  # echo 'Installing npm packages'
-  # npm install --production
-  # echo 'Restarting'
-  # #npm run server-build
-  # #echo 'Building frontend js'
-  # forever stop infinite
-  # rm /home/$USER/.forever/infinite.log
-  # forever start --uid infinite server.js
-  echo 'Have not implemented prod for this deploy process'
-EOF
-elif [[ "staging" = $1 ]]; then
-  # ROOT='/home/ubuntu/front_end_infinite'
-  ROOT='/home/ubuntu'
-  SERVER='staging.infinite.industries'
 
+function promptUser {
+  echo "WARNING THIS IS PROD: Are you sure?"
+  select yn in "yes" "no"; do
+    case $yn in
+      yes ) doDeploy; break;;
+      no ) exit;;
+    esac
+done
+}
+
+function doDeploy {
   ssh $USER@$SERVER bash --login -i  << EOF
 
   echo "ROOT: $ROOT"
@@ -42,7 +30,7 @@ elif [[ "staging" = $1 ]]; then
 
   git clone https://github.com/infinite-industries/infinite.git ./
   # git pull origin development
-  git checkout development
+  git checkout $GIT_HEAD
   cd ./web-portal
   cp $ROOT/.env $ROOT/temp-infinite/web-portal/ # copy .env file
 
@@ -69,9 +57,20 @@ elif [[ "staging" = $1 ]]; then
   forever start -a --uid infinite -c "npm start" ./
   echo 'Done!'
 EOF
+}
+
+if [[ "production" = $1 ]]; then
+  SERVER='infinite.industries'
+  GIT_HEAD='master'
+  promptUser
+elif [[ "staging" = $1 ]]; then
+  SERVER='staging.infinite.industries'
+  GIT_HEAD='development'
+  doDeploy
 else
   echo Please specify environment to deploy to.
   echo Usage: ./deploy.sh environment
   echo Example: ./deploy.sh staging
   exit
 fi
+
