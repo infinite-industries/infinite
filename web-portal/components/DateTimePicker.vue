@@ -79,25 +79,25 @@
               </select>
             </span>
 
-            <span v-if="edit_mode">
+            <div v-if="edit_mode">
               <v-btn
-                style="color:black"
                 class="time-cancel"
                 small
                 dark
-                outline
+                depressed
+                color="grey"
                 @click="Cancel()"
               >Cancel</v-btn>
               <v-btn
-                style="color:black"
                 small
                 dark
-                outline
+                depressed
+                color="green"
                 class="time-update"
                 @click="UpdateTimeSegment(time_segment_index)"
               >UPDATE</v-btn>
-            </span>
-            <span v-else>
+            </div>
+            <div v-else>
               <v-btn
                 small
                 dark
@@ -110,6 +110,7 @@
                 small
                 dark
                 outline
+                color="green"
                 v-show="!validate_time"
                 class="time-confirm"
                 disabled
@@ -119,16 +120,16 @@
                 small
                 dark
                 depressed
-                color="grey"
+                color="green"
                 class="white--text time-confirm"
                 @click="AddTimeSegment()"
                 v-show="validate_time"
               >CONFIRM</v-btn>
-            </span>
+            </div>
           </div>
         </div>
 
-        <div v-show="chrono_order_invalid">
+        <div v-show="chrono_order_invalid" class="error--text">
           End time for the event must follow the start time. Unless you are a Time Lord, of course...
         </div>
 
@@ -139,8 +140,8 @@
                 <span> {{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time) }}</span>
               </td>
               <td>
-                <v-btn style="color:black" small dark outline @click="DeleteTimeSegment(index)">Delete</v-btn>
-                <v-btn style="color:black" small dark outline @click="EditTimeSegment(index)">Edit</v-btn>
+                <v-btn small dark depressed color="red" @click="DeleteTimeSegment(index)">Delete</v-btn>
+                <v-btn small dark depressed color="green" @click="EditTimeSegment(index)">Edit</v-btn>
               </td>
             </tr>
           </table>
