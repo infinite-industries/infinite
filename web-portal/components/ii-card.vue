@@ -10,7 +10,7 @@
       <div class="info-container">
         <h3>{{ calendar_event.title | truncate(40) }}</h3>
         <h4>
-          <ii-location iconColor="#B7B09C" width="12" height="12" />
+          <ii-location iconColor="#B7B09C" width="20" height="20" />
           {{ venue_info.name }}
         </h4>
 
@@ -235,7 +235,6 @@
   .btn-actions {
     position: absolute;
     bottom: 5px;
-    padding-left: 5px;
 
     font-family: 'Open Sans', sans-serif;
     font-size: 11px;
@@ -247,9 +246,10 @@
     top: 3px;
     margin-right: 5px;
   }
+
   .card-btn {
     border-radius: 5px;
-    padding: 7px;
+    padding: 7px 11px;
   }
 
   .add-to-calendar {
@@ -290,6 +290,17 @@
   .drop-down div:hover {
     text-decoration: underline;
   }
+
+@media only screen and (max-width: 350px) {
+  /* on very small screens the calendar button wraps awkwardly */
+  .card-btn {
+    padding: 7px;
+  }
+
+  .ii-calendar {
+    display: none;
+  }
+}
 
 @media only screen and (max-width: 480px) {
   .card-container {
@@ -371,11 +382,6 @@
     min-width: 225px;
   }
 
-  .card-btn {
-    border-radius: 5px;
-    padding: 7px;
-  }
-
   .add-to-calendar {
     background-color: #B7B09C;
     margin-left: 5px;
@@ -407,8 +413,9 @@
 
   .ii-calendar {
     position: relative;
-    top: 5px;
-    margin-right: 3px;
+    top: 1px;
+    margin-right: 6px;
+    margin-left: 2px;
   }
 
 }
