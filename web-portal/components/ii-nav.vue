@@ -110,7 +110,6 @@
         const userIsAdmin = this.$store.getters.IsUserAdmin
 
         const isShown = (item) => {
-          console.log(item.title, userIsAdmin)
           if (item.isAuthOnly && !this.$auth.loggedIn) {
             return false
           } else if (item.isUnAuthOnly && this.$auth.loggedIn) {
