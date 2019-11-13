@@ -2,7 +2,7 @@
   export default {
     mounted() {
       this.$auth.logout()
-      this.$store.dispatch('LOGOUT')
+      this.$store.dispatch('Logout')
     },
     render() {
       return null

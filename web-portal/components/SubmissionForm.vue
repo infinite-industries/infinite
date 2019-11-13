@@ -296,7 +296,8 @@
         this.showEventLoadingSpinner = true
         this.$store.dispatch('admin/UpdateEvent', {
           id: this.calendar_event.id,
-          event_data: this.calendar_event
+          event_data: this.calendar_event,
+          idToken: this.$auth.$storage.getState('_token.auth0')
         }).finally(() => { this.showEventLoadingSpinner = false })
       },
       ConfirmDeleteEvent: function () {
@@ -305,13 +306,20 @@
       DeleteEvent: function () {
         this.dialog = false
         this.showEventLoadingSpinner = true
-        this.$store.dispatch('admin/DeleteEvent', { id: this.calendar_event.id })
+        this.$store.dispatch('admin/DeleteEvent', {
+          id: this.calendar_event.id,
+          idToken: this.$auth.$storage.getState('_token.auth0')
+        })
           .then(() => { this.$router.push('/admin') })
           .finally(() => { this.showEventLoadingSpinner = false })
       },
       VerifyEvent: function () {
         this.showEventLoadingSpinner = true
-        this.$store.dispatch('admin/VerifyEvent', { id: this.calendar_event.id })
+
+        this.$store.dispatch('admin/VerifyEvent', {
+          id: this.calendar_event.id,
+          idToken: this.$auth.$storage.getState('_token.auth0')
+        })
           .then(() => {
             this.showEventLoadingSpinner = false
             this.$router.push('/admin')
