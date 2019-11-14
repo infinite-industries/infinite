@@ -20,7 +20,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import Toolbar from '../components/ii-toolbar'
   import Notifications from '../components/ii-notifications.vue'
   import Subscribe from '../components/ii-subscribe.vue'
@@ -44,19 +43,13 @@
       }
     },
 
-    // setting access token in created, so that it comes before mounted hooks in child components
-    created: function () {
-      if (this.$auth.loggedIn) {
-        this.setAxiosConfig()
-      }
-    },
     mounted: async function () {
       // Inhale mock user data
       // TODO: does this belong in the layout, or should it be in route-level component?
       //       Looks like the answer is route-level, because this doesn't run if you change this to `fetch`
       if (this.$auth.loggedIn) {
         try {
-          await this.$store.dispatch('LoadAllUserData')
+          await this.$store.dispatch('LoadAllUserData', { idToken: this.$auth.$storage.getState('_token.auth0') })
         } catch (error) {
           console.log(`error fetching user data: "${error}"`)
           if (error.response && error.response.status === 403) {
@@ -87,14 +80,6 @@
       },
       RouteTo: function (route_to_page) {
         this.$router.push({ path: route_to_page })
-      },
-      setAxiosConfig() {
-        const idToken = this.$auth.$storage.getState('_token.auth0')
-
-        if (idToken) {
-          const idTokenStripped = idToken.replace('Bearer ', '')
-          axios.defaults.headers.common['x-access-token'] = idTokenStripped
-        }
       }
       // ConfirmAction: function(action_confirmation_message){
       //   // DISPATCH vuex

@@ -2,20 +2,27 @@ import axios from 'axios'
 const API_URL = process.env.API_URL
 
 export class ApiService {
-  static get(path) {
-    return axios.get(API_URL + path)
+  static get(path, idToken) {
+    const userToken = ApiService.formatToken(idToken)
+
+    return axios.get(API_URL + path, idToken ? { headers: { 'x-access-token': userToken } } : null)
   }
 
-  static post(path, postBody) {
-    return axios.post(API_URL + path, postBody)
+  static post(path, postBody, idToken) {
+    const userToken = ApiService.formatToken(idToken)
+
+    return axios.post(API_URL + path, postBody, idToken ? { headers: { 'x-access-token': userToken } } : null)
   }
 
-  static put(path, body) {
-    return axios.put(API_URL + path, body)
+  static put(path, body, idToken) {
+    const userToken = ApiService.formatToken(idToken)
+    return axios.put(API_URL + path, body, idToken ? { headers: { 'x-access-token': userToken } } : null)
   }
 
-  static delete(path) {
-    return axios.delete(API_URL + path)
+  static delete(path, idToken) {
+    const userToken = ApiService.formatToken(idToken)
+
+    return axios.delete(API_URL + path, idToken ? { headers: { 'x-access-token': userToken } } : null)
   }
 
   static makeApiCall(verb, path, postBody, apiKey, userToken) {
@@ -41,5 +48,13 @@ export class ApiService {
 
     // general event listings for the user's area
     return axios[verb].apply(axios, args)
+  }
+
+  static formatToken(idToken) {
+    if (typeof idToken !== 'string') {
+      return null
+    }
+
+    return idToken.replace('Bearer ', '')
   }
 }

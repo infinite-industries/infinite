@@ -281,8 +281,8 @@ export const actions = {
       })
   },
 
-  LoadAllUserData: (context) => {
-    return ApiService.get('/users/current')
+  LoadAllUserData: (context, payload) => {
+    return ApiService.get('/users/current', payload.idToken)
       .then(function (_response) {
         context.commit('UPDATE_USER_DATA', _response.data.user)
       })
