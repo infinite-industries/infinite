@@ -173,7 +173,6 @@ export const mutations = {
 
 export const actions = {
   nuxtServerInit: (ctx, { req }) => {
-    debugger
     return ApiService.get('/users/current')
       .then(function (_response) {
         ctx.commit('UPDATE_USER_DATA', _response.data.user)
