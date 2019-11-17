@@ -189,6 +189,7 @@
     validate({ params }) {
       return !!params.id
     },
+    layout: 'no-subscribe',
     data() {
       return {
         event: null,
@@ -236,14 +237,6 @@
     }
   }
 </script>
-
-<style>
-  /* hide the "subscribe" banner even on smaller screens */
-  /* so as not to cut off the bottom of events */
-  #subscribe-container {
-    display: none;
-  }
-</style>
 
 <style scoped>
   .event {
