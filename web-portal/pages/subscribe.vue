@@ -46,6 +46,7 @@
 
 <script>
   export default {
+    layout: 'no-subscribe',
     methods: {
       isIos: function () {
         const userAgent = window.navigator.userAgent.toLowerCase()
@@ -64,14 +65,6 @@
     }
   }
 </script>
-
-<style>
-  /* hide the "subscribe" banner even on smaller screens */
-  /* so as not to cut off the bottom of events */
-  #subscribe-container {
-    display: none;
-  }
-</style>
 
 <style scoped>
 
