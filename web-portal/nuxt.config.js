@@ -60,6 +60,13 @@ export default {
       { rel: 'apple-touch-icon', type: 'image/png', sizes: '192X192', href: '/images/favicon_192.png' },
       { rel: 'icon', type: 'image/png', sizes: '512X512', href: '/images/favicon_512.png' },
       { rel: 'apple-touch-icon', type: 'image/png', sizes: '512X512', href: '/images/favicon_512.png' },
+      // TODO: for some reason our fonts don't work when the nuxt app is built;
+      // fix that and then remove this stylesheet
+      {
+        hid: 'fonts',
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,400i,600,600i,700'
+      },
       {
         rel: 'stylesheet',
         href:

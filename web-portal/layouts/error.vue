@@ -31,7 +31,13 @@
       const title =
         this.error.statusCode === 404 ? this.pageNotFound : this.otherError
       return {
-        title
+        title,
+        link: [
+          {
+            rel: 'stylesheet',
+            href: 'https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap'
+          }
+        ]
       }
     },
     data() {
@@ -75,7 +81,7 @@
     font-size: 1.2em;
   }
 
-  p{
-    top-margin: 20px;
+  p {
+    margin-top: 20px;
   }
 </style>
