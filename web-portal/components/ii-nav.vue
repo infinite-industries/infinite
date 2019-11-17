@@ -28,7 +28,7 @@
             style="cursor: pointer"
           />
         </a>
-        <a href="https://www.instagram.com/1nfinite_1ndustries/">
+        <a href="https://www.instagram.com/1nfinite1ndustries/">
           <instagram-icon
             id="instagram"
             class="social-media-icon"
