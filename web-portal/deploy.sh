@@ -44,8 +44,10 @@ function doDeploy {
   forever stop infinite
 
   echo 'copying build to running directory'
-  mkdir -p $ROOT/web-portal
-  cp ./. -r $ROOT/web-portal/
+  set +e
+  rm -R $ROOT/web-portal
+  set -e
+  mv $ROOT/temp-infinite/web-portal $ROOT/web-portal
   cd $ROOT/web-portal
 
   if [ -f "$ROOT/.forever/infinite.log" ]

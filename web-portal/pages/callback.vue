@@ -1,7 +1,7 @@
 <script>
   export default {
     mounted() {
-      this.$store.dispatch('LoadAllUserData')
+      this.$store.dispatch('LoadAllUserData', { idToken: this.$auth.$storage.getState('_token.auth0') })
     }
   }
 </script>

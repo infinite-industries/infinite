@@ -17,9 +17,10 @@ export const actions = {
         if (response.data.status === 'success') { context.commit('POPULATE_CURRENT_EVENT', response.data.event, { root: true }) }
       })
   },
-  LoadUnverifiedEvents: (context) => {
-    // Axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('jwtToken');
-    ApiService.get('/events/current/non-verified')
+  LoadUnverifiedEvents: (context, payload) => {
+    const idToken = payload.idToken
+
+    ApiService.get('/events/current/non-verified', idToken)
       .then(function (_response) {
         console.log('data from server: ', _response.data.events)
         if (_response.data.status === 'success') {
@@ -38,7 +39,9 @@ export const actions = {
       })
   },
   VerifyEvent: (context, payload) => {
-    return ApiService.put(`/events/verify/${payload.id}`)
+    const idToken = payload.idToken
+
+    return ApiService.put(`/events/verify/${payload.id}`, null, idToken)
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if (_response.data.status === 'success') {
@@ -58,7 +61,9 @@ export const actions = {
   },
 
   UpdateEvent: (context, payload) => {
-    return ApiService.put(`/events/${payload.id}`, { event: { ...payload.event_data } })
+    const idToken = payload.idToken
+
+    return ApiService.put(`/events/${payload.id}`, { event: { ...payload.event_data } }, idToken)
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if (_response.data.status === 'success') {
@@ -78,7 +83,9 @@ export const actions = {
   },
 
   DeleteEvent: (context, payload) => {
-    return ApiService.delete(`/events/${payload.id}`)
+    const idToken = payload.idToken
+
+    return ApiService.delete(`/events/${payload.id}`, idToken)
       .then(function (_response) {
         console.log('Trying to delete event \n data from server: ', _response.data.events)
         if (_response.data.status === 'success') {

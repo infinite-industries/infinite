@@ -27,7 +27,7 @@
       }
     },
     mounted: function () {
-      this.$store.dispatch('admin/LoadUnverifiedEvents')
+      this.$store.dispatch('admin/LoadUnverifiedEvents', { idToken: this.$auth.$storage.getState('_token.auth0') })
     },
     components: {
       'admin-events-list': AdminEventsList
