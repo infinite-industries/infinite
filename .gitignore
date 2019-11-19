@@ -13,3 +13,5 @@
 prep.txt
 *.code-workspace
 
+/data/*
+api-server/test.dump
