@@ -66,7 +66,7 @@
               <a
                 class="ii-social-button"
                 target="_new"
-                :href="`https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevent%2F${event.id}`"
+                :href="`https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Finfinite.industries%2Fevents%2F${event.id}`"
               >
                 <ii-facebook-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
                 <span>Share</span>
