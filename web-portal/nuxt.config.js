@@ -25,7 +25,6 @@ export default {
 
       { property: 'author', content: 'infinte industries' },
 
-      { hid: 'fb:app_id', property: 'fb:app_id', content: process.env.FACEBOOK_APP_ID },
       { hid: 'og:title', property: 'og:title', content: 'Infinite Industries' },
       { hid: 'og:site_name', property: 'og:site_name', content: 'Infinite Industries' },
       { hid: 'og:url', property: 'og:url', content: process.env.APP_URL },
