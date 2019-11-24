@@ -35,7 +35,7 @@ function doDeploy {
   cp $ROOT/.env $ROOT/temp-infinite/web-portal/ # copy .env file
 
   echo 'Installing npm packages'
-  npm install # this sucks we have to pull in cypress :-(
+  npm install
 
   echo 'Build Nuxt'
   npm run build
