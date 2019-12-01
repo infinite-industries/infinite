@@ -12,7 +12,7 @@ const SLACK_WEBHOOK_EVENT_SUBMISSION = process.env.SLACK_WEBHOOK_EVENT_SUBMISSIO
 slackChannels['event-submit'] = SlackNotify(SLACK_WEBHOOK_EVENT_SUBMISSION)
 
 const SLACK_WEBHOOK_VENUE_SUBMISSION = process.env.SLACK_WEBHOOK_VENUE_SUBMISSION
-slackChannels['venue-submission'] = SlackNotify(SLACK_WEBHOOK_VENUE_SUBMISSION)
+slackChannels['venue-submit'] = SlackNotify(SLACK_WEBHOOK_VENUE_SUBMISSION)
 
 module.exports = {
   Notify: function(channel_name,payload){
