@@ -1,5 +1,6 @@
 // event related API endpoints
 
+const slack = require('../utils/slackNotify')
 const EventController = require('../controllers/events')
 const CurrentEventController = require('../controllers/currentEvents')
 const { getDefaultRouter } = require('./helpers/routeHelpers')
@@ -12,6 +13,7 @@ const uuidv1 = require('uuid/v1');
 const BITLY_URI ='https://api-ssl.bitly.com/v3/shorten'
 const BITLY_TOKEN = process.env.BITLY_TOKEN
 const BITLY_BASE = process.env.APP_URL || 'https://infinite.industries'
+const env = process.env.ENV || 'dev'
 
 const filterContactInfo = (req, data) => {
 	if (req.isInfiniteAdmin) {
@@ -118,11 +120,19 @@ async function createOverride(req, res, next) {
 		CurrentEventController.create(req.app.get('db'), postJSON, async (err) => {
 			if (err) {
 				const msg = 'error creating "event": ' + err
-				console.warn(msg)
+				console.error(msg)
+
 				return res.status(500).json({ status: msg })
 			}
 
 			res.status(200).json({ status: 'success', id: postJSON.id })
+
+			try {
+				slack.Notify('event-submit', `(${env}) Review Me. Copy Me. Paste Me. Deploy Me. Love Me.:\n` +
+					JSON.stringify({...postJSON}, null, 4))
+			} catch (exSlack) {
+				console.error(`error notifying slack of new event: ${exSlack}`)
+			}
 		});
 	} catch (ex) {
 		console.warn('error calling link shortener: ', ex)
