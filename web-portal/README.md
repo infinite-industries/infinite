@@ -69,17 +69,9 @@ This application communicates with an [API server](https://github.com/infinite-i
 
 ## Running Tests
 
-The first time you run the tests you will need to configure [Cypress](https://cypress.io).
+`npm run test` will run the unit and integration tests.
 
-### Running Integration Tests
-
-1. You'll need to copy cypress.evn.json.sample to cypress.env.json and fill in missing values
-2. Have a postgres db up and running
-    a. `docker run --name infinite-db -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=xxx -e POSTGRES_DB=infinite-api -d postgres:9.6.2-alpine`
-3. run `npm run db:refresh:it` from inside the api-server directory (WARNING THIS WILL ERASE DATA IN YOUR DB)
-2. start the api-server `npm run start:dev`
-3. start the web-portal server `npm run start:dev`
-4. run `npm run test:it` from the web-portal directory
+Cypress end-to-end tests, which require the API server, are in the `e2e-tests` directory at the root of the repository. See the [README](https://github.com/infinite-industries/infinite/tree/master/e2e-tests/README.md) in that directory for further instructions.
 
 ## License
 
