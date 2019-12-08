@@ -11,7 +11,7 @@
       <tr v-for="calendar_event in calendar_events" :key="calendar_event.id">
         <td>{{ calendar_event.title }}</td>
         <td>{{ ShowEventDates(calendar_event) }}</td>
-        <td><v-btn @click="EditEvent(calendar_event)">Edit</v-btn></td>
+        <td><v-btn nuxt :to="{ name: 'admin-event-edit-id', params: { id: calendar_event.id } }">Edit</v-btn></td>
       </tr>
     </tbody>
   </table>
@@ -25,9 +25,6 @@
       return {}
     },
     methods: {
-      EditEvent: function (calendar_event_to_edit) {
-        this.$router.push({ path: `/admin-event-edit/${calendar_event_to_edit.id}` })
-      },
       ShowEventDates: function () {
         return 'time range work in progress'
       }

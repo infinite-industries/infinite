@@ -64,9 +64,6 @@
         CalendarService.generate(this.calendar_event, calType)
       }
     },
-    mounted: function () {
-      console.log('card loaded:', this.calendar_event)
-    },
     computed: {
       backGroundImage: function () {
         return 'background: url(\'' + this.calendar_event.image + '\') center center / cover no-repeat; cursor: pointer;'
