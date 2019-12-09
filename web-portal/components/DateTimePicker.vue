@@ -328,19 +328,17 @@
         return this.value
       },
       check_start_time: function () {
-        const selectedTime = `${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`
-
-        return moment.tz(selectedTime, dateTimePickerFormat, clientTimeZone)
+        return moment.tz(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`,
+                         dateTimePickerFormat, clientTimeZone)
       },
       check_end_time: function () {
-        const selectedTime = `${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`
-
-        const formattedDateTime = moment(selectedTime, dateTimePickerFormat, clientTimeZone)
+        const temp_date_time = moment(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`,
+                                      dateTimePickerFormat, clientTimeZone)
 
         if ((this.start_ampm === 'pm') && (this.end_ampm === 'am')) {
-          return moment(formattedDateTime).add(1, 'd')
+          return moment(temp_date_time).add(1, 'd')
         } else {
-          return formattedDateTime
+          return temp_date_time
         }
       },
       validate_time: function () {
