@@ -166,7 +166,7 @@
   const clientTimeZone = moment.tz.guess()
 
   // this is how the date/time is stored in data and sent to the server
-  const dateTimeStorageFormat = 'YYYY-MM-DD HH:mm zz'
+  const dateTimeStorageFormat = moment.ISO_8601
 
   // this format is used for parsing date/times extracted from the picker before storing them
   const dateTimePickerFormat = 'YYYY-MM-DD hh:mm:a zz'
@@ -174,12 +174,8 @@
   const createTimeSegment = (formatted_start_time, formatted_end_time) => {
     return {
       optional_title: '', // add later afer consulting with users
-      start_time: moment.tz(
-        formatted_start_time, clientTimeZone
-      ).format(dateTimeStorageFormat),
-      end_time: moment.tz(
-        formatted_end_time, clientTimeZone
-      ).format(dateTimeStorageFormat)
+      start_time: formatted_start_time.toISOString(),
+      end_time: formatted_end_time.toISOString()
     }
   }
 
@@ -250,14 +246,7 @@
         }
       },
 
-      // CreateTestCalendarEvent: function(){
-      //   this.$store.dispatch('CreateNewEvent')
-      // },
-
       EditTimeSegment: function (which_segment) {
-        /* this.$store.dispatch('DeleteTimeSegment', {
-          index: which_segment
-        }) */
         this.edit_mode = true
         this.time_segment_index = which_segment
         const time_segment = this.value[which_segment]
@@ -353,10 +342,6 @@
         }
       },
       validate_time: function () {
-        // if(this.start_hour!==''){
-        //   console.log("start: ", this.start_hour);
-        // }
-
         if (!this.chrono_order_invalid) {
           if ((this.start_hour !== '') && (this.end_hour !== '')) {
             return true
