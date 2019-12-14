@@ -27,6 +27,7 @@ const bundleOutputDir = './dist';
 
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+
 /*
  * We've enabled TerserPlugin for you! This minifies your app
  * in order to load faster and run less javascript.
@@ -43,46 +44,28 @@ module.exports = {
 	mode: 'development',
 
 	plugins: [
-		new webpack.ProgressPlugin(),
-		new MiniCssExtractPlugin({ filename: 'main.[chunkhash].css' }),
-		// new workboxPlugin.GenerateSW({
-		// 	swDest: 'sw.js',
-		// 	clientsClaim: true,
-		// 	skipWaiting: false
-		// })
+        new webpack.ProgressPlugin(),
+        new MiniCssExtractPlugin({
+            filename: 'style.css',
+          })
 	],
     devServer: {
         contentBase: bundleOutputDir
     },
 	module: {
 		rules: [
-            {
-                test: /\.html$/i, use: 'html-loader'
-            },
 			{
 				test: /.(js|jsx)$/,
 				include: [],
 				loader: 'babel-loader'
-			},
-			{
-				test: /.css$/,
+            },
+            // Can't get CSS to actully compile :(
+            {
+                test: /\.css$/,
+                use:  [  'style-loader', MiniCssExtractPlugin.loader, 'css-loader'],
 
-				use: [
-					{
-						loader: MiniCssExtractPlugin.loader
-					},
-					{
-						loader: 'style-loader'
-					},
-					{
-						loader: 'css-loader',
+            }
 
-						options: {
-							sourceMap: true
-						}
-					}
-				]
-			}
 		]
 	},
 
