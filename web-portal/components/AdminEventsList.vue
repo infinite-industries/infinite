@@ -10,7 +10,7 @@
     <tbody>
       <tr v-for="calendar_event in calendar_events" :key="calendar_event.id">
         <td>{{ calendar_event.title }}</td>
-        <td>{{ ShowEventDates(calendar_event) }}</td>
+        <td><div v-for="(date_time, index) in calendar_event.date_times" :key="index">{{ date_time | dateFormat }}</div></td>
         <td><v-btn nuxt :to="{ name: 'admin-event-edit-id', params: { id: calendar_event.id } }">Edit</v-btn></td>
       </tr>
     </tbody>
@@ -18,15 +18,22 @@
 </template>
 
 <script>
+  import moment from 'moment'
+
   export default {
     name: 'AdminEventsList',
     props: ['calendar_events'],
     data: function () {
       return {}
     },
-    methods: {
-      ShowEventDates: function () {
-        return 'time range work in progress'
+    filters: {
+      dateFormat: function (date) {
+        return [
+          moment(date.start_time).format('dddd, MMMM Do'),
+          moment(date.start_time).format('h:mma'),
+          '-',
+          moment(date.end_time).format('h:mma')
+        ].join(' ')
       }
     }
   }
