@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const bundleOutputDir = './dist';
+
 /*
  * SplitChunksPlugin is enabled by default and replaced
  * deprecated CommonsChunkPlugin. It automatically identifies modules which
@@ -35,7 +37,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const TerserPlugin = require('terser-webpack-plugin');
 
-const workboxPlugin = require('workbox-webpack-plugin');
+// const workboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = {
 	mode: 'development',
@@ -43,15 +45,20 @@ module.exports = {
 	plugins: [
 		new webpack.ProgressPlugin(),
 		new MiniCssExtractPlugin({ filename: 'main.[chunkhash].css' }),
-		new workboxPlugin.GenerateSW({
-			swDest: 'sw.js',
-			clientsClaim: true,
-			skipWaiting: false
-		})
+		// new workboxPlugin.GenerateSW({
+		// 	swDest: 'sw.js',
+		// 	clientsClaim: true,
+		// 	skipWaiting: false
+		// })
 	],
-
+    devServer: {
+        contentBase: bundleOutputDir
+    },
 	module: {
 		rules: [
+            {
+                test: /\.html$/i, use: 'html-loader'
+            },
 			{
 				test: /.(js|jsx)$/,
 				include: [],
