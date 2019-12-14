@@ -16,7 +16,7 @@ const getEvent = () => {
       { start_time: '2020-06-01T10:00:00', end_time: '2020-06-01T11:00:00' },
       { start_time: '2020-06-02T22:00:00', end_time: '2020-06-02T23:00:00' }
     ],
-    brief_description: 'The event lorem ipsum dolor sit amet,, consectetur adipiscing elit. Sed consequat ipsum neque.',
+    brief_description: 'The event lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat ipsum neque.',
     venue_id: venueId
   }
 }
@@ -60,5 +60,22 @@ describe('Card component', () => {
   // Jest's DOM model; the background isn't being set but the other prop is
   xtest('renders event image', () => {
     expect(wrapper.html()).toContain('background: url(\'' + event.image + '\')')
+  })
+
+  test('renders correct event time', () => {
+    expect(wrapper.html()).toContain('June 1st')
+    expect(wrapper.html()).toContain('10:00am - 11:00am')
+  })
+
+  test('renders correct time when saved in UTC', () => {
+    wrapper.setProps({
+      calendar_event: Object.assign(getEvent(), {
+        date_times: [
+          { start_time: '2020-06-01T14:00:00.000Z', end_time: '2020-06-01T15:00:00.000Z' }
+        ]
+      })
+    })
+    expect(wrapper.html()).toContain('June 1st')
+    expect(wrapper.html()).toContain('10:00am - 11:00am')
   })
 })
