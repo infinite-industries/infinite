@@ -3,6 +3,8 @@
 // staging - https://staging-api.infinite.industries/events/current/verified/
 // production - https://api.infinite.industries/events/current/verified/
 
+// Create methods ^%$#^%$#!!!!
+
 
 export function APICaller(callback){
     console.log("Started API call")
@@ -14,5 +16,5 @@ export function APICaller(callback){
     .then(function(data) {
       callback(data.events)
     })
-
+    //catch error
 }

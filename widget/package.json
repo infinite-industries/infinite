@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "description": "My webpack project",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --mode production",
     "start": "webpack-dev-server --mode development"
   },
   "devDependencies": {

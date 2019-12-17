@@ -3,7 +3,6 @@ import {APICaller} from './apiCaller.js'
 // Import Card template and renderer
 import {Card} from './card.js'
 
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
     const infinite_widget_container = document.querySelector('#infinite-widget')
