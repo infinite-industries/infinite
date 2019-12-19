@@ -25,11 +25,17 @@ document.addEventListener("DOMContentLoaded", () => {
         infinite_widget_container.innerHTML = ""
         infinite_widget_container.appendChild(content)
 
-        APIService.get(PATH, (events) => {
-            events.forEach((event)=>{
-                console.log("\n-----------\n" + JSON.stringify(event))
-                content.insertAdjacentHTML('beforeend', Card(event))
-            })
+        APIService.get(PATH, (err, events) => {
+            if(err){
+                infinite_widget_container.innerHTML = "<h2>Unable to reach the server :(</h2> <p>For the nerds among us, the error output is in the console log.</p>"
+                console.log(err)
+            }
+            else {
+                events.forEach((event)=>{
+                    console.log("\n-----------\n" + JSON.stringify(event))
+                    content.insertAdjacentHTML('beforeend', Card(event))
+                })
+            }
         })
     }
     else {

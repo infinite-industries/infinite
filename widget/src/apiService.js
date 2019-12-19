@@ -6,11 +6,13 @@ export default class APIService {
 
         fetch(path)
         .then(function(response) {
-          return response.json()
+            return response.json()
         })
         .then(function(data) {
-          callback(data.events)
+            callback(null, data.events)
         })
-        //catch error
+        .catch(function(err) {
+            callback(err)
+        });
     }
 }
