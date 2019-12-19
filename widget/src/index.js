@@ -1,5 +1,15 @@
+// Infinite Industries Widget
+
+// Options for API servers to query:
+// local
+// staging - https://staging-api.infinite.industries/events/current/verified/
+// production - https://api.infinite.industries/events/current/verified/
+
+const PATH = 'https://staging-api.infinite.industries/events/current/verified/'
+
+
 // Import API helper
-import {APICaller} from './apiCaller.js'
+import APIService from './apiService.js'
 // Import Card template and renderer
 import {Card} from './card.js'
 
@@ -15,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
         infinite_widget_container.innerHTML = ""
         infinite_widget_container.appendChild(content)
 
-        APICaller((events) => {
+        APIService.get(PATH, (events) => {
             events.forEach((event)=>{
                 console.log("\n-----------\n" + JSON.stringify(event))
                 content.insertAdjacentHTML('beforeend', Card(event))
