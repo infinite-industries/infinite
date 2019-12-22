@@ -1,4 +1,17 @@
+import TimeService from './timeService.js'
+
+const LENGTH_OF_CARD_DESCRIPTION = 6
+
 export function Card (event_data){
+
+    let processed_brief_description = event_data.brief_description.slice(0,LENGTH_OF_CARD_DESCRIPTION)+"..."
+    let day = TimeService.returnDay (event_data.date_times[0].start_time)
+    let month = TimeService.returnMonth (event_data.date_times[0].start_time)
+    let date = TimeService.returnDate (event_data.date_times[0].start_time)
+    let start_hour = TimeService.returnHourMinutesAMPM (event_data.date_times[0].start_time)
+    let end_hour = TimeService.returnHourMinutesAMPM (event_data.date_times[0].end_time)
+
+
     const template = `
     <div class="infinite-card">
         <div class="infinite-image-container">
@@ -14,9 +27,9 @@ export function Card (event_data){
                 ${event_data.venue_id}
             </h4>
 
-            <p class="date">${event_data.date_times[0].start_time}</p>
-            <p class="time">${event_data.date_times[0].end_time}</p>
-            <p class="description">${event_data.brief_description}</p>
+            <p class="date">${day} ${month} ${date}</p>
+            <p class="time">${start_hour} - ${end_hour}</p>
+            <p class="description">${processed_brief_description}</p>
 
             <div class="btn-actions">
             <a href="https://staging.infinite.industries/events/${event_data.id}" target="_new"><button>More Info</button></a>

@@ -2,7 +2,7 @@
 export default class APIService {
 
     static get(path, callback){
-        console.log("Started API call")
+        // console.log("Started API call")
 
         fetch(path)
         .then(function(response) {
