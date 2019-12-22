@@ -1,6 +1,7 @@
 const express = require("express");
 const uuidv1 = require('uuid/v1');
 const JWTAuthenticator = require(__dirname + '/../../utils/JWTAuthenticator')
+const { logger }  = require(__dirname + '/../../utils/loggers')
 
 const JWTAuthChain = [JWTAuthenticator(true)]
 const constants = {
@@ -30,7 +31,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
 
     debug('establishing router "/" for router "%s"', router_name);
     router.get("/", readMiddleware, function(req, res) {
-        console.log("handling request for all " + router_name);
+        logger.info("handling request for all " + router_name);
 
         const sortField = req.query.sort_field || false;
         const filter_field = req.query.filter_field ||false;
@@ -42,8 +43,8 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
             try {
                 query = JSON.parse(queryStr);
             } catch(ex) {
-                console.warn('error parsing query obj: ' + ex);
-                console.warn('invalid object string: ' + queryStr);
+                logger.warn('error parsing query obj: ' + ex);
+                logger.warn('invalid object string: ' + queryStr);
                 return res.status(500).json({ status: 'failure', error_message: 'error: ' + ex });
             }
         }
@@ -52,7 +53,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
         const allMethod = options && options.allMethod ? options.allMethod : controller.all;
         allMethod(req.app.get('db'), function(err, data) {
             if (err) {
-                console.warn("error handling request for all %s: %s: ", router_name, err);
+                logger.warn(`error handling request for all ${router_name}: ${err}`);
                 res.status(500).json({ status: constants.db_error });
             } else {
                 debug('found all requested ' + router_name);
@@ -79,15 +80,15 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
     router.get("/:" + identifier,
 		readMiddleware,
         function(req, res) {
-            console.log(`${req.url}: ${JSON.stringify(req.token, null, 4)}`)
+            logger.info(`${router_name} -- ${req.url} -- token: ${JSON.stringify(req.token || '[no-token]', null, 4)}`)
             const id = req.params[paramID]
 
-            console.log("handling  get request for %s by id: %s", router_name, id);
+            logger.info(`handling  get request for ${router_name} by id: ${id}`);
 
 			const byIDMethod = options && options.byIDMethod ? options.byIDMethod : controller.findById;
             byIDMethod(req.app.get('db'), id, function(err, data) {
                 if(err) {
-                    console.warn("error handling request for artist: " + err);
+                    logger.warn("error handling request for artist: " + err);
                     res.status(500).json({ "status": constants.db_error });
                 }
                 else if (data===null) {
@@ -114,7 +115,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
         (req, res) => {
 			const id = req.params[paramID];
 
-			console.log("handling put request for '%s' on id '%s'", router_name, id);
+			logger.info(`handling put request for '${router_name}' on id '${id}'`);
 			const postJSON= req.body[router_name_singular];
 
 			if (!postJSON)
@@ -122,7 +123,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
 
 			controller.update(req.app.get('db'), id, postJSON, function(err) {
 				if (err) {
-					console.warn('error updating "%s"', router_name_singular + ': ' + err);
+					logger.warn(`error updating ${router_name_singular}: "${err}"`);
 					return res.status(500).json({ status: err });
 				}
 
@@ -134,7 +135,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
 	    '/',
         createMiddleware,
         function(req, res) {
-            console.log("handling post request for '%s'", router_name);
+            logger.info(`handling post request for '$router_name{}'`);
             const postJSON= req.body[router_name_singular];
 
             if (!postJSON)
@@ -152,7 +153,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
 
             controller.create(req.app.get('db'), postJSON, function(err) {
                 if (err) {
-                    console.warn('error creating "%s"', router_name_singular + ': ' + err);
+                    logger.warn(`error creating ${router_name_singular}: "${err}"`);
                     return res.status(500).json({ status: err });
                 }
 
@@ -169,11 +170,11 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
         updateMiddleware,
         (req, res) => {
             const id = req.params[paramID]
-	        console.log(`handling delete request for "${router_name}" for event id "${id}"`)
+	        logger.info(`handling delete request for "${router_name}" for event id "${id}"`)
 
             controller.delete(req.app.get('db'), id, err => {
                 if (err) {
-                    console.warn(`error destroying "${id}: "${err}"`)
+                    logger.warn(`error destroying "${id}: "${err}"`)
                     return res.status(500).json({ status: err })
                 }
 

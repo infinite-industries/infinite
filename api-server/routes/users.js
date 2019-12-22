@@ -1,6 +1,7 @@
 // User (devs curators) management here
 const UsersController = require("../controllers/users");
 const JWTAuthenticator = require(__dirname + '/../utils/JWTAuthenticator')
+const { logger } = require(__dirname + '/../utils/loggers')
 
 const authChain = [JWTAuthenticator(false)] // require token
 
@@ -27,12 +28,12 @@ router.put(
 	"/addList/:userID/:listID", // TODO (CAW) user id should come from the token not the url
 	authChain,
 	function(req, res) {
-		console.log("Adding a list - %s for user- %s",req.params.listID, req.params.userID);
+		logger.info(`Adding a list - ${req.params.listID} for user- ${req.params.userID}`);
 
 
 		UsersController.addList(req.app.get('db'), req.params.userID, req.params.listID, function(err) {
 			if (err) {
-				console.warn("error adding event to list: " + err);
+				logger.warn("error adding event to list: " + err);
 				res.status(500).json({ "status": constants.db_error });
 			} else {
 				res.status(200).json({ status: constants.success_status });

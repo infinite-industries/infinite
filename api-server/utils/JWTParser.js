@@ -2,11 +2,12 @@
   This will parse the token and extract user info, but does not restrict access
  */
 const jwt = require('jsonwebtoken');
+const { logger } = require(__dirname + '/loggers')
 
 module.exports = (req, res, next ) => {
   const token = req.body.token || req.query.token || req.headers['x-access-token'];
   if (token) {
-    console.log(`found token for ${req.url}`)
+    logger.info(`found token for ${req.url}`)
 
     // check the token
     jwt.verify(token, req.app.get('superSecret'), (err, decoded) => {
