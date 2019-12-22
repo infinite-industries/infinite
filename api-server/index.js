@@ -22,12 +22,22 @@ const { logger }  = require(__dirname + '/utils/loggers')
 const app = express()
 
 app.set('db', sequelize)
-app.set('logger', logger)
 app.set('superSecret', secretString)
 
 app.use(bodyParser.json())
 app.use(passport.initialize())
 passport.use(getAPIKeyStrategy(sequelize))
+
+// log all handled requests including request status and time taken
+app.use((req, res, next) => {
+  const url = req.url
+  const startTime = Date.now()
+
+  res.once('finish', () => {
+    logger.info(`${url} ${ res.statusCode } (${Date.now() - startTime} ms)`)
+  })
+  next()
+})
 
 app.use(JWTParser)
 app.use((req, res, next) => {
