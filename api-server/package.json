@@ -54,6 +54,8 @@
     "pg": "^7.4.1",
     "sequelize": "^4.35.5",
     "sequelize-cli": "^4.0.0",
-    "slack-notify": "^0.1.6"
+    "slack-notify": "^0.1.6",
+    "winston": "^3.2.0",
+    "winston-daily-rotate-file": "^4.4.0"
   }
 }

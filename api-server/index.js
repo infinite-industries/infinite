@@ -16,10 +16,13 @@ const venues = require("./routes/venues")
 const eventLists = require("./routes/eventLists")
 const users = require("./routes/users")
 const createICSFile = require('./routes/createICSFile')
+const { logger }  = require(__dirname + '/utils/loggers')
 
+// === Setup Express Routing ===
 const app = express()
 
 app.set('db', sequelize)
+app.set('logger', logger)
 app.set('superSecret', secretString)
 
 app.use(bodyParser.json())
@@ -31,7 +34,7 @@ app.use((req, res, next) => {
   if (req.token && req.decoded) {
     userController.ensureByName(app.get('db'), req.decoded, (err, user) => {
       if (err) {
-        console.warn('error ensuring user: ' + user)
+        logger.warn('error ensuring user: ' + user)
       } else {
         // some stuff should live on token and not be persisted, mix this is from the decoded token here
         req.user = {
@@ -67,16 +70,16 @@ app.use('/create-ics-file', createICSFile)
 
 const appPort = process.env.PORT || '3003';
 
-console.info('Connecting to database')
+logger.info('Connecting to database')
 sequelize
   .authenticate()
   .then(() => {
-      console.info('Connection to database established.')
+      logger.info('Connection to database established.')
       app.listen(appPort, function () {
-          console.log("Magic on port %d", appPort)
+          logger.info(`Magic on port ${appPort}`)
       });
   })
   .catch(err => {
-      console.error('Unable to connect to the database:', err)
+      logger.error('Unable to connect to the database:', err)
       process.exit(1)
   })

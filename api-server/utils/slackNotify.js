@@ -1,6 +1,7 @@
 // set channels to send notofications to
 const SlackNotify = require('slack-notify')
 const slackChannels = {}
+const { logger } = require(__dirname + '/loggers')
 
 const SLACK_WEBHOOK_TEST = process.env.SLACK_WEBHOOK_TEST
 slackChannels['test'] = SlackNotify(SLACK_WEBHOOK_TEST)
@@ -32,7 +33,7 @@ module.exports = {
     console.log('Testing All Slack Channels', slackChannels)
 
     Object.keys(slackChannels).forEach(function(channel_name) {
-      console.log('---------\n channel: ', channel_name)
+      logger.info('---------\n channel: ', channel_name)
       const _channel = '#'+channel_name
 
       slackChannels[channel_name].send({
