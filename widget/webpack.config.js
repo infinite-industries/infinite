@@ -1,9 +1,9 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
 
-const bundleOutputDir = './dist';
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
+const bundleOutputDir = './dist'
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 
 module.exports = {
@@ -65,4 +65,4 @@ module.exports = {
 			name: true
 		}
 	}
-};
+}
