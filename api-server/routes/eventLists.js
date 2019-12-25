@@ -1,6 +1,7 @@
 // event related API endpoints
 const EventListController = require("../controllers/eventLists");
 const JWTAuthenticator = require(__dirname + '/../utils/JWTAuthenticator')
+const { logger } = require(__dirname + '/../utils/loggers')
 
 // requires an authenticated user, but not admin
 const JWTAuthChain = [JWTAuthenticator(false)]
@@ -25,7 +26,7 @@ router.put(
 	function(req, res) {
 	EventListController.addEvent(req.app.get('db'), req.params.eventListID, req.params.EventID, function(err) {
 		if (err) {
-			console.warn("error adding event to list: " + err);
+			logger.warn("error adding event to list: " + err);
 			res.status(500).json({ "status": constants.db_error });
 		} else {
 			res.status(200).json({ status: constants.success_status, id: req.params.EventID });
@@ -39,7 +40,7 @@ router.put(
 	function(req, res) {
 		EventListController.removeEvent(req.app.get('db'), req.params.eventListID, req.params.EventID, function(err) {
 			if (err) {
-				console.warn("error adding event to list: " + err);
+				logger.warn("error adding event to list: " + err);
 				res.status(500).json({ "status": constants.db_error });
 			} else {
 				res.status(200).json({ status: constants.success_status, id: req.params.EventID });

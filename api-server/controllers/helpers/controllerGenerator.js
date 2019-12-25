@@ -1,4 +1,5 @@
 const async = require('async');
+const { logger } = require(__dirname + '/../../utils/loggers')
 
 module.exports = DefaultController;
 
@@ -85,8 +86,9 @@ DefaultController.findAndMerge = function(Model1, Model2, keys, query, complete)
 
                     list[key] = list[key].map(mdlID => {
                         const entry = model2Coll.find(_e => _e.id === mdlID);
-                        if (!entry)
-                            console.warn('could not find %s id %s for %s: ', key, mdlID, Model1.modelName);
+                        if (!entry) {
+                          logger.warn(`could not find ${key} id ${mdlID} for ${Model1.modelName}`);
+                        }
 
                         return entry;
                     });
@@ -99,7 +101,7 @@ DefaultController.findAndMerge = function(Model1, Model2, keys, query, complete)
 		}
 	], function(err, mergedList) {
 		if (err)
-			console.warn(err);
+			logger.warn(err);
 
 		complete(err, mergedList);
 	});

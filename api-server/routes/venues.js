@@ -2,6 +2,7 @@
 const VenueController = require("../controllers/venues");
 const { getDefaultRouter } = require("./helpers/routeHelpers");
 const slack = require('../utils/slackNotify')
+const { logger } = require(__dirname + '/../utils/loggers')
 const env = process.env.ENV || 'dev'
 
 const router = getDefaultRouter("venues", "venue", VenueController, {}, {
@@ -11,7 +12,7 @@ const router = getDefaultRouter("venues", "venue", VenueController, {}, {
             slack.Notify('venue-submit', `(${env}) New venue created:\n` +
               JSON.stringify({ ...req.body.venue, id: responseData.id }, null, 4))
         } catch (ex) {
-            console.error('error notifying slack for new-venue: ' + ex)
+            logger.error('error notifying slack for new-venue: ' + ex)
         }
 
     }
