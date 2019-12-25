@@ -3,26 +3,27 @@ export default class TimeService {
 
     static returnMinutes (utc_time) {
         const time = new Date(utc_time)
-        return time.getMinutes
+        return time.getMinutes()
     }
 
     static returnHourMinutesAMPM (utc_time) {
         const time = new Date(utc_time)
         let military_time = time.getHours()
+        console.log(military_time)
 
         let minutes = time.getMinutes().toString()
         if(minutes.length<2){
             minutes = "0" + minutes // pad minutes to always output two digit format 2:00
         }
 
-        if(military_time<12){
+        if(military_time == 0) {
+            return "12" + ":" + minutes + "am"
+        }
+        else if(military_time<12){
             return military_time.toString() + ":" + minutes + "am"
         }
         else if(military_time == 12) {
             return "12" + ":" + minutes + "pm"
-        }
-        else if(military_time == 24) {
-            return "12" + ":" + minutes + "am"
         }
         else {
             return (military_time-12).toString() + ":" + minutes + "pm"
