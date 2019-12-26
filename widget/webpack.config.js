@@ -1,6 +1,7 @@
-const path = require('path');
-const webpack = require('webpack');
+const path = require('path')
+const webpack = require('webpack')
 
+<<<<<<< HEAD
 const bundleOutputDir = './dist';
 
 /*
@@ -38,11 +39,28 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 // const workboxPlugin = require('workbox-webpack-plugin');
+=======
+const bundleOutputDir = './dist'
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
+
+>>>>>>> 12688e834a70a955df87d072803bc862cfa9dadd
 
 module.exports = {
 	mode: 'development',
-
+	context: __dirname,
+	entry: {
+        main: [
+            './src/index.js',
+            './src/style.css'
+        ]
+    },
+	output: {
+		path: path.resolve( __dirname, 'dist' ),
+		filename: 'main.js',
+	},
 	plugins: [
+<<<<<<< HEAD
 		new webpack.ProgressPlugin(),
 		new MiniCssExtractPlugin({ filename: 'main.[chunkhash].css' }),
 		// new workboxPlugin.GenerateSW({
@@ -50,6 +68,10 @@ module.exports = {
 		// 	clientsClaim: true,
 		// 	skipWaiting: false
 		// })
+=======
+        new webpack.ProgressPlugin(),
+        new MiniCssExtractPlugin()
+>>>>>>> 12688e834a70a955df87d072803bc862cfa9dadd
 	],
     devServer: {
         contentBase: bundleOutputDir
@@ -60,29 +82,21 @@ module.exports = {
                 test: /\.html$/i, use: 'html-loader'
             },
 			{
-				test: /.(js|jsx)$/,
-				include: [],
+                test: /.(js|jsx)$/,
+                include: [],
+				exclude: /node_modules/,
 				loader: 'babel-loader'
-			},
+            },
 			{
-				test: /.css$/,
-
+                test: /\.css$/,
+                include: path.resolve(__dirname, './src/style.css'),
+				exclude: /node_modules/,
 				use: [
-					{
-						loader: MiniCssExtractPlugin.loader
-					},
-					{
-						loader: 'style-loader'
-					},
-					{
-						loader: 'css-loader',
-
-						options: {
-							sourceMap: true
-						}
-					}
+					{ loader: MiniCssExtractPlugin.loader },
+					'css-loader'
 				]
 			}
+
 		]
 	},
 
@@ -104,4 +118,4 @@ module.exports = {
 			name: true
 		}
 	}
-};
+}
