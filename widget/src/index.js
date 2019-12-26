@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-console.log("Hello World from your main file without service workers and dev server for live reloading !");
-=======
 // Infinite Industries Widget
 
 // Options for API servers to query:
@@ -45,4 +42,3 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Please make sure that element with id \"infinite-widget\" is present in the body of your document.")
     }
 })
->>>>>>> 12688e834a70a955df87d072803bc862cfa9dadd
