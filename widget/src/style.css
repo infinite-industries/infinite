@@ -5,14 +5,117 @@
     border-radius: 5px;
     padding: 20px;
 
-    display: grid;
-    grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
+
+@supports (display: grid) {
+    #infinite-widget-content{
+        display: grid;
+        grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+        grid-gap: 5px;
+
+        justify-items: center;
+        align-items: top;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    #infinite-widget-content {
+      padding: 0 15px
+    }
+  }
+
+
+
 
 .infinite-card {
     border: 1px solid black;
-    padding: 5px;
     margin: 10px;
     background-color: white;
     color: black;
+    border-radius: 5px;
+    font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 250px;
+    max-width: 300px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    justify-content: space-between;
 }
+
+.infinite-image-and-text-container {
+    border-radius: 5px;
+}
+
+.infinite-btn-actions-container {
+    border-radius: 5px;
+}
+
+
+.infinite-title-container {
+    min-height: 2.5em;
+}
+
+.infinite-title-container .infinite-title {
+    font-size: 1.1em;
+}
+
+.infinite-venue-container {
+    min-height: 2.5em;
+    line-height: 1.1em;
+    font-size: 0.9em;
+}
+
+.infinite-time-container {
+    min-height: 3.0em;
+    line-height: 0%;
+    font-size: 0.9em;
+}
+
+.infinite-info-container {
+    padding: 15px;
+}
+
+.infinite-btn-actions a #more-info {
+    background-color: #b7b09c;
+    color: white;
+    font-weight: bold;
+    width: 90%;
+
+    margin-left: auto;
+    margin-right: auto;
+    padding: 7px;
+
+    text-align: center;
+
+    border-radius: 5px;
+}
+
+.infinite-btn-actions a:link, .infinite-btn-actions a:visited, .infinite-btn-actions a:hover  {
+    text-decoration: none;
+}
+
+.infinite-image-container {
+    overflow: hidden;
+}
+
+.infinite-image-container .image-surface{
+
+    -moz-transition: -moz-transform 0.3s, transform 0.3s;
+    -webkit-transition: -webkit-transform 0.3s, transform 0.3s;
+    transition: transform 0.3s;
+
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.infinite-image-container:hover .image-surface {
+    -moz-transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    transform: scale(1.1);
+}
+
