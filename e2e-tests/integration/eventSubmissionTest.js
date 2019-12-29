@@ -75,7 +75,7 @@ context('Event Submission', () => {
     cy.get('#nav-list li').contains('Admin').click()
     cy.location('pathname').should('include', 'admin')
     cy.contains('.calendar-events-table tr:last-child td', EVENT_NAME)
-    cy.get('.calendar-events-table tr:last-child button').contains('Edit').click()
+    cy.get('.calendar-events-table tr:last-child a').contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
     cy.get('button.btn-verify').click()
     cy.get('.calendar-events-table')

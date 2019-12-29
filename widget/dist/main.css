@@ -1,0 +1,12 @@
+#infinite-widget-content{
+    border: 3px solid black;
+    background-color: pink;
+    color: purple;
+    border-radius: 5px;
+    padding: 20px;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(200px,1fr));
+}
+
+

@@ -2,6 +2,7 @@ const moment = require('moment-timezone')
 const uuidv4 = require('uuid/v4')
 const express = require('express')
 const router = express.Router()
+const { logger } = require(__dirname + '/../utils/loggers')
 
 const projectSettings = {
   calscale: 'GREGORIAN',
@@ -42,7 +43,7 @@ router.get('/', (req, res) => {
       .status(200)
       .send(icsBody)
   } catch (ex) {
-    console.error(`error generating ics file: ${ex}`)
+    logger.error(`error generating ics file: ${ex}`)
     res.status(500).send('an error occurred')
   }
 })

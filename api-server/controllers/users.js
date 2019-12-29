@@ -10,7 +10,6 @@ module.exports = _.extend(userController, {
           ]
         })
           .then((data) => {
-          		console.log('GRR')
               callback(null, data)
           })
           .catch(err => callback(err))

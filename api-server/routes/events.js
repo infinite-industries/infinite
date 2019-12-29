@@ -9,6 +9,7 @@ const JWTAuthenticator = require(__dirname + '/../utils/JWTAuthenticator')
 const DatesToISO = require(__dirname + '/middleware/datesToISO')
 const axios = require('axios')
 const uuidv1 = require('uuid/v1');
+const { logger } = require(__dirname + '/../utils/loggers')
 
 const BITLY_URI ='https://api-ssl.bitly.com/v3/shorten'
 const BITLY_TOKEN = process.env.BITLY_TOKEN
@@ -50,7 +51,7 @@ router.get('/current/non-verified',
     //const query = { $and: [{ time_end: { $gt: dt }}, { verified: { $ne: true }}] };
     CurrentEventController.all(req.app.get('db'), function(err, events) {
     	if (err) {
-            console.warn('error getting current/verified events: ' + err);
+            logger.warn('error getting current/verified events: ' + err);
             return res.status(501).json({ status: 'failed: ' + err });
         }
 
@@ -70,7 +71,7 @@ router.get('/current/verified',
 
 	CurrentEventController.all(req.app.get('db'), function(err, events) {
 		if (err) {
-			console.warn('error getting current/verified events: ' + err);
+			logger.warn('error getting current/verified events: ' + err);
 			return res.status(501).json({ status: 'failed: ' + err });
 		}
 
@@ -87,7 +88,7 @@ router.put(
   	(req, res) => {
 		const id = req.params.id;
 
-        console.log(`handling request to verify event "${id}"`)
+        logger.info(`handling request to verify event "${id}"`)
 
 		if (!id)
 			return res.status(404).json({ status: 'id is a required field' });
@@ -120,7 +121,7 @@ async function createOverride(req, res, next) {
 		CurrentEventController.create(req.app.get('db'), postJSON, async (err) => {
 			if (err) {
 				const msg = 'error creating "event": ' + err
-				console.error(msg)
+				logger.error(msg)
 
 				return res.status(500).json({ status: msg })
 			}
@@ -131,11 +132,11 @@ async function createOverride(req, res, next) {
 				slack.Notify('event-submit', `(${env}) Review Me. Copy Me. Paste Me. Deploy Me. Love Me.:\n` +
 					JSON.stringify({...postJSON}, null, 4))
 			} catch (exSlack) {
-				console.error(`error notifying slack of new event: ${exSlack}`)
+				logger.error(`error notifying slack of new event: ${exSlack}`)
 			}
 		});
 	} catch (ex) {
-		console.warn('error calling link shortener: ', ex)
+		logger.warn('error calling link shortener: ', ex)
 		res.status(500).json({ status: 'error calling link shortener' })
 	}
 }
