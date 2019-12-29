@@ -1,6 +1,6 @@
 // working on seeding the database
 
-require('dotenv')
+require('dotenv').config()
 
 const JWTParser = require(__dirname + '/utils/JWTParser')
 const userController = require(__dirname + '/controllers/users')
