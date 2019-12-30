@@ -11,19 +11,30 @@ const PATH = 'https://staging-api.infinite.industries/events/current/verified/'
 // Import API helper
 import APIService from './apiService.js'
 // Import Card template and renderer
-import {Card} from './card.js'
+import Card from './card.js'
+import Header from './header.js'
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
     const infinite_widget_container = document.querySelector('#infinite-widget')
 
     if(infinite_widget_container !== null){
-        console.log("Loading widget content...")
+
+        const title = infinite_widget_container.getAttribute("data-widget-title")
+
+        if (title !== null) {
+            infinite_widget_container.innerHTML = Header(title)
+        }
+        else {
+            infinite_widget_container.innerHTML = Header()
+        }
+
 
         const content = document.createElement('div')
         content.setAttribute("id", "infinite-widget-content")
-        infinite_widget_container.innerHTML = ""
         infinite_widget_container.appendChild(content)
+
+        console.log("Loading widget content...")
 
         APIService.get(PATH, (err, events) => {
             if(err){

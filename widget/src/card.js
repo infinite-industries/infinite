@@ -2,7 +2,7 @@ import TimeService from './timeService.js'
 
 const LENGTH_OF_CARD_DESCRIPTION = 120
 
-export function Card (event_data){
+export default function Card (event_data){
 
     let processed_brief_description = event_data.brief_description.slice(0,LENGTH_OF_CARD_DESCRIPTION)+"..."
     let day = TimeService.returnDay (event_data.date_times[0].start_time)
@@ -33,12 +33,12 @@ export function Card (event_data){
             </div>
 
             <div class="infinite-time-container">
-                <p class="date">${day} ${month} ${date}</p>
+                <p class="date">${day}, ${month} ${date}</p>
                 <p class="time">${start_hour} - ${end_hour}</p>
             </div>
 
             <div class="infinite-description-container">
-                <p class="description">${processed_brief_description}</p>
+                ${processed_brief_description}
             </div>
         </div>
         <div class="infinite-btn-actions-container">
