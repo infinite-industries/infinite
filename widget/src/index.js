@@ -11,19 +11,30 @@ const PATH = 'https://staging-api.infinite.industries/events/current/verified/'
 // Import API helper
 import APIService from './apiService.js'
 // Import Card template and renderer
-import {Card} from './card.js'
+import Card from './card.js'
+import Header from './header.js'
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
     const infinite_widget_container = document.querySelector('#infinite-widget')
 
     if(infinite_widget_container !== null){
-        console.log("Loading widget content...")
+
+        const title = infinite_widget_container.getAttribute("data-widget-title")
+
+        if (title !== null) {
+            infinite_widget_container.innerHTML = Header(title)
+        }
+        else {
+            infinite_widget_container.innerHTML = Header()
+        }
+
 
         const content = document.createElement('div')
         content.setAttribute("id", "infinite-widget-content")
-        infinite_widget_container.innerHTML = ""
         infinite_widget_container.appendChild(content)
+
+        console.log("Loading widget content...")
 
         APIService.get(PATH, (err, events) => {
             if(err){
@@ -34,6 +45,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 events.forEach((event)=>{
                     console.log("\n-----------\n" + JSON.stringify(event))
                     content.insertAdjacentHTML('beforeend', Card(event))
+
+                    // inject the image
+                    const last_child = content.lastChild
+                    const image_container = last_child.querySelector(".infinite-image-container")
+
+                    image_container.innerHTML = '<a href="https://staging.infinite.industries/events/'+ event.id +'" target="_new"><div class="image-surface" style="width:100%;height:150px; background:url(' + event.image + ') center center / cover no-repeat;cursor:pointer;"></div></a>'
+
                 })
             }
         })
