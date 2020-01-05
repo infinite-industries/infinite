@@ -1,4 +1,3 @@
-require('dotenv')
 const winston = require('winston');
 const { createLogger, format, transports, loggers  } = winston
 const { combine, timestamp, label, printf, colorize, simple } = format
