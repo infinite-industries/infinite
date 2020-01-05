@@ -43,7 +43,7 @@ export default function Card (event_data){
         </div>
         <div class="infinite-btn-actions-container">
             <div class="infinite-btn-actions">
-                <a href="https://staging.infinite.industries/events/${event_data.id}" target="_new">
+                <a href="${SITE_URL}/events/${event_data.id}" target="_new">
                     <div id="more-info">More Info</div>
                 </a>
             </div>
