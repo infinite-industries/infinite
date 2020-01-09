@@ -7,6 +7,7 @@ const fs = require('fs')
 const aws = require('aws-sdk')
 const multiparty = require('multiparty')
 const uuidv4 = require('uuid/v4')
+const logger = require('./utils').logger
 
 const s3 = new aws.S3({
   region: process.env.AWS_REGION,
@@ -56,7 +57,7 @@ export default function (req, res, next) {
         file => new Promise((resolve, reject) => {
           const type = file.toLowerCase()
           const path = files[file][0].path
-          console.log('uploading ' + type + ' image ---' + path)
+          logger.info('uploading ' + type + ' image ---' + path)
           fs.readFile(path, function (err, data) {
             if (err) return reject(err)
             const s3Name = IMAGE_DESTINATIONS[uploadType][type](uploadId)
@@ -76,7 +77,7 @@ export default function (req, res, next) {
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify(urls.reduce((memo, url) => Object.assign({}, memo, url))))
     }).catch(function (err) {
-      console.error(err)
+      logger.error(err)
       res.statusCode = 500
       res.end(err.message)
     })
