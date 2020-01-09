@@ -1,3 +1,6 @@
 module.exports = {
-    "verbose": true
+    "verbose": true,
+    "globals": {
+        "SITE_URL": "https://staging.infinite.industries"
+    }
 }
