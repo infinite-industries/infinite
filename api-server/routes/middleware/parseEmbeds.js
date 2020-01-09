@@ -4,7 +4,6 @@
  * Looks for embed in the query strings and parses this out to an array of requested entities to embed
  *
  */
-
 module.exports = ParseEmbed
 
 const allowableEmbed = {

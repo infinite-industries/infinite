@@ -1,19 +1,16 @@
 // event related API endpoints
 
 const slack = require('../utils/slackNotify')
-
 const EventController = require('../controllers/events')
 const CurrentEventController = require('../controllers/currentEvents')
-const VenueController = require('../controllers/venues')
-
 const { getDefaultRouter } = require('./helpers/routeHelpers')
 const { literal } = require('sequelize')
 const JWTAuthenticator = require(__dirname + '/../utils/JWTAuthenticator')
 const DatesToISO = require(__dirname + '/middleware/datesToISO')
 const axios = require('axios')
 const uuidv1 = require('uuid/v1')
-const ParseEmbed = require('./middleware/parseEmbeds')
 const { logger } = require(__dirname + '/../utils/loggers')
+const ParseEmbed = require('./middleware/parseEmbeds')
 
 const BITLY_URI ='https://api-ssl.bitly.com/v3/shorten'
 const BITLY_TOKEN = process.env.BITLY_TOKEN
@@ -44,7 +41,6 @@ const router = getDefaultRouter("events", "event", EventController, { verified: 
 // get current non or un-verified events (should first be JWTAuthenticated)
 router.get('/current/non-verified',
   [JWTAuthenticator(true), ParseEmbed], // only admin can see non-verified events
-
 	function(req, res) {
 		const db = req.app.get('db')
 
