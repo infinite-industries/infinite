@@ -1,7 +1,6 @@
 import Card from '../src/card.js'
 
 const test_event = {
-
     id:"test-id-123",
     title:"Test Card Title",
     date_times:[{
@@ -15,11 +14,27 @@ const test_event = {
     brief_description:"  asdfasdfas d",
 }
 
+const expected_event_url = SITE_URL + "/events/" + test_event.id
+
+const long_description = [
+    'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet,',
+    'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet,',
+    'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet,'
+].join(' ')
 
 test('renders a card', () => {
     expect(Card(test_event)).toContain(test_event.title)
     expect(Card(test_event)).toContain(test_event.brief_description)
-    expect(Card(test_event)).toContain(test_event.id)
+    expect(Card(test_event)).toContain(expected_event_url)
     expect(Card(test_event)).toContain("February")
-    // expect(Card(test_event)).toContain(test_event.title)
+})
+
+test('truncates a long description', () => {
+    const testRender = Card(Object.assign({}, test_event, {
+        brief_description: long_description
+    }))
+    // does not contain the full description
+    expect(testRender).not.toContain(long_description)
+    // but does contain at least part of it
+    expect(testRender).toContain(long_description.slice(0, 100))
 })
