@@ -5,6 +5,14 @@ const bundleOutputDir = './dist'
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 
+const SITE_URL = {
+    production: JSON.stringify("https://infinite.industries"),
+    staging: JSON.stringify("https://staging.infinite.industries")
+}
+
+const environment = process.env.NODE_ENV === 'production' ? 'production' : 'staging'
+console.log(environment)
+
 
 module.exports = {
 	mode: 'development',
@@ -21,7 +29,10 @@ module.exports = {
 	},
 	plugins: [
         new webpack.ProgressPlugin(),
-        new MiniCssExtractPlugin()
+        new MiniCssExtractPlugin(),
+        new webpack.DefinePlugin({
+            'SITE_URL': SITE_URL[environment]
+        })
 	],
     devServer: {
         contentBase: bundleOutputDir

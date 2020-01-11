@@ -48,7 +48,6 @@ router.get('/current/non-verified',
 			where: {
 				verified: false
 			},
-			// order: literal('start_time ASC'),
 			include: getIncludeBlock(req.embed, db)
 		}
 
