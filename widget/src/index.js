@@ -5,7 +5,7 @@
 // staging - https://staging-api.infinite.industries/events/current/verified/
 // production - https://api.infinite.industries/events/current/verified/
 
-const PATH = 'https://staging-api.infinite.industries/events/current/verified/'
+const PATH = 'https://staging-api.infinite.industries/events/current/verified?embed=venue'
 
 
 // Import API helper
