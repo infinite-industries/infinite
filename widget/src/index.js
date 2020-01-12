@@ -1,12 +1,6 @@
 // Infinite Industries Widget
 
-// Options for API servers to query:
-// local
-// staging - https://staging-api.infinite.industries/events/current/verified/
-// production - https://api.infinite.industries/events/current/verified/
-
-const PATH = 'https://staging-api.infinite.industries/events/current/verified?embed=venue'
-
+const PATH = `${API_URL}/events/current/verified?embed=venue`
 
 // Import API helper
 import APIService from './apiService.js'
