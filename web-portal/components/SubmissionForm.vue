@@ -384,8 +384,6 @@
       },
       // for use in promo tools. Takes an event object and makes it into pretty html
       parseEventToHTML: async function (ii_event, ii_event_id) {
-        console.log('!!! running parse html')
-
         let venueResp
         let venue
 
@@ -393,7 +391,6 @@
           // TODO: shouldn't be necessary to pull this from server
           venueResp = await ApiService.get(`/venues/${ii_event.venue_id}`)
           venue = venueResp.data && venueResp.data.venue
-          console.log('!!! venue resp: ' + JSON.stringify(venueResp, null, 4))
         } catch (ex) {
           console.error(`could not fetch venue ${ii_event.venue_id}: "${ex}"`)
         }
@@ -402,7 +399,6 @@
         const dateTimeStorageFormat = moment.ISO_8601
 
         const strWhen = ii_event.date_times.map((dtEntry) => {
-          console.log('!!! much here: ' + dtEntry.start_time)
           const when_date = moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
             .format('dddd, MMMM Do, YYYY')
           const when_time = moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
