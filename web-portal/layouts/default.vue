@@ -70,27 +70,6 @@
       // EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
       //   console.log("EVENT CENTRAL cleanup --- Remove Verified Event", data.id);
       // })
-    },
-    methods: {
-      OpenEventSubmitter: function () {
-        window.location.assign('https://event-add.glitch.me/')
-      },
-      OpenEmailSubscribe: function () {
-        window.location.assign('/subscribe-email')
-      },
-      RouteTo: function (route_to_page) {
-        this.$router.push({ path: route_to_page })
-      }
-      // ConfirmAction: function(action_confirmation_message){
-      //   // DISPATCH vuex
-      //   // EventBus.$emit(action_confirmation_message);
-      //   // this.notification = {
-      //   //   visible: true,
-      //   //   type: 'info',
-      //   //   message: action_confirmation_message
-      //   // }
-      // }
-
     }
   }
 </script>
