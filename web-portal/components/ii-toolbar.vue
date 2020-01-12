@@ -40,12 +40,6 @@
       nav_closed: function () {
         return !this.$store.getters['ui/sidebarOpen']
       }
-    },
-    methods: {
-      NavigateTo: function (route_name) {
-        console.log('clicked')
-        window.alert('Open page --> ' + route_name)
-      }
     }
   }
 </script>

@@ -288,9 +288,6 @@
       })
     },
     methods: {
-      RouteTo: function (route_to_page) {
-        this.$router.push({ path: route_to_page })
-      },
       UpdateEvent: function () {
         console.log(this.calendar_event)
         this.showEventLoadingSpinner = true
