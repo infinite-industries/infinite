@@ -2,7 +2,8 @@
   "version": "1.0.0",
   "description": "My webpack project",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "NODE_ENV='production' webpack --mode production",
+    "build:staging": "NODE_ENV='staging' webpack --mode production",
     "start": "webpack-dev-server --mode development",
     "test": "jest --watchAll"
   },
