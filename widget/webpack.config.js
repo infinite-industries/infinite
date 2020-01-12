@@ -39,8 +39,8 @@ module.exports = {
         new webpack.ProgressPlugin(),
         new MiniCssExtractPlugin(),
         new webpack.DefinePlugin({
-			'API_URL': API_URL[environment],
-            'SITE_URL': SITE_URL[environment]
+          'API_URL': API_URL[environment],
+          'SITE_URL': SITE_URL[environment]
         })
 	],
     devServer: {
