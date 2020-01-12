@@ -9,7 +9,7 @@ export default class TimeService {
     static returnHourMinutesAMPM (utc_time) {
         const time = new Date(utc_time)
         let military_time = time.getHours()
-        //console.log(military_time)
+        console.log(military_time)
 
         let minutes = time.getMinutes().toString()
         if(minutes.length<2){

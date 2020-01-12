@@ -7,7 +7,10 @@ module.exports = {
       },
       title: DataTypes.STRING,
       slug: DataTypes.STRING,
+      time_start: DataTypes.DATE, // delete when front end is updated to use dates
+      time_end: DataTypes.DATE, // delete when front end is updated to use dates
       multi_day: DataTypes.BOOLEAN,
+      additional_dates: DataTypes.JSONB, // delete when front end is updated to use dates
       date_times: DataTypes.JSONB,
       image: DataTypes.STRING,
       social_image: DataTypes.STRING,

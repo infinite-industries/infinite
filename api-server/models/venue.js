@@ -8,7 +8,5 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   sequelize.event.belongsTo(venue, { foreignKey: 'venue_id'})
-  sequelize.current_event.belongsTo(venue, { foreignKey: 'venue_id'})
-
   return venue;
 };

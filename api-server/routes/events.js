@@ -8,9 +8,8 @@ const { literal } = require('sequelize')
 const JWTAuthenticator = require(__dirname + '/../utils/JWTAuthenticator')
 const DatesToISO = require(__dirname + '/middleware/datesToISO')
 const axios = require('axios')
-const uuidv1 = require('uuid/v1')
+const uuidv1 = require('uuid/v1');
 const { logger } = require(__dirname + '/../utils/loggers')
-const ParseEmbed = require('./middleware/parseEmbeds')
 
 const BITLY_URI ='https://api-ssl.bitly.com/v3/shorten'
 const BITLY_TOKEN = process.env.BITLY_TOKEN
@@ -38,20 +37,19 @@ const router = getDefaultRouter("events", "event", EventController, { verified: 
 	readFilter: filterContactInfo // strip contact info
 });
 
-// get current non or un-verified events (should first be JWTAuthenticated)
+// get current non or un-verified events
 router.get('/current/non-verified',
-  [JWTAuthenticator(true), ParseEmbed], // only admin can see non-verified events
-	function(req, res) {
-		const db = req.app.get('db')
-
+  [JWTAuthenticator(true)], // only admin can see non-verified events
+  function(req, res) {
 		const query = {
 			where: {
 				verified: false
-			},
-			include: getIncludeBlock(req.embed, db)
+			}
 		}
 
-    CurrentEventController.all(db, function(err, events) {
+		//query.where.time_end[Op.gte] = dt
+    //const query = { $and: [{ time_end: { $gt: dt }}, { verified: { $ne: true }}] };
+    CurrentEventController.all(req.app.get('db'), function(err, events) {
     	if (err) {
             logger.warn('error getting current/verified events: ' + err);
             return res.status(501).json({ status: 'failed: ' + err });
@@ -62,20 +60,16 @@ router.get('/current/non-verified',
 });
 
 // get current verified events
-router.get('/current/verified', [ParseEmbed], function(req, res) { // anyone can read verified events
-	const db = req.app.get('db')
-
-	let controllerMethod = 'all'
-
+router.get('/current/verified',
+  function(req, res) { // anyone can read verified events
 	const query = {
 		where: {
 		  verified: true
 		},
-		order: literal('start_time ASC'),
-		include: getIncludeBlock(req.embed, db)
+	  	order: literal('start_time ASC')
 	}
 
-	CurrentEventController.all(db, function(err, events) {
+	CurrentEventController.all(req.app.get('db'), function(err, events) {
 		if (err) {
 			logger.warn('error getting current/verified events: ' + err);
 			return res.status(501).json({ status: 'failed: ' + err });
@@ -166,14 +160,6 @@ function _getSlug(title) {
 	}
 
 	return title.toLowerCase().replace(/ /g,'-')
-}
-
-function getIncludeBlock(embeds, db) {
-	return embeds
-		.map(embedStr => {
-			return { model: db[embedStr] }
-		})
-		.filter(entry => entry !== null)
 }
 
 module.exports = router;
