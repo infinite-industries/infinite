@@ -10,7 +10,7 @@ export default function Header (event_title){
         <div id="infinite-header">
             <h2 style="color:white">${event_title}</h2>
             <div id="branding">
-                <a href="${POWERED_BY_URL}" target="_new">
+                <a href="${SITE_URL}" target="_new">
                     powered by Infinite Industries
                 </a>
             </div>

@@ -1,18 +1,13 @@
 // Infinite Industries Widget
 
-// Options for API servers to query:
-// local
-// staging - https://staging-api.infinite.industries/events/current/verified/
-// production - https://api.infinite.industries/events/current/verified/
-
-const PATH = 'https://staging-api.infinite.industries/events/current/verified/'
-
+const PATH = `${API_URL}/events/current/verified?embed=venue`
 
 // Import API helper
 import APIService from './apiService.js'
 // Import Card template and renderer
 import Card from './card.js'
 import Header from './header.js'
+import Loader from './loader.js'
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
@@ -30,9 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const content = document.createElement('div')
-        content.setAttribute("id", "infinite-widget-content")
-        infinite_widget_container.appendChild(content)
+        // spinny thingy while loading
+        const loader = document.createElement('div')
+        loader.innerHTML = Loader()
+        infinite_widget_container.appendChild(loader)
 
         console.log("Loading widget content...")
 
@@ -42,6 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(err)
             }
             else {
+                loader.remove()
+                const content = document.createElement('div')
+                content.setAttribute("id", "infinite-widget-content")
+                infinite_widget_container.appendChild(content)
+
                 events.forEach((event)=>{
                     console.log("\n-----------\n" + JSON.stringify(event))
                     content.insertAdjacentHTML('beforeend', Card(event))
