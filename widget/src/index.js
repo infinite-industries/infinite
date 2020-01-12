@@ -13,6 +13,7 @@ import APIService from './apiService.js'
 // Import Card template and renderer
 import Card from './card.js'
 import Header from './header.js'
+import Loader from './loader.js'
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
@@ -30,12 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        const content = document.createElement('div')
-        content.setAttribute("id", "infinite-widget-content")
-        infinite_widget_container.appendChild(content)
-
         // spinny thingy while loading
-        content.innerHTML = "<h2 style='color:white'> Loading content</h2>"
+        const loader = document.createElement('div')
+        loader.innerHTML = Loader()
+        infinite_widget_container.appendChild(loader)
 
         console.log("Loading widget content...")
 
@@ -45,7 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(err)
             }
             else {
-                content.innerHTML = ""
+                loader.remove()
+                const content = document.createElement('div')
+                content.setAttribute("id", "infinite-widget-content")
+                infinite_widget_container.appendChild(content)
 
                 events.forEach((event)=>{
                     console.log("\n-----------\n" + JSON.stringify(event))
