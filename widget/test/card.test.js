@@ -12,6 +12,9 @@ const test_event = {
     social_image:"",
     venue_id:"2c7ae750-f193-4b5f-9893-fa9d56c647ba",
     brief_description:"  asdfasdfas d",
+    venue: {
+        name: "Test Name"
+    }
 }
 
 const expected_event_url = SITE_URL + "/events/" + test_event.id

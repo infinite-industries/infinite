@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", () => {
         content.setAttribute("id", "infinite-widget-content")
         infinite_widget_container.appendChild(content)
 
+        // spinny thingy while loading
+        content.innerHTML = "<h2 style='color:white'> Loading content</h2>"
+
         console.log("Loading widget content...")
 
         APIService.get(PATH, (err, events) => {
@@ -42,6 +45,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(err)
             }
             else {
+                content.innerHTML = ""
+
                 events.forEach((event)=>{
                     console.log("\n-----------\n" + JSON.stringify(event))
                     content.insertAdjacentHTML('beforeend', Card(event))
