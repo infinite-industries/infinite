@@ -1,5 +1,6 @@
 import { ApiService } from '../services/ApiService'
 import ComponentEventBus from '../helpers/ComponentEventBus'
+import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
 export const state = () => {
   return {
@@ -81,37 +82,7 @@ export const mutations = {
   },
 
   CREATE_NEW_EVENT: (state) => {
-    state.calendar_event = {
-      id: '',
-      title: '',
-      date_times: [
-
-      ],
-      image: '',
-      social_image: '',
-      organizers: '',
-      admission_fee: 'none',
-      venue: { // TODO: this may be bad
-        name: '',
-        id: '',
-        slug: '',
-        createdAt: '',
-        updatedAt: '',
-        g_map_link: '',
-        address: ''
-      },
-      address: '',
-      brief_description: '',
-      description: '',
-      website_link: '',
-      eventbrite_link: '',
-      fb_event_link: '',
-      ticket_link: '',
-      organizer_contact: '',
-      multi_day: false,
-      additional_dates: []
-
-    }
+    state.calendar_event = getEmptyCalendarEvent()
   },
   DELETE_TIME_SEGMENT: (state, payload) => {
     state.calendar_event.date_times.splice(payload.index, 1)
