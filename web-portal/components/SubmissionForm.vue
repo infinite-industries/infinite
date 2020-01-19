@@ -288,9 +288,6 @@
       })
     },
     methods: {
-      RouteTo: function (route_to_page) {
-        this.$router.push({ path: route_to_page })
-      },
       UpdateEvent: function () {
         console.log(this.calendar_event)
         this.showEventLoadingSpinner = true
@@ -384,8 +381,6 @@
       },
       // for use in promo tools. Takes an event object and makes it into pretty html
       parseEventToHTML: async function (ii_event, ii_event_id) {
-        // console.log(ii_event)
-
         let venueResp
         let venue
 
@@ -398,7 +393,7 @@
         }
 
         const clientTimeZone = moment.tz.guess()
-        const dateTimeStorageFormat = 'YYYY-MM-DD HH:mm zz'
+        const dateTimeStorageFormat = moment.ISO_8601
 
         const strWhen = ii_event.date_times.map((dtEntry) => {
           const when_date = moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
