@@ -8,6 +8,14 @@ import RenderCardsViewer from './cardsViewer.js'
 import Header from './header.js'
 import Loader from './loader.js'
 
+const HighlightNumber = function(page_number){
+    const number_list = document.querySelectorAll('.infinite-cards-page-number')
+    number_list.forEach(function(node){
+        node.setAttribute("style", "border: 0px;")
+    })
+    number_list[page_number].setAttribute("style", "border: 1px solid white;")
+}
+
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
@@ -63,6 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                         cards_viewer.remove()
                         cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
+                        HighlightNumber(which_page)
                     })
 
                     const total_number_of_pages = Math.ceil(events.length/cards_per_page)
@@ -77,6 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         page_number.addEventListener("click", function(){
                             cards_viewer.remove()
                             cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, count)
+                            HighlightNumber(count)
                         })
 
                     }
@@ -92,11 +102,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         }
                         cards_viewer.remove()
                         cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
+                        HighlightNumber(which_page)
                     })
 
                     infinite_widget_container.appendChild(pagination)
-                    //pagination.innerHTML = "<span id='infinite-cards-previous'>previous</span> 1 | 2 | 3 next"
-
+                    HighlightNumber(0)                  //set first page as the default highlight
                 }
 
             }

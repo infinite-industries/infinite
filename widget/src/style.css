@@ -208,8 +208,11 @@
 #infinite-cards-next:hover, #infinite-cards-previous:hover, .infinite-cards-page-number:hover {
     border: 1px solid white;
     cursor: pointer;
-    margin: 9px;
     border-radius: 2px;
+}
+
+#infinite-cards-next:hover, #infinite-cards-previous:hover {
+    margin: 9px;
 }
 
 
