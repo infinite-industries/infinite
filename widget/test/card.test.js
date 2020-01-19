@@ -17,7 +17,7 @@ const test_event = {
     }
 }
 
-const expected_event_url = SITE_URL + "/events/" + test_event.id
+const expected_event_url = "https://infinite.industries/events/" + test_event.id
 
 const long_description = [
     'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet,',

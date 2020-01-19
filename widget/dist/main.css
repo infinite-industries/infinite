@@ -192,6 +192,27 @@
 .infinite-btn-actions a:link, .infinite-btn-actions a:visited, .infinite-btn-actions a:hover  {
     text-decoration: none;
 }
+
+#infinite-widget-pagination {
+    color: white;
+    text-align: center;
+    margin-top: 20px;
+    font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#infinite-cards-next, #infinite-cards-previous, .infinite-cards-page-number {
+    margin: 10px;
+    padding: 5px;
+}
+
+#infinite-cards-next:hover, #infinite-cards-previous:hover, .infinite-cards-page-number:hover {
+    border: 1px solid white;
+    cursor: pointer;
+    margin: 9px;
+    border-radius: 2px;
+}
+
+
 .infinite-loader-container{
     width: 100%;
     height: 100%;
