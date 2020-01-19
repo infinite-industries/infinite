@@ -4,8 +4,7 @@ const PATH = `${API_URL}/events/current/verified?embed=venue`
 
 // Import API helper
 import APIService from './apiService.js'
-// Import Card template and renderer
-import Card from './card.js'
+import CardsViewer from './cardsViewer.js'
 import Header from './header.js'
 import Loader from './loader.js'
 
@@ -24,6 +23,8 @@ document.addEventListener("DOMContentLoaded", () => {
             infinite_widget_container.innerHTML = Header()
         }
 
+        const cards_per_page = infinite_widget_container.getAttribute("data-cards-per-page")
+        let which_page = 0
 
         // spinny thingy while loading
         const loader = document.createElement('div')
@@ -43,17 +44,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 content.setAttribute("id", "infinite-widget-content")
                 infinite_widget_container.appendChild(content)
 
-                events.forEach((event)=>{
-                    console.log("\n-----------\n" + JSON.stringify(event))
-                    content.insertAdjacentHTML('beforeend', Card(event))
+                CardsViewer(content, events, cards_per_page, which_page)
 
-                    // inject the image -- this is a bit hacky, need to think through a more elegant solution
-                    const last_child = content.lastChild
-                    const image_container = last_child.querySelector(".infinite-image-container")
+                const pagination = document.createElement('div')
+                pagination.setAttribute("id", "infinite-widget-pagination")
+                infinite_widget_container.appendChild(pagination)
+                pagination.innerHTML = "previous 1 | 2 | 3 next"
 
-                    image_container.innerHTML = '<a href="' + SITE_URL + '/events/' + event.id +'" target="_new"><div class="image-surface" style="width:100%;height:150px; background:url(' + event.image + ') center center / cover no-repeat;cursor:pointer;"></div></a>'
-
-                })
             }
         })
     }
