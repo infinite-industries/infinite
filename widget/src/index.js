@@ -4,9 +4,10 @@ const PATH = `${API_URL}/events/current/verified?embed=venue`
 
 // Import API helper
 import APIService from './apiService.js'
-import CardsViewer from './cardsViewer.js'
+import RenderCardsViewer from './cardsViewer.js'
 import Header from './header.js'
 import Loader from './loader.js'
+
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
@@ -40,16 +41,63 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             else {
                 loader.remove()
-                const content = document.createElement('div')
-                content.setAttribute("id", "infinite-widget-content")
-                infinite_widget_container.appendChild(content)
 
-                CardsViewer(content, events, cards_per_page, which_page)
+                const cards_viewer_container = document.createElement('div')
+                infinite_widget_container.appendChild(cards_viewer_container)
 
-                const pagination = document.createElement('div')
-                pagination.setAttribute("id", "infinite-widget-pagination")
-                infinite_widget_container.appendChild(pagination)
-                pagination.innerHTML = "previous 1 | 2 | 3 next"
+                let cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
+
+                if((events.length - cards_per_page)>=0){
+
+                    const pagination = document.createElement('div')
+                    pagination.setAttribute("id", "infinite-widget-pagination")
+
+                    const previous = document.createElement('span')
+                    previous.setAttribute("id", "infinite-cards-previous")
+                    previous.innerText = "previous"
+                    pagination.appendChild(previous)
+                    previous.addEventListener("click", function(){
+                        which_page--
+                        if(which_page<0){
+                            which_page = 0
+                        }
+                        cards_viewer.remove()
+                        cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
+                    })
+
+                    const total_number_of_pages = Math.ceil(events.length/cards_per_page)
+
+                    for (let count=0; count < total_number_of_pages; count++){
+
+                        const page_number = document.createElement('span')
+                        page_number.setAttribute("class", "infinite-cards-page-number")
+                        page_number.innerText = count+1         // humans don't like page 0
+                        pagination.appendChild(page_number)
+
+                        page_number.addEventListener("click", function(){
+                            cards_viewer.remove()
+                            cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, count)
+                        })
+
+                    }
+
+                    const next = document.createElement('span')
+                    next.setAttribute("id", "infinite-cards-next")
+                    next.innerText = "next"
+                    pagination.appendChild(next)
+                    next.addEventListener("click", function(){
+                        which_page++
+                        if(which_page >= total_number_of_pages-1){
+                            which_page = total_number_of_pages-1
+                        }
+                        cards_viewer.remove()
+                        cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
+                    })
+
+                    infinite_widget_container.appendChild(pagination)
+                    //pagination.innerHTML = "<span id='infinite-cards-previous'>previous</span> 1 | 2 | 3 next"
+
+                }
 
             }
         })
