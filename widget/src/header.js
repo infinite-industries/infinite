@@ -1,3 +1,4 @@
+import ConfigService from './configService.js'
 
 export default function Header (event_title){
 
@@ -7,7 +8,7 @@ export default function Header (event_title){
         <div id="infinite-header">
             <h2 style="color:white">${event_title}</h2>
             <div id="branding">
-                <a href="${SITE_URL}" target="_new">
+                <a href="${ConfigService.getSiteUrl()}" target="_new">
                     powered by Infinite Industries
                 </a>
             </div>
