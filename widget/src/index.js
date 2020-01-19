@@ -1,9 +1,10 @@
 // Infinite Industries Widget
 
-const PATH = `${API_URL}/events/current/verified?embed=venue`
+const PATH = 'events/current/verified?embed=venue'
 
 // Import API helper
 import APIService from './apiService.js'
+import ConfigService from './configService.js'
 import RenderCardsViewer from './cardsViewer.js'
 import Header from './header.js'
 import Loader from './loader.js'
@@ -19,7 +20,7 @@ const HighlightNumber = function(page_number){
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
-    const infinite_widget_container = document.querySelector('#infinite-widget')
+    const infinite_widget_container = ConfigService.getContainer()
 
     if(infinite_widget_container !== null){
 
@@ -42,7 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("Loading widget content...")
 
-        APIService.get(PATH, (err, events) => {
+        APIService.get(`${ConfigService.getApiUrl()}/${PATH}`, (err, events) => {
             if(err){
                 infinite_widget_container.innerHTML = "<h2>Unable to reach the server :(</h2> <p>For the nerds among us, the error output is in the console log.</p>"
                 console.log(err)
