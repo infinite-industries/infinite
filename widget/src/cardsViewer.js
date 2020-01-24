@@ -8,8 +8,13 @@ export default function CardsViewer(context, events_list, page_size, page_number
     content.setAttribute("id", "infinite-widget-content")
     context.appendChild(content)
 
-    events_list.slice(page_size*page_number, page_size*page_number+page_size).forEach((event)=>{
-        console.log("\n-----------\n" + JSON.stringify(event))
+    const start_event = page_size*page_number
+    const end_event = parseInt(start_event)+parseInt(page_size)
+
+    events_list.slice(start_event, end_event).forEach((event)=>{
+        // console.log("start: "+start_event+" end: "+end_event )
+
+        //console.log("\n-----------\n" + JSON.stringify(event))
         content.insertAdjacentHTML('beforeend', Card(event))
 
         // inject the image -- this is a bit hacky, need to think through a more elegant solution

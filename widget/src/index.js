@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // spinny thingy while loading
         const loader = document.createElement('div')
         loader.innerHTML = Loader()
+        loader.style.alignContent = 'center'
         infinite_widget_container.appendChild(loader)
 
         console.log("Loading widget content...")
