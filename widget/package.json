@@ -1,10 +1,27 @@
 {
-  "version": "1.0.0",
-  "description": "My webpack project",
+  "name": "@infinite-industries/widget",
+  "version": "0.0.1",
+  "description": "Widget for embedding events from the Infinite Industries platform on a website.",
+  "author": {
+    "name": "Infinite Crew",
+    "url": "https://infinite.industries/who-we-are"
+  },
+  "license": "MIT",
+  "browser": "dist/main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/infinite-industries/infinite.git",
+    "directory": "widget"
+  },
+  "files": [
+    "dist/*",
+    "!dist/index.html"
+  ],
   "scripts": {
     "build": "webpack --mode production",
     "start": "webpack-dev-server --mode development",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "prepare": "npm run build"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
