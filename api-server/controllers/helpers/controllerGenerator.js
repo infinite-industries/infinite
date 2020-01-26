@@ -33,7 +33,7 @@ function DefaultController(modelName) {
         create: function(db, data, callback) {
             debug('create: ' + JSON.stringify(data, null, 4));
             db[modelName].create(data, callback)
-              .then(() => callback())
+              .then((result) => callback(null, result))
               .catch(err => callback(err));
         },
         delete: (db, id, callback) => {

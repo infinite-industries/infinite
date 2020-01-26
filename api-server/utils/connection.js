@@ -1,7 +1,13 @@
 const Sequelize = require('sequelize')
 require('dotenv').config()
 
+let cache = null
+
 module.exports = function getConnection() {
+    if (cache !== null) {
+        return  cache
+    }
+
     const sequelize = new Sequelize(process.env.POSTGRES_DB, process.env.POSTGRES_USER, process.env.POSTGRES_PW, {
         host: process.env.POSTGRES_HOST,
         port: process.env.POSTGRES_PORT,
@@ -30,6 +36,8 @@ module.exports = function getConnection() {
     sequelize.user = sequelize.import(__dirname + '/../models/user')
     sequelize.user_list_ownership = sequelize.import(__dirname + '/../models/user_list_ownership')
     sequelize.user_list_following = sequelize.import(__dirname + '/../models/user_list_following')
+
+    cache = sequelize
 
     return sequelize
 };
