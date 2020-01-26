@@ -48,6 +48,7 @@ router.get('/current/non-verified',
 			where: {
 				verified: false
 			},
+			order: literal('first_day_start_time ASC'),
 			include: getIncludeBlock(req.embed, db)
 		}
 
@@ -71,7 +72,7 @@ router.get('/current/verified', [ParseEmbed], function(req, res) { // anyone can
 		where: {
 		  verified: true
 		},
-		order: literal('start_time ASC'),
+		order: literal('first_day_start_time ASC'),
 		include: getIncludeBlock(req.embed, db)
 	}
 
@@ -124,7 +125,7 @@ async function createOverride(req, res, next) {
 			slug: _getSlug(req.body.event.title)
 		}
 
-		CurrentEventController.create(req.app.get('db'), postJSON, async (err) => {
+		EventController.create(req.app.get('db'), postJSON, async (err) => {
 			if (err) {
 				const msg = 'error creating "event": ' + err
 				logger.error(msg)

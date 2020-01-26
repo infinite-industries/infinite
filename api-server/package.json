@@ -7,7 +7,7 @@
     "start": "node ./index.js",
     "start:dev": "nodemon ./index.js",
     "start:docker": "npm run setup-dev && npm run start",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "watchify": "watchify -vd -p browserify -e ./src/main.js -o ./public/js/dist.js",
     "deploy": "./deploy.sh production",
     "db:create": "sequelize db:create",
@@ -24,16 +24,11 @@
   ],
   "author": "Infinite Industries",
   "license": "MIT",
-  "browserify": {
-    "transform": [
-      "babelify",
-      "vueify"
-    ]
-  },
   "devDependencies": {
     "faker": "^4.1.0",
     "frisby": "^2.0.1",
-    "jest-cli": "^20.0.4",
+    "jest": "^24.9.0",
+    "jest-cli": "^24.9.0",
     "moment-timezone": "^0.5.27",
     "nodemon": "^1.15.0",
     "uuid": "^3.3.3"
