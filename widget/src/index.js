@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if(infinite_widget_container !== null){
 
-        const title = infinite_widget_container.getAttribute("data-widget-title")
+        const title = ConfigService.getWidgetTitle()
 
         if (title !== null) {
             infinite_widget_container.innerHTML = Header(title)
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
             infinite_widget_container.innerHTML = Header()
         }
 
-        const cards_per_page = infinite_widget_container.getAttribute("data-cards-per-page")
+        const cards_per_page = ConfigService.getPageSize()
         let which_page = 0
 
         // spinny thingy while loading
