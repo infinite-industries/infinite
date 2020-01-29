@@ -33,14 +33,20 @@ document.addEventListener("DOMContentLoaded", () => {
             infinite_widget_container.innerHTML = Header()
         }
 
-        const cards_per_page = infinite_widget_container.getAttribute("data-cards-per-page")
-        let which_page = 0
+        // test if cards per page is defined
+        let cards_per_page = infinite_widget_container.getAttribute("data-cards-per-page")
+
+        if (cards_per_page === null) {
+            cards_per_page = 4
+        }
 
         // spinny thingy while loading
         const loader = document.createElement('div')
         loader.innerHTML = Loader()
         loader.style.alignContent = 'center'
         infinite_widget_container.appendChild(loader)
+
+        let which_page = 0
 
         console.log("Loading widget content...")
 
@@ -53,7 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 loader.remove()
 
                 const cards_viewer_container = document.createElement('div')
+                cards_viewer_container.setAttribute("id", "infinite-card-viewer-container")
                 infinite_widget_container.appendChild(cards_viewer_container)
+                cards_viewer_container.style.width = cards_per_page*150
 
                 let cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
 

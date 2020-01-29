@@ -13,8 +13,8 @@ export default function CardsViewer(context, events_list, page_size, page_number
 
     events_list.slice(start_event, end_event).forEach((event)=>{
         // console.log("start: "+start_event+" end: "+end_event )
+        // console.log("\n-----------\n" + JSON.stringify(event))
 
-        //console.log("\n-----------\n" + JSON.stringify(event))
         content.insertAdjacentHTML('beforeend', Card(event))
 
         // inject the image -- this is a bit hacky, need to think through a more elegant solution
