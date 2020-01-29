@@ -1,6 +1,7 @@
 // Infinite Industries Widget
 
 const PATH = 'events/current/verified?embed=venue'
+const CARD_FOOTPRINT = 300
 
 // Import API helper
 import APIService from './apiService.js'
@@ -17,6 +18,27 @@ const HighlightNumber = function(page_number){
     number_list[page_number].setAttribute("style", "border: 1px solid white;")
 }
 
+const ResizeCardViewer = function(cards_per_page){
+    const ideal_row_width = cards_per_page*CARD_FOOTPRINT
+
+    if(window.innerWidth > ideal_row_width+100){
+        document.querySelector("#infinite-card-viewer-container").style.width = ideal_row_width + "px"
+    }
+    else {
+        console.log(window.innerWidth)
+        if(window.innerWidth < CARD_FOOTPRINT * 1.5){
+            document.querySelector("#infinite-card-viewer-container").style.width = "100px"
+            console.log("on phone")
+        }
+        else{
+            document.querySelector("#infinite-card-viewer-container").style.width = window.innerWidth-100 + "px"
+        }
+    }
+}
+
+window.onresize = function(){
+    ResizeCardViewer(ConfigService.getPageSize())
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
@@ -24,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if(infinite_widget_container !== null){
 
-        const title = infinite_widget_container.getAttribute("data-widget-title")
+        const title = ConfigService.getWidgetTitle()
 
         if (title !== null) {
             infinite_widget_container.innerHTML = Header(title)
@@ -33,12 +55,8 @@ document.addEventListener("DOMContentLoaded", () => {
             infinite_widget_container.innerHTML = Header()
         }
 
-        // test if cards per page is defined
-        let cards_per_page = infinite_widget_container.getAttribute("data-cards-per-page")
-
-        if (cards_per_page === null) {
-            cards_per_page = 4
-        }
+        const cards_per_page = ConfigService.getPageSize()
+        let which_page = 0
 
         // spinny thingy while loading
         const loader = document.createElement('div')
@@ -46,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
         loader.style.alignContent = 'center'
         infinite_widget_container.appendChild(loader)
 
-        let which_page = 0
 
         console.log("Loading widget content...")
 
@@ -61,7 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const cards_viewer_container = document.createElement('div')
                 cards_viewer_container.setAttribute("id", "infinite-card-viewer-container")
                 infinite_widget_container.appendChild(cards_viewer_container)
-                cards_viewer_container.style.width = cards_per_page*150
+
+                ResizeCardViewer(cards_per_page)
 
                 let cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
 

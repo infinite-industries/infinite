@@ -140,6 +140,7 @@
 #infinite-card-viewer-container {
     margin-left: auto;
     margin-right: auto;
+    min-height: 550px;
 }
 
 .infinite-card-title {

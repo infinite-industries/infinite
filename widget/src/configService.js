@@ -19,6 +19,10 @@ const URLS = {
 // DEFAULT_ENV defined by webpack / jest
 const DEFAULT_MODE = typeof DEFAULT_ENV !== 'undefined' ? DEFAULT_ENV : 'production'
 
+const DEFAULT_TITLE = ''
+
+const DEFAULT_PAGE_SIZE = '4'
+
 const widget_container = document.querySelector('#infinite-widget')
 
 const mode = getModeFromContainer()
@@ -40,6 +44,16 @@ export default class ConfigService {
 
     static getContainerAttr(attribute) {
         return widget_container.getAttribute(attribute)
+    }
+
+    static getWidgetTitle() {
+        const attr = widget_container.getAttribute('data-widget-title')
+        return attr ? attr : DEFAULT_TITLE
+    }
+
+    static getPageSize() {
+        const attr = widget_container.getAttribute('data-cards-per-page')
+        return attr ? attr : DEFAULT_PAGE_SIZE
     }
 
     static getSiteUrl() {
