@@ -15,7 +15,7 @@ module.exports = _.extend(userController, {
           .catch(err => callback(err))
     },
     findByIDAndMergeWithEventLists: function(db, id, callback) {
-       db.user.findById(id, {include: [
+       db.user.findByPk(id, {include: [
                { model: db.event_list, as: 'lists_my', through: { attributes: [] } },
                { model: db.event_list, as: 'lists_follow', through: { attributes: [] } },
            ]

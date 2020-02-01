@@ -17,7 +17,6 @@ module.exports = {
 };
 
 function getDefaultRouter(router_name, router_name_singular, controller, forcedValues, options) {
-    const debug = require('debug')('router:' + router_name);
     const paramID = `${router_name_singular}ID`
     const identifier = paramID + idRegExp;
 
@@ -29,7 +28,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
     const updateMiddleware = options.updateMiddleware || JWTAuthChain // by default admin only
     const readFilter = options.readFilter
 
-    debug('establishing router "/" for router "%s"', router_name);
+    logger.debug('establishing router "/" for router "%s"', router_name);
     router.get("/", readMiddleware, function(req, res) {
         logger.info("handling request for all " + router_name);
 
@@ -56,7 +55,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
                 logger.warn(`error handling request for all ${router_name}: ${err}`);
                 res.status(500).json({ status: constants.db_error });
             } else {
-                debug('found all requested ' + router_name);
+                logger.debug('found all requested ' + router_name);
 
                 if (sortField) {
                     data = data.sort(function(a, b) {
@@ -76,7 +75,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
         }, query, filter_field);
     });
 
-    debug('establish router /:%s for router %s', identifier, router_name);
+    logger.debug('establish router /:%s for router %s', identifier, router_name);
     router.get("/:" + identifier,
 		readMiddleware,
         function(req, res) {
@@ -92,7 +91,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
                     res.status(500).json({ "status": constants.db_error });
                 }
                 else if (data===null) {
-                    debug('could not find the requested %s:%s', router_name_singular, id);
+                    logger.debug('could not find the requested %s:%s', router_name_singular, id);
                     res.status(404).json({"status":"no_such_id"});
                 }
                 else {

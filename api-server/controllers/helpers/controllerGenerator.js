@@ -4,18 +4,16 @@ const { logger } = require(__dirname + '/../../utils/loggers')
 module.exports = DefaultController;
 
 function DefaultController(modelName) {
-    const debug = require('debug')('models:' + modelName);
-
     return {
         findById: function(db, id, callback) {
-            debug('findById: ' + id);
-            db[modelName].findById(id)
+            logger.debug('findById: ' + id);
+            db[modelName].findByPk(id)
               .then(model => callback(null, model))
               .catch(err => callback(err))
         },
 
         all: function(db, callback, query, filter_field) {
-            debug('all');
+            logger.debug('all');
 			      query = query || {};
 
             /*if (filter_field) {
@@ -31,13 +29,13 @@ function DefaultController(modelName) {
               })
         },
         create: function(db, data, callback) {
-            debug('create: ' + JSON.stringify(data, null, 4));
+            logger.debug('create: ' + JSON.stringify(data, null, 4));
             db[modelName].create(data, callback)
               .then((result) => callback(null, result))
               .catch(err => callback(err));
         },
         delete: (db, id, callback) => {
-            debug(`delete event "${id}"`)
+            logger.debug(`delete event "${id}"`)
             db[modelName].destroy({ where: { id } })
               .then(() => callback())
               .catch(err => callback(err))
