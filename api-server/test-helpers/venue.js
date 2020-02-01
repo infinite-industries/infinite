@@ -22,5 +22,9 @@ function createVenue (venue) {
 
 function deleteAllVenues() {
   return sequelize.venue.findAll({})
-    .then(venues => sequelize.venue.destroy({ where: { id: venues.id } }))
+    .then(venues => Promise.all(
+      venues.map(
+        venue => sequelize.venue.destroy({ where: { id: venue.id } })
+      )
+    ))
 }

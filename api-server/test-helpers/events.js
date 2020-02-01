@@ -21,8 +21,9 @@ function createEvent (event) {
 }
 
 function deleteAllEvents() {
-  sequelize.event
+  return sequelize.event
     .findAll({})
     .then(events => Promise.all(
-      events.map(event => sequelize.event.destroy({ where: { id: event.id } }))))
+      events
+        .map(event => sequelize.event.destroy({ where: { id: event.id } }))))
 }

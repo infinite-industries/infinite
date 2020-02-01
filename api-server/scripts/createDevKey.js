@@ -23,18 +23,16 @@ const user_name = nconf.get('user')
 const organization = nconf.get('org')
 const id = nconf.get('id') || uuidv4()
 
-debug(util.format('running script with user_name: "%s", organization: "%s"', user_name, organization))
-
 if (!user_name || !organization)
 	return printUsage();
 
   sequelize
 	.authenticate()
 	.then(() => {
-        debug(`create key with id: ${id}`);
+        console.log(`create key with id: ${id}`);
 		sequelize.dev_key.create({ id, user_name, organization })
 		  .then(() => {
-              debug('script completed with success');
+              console.log('script completed with success');
               console.log('success => created devKey "%s"', id);
               console.log('keep this key secret');
               sequelize.close()

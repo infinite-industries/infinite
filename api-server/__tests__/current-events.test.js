@@ -38,10 +38,10 @@ it('returns only verified events', async function() {
     .expect('status', 200)
     .then(async (response) => {
       // should only get back 2 of the three events
-      expect(response.body.events.length).toEqual(1)
+      expect(response.json.events.length).toEqual(1)
 
       // should only have the verified event in the list
-      expect(response.body.events.map(event => event.id)).toEqual([eventVerified.id])
+      expect(response.json.events.map(event => event.id)).toEqual([eventVerified.id])
     })
 })
 
@@ -62,10 +62,10 @@ it('returns only events in the future or recent past', async function() {
     .expect('status', 200)
     .then(async (response) => {
       // should only get back 2 of the three events
-      expect(response.body.events.length).toEqual(2)
+      expect(response.json.events.length).toEqual(2)
 
       // should be the correct two events with oldest first
-      expect(response.body.events.map(event => event.id)).toEqual([eventInRecentPast.id, eventInFuture.id])
+      expect(response.json.events.map(event => event.id)).toEqual([eventInRecentPast.id, eventInFuture.id])
     })
 })
 
@@ -101,10 +101,10 @@ it('sorts multi-date events by most recent non-expired start-time', async () => 
     .expect('status', 200)
     .then(async (response) => {
       // should only get back 2 of the three events
-      expect(response.body.events.length).toEqual(3)
+      expect(response.json.events.length).toEqual(3)
 
       // should be the correct two events with oldest first
-      expect(response.body.events.map(event => event.id))
+      expect(response.json.events.map(event => event.id))
         .toEqual([
           singleDayEvent1.id,
           multiDayEvent.id,
@@ -133,9 +133,9 @@ it('filters expired events from multi-day events and finds correct first day/las
     .expect('status', 200)
     .then(async (response) => {
       // should only get back 2 of the three events
-      expect(response.body.events.length).toEqual(1)
+      expect(response.json.events.length).toEqual(1)
 
-      const event = response.body.events[0]
+      const event = response.json.events[0]
       const remainingTimes = event.date_times
 
       expect(remainingTimes.length).toEqual(2)
