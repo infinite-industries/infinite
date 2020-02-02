@@ -56,11 +56,11 @@
 @supports (display: grid) {
     #infinite-widget-content{
         display: grid;
-        grid-template-columns: repeat(auto-fill,minmax(275px,1fr));
+        grid-template-columns: repeat(auto-fit,minmax(275px,290px));
         grid-gap: 5px;
 
+        justify-content: center;
         justify-items: center;
-        align-items: top;
     }
 }
 

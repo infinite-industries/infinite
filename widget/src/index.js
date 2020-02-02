@@ -18,28 +18,6 @@ const HighlightNumber = function(page_number){
     number_list[page_number].setAttribute("style", "border: 1px solid white;")
 }
 
-const ResizeCardViewer = function(cards_per_page){
-    const ideal_row_width = cards_per_page*CARD_FOOTPRINT
-
-    if(window.innerWidth > ideal_row_width+100){
-        document.querySelector("#infinite-card-viewer-container").style.width = ideal_row_width + "px"
-    }
-    else {
-        console.log(window.innerWidth)
-        if(window.innerWidth < CARD_FOOTPRINT * 1.5){
-            document.querySelector("#infinite-card-viewer-container").style.width = "100px"
-            console.log("on phone")
-        }
-        else{
-            document.querySelector("#infinite-card-viewer-container").style.width = window.innerWidth-100 + "px"
-        }
-    }
-}
-
-window.onresize = function(){
-    ResizeCardViewer(ConfigService.getPageSize())
-}
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("begin injecting widget content")
     const infinite_widget_container = ConfigService.getContainer()
@@ -78,8 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const cards_viewer_container = document.createElement('div')
                 cards_viewer_container.setAttribute("id", "infinite-card-viewer-container")
                 infinite_widget_container.appendChild(cards_viewer_container)
-
-                ResizeCardViewer(cards_per_page)
 
                 let cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
 
