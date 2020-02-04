@@ -20,11 +20,12 @@ const sequelize = require('../utils/connection')()
     await sequelize.venue.create(venue)
   }
 
-  console.log(`writing ${events.length} venues`)
+  console.log(`writing ${events.length} events`)
   for (let i = 0; i < events.length; i++) {
     const event = events[i]
     await sequelize.event.create(event)
   }
 
+  await sequelize.close()
   console.log('done')
 })()
