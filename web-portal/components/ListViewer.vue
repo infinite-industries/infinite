@@ -1,7 +1,7 @@
 <template>
   <div id="list-container">
     <div id="list-viewer" ref="list" v-if="!LOADING">
-      <ii-card v-for="calendar_event in calendar_events" :key="calendar_event.id" :calendar_event="calendar_event"></ii-card>
+      <event-card v-for="calendar_event in calendar_events" :key="calendar_event.id" :calendar_event="calendar_event" />
     </div>
     <div v-else class="spinner-container">
       <ii-loader id="loader" iconColor="#fff" width="100%" height="100%" />
@@ -11,7 +11,7 @@
 
 <script>
 
-  import Card from './ii-card.vue'
+  import EventCard from './EventCard.vue'
   import Loader from './vectors/Loader.vue'
 
   export default {
@@ -23,7 +23,7 @@
       }
     },
     components: {
-      'ii-card': Card,
+      'event-card': EventCard,
       'ii-loader': Loader
     }
   }

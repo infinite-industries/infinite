@@ -12,7 +12,7 @@
       />
       <ii-hamburger id="hamburger" width="55" height="55" style="cursor: pointer" />
     </div>
-    <ii-nav />
+    <ii-navigation />
   </div>
 </template>
 
@@ -21,7 +21,7 @@
   import Subscribe from './vectors/Subscribe.vue'
   import Hamburger from './vectors/Hamburger.vue'
 
-  import Navigation from './ii-nav.vue'
+  import Navigation from './Navigation.vue'
 
   export default {
     name: 'Toolbar',
@@ -29,7 +29,7 @@
       'ii-logo': Logo,
       'ii-subscribe': Subscribe,
       'ii-hamburger': Hamburger,
-      'ii-nav': Navigation
+      'ii-navigation': Navigation
     },
     data: function () {
       return {

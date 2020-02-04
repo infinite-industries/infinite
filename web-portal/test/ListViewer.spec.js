@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
-import ListViewer from '@/components/ii-list-viewer.vue'
+import ListViewer from '@/components/ListViewer.vue'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
