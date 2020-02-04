@@ -20,10 +20,10 @@
 </template>
 
 <script>
-  import Toolbar from '../components/ii-toolbar'
-  import Notifications from '../components/ii-notifications.vue'
-  import Subscribe from '../components/ii-subscribe.vue'
-  import Modal from '../components/ii-modal.vue'
+  import Toolbar from '../components/Toolbar.vue'
+  import Notifications from '../components/Notifications.vue'
+  import Subscribe from '../components/Subscribe.vue'
+  import Modal from '../components/Modal.vue'
 
   export default {
     components: {

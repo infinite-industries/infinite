@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import { createLocalVue, RouterLinkStub, shallowMount } from '@vue/test-utils'
-import Card from '@/components/ii-card.vue'
+import Card from '@/components/EventCard.vue'
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
