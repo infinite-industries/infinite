@@ -33,8 +33,7 @@
     "vue-moment": "^4.0.0",
     "vue-smoothscroll": "^0.2.0",
     "vue2-editor": "^2.10.0",
-    "winston": "^3.2.1",
-    "winston-daily-rotate-file": "^4.4.1"
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",
