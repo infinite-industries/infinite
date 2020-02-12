@@ -3,6 +3,10 @@ const SLACK_WEBHOOK_CONTACT = process.env.SLACK_WEBHOOK_CONTACT
 const contactChannel = require('slack-notify')(SLACK_WEBHOOK_CONTACT)
 const logger = require('./utils').logger
 
+if (!SLACK_WEBHOOK_CONTACT) {
+  logger.error('Slack webhook is not configured; will not be able to send messages')
+}
+
 export default async function slackAlertHandler(req, res) {
   logger.info('JavaScript HTTP trigger function processed a request.')
 
@@ -20,7 +24,7 @@ export default async function slackAlertHandler(req, res) {
     } catch (e) {
       res.statusCode = 500
       res.end(`Unable to post to Slack. Error Message: "${e}"`)
-      logger.error('Unable to post message to Slack', e)
+      logger.error('Unable to post message to Slack: ', e)
     }
   } else {
     res.statusCode = 400
@@ -34,6 +38,12 @@ export default async function slackAlertHandler(req, res) {
 function PostToSlack(name, comment, email) {
   return new Promise((resolve, reject) => {
     const messageToAdmin = `${name} says: "${comment}". Please respond back at ${email}`
+
+    // slack-notify doesn't handle this gracefully
+    // hopefully it isn't necessary in production but in dev it's useful
+    if (!SLACK_WEBHOOK_CONTACT) {
+      return reject(new Error('No Slack URL configured'))
+    }
 
     contactChannel.send({
       channel: 'contact',
