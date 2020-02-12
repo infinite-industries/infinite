@@ -35,7 +35,7 @@ export default async function slackAlertHandler(req, res) {
   }
 }
 
-function PostToSlack(name, comment, email) {
+function PostToSlack(name, email, comment) {
   return new Promise((resolve, reject) => {
     const messageToAdmin = `${name} says: "${comment}". Please respond back at ${email}`
 
