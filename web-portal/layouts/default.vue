@@ -94,6 +94,15 @@
 
   }
 
+  /*
+   * Vuetify's light theme uses a slight off-white, which creates a slight
+   * issue on the submission page
+   * This rule can be removed when Vuetify is
+   */
+  .application.theme--light {
+    background: white;
+  }
+
   main {
     padding-top: 55px;
   }
