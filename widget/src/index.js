@@ -1,40 +1,24 @@
 // Infinite Industries Widget
 
 const PATH = 'events/current/verified?embed=venue'
-const CARD_FOOTPRINT = 300
 
 // Import API helper
 import APIService from './apiService.js'
 import ConfigService from './configService.js'
 import RenderCardsViewer from './cardsViewer.js'
-import Header from './header.js'
+import RenderHeader from './header.js'
 import Loader from './loader.js'
-
-const HighlightNumber = function(page_number){
-    const number_list = document.querySelectorAll('.infinite-cards-page-number')
-    number_list.forEach(function(node){
-        node.setAttribute("style", "border: 0px;")
-    })
-    number_list[page_number].setAttribute("style", "border: 1px solid white;")
-}
+import Pagination from './pagination.js'
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("begin injecting widget content")
+    // console.log("begin injecting widget content")
     const infinite_widget_container = ConfigService.getContainer()
+    const cards_per_page = ConfigService.getPageSize()
+    let which_page = 0
 
     if(infinite_widget_container !== null){
 
-        const title = ConfigService.getWidgetTitle()
-
-        if (title !== null) {
-            infinite_widget_container.innerHTML = Header(title)
-        }
-        else {
-            infinite_widget_container.innerHTML = Header()
-        }
-
-        const cards_per_page = ConfigService.getPageSize()
-        let which_page = 0
+        infinite_widget_container.innerHTML = RenderHeader()
 
         // spinny thingy while loading
         const loader = document.createElement('div')
@@ -60,59 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 let cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
 
                 if((events.length - cards_per_page)>=0){
-
-                    const pagination = document.createElement('div')
-                    pagination.setAttribute("id", "infinite-widget-pagination")
-
-                    const previous = document.createElement('span')
-                    previous.setAttribute("id", "infinite-cards-previous")
-                    previous.innerText = "previous"
-                    pagination.appendChild(previous)
-                    previous.addEventListener("click", function(){
-                        which_page--
-                        if(which_page<0){
-                            which_page = 0
-                        }
-                        cards_viewer.remove()
-                        cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
-                        HighlightNumber(which_page)
-                    })
-
-                    const total_number_of_pages = Math.ceil(events.length/cards_per_page)
-
-                    for (let count=0; count < total_number_of_pages; count++){
-
-                        const page_number = document.createElement('span')
-                        page_number.setAttribute("class", "infinite-cards-page-number")
-                        page_number.innerText = count+1         // humans don't like page 0
-                        pagination.appendChild(page_number)
-
-                        page_number.addEventListener("click", function(){
-                            cards_viewer.remove()
-                            cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, count)
-                            HighlightNumber(count)
-                        })
-
-                    }
-
-                    const next = document.createElement('span')
-                    next.setAttribute("id", "infinite-cards-next")
-                    next.innerText = "next"
-                    pagination.appendChild(next)
-                    next.addEventListener("click", function(){
-                        which_page++
-                        if(which_page >= total_number_of_pages-1){
-                            which_page = total_number_of_pages-1
-                        }
-                        cards_viewer.remove()
-                        cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
-                        HighlightNumber(which_page)
-                    })
-
-                    infinite_widget_container.appendChild(pagination)
-                    HighlightNumber(0)                  //set first page as the default highlight
+                    Pagination(cards_viewer_container, events, cards_viewer)
                 }
-
             }
         })
     }
