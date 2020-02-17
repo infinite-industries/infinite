@@ -28,6 +28,7 @@ function event(venue_id, verified, date_times) {
     fb_event_link: faker.internet.url(),
     eventbrite_link: faker.internet.url(),
     bitly_link: faker.internet.url(),
-    tags: []
+    tags: [],
+    reviewed_by_org: faker.company.companyName()
   }
 }

@@ -143,7 +143,51 @@ it('filters expired events from multi-day events and finds correct first day/las
       expect(remainingTimes[1].start_time).toEqual(secondDayTime.start_time)
       expect(event.first_day_start_time).toEqual(firstDayTime.start_time)
       expect(event.last_day_end_time).toEqual(secondDayTime.end_time)
-    });
+    })
+})
+
+it('returns events with all expected field values', async () => {
+  const futureTime = getDateTimePair(getTimePlusX(today, 1))
+  const venue = await createVenue(venueFaker.venue())
+
+  const dbEvent = await createEvent(
+    eventFaker.event(venue.id, true, [futureTime]))
+
+  return frisby.get(apiUrl + '/events/current/verified')
+    .expect('status', 200)
+    .then(async (response) => {
+      // should only get back 2 of the three events
+      expect(response.json.events.length).toEqual(1)
+
+      const event = response.json.events[0]
+
+      // fields returned should match what was saved to the db
+      expect(event.uuid).toEqual(dbEvent.uuid)
+      expect(event.venue_id).toEqual(dbEvent.venue_id)
+      expect(event.verified).toEqual(dbEvent.verified)
+      expect(event.title).toEqual(dbEvent.title)
+      expect(event.slug).toEqual(dbEvent.slug)
+      expect(event.multi_day).toEqual(dbEvent.multi_day)
+      expect(event.date_times).toEqual(dbEvent.date_times)
+      expect(event.image).toEqual(dbEvent.image)
+      expect(event.social_image).toEqual(dbEvent.social_image)
+      expect(event.admission_fee).toEqual(dbEvent.admission_fee)
+      expect(event.address).toEqual(dbEvent.address)
+      expect(event.map_link).toEqual(dbEvent.map_link)
+      expect(event.brief_description).toEqual(dbEvent.brief_description)
+      expect(event.description).toEqual(dbEvent.description)
+      expect(event.links).toEqual(dbEvent.links)
+      expect(event.website_link).toEqual(dbEvent.website_link)
+      expect(event.ticket_link).toEqual(dbEvent.ticket_link)
+      expect(event.fb_event_link).toEqual(dbEvent.fb_event_link)
+      expect(event.eventbrite_link).toEqual(dbEvent.eventbrite_link)
+      expect(event.bitly_link).toEqual(dbEvent.bitly_link)
+      expect(event.tags).toEqual(dbEvent.tags)
+      expect(event.reviewed_by_org).toEqual(dbEvent.reviewed_by_org)
+
+      // except this one should be empty for non-admins
+      expect(event.organizer_contact).toBeUndefined()
+    })
 })
 
 function getTimePlusX(time, deltaHours) {

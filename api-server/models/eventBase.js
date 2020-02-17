@@ -53,7 +53,8 @@ module.exports = {
 
           this.setDataValue('verified', val);
         }
-      }
+      },
+      reviewed_by_org: DataTypes.STRING
     }
   }
 }
