@@ -22,7 +22,6 @@ export const state = () => {
     lists_follow: [],
 
     all_local_events: [],
-    unverified_events: [], // events stay here before review and verification
 
     editable_event: {} // currently unused
   }
@@ -125,14 +124,6 @@ export const mutations = {
     state.current_list.events = state.current_list.events.filter(event => event.id !== payload.id)
   },
 
-  POPULATE_UNVERIFIED_LIST: (state, payload) => {
-    state.unverified_events = payload
-  },
-  CHANGE_STATE_TO_VERIFIED: (state, payload) => {
-    console.log(state.unverified_events.find(event => event.id === payload.id))
-    state.all_local_events.push(state.unverified_events.find(event => event.id === payload.id))
-    state.unverified_events = state.unverified_events.filter(event => event.id !== payload.id)
-  },
   // POPULATE_calendar_event: (state, event) => {
   //   //Vue.set(state.calendar_event, 'title', event.title)
   //   state.calendar_event = event
