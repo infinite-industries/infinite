@@ -1,9 +1,19 @@
 import ComponentEventBus from '../helpers/ComponentEventBus.js'
 import { ApiService } from '../services/ApiService'
 
+export const state = () => {
+  return {
+    unverified_events: [],
+    verified_events: []
+  }
+}
+
 export const getters = {
-  GetUnverifiedEvents: (state, getters, rootState) => {
-    return rootState.unverified_events
+  GetUnverifiedEvents: (state, getters) => {
+    return state.unverified_events
+  },
+  GetVerifiedEvents: (state, getters) => {
+    return state.verified_events
   },
   GetCurrentEvent: (state, getters, rootState) => {
     return rootState.calendar_event
@@ -24,7 +34,7 @@ export const actions = {
       .then(function (_response) {
         console.log('data from server: ', _response.data.events)
         if (_response.data.status === 'success') {
-          context.commit('POPULATE_UNVERIFIED_LIST', _response.data.events, { root: true })
+          context.commit('POPULATE_UNVERIFIED_LIST', _response.data.events)
         } else {
           ComponentEventBus.$emit('SHOW_ALERT', {
             message: 'Was not able to find unverified events.'
@@ -38,6 +48,26 @@ export const actions = {
         })
       })
   },
+  LoadCurrentEvents: (context, payload) => {
+    const idToken = payload.idToken
+
+    ApiService.get('/events/current/verified', idToken)
+      .then(function (_response) {
+        if (_response.data.status === 'success') {
+          context.commit('POPULATE_VERIFIED_LIST', _response.data.events)
+        } else {
+          ComponentEventBus.$emit('SHOW_ALERT', {
+            message: 'Not able to find verified events'
+          })
+        }
+      })
+      .catch(function (error) {
+        console.error(error)
+        ComponentEventBus.$emit('SHOW_ALERT', {
+          message: 'API connection bit the dust. FIX!'
+        })
+      })
+  },
   VerifyEvent: (context, payload) => {
     const idToken = payload.idToken
 
@@ -45,7 +75,7 @@ export const actions = {
       .then(function (_response) {
         // console.log("data from server: ",response.data.events);
         if (_response.data.status === 'success') {
-          context.commit('CHANGE_STATE_TO_VERIFIED', payload, { root: true })
+          context.commit('CHANGE_STATE_TO_VERIFIED', payload)
 
           context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Event was successfuly verified.' }, { root: true })
         } else {
@@ -103,5 +133,19 @@ export const actions = {
           message: 'API connection bit the dust. FiX!'
         })
       })
+  }
+}
+
+export const mutations = {
+  POPULATE_UNVERIFIED_LIST: (state, payload) => {
+    state.unverified_events = payload
+  },
+  POPULATE_VERIFIED_LIST: (state, payload) => {
+    state.verified_events = payload
+  },
+  CHANGE_STATE_TO_VERIFIED: (state, payload) => {
+    console.log(state.unverified_events.find(event => event.id === payload.id))
+    // state.all_local_events.push(state.unverified_events.find(event => event.id === payload.id))
+    state.unverified_events = state.unverified_events.filter(event => event.id !== payload.id)
   }
 }
