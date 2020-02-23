@@ -200,11 +200,23 @@
         <v-flex xs12>
           <div class="text-xs-center">
             <v-btn @click="UpdateEvent()">Save</v-btn>
-            <v-btn @click="VerifyEvent()" v-if="user_role==='admin'" class="btn-verify">Verify</v-btn>
+            <v-btn @click="VerifyEvent()" v-if="!calendar_event.verified && user_role==='admin'" class="btn-verify">Verify</v-btn>
             <v-btn @click="ConfirmDeleteEvent()">Delete</v-btn>
           </div>
         </v-flex>
       </v-layout>
+
+      <!-- PROMPT SAVE IF UNSAVED CHANGES ON VERIFICATION -->
+      <v-dialog v-model="dirtyOnVerifyDialog" persistent max-width="300">
+        <v-card>
+          <v-card-title class="headline">Verifying event will not save your edits - click Save too</v-card-title>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="green darken-1" flat="flat" @click.native="dirtyOnVerifyDialog = false">Close</v-btn>
+            <v-btn color="green darken-1" @click.native="dirtyOnVerifyDialog = false; UpdateEvent()">Save Now</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
       <!-- CONFIRM EVENT DELETION -->
       <v-dialog v-model="dialog" persistent max-width="300">
@@ -248,6 +260,7 @@
 </template>
 
 <script>
+  import isEqual from 'lodash.isequal'
   import moment from 'moment'
   // import VueEditor from 'vue2-editor'
 
@@ -266,6 +279,7 @@
     data: function () {
       return {
         dialog: false,
+        dirtyOnVerifyDialog: false,
 
         calendar_event: null,
         imageChosen: false,
@@ -313,13 +327,21 @@
       VerifyEvent: function () {
         this.showEventLoadingSpinner = true
 
+        const isDirty = !isEqual(this.calendar_event, this.$store.getters.GetCurrentEvent)
+
         this.$store.dispatch('admin/VerifyEvent', {
           id: this.calendar_event.id,
           idToken: this.$auth.$storage.getState('_token.auth0')
         })
           .then(() => {
             this.showEventLoadingSpinner = false
-            this.$router.push('/admin')
+            if (isDirty) {
+              // workaround to avoid accidentally unverifying
+              this.calendar_event.verified = true
+              this.dirtyOnVerifyDialog = true
+            } else {
+              this.$router.push('/admin')
+            }
           })
           .catch(() => {
             this.showEventLoadingSpinner = false
