@@ -16,7 +16,7 @@
         </div>
       </div>
       <client-only>
-        <submission-form :user_action="'upload'" :user_role="'regular'"></submission-form>
+        <submission-form :user_action="'upload'" :user_role="'regular'" :review-org="partner ? partner.id : null" />
       </client-only>
     </v-app>
   </div>
