@@ -12,7 +12,7 @@ const uuidv1 = require('uuid/v1')
 const { logger } = require(__dirname + '/../utils/loggers')
 const ParseEmbed = require('./middleware/parseEmbeds')
 
-const BITLY_URI ='https://api-ssl.bitly.com/v3/shorten'
+const BITLY_URI ='https://api-ssl.bitly.com/v4/shorten'
 const BITLY_TOKEN = process.env.BITLY_TOKEN
 const BITLY_BASE = process.env.APP_URL || 'https://infinite.industries'
 const env = process.env.ENV || 'dev'
@@ -149,16 +149,22 @@ async function createOverride(req, res, next) {
 }
 
 async function _createBitlyLink(infiniteUrl) {
-	const requestUrl = `${BITLY_URI}?access_token=${BITLY_TOKEN}&longUrl=${encodeURI(infiniteUrl)}`
-
-	const { data } = await axios.get(requestUrl)
-
-
-	if (data.status_code != 200) {
-		throw new Error(`Status ${ data.status_code } returned from link shortener`)
-	} else {
-		return data.data.url
+	const headers = {
+		Authorization: `Bearer ${BITLY_TOKEN}`,
+		 // this is important; Bitly returns 406 if not explicitly set
+		'Content-Type': 'application/json'
 	}
+	try {
+		var response = await axios.post(BITLY_URI, { long_url: infiniteUrl }, { headers })
+	} catch (ex) {
+		const errors = ex.response && ex.response.data
+			? (ex.response.data.length ? ex.response.data.map(e => e.message).join(', ') : ex.response.data.message)
+			: 'n/a'
+		logger.error(`Link shortener failed (${ex.response && ex.response.status}: ${errors})`)
+		throw new Error('Link shortener failed')
+	}
+	
+	return response.data && response.data.link ? response.data.link : null
 }
 
 function _getSlug(title) {
