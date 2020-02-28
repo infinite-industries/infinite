@@ -273,7 +273,7 @@
   import ImageUploadService from '@/services/ImageUploadService'
 
   export default {
-    props: ['event_id', 'user_role', 'user_action'],
+    props: ['event_id', 'user_role', 'user_action', 'reviewOrg'],
     // user_role --> admin, venue, regular
     // user_action --> upload, edit
     data: function () {
@@ -361,7 +361,8 @@
 
         const event = {
           ...this.calendar_event,
-          organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : []
+          organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
+          reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
         }
 
         ImageUploadService.forEvent(
