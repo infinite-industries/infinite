@@ -204,6 +204,30 @@
     text-align: center;
     margin-top: 20px;
     font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
+
+    display: flex;
+    justify-content: space-around;
+}
+
+#infinite-mobile-cards-page-number {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    margin:10px;
+    padding-left:20px;
+    padding-right: 15px;
+}
+
+select {
+    height:40px;
+    line-height:40px;
+
+    /* no down arrow */
+    appearance:none;
+	-webkit-appearance:none;
+	-moz-appearance:none;
+	-ms-appearance:none;
 }
 
 #infinite-cards-next, #infinite-cards-previous, .infinite-cards-page-number {

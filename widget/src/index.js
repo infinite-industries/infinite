@@ -44,6 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 let cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, which_page)
 
                 if((events.length - cards_per_page)>=0){
+                    // window.$e0 = infinite_widget_container
+                    // console.log(infinite_widget_container.innerWidth)
                     Pagination(cards_viewer_container, events, cards_viewer)
                 }
             }
