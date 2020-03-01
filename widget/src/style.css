@@ -245,6 +245,9 @@ select {
     margin: 9px;
 }
 
+.infinite-cards-page-number.current {
+    border: 1px solid white;
+}
 
 .infinite-loader-container{
     width: 100%;

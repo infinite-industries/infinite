@@ -46,7 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 if((events.length - cards_per_page)>=0){
                     // window.$e0 = infinite_widget_container
                     // console.log(infinite_widget_container.innerWidth)
-                    Pagination(cards_viewer_container, events, cards_viewer)
+                    Pagination(events, function (new_page_number) {
+                        cards_viewer.remove()
+                        cards_viewer = RenderCardsViewer(cards_viewer_container, events, cards_per_page, new_page_number)
+                    })
                 }
             }
         })
