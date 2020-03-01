@@ -26,9 +26,11 @@
         venues: []
       }
     },
-    fetch: function ({ store, params }) {
+    fetch: function ({ store, params, app }) {
+      const idToken = app.$auth.$storage.getState('_token.auth0')
+
       return Promise.all([
-        store.dispatch('admin/LoadCurrentEvent', params.id),
+        store.dispatch('admin/LoadCurrentEvent', { id: params.id, idToken }),
         store.dispatch('LoadAllVenueData')
       ])
     },

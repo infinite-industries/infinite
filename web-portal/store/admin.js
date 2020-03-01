@@ -21,8 +21,11 @@ export const getters = {
 }
 
 export const actions = {
-  LoadCurrentEvent: (context, id) => {
-    return ApiService.get('/events/' + id)
+  LoadCurrentEvent: (context, payload) => {
+    const id = payload.id
+    const idToken = payload.idToken
+
+    return ApiService.get('/events/' + id, idToken)
       .then((response) => {
         if (response.data.status === 'success') { context.commit('POPULATE_CURRENT_EVENT', response.data.event, { root: true }) }
       })
