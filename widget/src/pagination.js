@@ -141,6 +141,11 @@ export default function Pagination (events, render_client){
             pagination.replaceChild(UpdateCardsDisplayAndPageNumber(parseInt(new_page, 10), total_number_of_pages), pagination.firstChild)
         }
     })
+    pagination.addEventListener('change', function (event) {
+        const new_page = event.target.value
+        render_client(new_page)
+        pagination.replaceChild(UpdateCardsDisplayAndPageNumber(parseInt(new_page, 10), total_number_of_pages), pagination.firstChild)
+    })
 
     pagination.appendChild(UpdateCardsDisplayAndPageNumber(which_page, total_number_of_pages))
 
