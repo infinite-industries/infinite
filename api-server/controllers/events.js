@@ -17,7 +17,7 @@ module.exports = {
           .catch(err => callback(err))
     },
     findByIDAndMergeWithVenues: function(db, id, callback) {
-        db.event.findById(id, { include: { model: db.venue } })
+        db.event.findByPk(id, { include: { model: db.venue } })
           .then(data => callback(null, data))
           .catch(err => callback(err))
     },

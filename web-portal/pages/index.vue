@@ -3,7 +3,7 @@
 </template>
 
 <script>
-  import ListViewer from '../components/ii-list-viewer.vue'
+  import ListViewer from '../components/ListViewer.vue'
 
   export default {
     data: function () {

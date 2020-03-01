@@ -9,7 +9,7 @@ module.exports = _.extend(DefaultController('event_list'), {
           .catch(err => callback(err))
 	},
 	findByIDAndMergeWithEvents: function(db, id, callback) {
-		db.event_list.findById(id, { include: { model: db.event, through: { attributes: [] } } })
+		db.event_list.findByPk(id, { include: { model: db.event, through: { attributes: [] } } })
 		  .then(data => callback(null, data))
 		  .catch(err => callback(err))
 	},
