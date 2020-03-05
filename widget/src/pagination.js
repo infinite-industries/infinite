@@ -54,27 +54,57 @@ const RenderDesktopControls = function(container, which_page, total_number_of_pa
     container.appendChild(RenderNumber(0, which_page))
 
     // Check if total number of pages is less then 1 + window size
+    // This is the simplest scenario where we simply redner all of the
+    // page numbers and don't have worry about truncation the list pages
+    // to the left or to the right of 'which_page'
     if(total_number_of_pages <= (PAGES_WINDOW_SIZE + 1)){
-    // render all pages
+    // render all page numbers
         for (let count = 1; count < (total_number_of_pages - 1); ++count) {
             container.appendChild(RenderNumber(count, which_page))
         }
         console.log("rendered all of the page numbers")
     }
+    // Now we are rendering the page numbers with ellipses between
+    // the current selected page and first or last page
     else {
-        // If current page is greater then window size render ellipsis
         if(which_page > PAGES_WINDOW_SIZE){
             container.append(RenderEllipsis())
-        }
 
-        // Render Window
-        for (let count = which_page; count < (which_page + PAGES_WINDOW_SIZE); count++){
-            container.appendChild(RenderNumber(count+1, which_page))
-        }
+            // determine offset to the left and right of the selected page
+            const page_number_offset = Math.floor(PAGES_WINDOW_SIZE/2)
 
-        // If current page is less then total number of pages - window size then render ellipsis
-        if(which_page < total_number_of_pages){
-            container.append(RenderEllipsis())
+            if(which_page < (total_number_of_pages - PAGES_WINDOW_SIZE)){
+                // Render Window with number offsets on each side of the picked number
+                for (let count = (which_page - (page_number_offset + 1)); count < (which_page + page_number_offset); count++){
+                    if(count < (total_number_of_pages - PAGES_WINDOW_SIZE)){
+                        container.appendChild(RenderNumber(count+1, which_page))
+                    }
+                }
+
+                // Render ellipsis
+                if((which_page + page_number_offset) <= total_number_of_pages){
+                    container.append(RenderEllipsis())
+                }
+            }
+            else {
+                // Render numbers up to total number of pages
+                for (let count = (total_number_of_pages - PAGES_WINDOW_SIZE); count < total_number_of_pages; count++){
+                    container.appendChild(RenderNumber(count+1, which_page))
+                }
+            }
+        }
+        // if the current selected page is inside the pages window
+        // render all of the page numbers then ellipsis and then the last page number
+        else {
+            // Render Window numbers up to page widow size
+            for (let count = 0; count <= PAGES_WINDOW_SIZE; count++){
+                container.appendChild(RenderNumber(count+1, which_page))
+            }
+
+            // If current page is less then total number of pages - window size then render ellipsis
+            if(which_page < total_number_of_pages){
+                container.append(RenderEllipsis())
+            }
         }
     }
 
@@ -87,7 +117,7 @@ const RenderDesktopControls = function(container, which_page, total_number_of_pa
 const RenderMobileControls = function(container, which_page, total_number_of_pages) {
     const page_number_dropdown = document.createElement('select')
     page_number_dropdown.setAttribute("id", "infinite-mobile-cards-page-number")
-    
+
     for (let count = 0; count < total_number_of_pages; count++){
         let page_name = "page " + (count + 1)
         page_number_dropdown.options[count] = new Option(page_name, count);
