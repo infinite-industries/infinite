@@ -50,61 +50,68 @@ const RenderNumber = function(page_number, current_page) {
 }
 
 const RenderDesktopControls = function(container, which_page, total_number_of_pages) {
-    // Render page 1
+    // Render first page
     container.appendChild(RenderNumber(0, which_page))
 
-    // Check if total number of pages is less then 1 + window size
-    // This is the simplest scenario where we simply redner all of the
-    // page numbers and don't have worry about truncation the list pages
+    // Check if total number of pages is less then 1 + pager window size
+    // This is the simplest scenario where we simply render all of the
+    // page numbers and don't have worry about truncating the list pages
     // to the left or to the right of 'which_page'
     if(total_number_of_pages <= (PAGES_WINDOW_SIZE + 1)){
-    // render all page numbers
         for (let count = 1; count < (total_number_of_pages - 1); ++count) {
             container.appendChild(RenderNumber(count, which_page))
         }
-        console.log("rendered all of the page numbers")
     }
-    // Now we are rendering the page numbers with ellipses between
-    // the current selected page and first or last page
+    // Otherwise render the page numbers with ellipses between the current
+    // page and the first and last pages
     else {
-        if(which_page > PAGES_WINDOW_SIZE){
+        // this logic is based on Element-UI's pagination component
+        // (https://github.com/ElemeFE/element/blob/dev/packages/pagination/src/pager.vue)
+
+        // whether to show ellipses between first page and pager window
+        // (pager window == the set of page numbers that are visible)
+        const leadEllipses = which_page > PAGES_WINDOW_SIZE - (PAGES_WINDOW_SIZE - 1) / 2
+        // whether to show ellipses between pager window and last page
+        const trailEllipses = which_page < total_number_of_pages - (PAGES_WINDOW_SIZE - 1)
+
+        // render ellipses between first number and pager window if necessary
+        if (leadEllipses) {
             container.append(RenderEllipsis())
+        }
 
-            // determine offset to the left and right of the selected page
-            const page_number_offset = Math.floor(PAGES_WINDOW_SIZE/2)
-
-            if(which_page < (total_number_of_pages - PAGES_WINDOW_SIZE)){
-                // Render Window with number offsets on each side of the picked number
-                for (let count = (which_page - (page_number_offset + 1)); count < (which_page + page_number_offset); count++){
-                    if(count < (total_number_of_pages - PAGES_WINDOW_SIZE)){
-                        container.appendChild(RenderNumber(count+1, which_page))
-                    }
-                }
-
-                // Render ellipsis
-                if((which_page + page_number_offset) <= total_number_of_pages){
-                    container.append(RenderEllipsis())
-                }
+        if (leadEllipses && !trailEllipses) {
+            // pager window is "docked" to the right side of the range
+            // render the last few page numbers but not the final page,
+            // which will be rendered later
+            for (let i = total_number_of_pages - PAGES_WINDOW_SIZE; i < total_number_of_pages - 1; ++i) {
+                container.append(RenderNumber(i, which_page))
             }
-            else {
-                // Render numbers up to total number of pages
-                for (let count = (total_number_of_pages - PAGES_WINDOW_SIZE); count < total_number_of_pages; count++){
-                    container.appendChild(RenderNumber(count+1, which_page))
-                }
+        } else if (!leadEllipses && trailEllipses) {
+            // pager window is "docked" to the left side of the range
+            // render the first few page numbers but not the first page,
+            // which has already been rendered
+            for (let i = 1; i <= (PAGES_WINDOW_SIZE - 1); ++i) {
+                container.append(RenderNumber(i, which_page))
+            }
+        } else if (leadEllipses && trailEllipses) {
+            // pager window is somewhere within the range
+            // the current page number should be in the middle of the pager
+            // window, with the same number of pages on each side
+            const offset = Math.floor((PAGES_WINDOW_SIZE / 2))
+            for (let i = which_page - offset; i <= which_page + offset; ++i) {
+                container.append(RenderNumber(i, which_page))
+            }
+        } else {
+            // TODO: this may not be reachable since we treat no-truncation as
+            // a special case above
+            for (let i = 2; i < total_number_of_pages; ++i) {
+                container.append(RenderNumber(i, which_page))
             }
         }
-        // if the current selected page is inside the pages window
-        // render all of the page numbers then ellipsis and then the last page number
-        else {
-            // Render Window numbers up to page widow size
-            for (let count = 0; count <= PAGES_WINDOW_SIZE; count++){
-                container.appendChild(RenderNumber(count+1, which_page))
-            }
 
-            // If current page is less then total number of pages - window size then render ellipsis
-            if(which_page < total_number_of_pages){
-                container.append(RenderEllipsis())
-            }
+        // render ellipses between pager window and final page if necessary
+        if (trailEllipses) {
+            container.append(RenderEllipsis())
         }
     }
 
