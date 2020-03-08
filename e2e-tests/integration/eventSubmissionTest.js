@@ -77,6 +77,8 @@ context('Event Submission', () => {
     cy.contains('.calendar-events-table tr:last-child td', EVENT_NAME)
     cy.get('.calendar-events-table tr:last-child a').contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
+    cy.get('.submitter-email input').should('have.value', 'test@te.st')
+
     cy.get('button.btn-verify').click()
     cy.get('.calendar-events-table')
     cy.contains('.calendar-events-table tr:last-child td', EVENT_NAME).should('not.exist')
