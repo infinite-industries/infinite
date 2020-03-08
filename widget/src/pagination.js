@@ -1,5 +1,4 @@
 import ConfigService from './configService.js'
-import RenderCardsViewer from './cardsViewer.js'
 
 const infinite_widget_container = ConfigService.getContainer()
 const cards_per_page = ConfigService.getPageSize()
@@ -10,22 +9,6 @@ const RenderEllipsis = function(){
     const ellipsis = document.createElement("span")
     ellipsis.innerText = "..."
     return ellipsis
-}
-
-const HighlightNumber = function(page_number){
-    if(infinite_widget_container.clientWidth > 768){
-        const number_list = document.querySelectorAll('.infinite-cards-page-number')
-        if(number_list != null){
-            number_list.forEach(function(node){
-                node.setAttribute("style", "border: 0px;")
-            })
-            number_list[page_number].setAttribute("style", "border: 1px solid white;")
-        }
-    }
-    else {
-        const number_pulldown = document.querySelector('#infinite-mobile-cards-page-number')
-        number_pulldown.value = page_number
-    }
 }
 
 const RenderStep = function(name, page) {
@@ -131,10 +114,6 @@ const RenderMobileControls = function(container, which_page, total_number_of_pag
     }
 
     page_number_dropdown.value = which_page
-    page_number_dropdown.addEventListener("change", function(event){
-        const which_page = event.target.value
-        // TODO: not clear what to do with this; may need to rethink some things...
-    })
 
     container.appendChild(page_number_dropdown)
 
