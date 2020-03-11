@@ -47,7 +47,7 @@ export default function (req, res, next) {
     if (!fileKeys.every(file => !!IMAGE_DESTINATIONS[uploadType][file.toLowerCase()])) {
       res.statusCode = 422
       res.end(
-        'Unknow file type ' +
+        'Unknown file type ' +
         fileKeys.find(file => !IMAGE_DESTINATIONS[uploadType][file.toLowerCase()])
       )
     }
