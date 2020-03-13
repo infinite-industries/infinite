@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- So sometimes we have pandemics in this world -->
+    <ii-jumbotron />
+
     <!-- Notifications -->
     <ii-notifications />
 
@@ -24,13 +27,15 @@
   import Notifications from '../components/Notifications.vue'
   import Subscribe from '../components/Subscribe.vue'
   import Modal from '../components/Modal.vue'
+  import Jumbotron from '../components/Jumbotron.vue'
 
   export default {
     components: {
       'ii-toolbar': Toolbar,
       'ii-notifications': Notifications,
       'ii-modal': Modal,
-      'ii-subscribe': Subscribe
+      'ii-subscribe': Subscribe,
+      'ii-jumbotron': Jumbotron
     },
     data() {
       return {
