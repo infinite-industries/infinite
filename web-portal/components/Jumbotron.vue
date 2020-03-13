@@ -18,7 +18,7 @@
       return {
         jumbotron: {
           open: true,
-          message: 'Due to the outbreak of Coronavirus disease (COVID-19) we are hitting a pause on our event promotion activities. Avoid crowded spaces and stay healthy y’all!'
+          message: 'Due to the outbreak of Coronavirus disease (COVID-19) we are hitting a pause on our event promotion activities. Keep calm, avoid crowded spaces, wash your hands and stay healthy y'all!''
         }
       }
     },
