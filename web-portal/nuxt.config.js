@@ -92,7 +92,6 @@ export default {
   */
   plugins: [
     '~/plugins/vue-moment',
-    '~/plugins/vue-smoothscroll',
     { src: '~/plugins/vue-editor', ssr: false },
     '~/plugins/close-sidebar-on-nav.client.js' // client-only
   ],
@@ -107,7 +106,8 @@ export default {
     ['@nuxtjs/pwa', { workbox: false, icon: false }],
     '@nuxtjs/google-gtag',
     '@nuxtjs/eslint-module',
-    'nuxt-clipboard2'
+    'nuxt-clipboard2',
+    'vue-scrollto/nuxt'
   ],
   /*
   ** Axios module configuration

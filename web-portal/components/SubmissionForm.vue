@@ -267,6 +267,7 @@
 </template>
 
 <script>
+  import VueScrollTo from 'vue-scrollto'
   import isEqual from 'lodash.isequal'
   import moment from 'moment'
   // import VueEditor from 'vue2-editor'
@@ -408,7 +409,8 @@
           this.showPromoTools = true
           console.log('GOT BACK - ' + JSON.stringify(response.data))
           this.parseEventToHTML(event, response.data.id)
-          this.$SmoothScroll(this.$refs.promoTools)
+
+          VueScrollTo.scrollTo(this.$refs.promoTools)
         }).catch((error) => {
           console.log(error)
           this.showEventLoadingSpinner = false
