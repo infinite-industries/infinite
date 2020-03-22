@@ -1,14 +1,17 @@
 <template>
   <div class="card-container">
     <div class="card-overlay" v-show="showCalendars" @click.stop="CloseCalendars()"></div>
-    <div class="infinite-card">
+    <div class="infinite-card" :class="{ '-postponed': isPostponed, '-cancelled': isCancelled }">
       <div class="image-container">
         <nuxt-link :to="{ name: 'events-id', params: { id: calendar_event.id } }">
           <div class="image-surface" :style="backGroundImage"></div>
         </nuxt-link>
       </div>
       <div class="info-container">
-        <h3>{{ calendar_event.title | truncate(40) }}</h3>
+        <h3>
+          <template v-if="statusMessage">[{{ statusMessage }}] - </template>
+          {{ calendar_event.title | truncate(statusMessage ? 30 : 40) }}
+        </h3>
         <h4>
           <ii-location iconColor="#B7B09C" width="20" height="20" />
           {{ venue_info.name }}
@@ -68,6 +71,11 @@
       backGroundImage: function () {
         return 'background: url(\'' + this.calendar_event.image + '\') center center / cover no-repeat; cursor: pointer;'
       },
+      statusMessage: function () {
+        if (this.isCancelled) return 'Cancelled'
+        else if (this.isPostponed) return 'Postponed'
+        else return null
+      },
       venue_info: function () {
         const all_venues = this.$store.getters.GetAllVenues
 
@@ -93,6 +101,18 @@
         const firstDay = dateTimes[0]
         const output_string = moment(firstDay.start_time).format('h:mma - ') + moment(firstDay.end_time).format('h:mma')
         return output_string
+      },
+      isCancelled: function () {
+        return this.calendar_event &&
+          this.calendar_event.tags &&
+          this.calendar_event.tags.includes('cancelled')
+      },
+      isPostponed: function () {
+        // 'cancelled' supersedes 'postponed' for purposes of displaying event status
+        return this.calendar_event &&
+          this.calendar_event.tags &&
+          this.calendar_event.tags.includes('postponed') &&
+          !this.calendar_event.tags.includes('cancelled')
       }
     },
     filters: {
@@ -143,6 +163,14 @@
 
     background-color: white;
     color: black;
+  }
+
+  .infinite-card.-postponed {
+    opacity: 0.9;
+  }
+
+  .infinite-card.-cancelled {
+    opacity: 0.5;
   }
 
   .image-container{

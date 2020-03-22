@@ -3,7 +3,10 @@
     <div class="event-heading">
       <img :src="event.image" alt="" width="100%" height="auto">
       <div class="event-heading-text">
-        <h1>{{ event.title }}</h1>
+        <h1>
+          <template v-if="statusMessage">[{{ statusMessage }}] - </template>
+          {{ event.title }}
+        </h1>
         <!-- TODO: this should be an H2 or something other than a heading -->
         <h3>{{ event.venue && event.venue.name }}</h3>
       </div>
@@ -198,6 +201,11 @@
       }
     },
     computed: {
+      statusMessage() {
+        if (this.event.tags && this.event.tags.includes('cancelled')) return 'Cancelled'
+        else if (this.event.tags && this.event.tags.includes('postponed')) return 'Postponed'
+        else return null
+      },
       fullEncodedLinkForShare() {
         return encodeURI(process.env.APP_URL + '/events/' + this.event.id)
       }
