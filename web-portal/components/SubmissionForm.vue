@@ -187,6 +187,19 @@
         </v-flex>
       </v-layout>
 
+      <!-- Status (postponed / cancelled) -->
+      <v-layout row wrap v-if="user_action==='edit'" class="status-container">
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Status Flags:</h3>
+        </v-flex>
+        <v-flex xs12 sm3 md2>
+          <v-checkbox v-model="eventIsPostponed" label="Postponed" />
+        </v-flex>
+        <v-flex xs12 sm3 md2>
+          <v-checkbox v-model="eventIsCancelled" label="Cancelled" />
+        </v-flex>
+      </v-layout>
+
       <!-- SUBMIT BUTTON -->
       <v-layout row wrap v-if="user_action==='upload'" class="submit-container">
         <v-flex xs12>
@@ -287,6 +300,19 @@
 
   import { ApiService } from '@/services/ApiService'
   import ImageUploadService from '@/services/ImageUploadService'
+
+  const boolToTag = tag => ({
+    get: function () {
+      return this.calendar_event.tags && this.calendar_event.tags.includes(tag)
+    },
+    set: function (newValue) {
+      if (newValue) {
+        if (!this.calendar_event.tags.includes(tag)) this.calendar_event.tags.push(tag)
+      } else {
+        this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(tag), 1)
+      }
+    }
+  })
 
   export default {
     props: ['event_id', 'user_role', 'user_action', 'reviewOrg'],
@@ -547,18 +573,10 @@
         return this.$store.getters.GetAllVenues
       },
 
-      eventIsRemote: {
-        get: function () {
-          return this.calendar_event.tags && this.calendar_event.tags.includes('remote')
-        },
-        set: function (newValue) {
-          if (newValue) {
-            if (!this.calendar_event.tags.includes('remote')) this.calendar_event.tags.push('remote')
-          } else {
-            this.calendar_event.tags.splice(this.calendar_event.tags.indexOf('remote'), 1)
-          }
-        }
-      },
+      eventIsRemote: boolToTag('remote'),
+
+      eventIsPostponed: boolToTag('postponed'),
+      eventIsCancelled: boolToTag('cancelled'),
 
       eventRequiredFields: function () {
         return this.calendar_event.title !== '' &&
@@ -678,6 +696,10 @@
 .preview-image span {
   vertical-align: top;
   line-height: 2;
+}
+
+.status-container .v-input--checkbox {
+  margin-top: 22px;
 }
 
 </style>
