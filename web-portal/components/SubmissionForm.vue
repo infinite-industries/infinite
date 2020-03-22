@@ -95,6 +95,14 @@
       <!-- Add a Venue (collapsible content)-->
       <add-new-venue @newVenue="newVenue" />
 
+      <!-- Is event online / remote? -->
+      <v-layout row wrap>
+        <v-flex xs0 sm3></v-flex>
+        <v-flex xs12 sm8>
+          <v-checkbox v-model="eventIsRemote" label="Remote" />
+        </v-flex>
+      </v-layout>
+
       <!-- Brief Description -->
       <v-layout row wrap>
         <v-flex xs12 sm3>
@@ -307,7 +315,8 @@
     created: function () {
       const new_event = this.$store.getters.GetCurrentEvent
       this.calendar_event = Object.assign({}, new_event, {
-        date_times: new_event.date_times.map(dt => ({ ...dt }))
+        date_times: new_event.date_times.map(dt => ({ ...dt })),
+        tags: new_event.tags ? new_event.tags.map(t => t) : []
       })
     },
     methods: {
@@ -536,6 +545,19 @@
         }
 
         return this.$store.getters.GetAllVenues
+      },
+
+      eventIsRemote: {
+        get: function () {
+          return this.calendar_event.tags && this.calendar_event.tags.includes('remote')
+        },
+        set: function (newValue) {
+          if (newValue) {
+            if (!this.calendar_event.tags.includes('remote')) this.calendar_event.tags.push('remote')
+          } else {
+            this.calendar_event.tags.splice(this.calendar_event.tags.indexOf('remote'), 1)
+          }
+        }
       },
 
       eventRequiredFields: function () {
