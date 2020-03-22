@@ -179,6 +179,15 @@
         </v-flex>
       </v-layout>
 
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Tags:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-text-field v-model="tags_comma_separated"></v-text-field>
+        </v-flex>
+      </v-layout>
+
       <!-- SUBMIT BUTTON -->
       <v-layout row wrap v-if="user_action==='upload'" class="submit-container">
         <v-flex xs12>
@@ -300,7 +309,8 @@
         send_summary: false,
         send_summary_to: '',
         send_summary_others: false,
-        send_summary_others_emails: ''
+        send_summary_others_emails: '',
+        tags_comma_separated: ''
       }
     },
     created: function () {
@@ -392,7 +402,8 @@
         const event = {
           ...this.calendar_event,
           organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
-          reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
+          reviewed_by_org: this.reviewOrg ? this.reviewOrg : null,
+          tags: (this.tags_comma_separated || '').split(',')
         }
 
         ImageUploadService.forEvent(
