@@ -1,7 +1,8 @@
 const PARTNERS = {
   wrfl: {
     name: 'WRFL',
-    logo: '/images/partners/wrfl.svg'
+    logo: '/images/partners/wrfl.svg',
+    id: 'wrfl'
   }
 }
 
