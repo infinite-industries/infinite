@@ -8,7 +8,6 @@
 
     <!-- Toolbar and Nav -->
     <ii-toolbar />
-
     <main>
       <!-- Content -->
       <nuxt />
@@ -27,6 +26,7 @@
   import Notifications from '../components/Notifications.vue'
   import Subscribe from '../components/Subscribe.vue'
   import Modal from '../components/Modal.vue'
+  import Jumbotron from '../components/Jumbotron.vue'
 
   export default {
     components: {
