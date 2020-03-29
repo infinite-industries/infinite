@@ -50,6 +50,12 @@ export const getters = {
     return state.all_local_events
   },
 
+  GetAllRemoteEvents: (state) => {
+    return state.all_local_events.filter((localEvent) => {
+      return localEvent.tags && localEvent.tags.indexOf('remote') >= 0
+    })
+  },
+
   GetCurrentList: (state) => {
     return state.current_list
   },
