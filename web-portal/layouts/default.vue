@@ -1,5 +1,8 @@
 <template>
   <div>
+    <!-- So sometimes we have pandemics in this world -->
+    <ii-jumbotron />
+
     <!-- Notifications -->
     <ii-notifications />
 
@@ -30,7 +33,8 @@
       'ii-toolbar': Toolbar,
       'ii-notifications': Notifications,
       'ii-modal': Modal,
-      'ii-subscribe': Subscribe
+      'ii-subscribe': Subscribe,
+      'ii-jumbotron': Jumbotron
     },
     data() {
       return {
