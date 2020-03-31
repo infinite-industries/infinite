@@ -8,7 +8,6 @@
 
     <!-- Toolbar and Nav -->
     <ii-toolbar />
-
     <main>
       <!-- Content -->
       <nuxt />
