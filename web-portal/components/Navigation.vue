@@ -66,6 +66,7 @@
       return {
         nav_items: [
           { title: 'Home', route: '/' },
+          { title: 'Remote Events', route: '/remote' },
           { title: 'Our Mission', route: '/our-mission' },
           { title: 'Submit Event', route: '/submit-event' },
           { title: 'Login', route: '/login', isUnAuthOnly: true },

@@ -1,9 +1,15 @@
 <template>
-  <ii-list-viewer :calendar_events="events" />
+  <div>
+    <!-- So sometimes we have pandemics in this world -->
+    <ii-jumbotron />
+
+    <ii-list-viewer :calendar_events="events" />
+  </div>
 </template>
 
 <script>
   import ListViewer from '../components/ListViewer.vue'
+  import Jumbotron from '../components/Jumbotron.vue'
 
   export default {
     data: function () {
@@ -23,7 +29,8 @@
       ])
     },
     components: {
-      'ii-list-viewer': ListViewer
+      'ii-list-viewer': ListViewer,
+      'ii-jumbotron': Jumbotron
     }
   }
 </script>

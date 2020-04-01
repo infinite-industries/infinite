@@ -5,7 +5,13 @@
         X
       </div>
       <p>
-        {{ jumbotron.message }}
+        Due to the outbreak of Coronavirus disease (COVID-19) we are hitting a pause on
+        our live event promotion activities. We're on the lookout for interesting things
+        happening online, though; check out our new
+        <nuxt-link to="/remote">remote events page</nuxt-link>.
+      </p>
+      <p>
+        Keep calm, avoid crowded spaces, wash your hands and stay healthy y'all!
       </p>
     </div>
   </div>
@@ -17,8 +23,7 @@
     data: function () {
       return {
         jumbotron: {
-          open: true,
-          message: 'Due to the outbreak of Coronavirus disease (COVID-19) we are hitting a pause on our event promotion activities. Keep calm, avoid crowded spaces, wash your hands and stay healthy y\'all!'
+          open: true
         }
       }
     },
@@ -63,6 +68,9 @@
 
     font-family: "EB Garamond";
     font-size: 1.25em;
+
+    background-color: white;
+    color: black;
   }
 
   #close-jumbotron {
