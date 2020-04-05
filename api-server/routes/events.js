@@ -53,6 +53,45 @@
  *          $ref: '#definitions/EventsResponse'
  */
 
+/**
+ * @swagger
+ *
+ * /events/verified/tags/{tag}:
+ *  get:
+ *    description: Returns a list of all verified events by the provided tag
+ *    produces: application/json
+ *    parameters:
+ *      - name: tag
+ *        description: matches on this tag
+ *        in: path
+ *        required: true
+ *        type: string
+ *      - name: embed
+ *        description: |+
+ *          Specifies related entities to retrieve as embedded children of the event. For example, events have venues.
+ *
+ *          Allowed Values -- venue
+ *        in: query
+ *        required: false
+ *        type: array
+ *        items:
+ *          type: string
+ *        enum:
+ *          - venue
+ *    responses:
+ *      200:
+ *        description: Success!
+ *        schema:
+ *          $ref: '#definitions/EventsResponse'
+ *      501:
+ *        description: There was an error processing the request.
+ *        schema:
+ *          $ref: '#definitions/EventsResponse'
+ *      422:
+ *        description: A parameter supplied was not allowed or understood.
+ *        schema:
+ *          $ref: '#definitions/EventsResponse'
+ */
 const slack = require('../utils/slackNotify')
 const EventController = require('../controllers/events')
 const CurrentEventController = require('../controllers/currentEvents')
@@ -64,6 +103,7 @@ const axios = require('axios')
 const uuidv1 = require('uuid/v1')
 const { logger } = require(__dirname + '/../utils/loggers')
 const ParseEmbed = require('./middleware/parseEmbeds')
+const { Op } = require('sequelize');
 
 const BITLY_URI ='https://api-ssl.bitly.com/v4/shorten'
 const BITLY_TOKEN = process.env.BITLY_TOKEN
@@ -138,6 +178,31 @@ router.get('/current/verified', [ParseEmbed], function(req, res) { // anyone can
     res.status(200).json({ status: 'success', events });
   }, query);
 });
+
+router.get('/verified/tags/:tag', [ParseEmbed], async (req, res) => {
+  const tag = req.params.tag
+  const db = req.app.get('db')
+
+  const query = {
+    where: {
+      verified: true,
+      tags: { [Op.contains]: [tag] }
+    },
+    order: literal('"createdAt" DESC'),
+    include: getIncludeBlock(req.embed, db)
+  }
+
+  EventController.all(db, (err, events) => {
+    if (err) {
+      logger.warn('error getting verified events by tag: ' + err);
+      return res.status(501).json({ status: 'failed: ' + err });
+    }
+
+    filterContactInfo(req, events)
+
+    res.status(200).json({ status: 'success', events });
+  }, query)
+})
 
 // allows admins to tag an event as verified
 router.put(
