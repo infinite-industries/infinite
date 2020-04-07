@@ -27,9 +27,25 @@
         }
       }
     },
+    mounted: function () {
+      // close jumbotron if user presses escape
+      if (typeof window !== 'undefined' && window.addEventListener) {
+        window.addEventListener('keydown', this.onKeyDown)
+      }
+    },
+    destroyed: function () {
+      if (typeof window !== 'undefined' && window.removeEventListener) {
+        window.removeEventListener('keydown', this.onKeyDown)
+      }
+    },
     methods: {
       CloseJumbotron: function () {
         this.jumbotron.open = false
+      },
+      onKeyDown: function (e) {
+        if (e && (e.key === 27 || e.keyCode === 27)) {
+          this.CloseJumbotron()
+        }
       }
     }
   }
@@ -61,7 +77,7 @@
     margin-left: auto;
     margin-right: auto;
 
-    width: 50%;
+    width: 75%;
 
     padding: 20px;
     border-radius: 5px;
@@ -71,6 +87,12 @@
 
     background-color: white;
     color: black;
+  }
+
+  @media only screen and (min-width: 960px) {
+    #content {
+      width: 50%;
+    }
   }
 
   #close-jumbotron {
