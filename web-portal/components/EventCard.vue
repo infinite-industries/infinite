@@ -47,6 +47,7 @@
 
   import Location from './vectors/Location.vue'
   import Calendar from './vectors/Calendar.vue'
+  //   import Remote from './vectors/Remote.vue'
 
   import CalendarService from '@/services/CalendarService'
 
@@ -136,6 +137,7 @@
     components: {
       'ii-location': Location,
       'ii-calendar': Calendar
+      //  'ii-remote': Remote
     }
 
   }
