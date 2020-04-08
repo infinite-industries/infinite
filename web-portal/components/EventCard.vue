@@ -14,7 +14,7 @@
         </h3>
         <h4 v-if="showVenue">
           <!-- TODO: replace this span with the new ii-remote icon -->
-          <span v-if="isRemote || isOnlineResource" style="font-size: 1.5em; color: #B7B09C">(( o ))</span>
+          <ii-remote v-if="isRemote || isOnlineResource" iconColor="#B7B09C" width="20" height="20" />
           <ii-location v-else iconColor="#B7B09C" width="20" height="20" />
           {{ venue_info.name }}
         </h4>
@@ -47,7 +47,7 @@
 
   import Location from './vectors/Location.vue'
   import Calendar from './vectors/Calendar.vue'
-  //   import Remote from './vectors/Remote.vue'
+  import Remote from './vectors/Remote.vue'
 
   import CalendarService from '@/services/CalendarService'
 
@@ -136,8 +136,8 @@
     },
     components: {
       'ii-location': Location,
-      'ii-calendar': Calendar
-      //  'ii-remote': Remote
+      'ii-calendar': Calendar,
+      'ii-remote': Remote
     }
 
   }
