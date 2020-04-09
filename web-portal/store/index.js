@@ -22,6 +22,7 @@ export const state = () => {
     lists_follow: [],
 
     all_local_events: [],
+    all_streaming_events: [],
 
     editable_event: {} // currently unused
   }
@@ -52,8 +53,12 @@ export const getters = {
 
   GetAllRemoteEvents: (state) => {
     return state.all_local_events.filter((localEvent) => {
-      return localEvent.tags && localEvent.tags.indexOf('remote') >= 0
+      return localEvent.tags && localEvent.tags.includes('remote') && !localEvent.tags.includes('online-resource')
     })
+  },
+
+  GetAllStreamEvents: (state) => {
+    return state.all_streaming_events
   },
 
   GetCurrentList: (state) => {
@@ -107,6 +112,9 @@ export const mutations = {
 
   UPDATE_LOCALIZED_EVENTS: (state, payload) => {
     state.all_local_events = payload
+  },
+  UPDATE_STREAMING_EVENTS: (state, payload) => {
+    state.all_streaming_events = payload
   },
   UPDATE_ALL_VENUES: (state, payload) => {
     state.all_venues = payload
@@ -258,6 +266,18 @@ export const actions = {
         console.error(error)
         ComponentEventBus.$emit('SHOW_ALERT', {
           message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.'
+        })
+      })
+  },
+  LoadAllStreamingEventData: (context) => {
+    return ApiService.get('/events/verified/tags/online-resource')
+      .then((_response) => {
+        context.commit('UPDATE_STREAMING_EVENTS', _response.data.events)
+      })
+      .catch((error) => {
+        console.error(error)
+        ComponentEventBus.$emit('SHOW_ALERT', {
+          message: 'Hrrmm... unable to get some event data. Please contact us and we will endeavor to address it.'
         })
       })
   },

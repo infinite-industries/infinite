@@ -12,8 +12,10 @@
           <template v-if="statusMessage">[{{ statusMessage }}] - </template>
           {{ calendar_event.title | truncate(statusMessage ? 30 : 40) }}
         </h3>
-        <h4>
-          <ii-location iconColor="#B7B09C" width="20" height="20" />
+        <h4 v-if="showVenue">
+          <!-- TODO: replace this span with the new ii-remote icon -->
+          <ii-remote v-if="isRemote || isOnlineResource" iconColor="#B7B09C" width="20" height="20" />
+          <ii-location v-else iconColor="#B7B09C" width="20" height="20" />
           {{ venue_info.name }}
         </h4>
 
@@ -45,8 +47,11 @@
 
   import Location from './vectors/Location.vue'
   import Calendar from './vectors/Calendar.vue'
+  import Remote from './vectors/Remote.vue'
 
   import CalendarService from '@/services/CalendarService'
+
+  const _hasTag = (event, tag) => event && event.tags && event.tags.includes(tag)
 
   export default {
     name: 'Card',
@@ -75,6 +80,9 @@
         if (this.isCancelled) return 'Cancelled'
         else if (this.isPostponed) return 'Postponed'
         else return null
+      },
+      showVenue: function () {
+        return !!this.calendar_event.venue_id && !!this.venue_info && !!this.venue_info.id
       },
       venue_info: function () {
         const all_venues = this.$store.getters.GetAllVenues
@@ -113,6 +121,12 @@
           this.calendar_event.tags &&
           this.calendar_event.tags.includes('postponed') &&
           !this.calendar_event.tags.includes('cancelled')
+      },
+      isRemote: function () {
+        return _hasTag(this.calendar_event, 'remote')
+      },
+      isOnlineResource: function () {
+        return _hasTag(this.calendar_event, 'online-resource')
       }
     },
     filters: {
@@ -122,7 +136,8 @@
     },
     components: {
       'ii-location': Location,
-      'ii-calendar': Calendar
+      'ii-calendar': Calendar,
+      'ii-remote': Remote
     }
 
   }

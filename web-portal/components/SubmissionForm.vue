@@ -98,8 +98,11 @@
       <!-- Is event online / remote? -->
       <v-layout row wrap>
         <v-flex xs0 sm3></v-flex>
-        <v-flex xs12 sm8>
+        <v-flex xs12 sm3 md2>
           <v-checkbox v-model="eventIsRemote" label="Remote" />
+        </v-flex>
+        <v-flex xs12 sm4 md4>
+          <v-checkbox v-model="eventIsOnline" label="Online Resource / Project" />
         </v-flex>
       </v-layout>
 
@@ -574,6 +577,7 @@
       },
 
       eventIsRemote: boolToTag('remote'),
+      eventIsOnline: boolToTag('online-resource'),
 
       eventIsPostponed: boolToTag('postponed'),
       eventIsCancelled: boolToTag('cancelled'),
