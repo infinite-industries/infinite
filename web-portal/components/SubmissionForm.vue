@@ -18,6 +18,20 @@
         </v-flex>
       </v-layout>
 
+      <!-- Is event online / remote? -->
+      <v-layout row wrap>
+        <v-flex xs0 sm3></v-flex>
+        <v-flex xs12 sm4 md3>
+          <v-checkbox v-model="eventIsRemote" label="Live Remote Event" />
+        </v-flex>
+        <v-flex xs12 sm4 md4>
+          <v-checkbox v-model="eventIsOnline" label="Online Resource / Project" />
+        </v-flex>
+        <v-flex xs8 offset-xs3>
+          <em>Live remote events occur at a particular time. Online Resources are available at any time.</em>
+        </v-flex>
+      </v-layout>
+
       <date-time-picker v-model="calendar_event.date_times" />
 
       <!-- Event Image -->
@@ -94,17 +108,6 @@
 
       <!-- Add a Venue (collapsible content)-->
       <add-new-venue @newVenue="newVenue" />
-
-      <!-- Is event online / remote? -->
-      <v-layout row wrap>
-        <v-flex xs0 sm3></v-flex>
-        <v-flex xs12 sm3 md2>
-          <v-checkbox v-model="eventIsRemote" label="Remote" />
-        </v-flex>
-        <v-flex xs12 sm4 md4>
-          <v-checkbox v-model="eventIsOnline" label="Online Resource / Project" />
-        </v-flex>
-      </v-layout>
 
       <!-- Brief Description -->
       <v-layout row wrap>
