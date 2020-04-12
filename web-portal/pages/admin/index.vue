@@ -5,6 +5,9 @@
     <h2>Current Events</h2>
     <admin-events-list :calendar_events="verifiedEventsPage"></admin-events-list>
     <v-pagination v-model="verifiedPage" :length="verifiedPageCount" />
+    <h2>Resources</h2>
+    <admin-events-list :calendar_events="resourceEventsPage" />
+    <v-pagination v-model="resourcePage" :length="resourcePageCount" />
   </div>
 </template>
 
@@ -21,7 +24,8 @@
     },
     data: function () {
       return {
-        verifiedPage: 1
+        verifiedPage: 1,
+        resourcePage: 1
       }
     },
     computed: {
@@ -30,6 +34,9 @@
       },
       verified_events: function () {
         return this.$store.getters['admin/GetVerifiedEvents']
+      },
+      resource_events: function () {
+        return this.$store.getters['admin/GetResourceEvents']
       },
       verifiedPageCount: function () {
         const events = this.verified_events
@@ -40,11 +47,22 @@
         const events = this.verified_events
         if (page < 0 || !events || events.length === 0) return []
         else return events.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
+      },
+      resourcePageCount: function () {
+        const resources = this.resource_events
+        return resources && resources.length > 0 ? Math.ceil(resources.length / PAGE_SIZE) : 0
+      },
+      resourceEventsPage: function () {
+        const page = this.resourcePage - 1
+        const resources = this.resource_events
+        if (page < 0 || !resources || resources.length === 0) return []
+        else return resources.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
       }
     },
     mounted: function () {
       this.$store.dispatch('admin/LoadUnverifiedEvents', { idToken: this.$auth.$storage.getState('_token.auth0') })
       this.$store.dispatch('admin/LoadCurrentEvents', { idToken: this.$auth.$storage.getState('_token.auth0') })
+      this.$store.dispatch('admin/LoadResourceEvents', { idToken: this.$auth.$storage.getState('_token.auth0') })
     },
     components: {
       'admin-events-list': AdminEventsList
