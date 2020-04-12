@@ -13,14 +13,15 @@
           {{ calendar_event.title | truncate(statusMessage ? 30 : 40) }}
         </h3>
         <h4 v-if="showVenue">
-          <!-- TODO: replace this span with the new ii-remote icon -->
           <ii-remote v-if="isRemote || isOnlineResource" iconColor="#B7B09C" width="20" height="20" />
           <ii-location v-else iconColor="#B7B09C" width="20" height="20" />
           {{ venue_info.name }}
         </h4>
 
-        <p class="date">{{ when_date }}</p>
-        <p class="time">{{ when_time }}</p>
+        <template v-if="showTime">
+          <p class="date">{{ when_date }}</p>
+          <p class="time">{{ when_time }}</p>
+        </template>
 
         <p class="description">{{ calendar_event.brief_description | truncate(120) }} </p>
 
@@ -28,7 +29,9 @@
           <nuxt-link class="card-btn more-info" :to="{ name: 'events-id', params: { id: calendar_event.id } }">
             More Info
           </nuxt-link>
-          <span class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()"><ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar" />Add to Calendar</span>
+          <span v-if="showTime" class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()">
+            <ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar" />Add to Calendar
+          </span>
         </div>
 
         <div class="drop-down" v-show="showCalendars">
@@ -97,17 +100,21 @@
           return current_venue
         }
       },
+      showTime: function () {
+        return !_hasTag(this.calendar_event, 'online-resource') &&
+          (this.calendar_event && this.calendar_event.date_times.length > 0)
+      },
       when_date: function () {
         const calendar = this.calendar_event
         const dateTimes = calendar.date_times
         const firstDay = dateTimes[0]
-        return moment(firstDay.start_time).format('dddd, MMMM Do')
+        return firstDay ? moment(firstDay.start_time).format('dddd, MMMM Do') : null
       },
       when_time: function () {
         const calendar = this.calendar_event
         const dateTimes = calendar.date_times
         const firstDay = dateTimes[0]
-        const output_string = moment(firstDay.start_time).format('h:mma - ') + moment(firstDay.end_time).format('h:mma')
+        const output_string = firstDay ? moment(firstDay.start_time).format('h:mma - ') + moment(firstDay.end_time).format('h:mma') : null
         return output_string
       },
       isCancelled: function () {
