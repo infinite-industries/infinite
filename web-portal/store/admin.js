@@ -4,7 +4,8 @@ import { ApiService } from '../services/ApiService'
 export const state = () => {
   return {
     unverified_events: [],
-    verified_events: []
+    verified_events: [],
+    resource_events: []
   }
 }
 
@@ -14,6 +15,9 @@ export const getters = {
   },
   GetVerifiedEvents: (state, getters) => {
     return state.verified_events
+  },
+  GetResourceEvents: (state, getters) => {
+    return state.resource_events
   },
   GetCurrentEvent: (state, getters, rootState) => {
     return rootState.calendar_event
@@ -61,6 +65,25 @@ export const actions = {
         } else {
           ComponentEventBus.$emit('SHOW_ALERT', {
             message: 'Not able to find verified events'
+          })
+        }
+      })
+      .catch(function (error) {
+        console.error(error)
+        ComponentEventBus.$emit('SHOW_ALERT', {
+          message: 'API connection bit the dust. FIX!'
+        })
+      })
+  },
+  LoadResourceEvents: (context, payload) => {
+    const idToken = payload.idToken
+    ApiService.get('/events/verified/tags/online-resource', idToken)
+      .then(function (_response) {
+        if (_response.data.status === 'success') {
+          context.commit('POPULATE_RESOURCE_LIST', _response.data.events)
+        } else {
+          ComponentEventBus.$emit('SHOW_ALERT', {
+            message: 'Not able to find verified resources'
           })
         }
       })
@@ -145,6 +168,9 @@ export const mutations = {
   },
   POPULATE_VERIFIED_LIST: (state, payload) => {
     state.verified_events = payload
+  },
+  POPULATE_RESOURCE_LIST: (state, payload) => {
+    state.resource_events = payload
   },
   CHANGE_STATE_TO_VERIFIED: (state, payload) => {
     console.log(state.unverified_events.find(event => event.id === payload.id))
