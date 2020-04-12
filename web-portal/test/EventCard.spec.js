@@ -6,6 +6,7 @@ const localVue = createLocalVue()
 localVue.use(Vuex)
 
 const venueId = '5678'
+const venueName = 'The Venue'
 
 const getEvent = () => {
   return {
@@ -17,7 +18,8 @@ const getEvent = () => {
       { start_time: '2020-06-02T22:00:00', end_time: '2020-06-02T23:00:00' }
     ],
     brief_description: 'The event lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat ipsum neque.',
-    venue_id: venueId
+    venue_id: venueId,
+    tags: []
   }
 }
 
@@ -28,7 +30,7 @@ describe('Card component', () => {
     event = getEvent()
     store = new Vuex.Store({
       state: {},
-      getters: { GetAllVenues: () => [{ id: venueId, name: 'The Venue' }] }
+      getters: { GetAllVenues: () => [{ id: venueId, name: venueName }] }
     })
     wrapper = shallowMount(Card, {
       localVue,
@@ -62,6 +64,20 @@ describe('Card component', () => {
     expect(wrapper.html()).toContain('background: url(\'' + event.image + '\')')
   })
 
+  test('renders venue name', () => {
+    expect(wrapper.html()).toContain(venueName)
+  })
+
+  test('omits venue when not set', () => {
+    wrapper.setProps({
+      calendar_event: Object.assign(getEvent(), {
+        venue_id: null
+      })
+    })
+    expect(wrapper.html()).not.toContain(venueName)
+    expect(wrapper.html()).not.toContain('ii-location')
+  })
+
   test('renders correct event time', () => {
     expect(wrapper.html()).toContain('June 1st')
     expect(wrapper.html()).toContain('10:00am - 11:00am')
@@ -77,5 +93,14 @@ describe('Card component', () => {
     })
     expect(wrapper.html()).toContain('June 1st')
     expect(wrapper.html()).toContain('10:00am - 11:00am')
+  })
+
+  test('omits time for events treated as online resources', () => {
+    wrapper.setProps({
+      calendar_event: Object.assign(getEvent(), {
+        tags: ['online-resource']
+      })
+    })
+    expect(wrapper.html()).not.toContain('June 1st')
   })
 })
