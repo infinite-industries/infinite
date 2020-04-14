@@ -92,6 +92,102 @@
  *        schema:
  *          $ref: '#definitions/EventsResponse'
  */
+
+/**
+ * @swagger
+ *
+ * securityDefinitions:
+ *  jwt:
+ *    description: ""
+ *    type: "apiKey"
+ *    name: "x-access-token"
+ *    in: "header"
+ */
+
+/**
+ * @swagger
+ *
+ * /events/non-verified/tags/{tag}:
+ *  get:
+ *    description: Returns a list of all non-verified events by the provided tag (requires admin access)
+ *    produces: application/json
+ *    security:
+ *      - jwt:
+ *    parameters:
+ *      - name: tag
+ *        description: matches on this tag
+ *        in: path
+ *        required: true
+ *        type: string
+ *      - name: embed
+ *        description: |+
+ *          Specifies related entities to retrieve as embedded children of the event. For example, events have venues.
+ *
+ *          Allowed Values -- venue
+ *        in: query
+ *        required: false
+ *        type: array
+ *        items:
+ *          type: string
+ *        enum:
+ *          - venue
+ *    responses:
+ *      200:
+ *        description: Success!
+ *        schema:
+ *          $ref: '#definitions/EventsResponse'
+ *      501:
+ *        description: There was an error processing the request.
+ *        schema:
+ *          $ref: '#definitions/EventsResponse'
+ *      422:
+ *        description: A parameter supplied was not allowed or understood.
+ *        schema:
+ *          $ref: '#definitions/EventsResponse'
+ */
+
+/**
+ * @swagger
+ *
+ * /events/tags/{tag}:
+ *  get:
+ *    description: Returns a list of all events by the provided tag (requires admin access)
+ *    produces: application/json
+ *    security:
+ *      - jwt:
+ *    parameters:
+ *      - name: tag
+ *        description: matches on this tag
+ *        in: path
+ *        required: true
+ *        type: string
+ *      - name: embed
+ *        description: |+
+ *          Specifies related entities to retrieve as embedded children of the event. For example, events have venues.
+ *
+ *          Allowed Values -- venue
+ *        in: query
+ *        required: false
+ *        type: array
+ *        items:
+ *          type: string
+ *        enum:
+ *          - venue
+ *    responses:
+ *      200:
+ *        description: Success!
+ *        schema:
+ *          $ref: '#definitions/EventsResponse'
+ *      501:
+ *        description: There was an error processing the request.
+ *        schema:
+ *          $ref: '#definitions/EventsResponse'
+ *      422:
+ *        description: A parameter supplied was not allowed or understood.
+ *        schema:
+ *          $ref: '#definitions/EventsResponse'
+ */
+
 const slack = require('../utils/slackNotify')
 const EventController = require('../controllers/events')
 const CurrentEventController = require('../controllers/currentEvents')
@@ -179,29 +275,16 @@ router.get('/current/verified', [ParseEmbed], function(req, res) { // anyone can
   }, query);
 });
 
-router.get('/verified/tags/:tag', [ParseEmbed], async (req, res) => {
-  const tag = req.params.tag
-  const db = req.app.get('db')
+router.get('/non-verified/tags/:tag', [JWTAuthenticator(true), ParseEmbed], async (req, res) => {
+  handleRequestsByTags(req, res, false)
+})
 
-  const query = {
-    where: {
-      verified: true,
-      tags: { [Op.contains]: [tag] }
-    },
-    order: literal('"createdAt" DESC'),
-    include: getIncludeBlock(req.embed, db)
-  }
+router.get('/tags/:tag', [JWTAuthenticator(true), ParseEmbed], async (req, res) => {
+  handleRequestsByTags(req, res, null)
+})
 
-  EventController.all(db, (err, events) => {
-    if (err) {
-      logger.warn('error getting verified events by tag: ' + err);
-      return res.status(501).json({ status: 'failed: ' + err });
-    }
-
-    filterContactInfo(req, events)
-
-    res.status(200).json({ status: 'success', events });
-  }, query)
+router.get('/verified/tags/:tag', [ParseEmbed], (req, res) => {
+  handleRequestsByTags(req, res, true)
 })
 
 // allows admins to tag an event as verified
@@ -224,6 +307,34 @@ router.put(
     });
   }
 );
+
+function handleRequestsByTags(req, res, verified) {
+  const tag = req.params.tag
+  const db = req.app.get('db')
+
+  const query = {
+    where: {
+      tags: { [Op.contains]: [tag] }
+    },
+    order: literal('"createdAt" DESC'),
+    include: getIncludeBlock(req.embed, db)
+  }
+
+  if (verified !== null) {
+    query.where.verified = verified
+  }
+
+  EventController.all(db, (err, events) => {
+    if (err) {
+      logger.warn('error getting verified events by tag: ' + err);
+      return res.status(501).json({ status: 'failed: ' + err });
+    }
+
+    filterContactInfo(req, events)
+
+    res.status(200).json({ status: 'success', events });
+  }, query)
+}
 
 async function createOverride(req, res, next) {
   if (!req.body.event)
