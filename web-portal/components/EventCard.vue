@@ -72,7 +72,12 @@
         this.showCalendars = false
       },
       AddEventToCalendar(calType) {
-        CalendarService.generate(this.calendar_event, calType)
+        // the list endpoint omits the venue, and the service expects it,
+        // so have to get creative here
+        const event = this.calendar_event && this.calendar_event.venue
+          ? this.calendar_event
+          : Object.assign({}, this.calendar_event, { venue: this.venue_info })
+        CalendarService.generate(event, calType)
       }
     },
     computed: {
