@@ -15,7 +15,9 @@ export default class CalendarService {
   static generate(event, service) {
     const title = event.title
     const desc = event.brief_description
-    const location = event.address
+    const location = includeEventLocation(event)
+      ? (event.venue ? `${event.venue.name}, ${event.address}` : event.address)
+      : null
     let timeStart = event.date_times[0].start_time
     let timeEnd = event.date_times[0].end_time
 
@@ -26,7 +28,7 @@ export default class CalendarService {
       window.location = serviceUrl +
         `?title=${encodeURIComponent(title)}` +
         `&description=${encodeURIComponent(desc)}` +
-        `&location=${encodeURIComponent(location)}` +
+        (location ? `&location=${encodeURIComponent(location)}` : '') +
         `&time_start=${encodeURIComponent(timeStart)}` +
         `&time_end=${encodeURIComponent(timeEnd)}`
     } else {
@@ -36,10 +38,17 @@ export default class CalendarService {
       window.open(`https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}` +
         `&dates=${encodeURIComponent(timeStart)}/${encodeURIComponent(timeEnd)}` +
         `&details=${encodeURIComponent(desc)}` +
-        `&location=${encodeURIComponent(location)}`
+        (location ? `&location=${encodeURIComponent(location)}` : '')
       )
     }
   }
+}
+
+function includeEventLocation(event) {
+  return !(
+    (event.venue && event.venue.name === 'Remote Event') ||
+    (event.tags && (event.tags.includes('online-resource') || event.tags.includes('remote')))
+  )
 }
 
 function serviceUsesEndpoint(service) {

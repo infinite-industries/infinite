@@ -24,8 +24,7 @@ router.get('/', (req, res) => {
       { key: 'title', val: title },
       { key: 'time_start', val: dtStart },
       { key: 'time_end', val: dtEnd },
-      { key: 'description', val: description },
-      { key: 'location', val: 'location'}
+      { key: 'description', val: description }
     ].find(keyVal => keyVal.val === undefined || keyVal.val === null)
 
     if (firstMissingField) {
@@ -62,9 +61,9 @@ function generateICSFileText(summary, dtStart, dtEnd, description, location) {
     `DTSTART:${moment(dtStart).format('YYYYMMDDTHHmmss')}`,
     `DTEND:${moment(dtEnd).format('YYYYMMDDTHHmmss')}`,
     `DESCRIPTION:${description}`,
-    `LOCATION:${location}`,
+    location ? `LOCATION:${location}` : '',
     'END:VEVENT',
-    'END:VCALENDAR'].join('\n')
+    'END:VCALENDAR'].filter(l => !!l).join('\n')
 }
 
 module.exports = router
