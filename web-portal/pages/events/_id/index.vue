@@ -8,12 +8,12 @@
           {{ event.title }}
         </h1>
         <!-- TODO: this should be an H2 or something other than a heading -->
-        <h3>{{ event.venue && event.venue.name }}</h3>
+        <h3><span v-if="isOnlineResource">Online Event Presented by</span> {{ event.venue && event.venue.name }}</h3>
       </div>
     </div>
     <div class="event-time-actions">
       <div class="event-time">
-        <div>
+        <div v-if="!isOnlineResource">
           <div v-for="(date_time, index) in event.date_times" :key="index" class="date-time-container">
             <!-- TODO: do we need to consider timezones? If so, this might be useful: -->
             <!-- https://stackoverflow.com/a/57022505 -->
@@ -42,7 +42,7 @@
           </button>
 
           <a
-            v-if="event.venue && event.venue.g_map_link"
+            v-if="!isOnlineResource && event.venue && event.venue.g_map_link"
             class="ii-social-button map-event"
             :href="event.venue.g_map_link"
             target="_blank"
@@ -150,6 +150,8 @@
   import Share from '@/components/vectors/Share.vue'
   import Twitter from '@/components/vectors/Twitter.vue'
 
+  const _hasTag = (event, tag) => event && event.tags && event.tags.includes(tag)
+
   export default {
     head() {
       const eventId = this.event && this.event.id ? this.event.id : null
@@ -208,10 +210,17 @@
       },
       fullEncodedLinkForShare() {
         return encodeURI(process.env.APP_URL + '/events/' + this.event.id)
+      },
+      isRemote: function () {
+        return _hasTag(this.event, 'remote')
+      },
+      isOnlineResource: function () {
+        return _hasTag(this.event, 'online-resource')
       }
     },
     asyncData({ error, params }) {
       return ApiService.get('/events/' + params.id).then((response) => {
+        console.log(response.data.event)
         return { event: response.data.event }
       }).catch((err) => {
         error({ statusCode: err.response.status, message: 'Not Found' })
