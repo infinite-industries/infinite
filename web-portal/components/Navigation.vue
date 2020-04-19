@@ -138,6 +138,7 @@
     width: 300px;
     height: 100vh;
     max-width: 90vw;
+    overflow: auto;
     background-color: rgba(10,10,10,0.95);
     /* opacity: 0.95; */
     color: white;
@@ -148,7 +149,7 @@
   }
 
   #nav-list {
-    margin-top: 150px;
+    margin-top: 105px;
     padding-left: 24px;
   }
 
@@ -157,19 +158,14 @@
     font-family: 'Open Sans', sans-serif;
     font-size: 1.2em;
     line-height: normal;
-    padding: 10px;
-
+    padding: 8px;
   }
 
 @media only screen and (max-width: 480px) {
     #nav-list li {
       font-size: 1.4em;
+      padding: 10px;
     }
-
-    #nav-list {
-      margin-top: 105px;
-    }
-
   }
 
   #nav-list a {
@@ -183,7 +179,7 @@
   }
 
   #nav-social-media {
-    margin-top: 50px;
+    margin-top: 35px;
   }
 
   .social-media-icon {
