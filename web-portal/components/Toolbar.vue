@@ -10,6 +10,14 @@
         height="55"
         style="cursor: pointer"
       />
+      <ii-submit
+        v-if="nav_closed"
+        id="submit"
+        icon-color="#fff"
+        width="140"
+        height="55"
+        style="cursor: pointer"
+      />
       <ii-hamburger id="hamburger" width="55" height="55" style="cursor: pointer" />
     </div>
     <ii-navigation />
@@ -19,6 +27,7 @@
 <script>
   import Logo from './vectors/Logo.vue'
   import Subscribe from './vectors/Subscribe.vue'
+  import Submit from './vectors/Submit.vue'
   import Hamburger from './vectors/Hamburger.vue'
 
   import Navigation from './Navigation.vue'
@@ -28,6 +37,7 @@
     components: {
       'ii-logo': Logo,
       'ii-subscribe': Subscribe,
+      'ii-submit': Submit,
       'ii-hamburger': Hamburger,
       'ii-navigation': Navigation
     },
@@ -72,12 +82,28 @@
 
   #subscribe{
     position: absolute;
-    right: 25%;
+    right: 35%;
     top: 20px;
   }
+
+  #submit {
+    position: absolute;
+    top: 20px;
+    right: 18%;
+  }
+
   @media only screen and (max-width: 640px) {
-    #subscribe {
+    #subscribe, #submit {
       display: none;
+    }
+  }
+
+  @media only screen and (max-width: 960px) {
+    #subscribe {
+      right: 40%
+    }
+    #submit {
+      right: 16%;
     }
   }
 
