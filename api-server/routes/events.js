@@ -96,17 +96,6 @@
 /**
  * @swagger
  *
- * securityDefinitions:
- *  jwt:
- *    description: ""
- *    type: "apiKey"
- *    name: "x-access-token"
- *    in: "header"
- */
-
-/**
- * @swagger
- *
  * /events/non-verified/tags/{tag}:
  *  get:
  *    description: Returns a list of all non-verified events by the provided tag (requires admin access)

@@ -36,6 +36,7 @@ module.exports = function getConnection() {
     sequelize.user = sequelize.import(__dirname + '/../models/user')
     sequelize.user_list_ownership = sequelize.import(__dirname + '/../models/user_list_ownership')
     sequelize.user_list_following = sequelize.import(__dirname + '/../models/user_list_following')
+    sequelize.announcement = sequelize.import(__dirname + '/../models/announcement')
 
     cache = sequelize
 
