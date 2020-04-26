@@ -25,14 +25,18 @@
           <v-checkbox v-model="eventIsRemote" label="Live Remote Event" />
         </v-flex>
         <v-flex xs12 sm4 md4>
-          <v-checkbox v-model="eventIsOnline" label="Online Resource / Project" />
+          <v-checkbox v-model="eventIsOnline" label="Online Resource / Project" @change="onOnlineChange" />
         </v-flex>
         <v-flex xs8 offset-xs3>
           <em>Live remote events occur at a particular time. Online Resources are available at any time.</em>
         </v-flex>
       </v-layout>
 
-      <date-time-picker v-model="calendar_event.date_times" />
+      <v-expansion-panel expand v-model="showDateTimePicker">
+        <v-expansion-panel-content>
+          <date-time-picker v-model="calendar_event.date_times" />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
       <!-- Event Image -->
       <v-layout row wrap>
@@ -520,6 +524,11 @@
 
       // console.log(this.promoHTML)
       },
+      onOnlineChange: function () {
+        if (this.eventIsOnline) {
+          this.calendar_event.date_times = []
+        }
+      },
       onFileChange: function (type) {
         // files.length will be a 0 for no image, 1 for image
         if (type === 'event') {
@@ -543,11 +552,9 @@
       },
       hasValidDateTimes: function () {
         if (this.calendar_event.hasOwnProperty('date_times')) {
-          if (this.calendar_event.date_times.length > 0) {
-            return true
-          } else {
-            return false
-          }
+          // online resources don't have fixed times
+          if (this.calendar_event.tags.includes('online-resource')) return this.calendar_event.date_times.length === 0
+          else return this.calendar_event.date_times.length > 0
         } else {
           return false
         }
@@ -584,6 +591,10 @@
 
       eventIsPostponed: boolToTag('postponed'),
       eventIsCancelled: boolToTag('cancelled'),
+
+      showDateTimePicker: function () {
+        return [!this.eventIsOnline]
+      },
 
       eventRequiredFields: function () {
         return this.calendar_event.title !== '' &&

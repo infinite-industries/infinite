@@ -12,7 +12,10 @@
       <tr v-for="calendar_event in calendar_events" :key="calendar_event.id">
         <td><img v-if="calendar_event.reviewed_by_org" :src="calendar_event.reviewed_by_org | ownerLogo" width="30" /></td>
         <td>{{ calendar_event.title }}</td>
-        <td><div v-for="(date_time, index) in calendar_event.date_times" :key="index">{{ date_time | dateFormat }}</div></td>
+        <td>
+          <div v-for="(date_time, index) in calendar_event.date_times" :key="index">{{ date_time | dateFormat }}</div>
+          <template v-if="calendar_event.tags && calendar_event.tags.includes('online-resource')">Online Resource</template>
+        </td>
         <td><v-btn nuxt :to="{ name: 'admin-event-edit-id', params: { id: calendar_event.id } }">Edit</v-btn></td>
       </tr>
     </tbody>
