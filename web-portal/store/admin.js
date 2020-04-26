@@ -37,11 +37,20 @@ export const actions = {
   LoadUnverifiedEvents: (context, payload) => {
     const idToken = payload.idToken
 
-    ApiService.get('/events/current/non-verified', idToken)
-      .then(function (_response) {
-        console.log('data from server: ', _response.data.events)
-        if (_response.data.status === 'success') {
-          context.commit('POPULATE_UNVERIFIED_LIST', _response.data.events)
+    ApiService.all([
+      ApiService.get('/events/current/non-verified', idToken),
+      ApiService.get('/events/non-verified/tags/online-resource', idToken)
+    ])
+      .then(function (_responses) {
+        const [_eventRes, _resourceRes] = _responses
+        console.log('data from server: ', _eventRes.data.events, _resourceRes.data.events)
+        if (_eventRes.data.status === 'success' && _resourceRes.data.status === 'success') {
+          const eventList = _eventRes.data.events
+          const eventIds = eventList.map(function (event) { return event.id })
+          _resourceRes.data.events.forEach(function (resource) {
+            if (!eventIds.includes(resource.id)) eventList.push(resource)
+          })
+          context.commit('POPULATE_UNVERIFIED_LIST', eventList)
         } else {
           ComponentEventBus.$emit('SHOW_ALERT', {
             message: 'Was not able to find unverified events.'
