@@ -1,31 +1,40 @@
 <template>
-  <div v-show="jumbotron.open" id="jumbotron">
+  <div v-show="open" id="jumbotron">
     <div id="content">
-      <div id="close-jumbotron" @click="CloseJumbotron()">
-        X
+      <div id="close-jumbotron">
+        <button @click="CloseJumbotron">
+          <ii-close width="25" height="25" iconColor="#000000" />
+        </button>
       </div>
-      <p>
-        Due to the outbreak of Coronavirus disease (COVID-19) we are hitting a pause on
-        our live event promotion activities. We're on the lookout for interesting things
-        happening online, though; check out our new
-        <nuxt-link to="/remote">remote events page</nuxt-link>.
-      </p>
-      <p>
-        Keep calm, avoid crowded spaces, wash your hands and stay healthy y'all!
-      </p>
+      <!-- eslint-disable-next-line vue/no-v-html -->
+      <div
+        class="message"
+        v-if="currentAnnouncement"
+        v-html="currentAnnouncement.message"
+      ></div>
     </div>
   </div>
 </template>
 
 <script>
+  import Close from './vectors/Close.vue'
+
   export default {
     name: 'Jumbotron',
     data: function () {
       return {
-        jumbotron: {
-          open: true
-        }
+        open: false
       }
+    },
+    computed: {
+      currentAnnouncement: function () {
+        return this.$store.getters.GetActiveAnnouncement
+      }
+    },
+    fetch: function () {
+      return this.$store.dispatch('LoadAnnouncements').then(() => {
+        if (this.currentAnnouncement) this.open = true
+      })
     },
     mounted: function () {
       // close jumbotron if user presses escape
@@ -40,13 +49,16 @@
     },
     methods: {
       CloseJumbotron: function () {
-        this.jumbotron.open = false
+        this.open = false
       },
       onKeyDown: function (e) {
         if (e && (e.key === 27 || e.keyCode === 27)) {
           this.CloseJumbotron()
         }
       }
+    },
+    components: {
+      'ii-close': Close
     }
   }
 </script>
@@ -97,7 +109,6 @@
 
   #close-jumbotron {
     text-align: right;
-    font-family: "Open Sans", sans-serif;
   }
 
 </style>
