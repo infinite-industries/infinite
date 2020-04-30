@@ -19,8 +19,10 @@
   export default {
     name: 'Admin',
     middleware: 'auth',
-    head: {
-      title: 'Event Management - Infinite Industries'
+    head: function () {
+      return {
+        title: 'Event Management - Infinite Industries'
+      }
     },
     data: function () {
       return {
