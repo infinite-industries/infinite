@@ -3,18 +3,19 @@
     <h2>Unverified Events</h2>
     <admin-events-list :calendar_events="unverified_events"></admin-events-list>
     <h2>Current Events</h2>
-    <admin-events-list :calendar_events="verifiedEventsPage"></admin-events-list>
-    <v-pagination v-model="verifiedPage" :length="verifiedPageCount" />
+    <ii-pagination :items="verified_events">
+      <admin-events-list slot-scope="page" :calendar_events="page" />
+    </ii-pagination>
     <h2>Resources</h2>
-    <admin-events-list :calendar_events="resourceEventsPage" />
-    <v-pagination v-model="resourcePage" :length="resourcePageCount" />
+    <ii-pagination :items="resource_events">
+      <admin-events-list slot-scope="page" :calendar_events="page" />
+    </ii-pagination>
   </div>
 </template>
 
 <script>
   import AdminEventsList from '../../components/AdminEventsList.vue'
-
-  const PAGE_SIZE = 10
+  import Pagination from '../../components/Pagination.vue'
 
   export default {
     name: 'Admin',
@@ -26,8 +27,7 @@
     },
     data: function () {
       return {
-        verifiedPage: 1,
-        resourcePage: 1
+
       }
     },
     computed: {
@@ -39,26 +39,6 @@
       },
       resource_events: function () {
         return this.$store.getters['admin/GetResourceEvents']
-      },
-      verifiedPageCount: function () {
-        const events = this.verified_events
-        return events && events.length > 0 ? Math.ceil(events.length / PAGE_SIZE) : 0
-      },
-      verifiedEventsPage: function () {
-        const page = this.verifiedPage - 1
-        const events = this.verified_events
-        if (page < 0 || !events || events.length === 0) return []
-        else return events.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
-      },
-      resourcePageCount: function () {
-        const resources = this.resource_events
-        return resources && resources.length > 0 ? Math.ceil(resources.length / PAGE_SIZE) : 0
-      },
-      resourceEventsPage: function () {
-        const page = this.resourcePage - 1
-        const resources = this.resource_events
-        if (page < 0 || !resources || resources.length === 0) return []
-        else return resources.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE)
       }
     },
     mounted: function () {
@@ -67,7 +47,8 @@
       this.$store.dispatch('admin/LoadResourceEvents', { idToken: this.$auth.$storage.getState('_token.auth0') })
     },
     components: {
-      'admin-events-list': AdminEventsList
+      'admin-events-list': AdminEventsList,
+      'ii-pagination': Pagination
     }
   }
 </script>
