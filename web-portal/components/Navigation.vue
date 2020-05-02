@@ -39,7 +39,7 @@
           />
         </a>
       </div>
-      <div style="text-align:center;">
+      <div id="subscribe-block">
         <ii-nav-subscribe id="subscribe" icon-color="#fff" width="140" height="55" style="cursor: pointer" />
       </div>
     </div>
@@ -184,6 +184,11 @@
 
   .social-media-icon {
     margin: 5px;
+  }
+
+  #subscribe-block {
+    text-align: center;
+    margin-bottom: 50px;
   }
 
 </style>
