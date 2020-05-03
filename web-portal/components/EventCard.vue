@@ -28,11 +28,11 @@
         </div>
       </div>
       <div class="btn-actions">
-        <nuxt-link class="card-btn more-info" :to="{ name: 'events-id', params: { id: calendar_event.id } }">
+        <nuxt-link class="card-btn more-info" :class="{ '-resource': isOnlineResource}" :to="{ name: 'events-id', params: { id: calendar_event.id } }">
           More Info
         </nuxt-link>
         <span v-if="showTime" class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()">
-          <ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar" />Add to Calendar
+          <ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar" /><span>Add to Calendar</span>
         </span>
       </div>
 
@@ -186,7 +186,7 @@
     justify-content: space-between;
 
     width: 240px;
-    min-height: 400px;
+    height: 100%;
 
     margin-left: auto;
     margin-right: auto;
@@ -271,6 +271,7 @@
     font-family: 'Open Sans', sans-serif;
     font-weight: 200;
     font-size: 11px;
+    margin-top: 5px;
     margin-bottom: 10px;
   }
 
@@ -288,6 +289,7 @@
     padding-right: 12px;
 
     margin-top: 10px;
+    margin-bottom: 30px;
   }
 
   .btn-actions {
@@ -312,9 +314,9 @@
   }
 
   .ii-calendar {
-    /* position: relative;
-    top: 3px; */
     margin-right: 5px;
+    vertical-align:middle;
+    padding-bottom: 2px;
   }
 
   .card-btn {
@@ -332,6 +334,10 @@
     color: white;
     background-color: #000;
     text-decoration: none;
+  }
+
+  .more-info.-resource {
+    width: 100%;
   }
 
   .drop-down{
@@ -365,7 +371,9 @@
 @media only screen and (max-width: 350px) {
   /* on very small screens the calendar button wraps awkwardly */
   .card-btn {
-    padding: 7px;
+    padding: 12px;
+    padding-top: 6px;
+    font-size: 0.9em;
   }
 
   .ii-calendar {
