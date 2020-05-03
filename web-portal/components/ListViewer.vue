@@ -41,7 +41,7 @@
 
   #list-container {
     width: 100%;
-    padding: 0px;
+    padding: 0px 0px 100px 0px;
   }
 
   #list-viewer {
