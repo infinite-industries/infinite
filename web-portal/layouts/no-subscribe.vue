@@ -4,7 +4,9 @@
     <ii-notifications />
 
     <!-- Toolbar and Nav -->
-    <ii-toolbar />
+    <ii-toolbar>
+      <ii-site-navigation slot="navigation" />
+    </ii-toolbar>
 
     <main>
       <!-- Content -->

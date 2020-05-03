@@ -1,10 +1,8 @@
 <template>
   <div class="sidebar" :class="{ '-initial': internalInitialRender }">
-    <ul id="nav-list">
-      <li v-for="item in getVisibleItems(nav_items)" :key="item.title">
-        <nuxt-link :to="item.route">{{ item.title }}</nuxt-link>
-      </li>
-    </ul>
+    <nav>
+      <slot />
+    </nav>
     <div id="nav-social-media" style="text-align:center;">
       <div>
         <!-- TODO: move social URLs to config for easier customization -->
@@ -61,26 +59,6 @@
       'instagram-icon': Instagram,
       'twitter-icon': Twitter
     },
-    props: ['navElements'],
-    data() {
-      return {
-        nav_items: [
-          { title: 'Home', route: '/' },
-          { title: 'Remote Events', route: '/remote' },
-          { title: 'Our Mission', route: '/our-mission' },
-          { title: 'Submit Event', route: '/submit-event' },
-          { title: 'Login', route: '/login', isUnAuthOnly: true },
-          { title: 'Admin', route: '/admin', isAdminOnly: true },
-          { title: 'Who We Are', route: '/who-we-are' },
-          { title: 'Legal', route: '/legal' },
-          // { title: 'Your Events', route: '/your-events', isAdminOnly: true }, // isAuthOnly: true
-          // { title: 'Your Settings', route: '/your-settings'},
-          { title: 'Logout', route: '/logout', isAuthOnly: true },
-          { title: 'Contact', route: '/contact' }
-        ],
-        internalInitialRender: false // this is used to suppress the nav bar during SSR
-      }
-    },
     computed: {
       open() {
         return this.$store.getters['ui/sidebarOpen']
@@ -105,25 +83,6 @@
         zIndex: 20
       })
       this.internalInitialRender = false
-    },
-    methods: {
-      getVisibleItems(navItems) {
-        const userIsAdmin = this.$store.getters.IsUserAdmin
-
-        const isShown = (item) => {
-          if (item.isAuthOnly && !this.$auth.loggedIn) {
-            return false
-          } else if (item.isUnAuthOnly && this.$auth.loggedIn) {
-            return false
-          } else if (item.isAdminOnly && !userIsAdmin) {
-            return false
-          }
-
-          return true
-        }
-
-        return navItems.filter(item => isShown(item))
-      }
     }
   }
 </script>
@@ -148,12 +107,15 @@
     transform: matrix(1, 0, 0, 1, 300, 0);
   }
 
-  #nav-list {
+  nav {
     margin-top: 105px;
+  }
+
+  nav >>> #nav-list {
     padding-left: 24px;
   }
 
-  #nav-list li {
+  nav >>> #nav-list li {
     list-style: none;
     font-family: 'Open Sans', sans-serif;
     font-size: 1.2em;
@@ -162,19 +124,19 @@
   }
 
 @media only screen and (max-width: 480px) {
-    #nav-list li {
+    nav >>> #nav-list li {
       font-size: 1.4em;
       padding: 10px;
     }
   }
 
-  #nav-list a {
+  nav >>> #nav-list a {
     color: white;
     text-decoration: none;
     cursor: pointer;
   }
 
-  #nav-list a:hover {
+  nav >>> #nav-list a:hover {
     text-decoration: underline;
   }
 
