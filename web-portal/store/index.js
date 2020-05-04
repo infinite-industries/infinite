@@ -342,5 +342,40 @@ export const actions = {
       .catch((error) => {
         console.error('Unable to load announcements', error)
       })
+  },
+  FindOrCreateActiveAnnouncement: (context, payload) => {
+    const idToken = payload.idToken
+
+    return ApiService.post(
+      '/announcements/ensure-one-announcement',
+      { announcement: { message: '' } },
+      idToken
+    ).then((response) => {
+      if (response.data.status === 'success') {
+        context.commit('POPULATE_ANNOUNCEMENTS', response.data.announcements)
+      } else {
+        console.error('Unable to ensure announcement', response.data.error)
+      }
+    }).catch((error) => {
+      console.error('Failed making request to ensure announcements', error)
+      throw new Error('Failed ensuring the existence of an announcement entity') // pass error on to caller
+    })
+  },
+  UpdateActiveAnnouncement: (context, payload) => {
+    const idToken = payload.idToken
+    const announcement = payload.announcement
+
+    return ApiService.put(
+      `/announcements/${announcement.id}`,
+      { announcement },
+      idToken
+    ).then((response) => {
+      if (response.data.status !== 'success') {
+        console.error('Unable to ensure announcement', response.data.error)
+      }
+    }).catch((error) => {
+      console.error('Failed making request to ensure announcements', error)
+      throw new Error('Failed to update the message') // pass error on to caller
+    })
   }
 }
