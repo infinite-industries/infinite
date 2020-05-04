@@ -2,6 +2,7 @@ const express = require("express");
 const uuidv1 = require('uuid/v1');
 const JWTAuthenticator = require(__dirname + '/../../utils/JWTAuthenticator')
 const { logger }  = require(__dirname + '/../../utils/loggers')
+const getPostBodyChecker = require(__dirname + '/../middleware/postBodyChecker')
 
 const JWTAuthChain = [JWTAuthenticator(true)]
 const constants = {
@@ -20,13 +21,18 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
     const paramID = `${router_name_singular}ID`
     const identifier = paramID + idRegExp;
 
+    const postBodyChecker = getPostBodyChecker(router_name_singular)
     const router = express.Router();
     options = options || {};
     const readMiddleware = options.readMiddleware || []; // by default parse any tokens, don't require them
-    const createMiddleware = options.createMiddleware || JWTAuthChain // by default admin only
+    let createMiddleware = options.createMiddleware || JWTAuthChain // by default admin only
     const createAfterMethod = options.createAfterMethod || (() => null)
-    const updateMiddleware = options.updateMiddleware || JWTAuthChain // by default admin only
+    let updateMiddleware = options.updateMiddleware || JWTAuthChain // by default admin only
     const readFilter = options.readFilter
+
+    // append post body check (eventually i'd like to shift most logic out of this file and into middleware
+    createMiddleware = [...createMiddleware, postBodyChecker]
+    updateMiddleware = [...updateMiddleware, postBodyChecker]
 
     logger.debug('establishing router "/" for router "%s"', router_name);
     router.get("/", readMiddleware, function(req, res) {
@@ -109,37 +115,30 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
     );
 
     router.put(
-        '/:' + identifier,
-        updateMiddleware,
-        (req, res) => {
-			const id = req.params[paramID];
+      '/:' + identifier,
+      updateMiddleware,
+      (req, res) => {
+          const postJSON = req.postJSON
+          const id = req.params[paramID]
 
-			logger.info(`handling put request for '${router_name}' on id '${id}'`);
-			const postJSON= req.body[router_name_singular];
+          logger.info(`handling put request for '${router_name}' on id '${id}'`)
 
-			if (!postJSON)
-				return res.status(422).json({ status: router_name_singular + ' parameter is required' });
+          controller.update(req.app.get('db'), id, postJSON, function (err) {
+              if (err) {
+                  logger.warn(`error updating ${router_name_singular}: "${err}"`)
+                  return res.status(500).json({status: err})
+              }
 
-			controller.update(req.app.get('db'), id, postJSON, function(err) {
-				if (err) {
-					logger.warn(`error updating ${router_name_singular}: "${err}"`);
-					return res.status(500).json({ status: err });
-				}
+              res.status(200).json({status: 'success', id: postJSON.id})
+          })
+      })
 
-				res.status(200).json({ status: 'success', id: postJSON.id });
-			});
-        });
-
-	router.post(
+    router.post(
 	    '/',
         createMiddleware,
         function(req, res) {
-            logger.info(`handling post request for '$router_name{}'`);
-            const postJSON= req.body[router_name_singular];
-
-            if (!postJSON)
-                return res.status(422).json({ status: router_name_singular + ' parameter is required' });
-
+            logger.info(`handling post request for '${router_name}'`);
+            const postJSON = req.postJSON
             postJSON.id = uuidv1();
 
             if (forcedValues) {
