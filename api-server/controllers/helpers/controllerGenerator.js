@@ -28,6 +28,14 @@ function DefaultController(modelName) {
                   callback(err)
               })
         },
+        findOrCreate: function(db, defaults, where) {
+          logger.debug('findOrCreate: ' + JSON.stringify(defaults, null, 4))
+
+          return db[modelName].findOrCreate({
+            where,
+            defaults
+          })
+        },
         create: function(db, data, callback) {
             logger.debug('create: ' + JSON.stringify(data, null, 4));
             db[modelName].create(data, callback)

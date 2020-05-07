@@ -33,7 +33,9 @@
     },
     fetch: function () {
       return this.$store.dispatch('LoadAnnouncements').then(() => {
-        if (this.currentAnnouncement) this.open = true
+        if (this.currentAnnouncement && this.currentAnnouncement.message.trim().length !== 0) {
+          this.open = true
+        }
       })
     },
     mounted: function () {
