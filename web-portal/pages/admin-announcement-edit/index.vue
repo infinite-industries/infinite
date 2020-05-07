@@ -35,6 +35,7 @@
   export default {
     name: 'admin-announcement-edit',
     middleware: 'auth',
+    layout: 'admin',
     head: function () {
       return {
         title: 'Announcement Editor - Infinite Industries'
