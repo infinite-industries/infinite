@@ -54,18 +54,6 @@
 </script>
 
 <style scoped>
-  .admin-page {
-    background: white;
-    color: black;
-    border-radius: 10px;
-  }
-
-  @media only screen and (min-width: 993px) {
-    .admin-page {
-      max-width: 80%;
-    }
-  }
-
   /* >>> overrides scoping, allowing the targeting of child components */
   .admin-page >>> .v-pagination .v-pagination__item--active {
     color: white;

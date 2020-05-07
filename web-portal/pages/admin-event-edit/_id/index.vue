@@ -12,6 +12,7 @@
 
   export default {
     middleware: 'auth',
+    layout: 'admin',
     head: function () {
       const event = this.$store.getters.GetCurrentEvent
       return {
@@ -57,9 +58,6 @@
 
 <style scoped>
   .admin-page {
-    background: white;
-    color: black;
-    border-radius: 10px;
     width: 95%;
     max-width: unset;
   }
