@@ -7,7 +7,7 @@
       <nuxt-link to="/admin">Events</nuxt-link>
     </li>
     <li>
-      <nuxt-link to="/admin/announcements">Announcements</nuxt-link>
+      <nuxt-link to="/admin-announcement-edit">Announcements</nuxt-link>
     </li>
     <li v-if="$auth.loggedIn">
       <nuxt-link to="/logout">Logout</nuxt-link>
