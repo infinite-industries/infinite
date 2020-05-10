@@ -69,11 +69,19 @@ describe('Card component', () => {
   })
 
   test('omits venue when not set', () => {
-    wrapper.setProps({
-      calendar_event: Object.assign(getEvent(), {
-        venue_id: null
-      })
+    wrapper = shallowMount(Card, {
+      localVue,
+      store,
+      stubs: {
+        NuxtLink: RouterLinkStub
+      },
+      propsData: {
+        calendar_event: Object.assign(getEvent(), {
+          venue_id: null
+        })
+      }
     })
+
     expect(wrapper.html()).not.toContain(venueName)
     expect(wrapper.html()).not.toContain('ii-location')
   })
@@ -96,10 +104,17 @@ describe('Card component', () => {
   })
 
   test('omits time for events treated as online resources', () => {
-    wrapper.setProps({
-      calendar_event: Object.assign(getEvent(), {
-        tags: ['online-resource']
-      })
+    wrapper = shallowMount(Card, {
+      localVue,
+      store,
+      stubs: {
+        NuxtLink: RouterLinkStub
+      },
+      propsData: {
+        calendar_event: Object.assign(getEvent(), {
+          tags: ['online-resource']
+        })
+      }
     })
     expect(wrapper.html()).not.toContain('June 1st')
   })

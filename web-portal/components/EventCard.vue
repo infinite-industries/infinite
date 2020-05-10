@@ -2,43 +2,44 @@
   <div class="card-container">
     <div class="card-overlay" v-show="showCalendars" @click.stop="CloseCalendars()"></div>
     <div class="infinite-card" :class="{ '-postponed': isPostponed, '-cancelled': isCancelled }">
-      <div class="image-container">
-        <nuxt-link :to="{ name: 'events-id', params: { id: calendar_event.id } }">
-          <div class="image-surface" :style="backGroundImage"></div>
-        </nuxt-link>
-      </div>
-      <div class="info-container">
-        <h3>
-          <template v-if="statusMessage">[{{ statusMessage }}] - </template>
-          {{ calendar_event.title | truncate(statusMessage ? 30 : 40) }}
-        </h3>
-        <h4 v-if="showVenue">
-          <ii-remote v-if="isRemote || isOnlineResource" iconColor="#B7B09C" width="20" height="20" />
-          <ii-location v-else iconColor="#B7B09C" width="20" height="20" />
-          {{ venue_info.name }}
-        </h4>
-
-        <template v-if="showTime">
-          <p class="date">{{ when_date }}</p>
-          <p class="time">{{ when_time }}</p>
-        </template>
-
-        <p class="description">{{ calendar_event.brief_description | truncate(120) }} </p>
-
-        <div class="btn-actions">
-          <nuxt-link class="card-btn more-info" :to="{ name: 'events-id', params: { id: calendar_event.id } }">
-            More Info
+      <div class="image-info-container">
+        <div class="image-container">
+          <nuxt-link :to="{ name: 'events-id', params: { id: calendar_event.id } }">
+            <div class="image-surface" :style="backGroundImage"></div>
           </nuxt-link>
-          <span v-if="showTime" class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()">
-            <ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar" />Add to Calendar
-          </span>
         </div>
+        <div class="info-container">
+          <h3>
+            <template v-if="statusMessage">[{{ statusMessage }}] - </template>
+            {{ calendar_event.title | truncate(statusMessage ? 30 : 40) }}
+          </h3>
+          <h4 v-if="showVenue">
+            <ii-remote v-if="isRemote || isOnlineResource" iconColor="#B7B09C" width="20" height="20" />
+            <ii-location v-else iconColor="#B7B09C" width="20" height="20" />
+            {{ venue_info.name | truncate(60) }}
+          </h4>
 
-        <div class="drop-down" v-show="showCalendars">
-          <div @click.stop="AddEventToCalendar('iCal')">iCal</div>
-          <div @click.stop="AddEventToCalendar('Outlook')">Outlook</div>
-          <div @click.stop="AddEventToCalendar('Google Cal')">Google Cal</div>
+          <template v-if="showTime">
+            <p class="date">{{ when_date }}</p>
+            <p class="time">{{ when_time }}</p>
+          </template>
+
+          <p class="description">{{ calendar_event.brief_description | truncate(120) }} </p>
         </div>
+      </div>
+      <div class="btn-actions">
+        <nuxt-link class="card-btn more-info" :class="{ '-resource': isOnlineResource}" :to="{ name: 'events-id', params: { id: calendar_event.id } }">
+          More Info
+        </nuxt-link>
+        <span v-if="showTime" class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()">
+          <ii-calendar iconColor="#fff" width="16" height="16" class="ii-calendar" /><span>Add to Calendar</span>
+        </span>
+      </div>
+
+      <div class="drop-down" v-show="showCalendars">
+        <div @click.stop="AddEventToCalendar('iCal')">iCal</div>
+        <div @click.stop="AddEventToCalendar('Outlook')">Outlook</div>
+        <div @click.stop="AddEventToCalendar('Google Cal')">Google Cal</div>
       </div>
     </div>
   </div>
@@ -178,10 +179,14 @@
 
   .infinite-card {
     position: relative;
-    display:flex;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    justify-content: space-between;
 
     width: 240px;
-    min-height: 400px;
+    height: 100%;
 
     margin-left: auto;
     margin-right: auto;
@@ -201,7 +206,7 @@
   }
 
   .image-container{
-    position: absolute;
+    /* position: absolute; */
 
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -241,23 +246,24 @@
   }
 
   .info-container{
-    position: absolute;
-    top: 150px;
-    left: 0;
+    /* position: absolute; */
+    /* top: 150px;
+    left: 0; */
 
-    min-height: 230px;
+    min-height: 130px;
     min-width: 240px;
 
     padding: 20px;
-    padding-top: 15px;
+    padding-top: 0px;
+    padding-bottom: 0px;
   }
 
   .info-container h3 {
     font-family: 'Open Sans', sans-serif;
     font-weight: 700;
     font-size: 15px;
-    margin-top: 0px;
-
+    margin-top: 10px;
+    margin-bottom: 0px;
     padding-right: 10px;
   }
 
@@ -265,6 +271,7 @@
     font-family: 'Open Sans', sans-serif;
     font-weight: 200;
     font-size: 11px;
+    margin-top: 5px;
     margin-bottom: 10px;
   }
 
@@ -282,21 +289,34 @@
     padding-right: 12px;
 
     margin-top: 10px;
+    margin-bottom: 30px;
   }
 
   .btn-actions {
-    position: absolute;
-    bottom: 5px;
+    /* position: absolute;
+    bottom: 5px; */
+
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
+    justify-content: space-between;
 
     font-family: 'Open Sans', sans-serif;
     font-size: 11px;
     color: white;
+
+    text-align: center;
+    max-height: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-bottom: 20px;
   }
 
   .ii-calendar {
-    position: relative;
-    top: 3px;
     margin-right: 5px;
+    vertical-align:middle;
+    padding-bottom: 2px;
   }
 
   .card-btn {
@@ -307,12 +327,17 @@
   .add-to-calendar {
     background-color: #B7B09C;
     margin-left: 5px;
+    min-width: 120px;
   }
 
   .more-info {
     color: white;
     background-color: #000;
     text-decoration: none;
+  }
+
+  .more-info.-resource {
+    width: 100%;
   }
 
   .drop-down{
@@ -346,7 +371,9 @@
 @media only screen and (max-width: 350px) {
   /* on very small screens the calendar button wraps awkwardly */
   .card-btn {
-    padding: 7px;
+    padding: 12px;
+    padding-top: 6px;
+    font-size: 0.9em;
   }
 
   .ii-calendar {

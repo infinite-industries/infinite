@@ -22,6 +22,7 @@ module.exports = {
     'array-bracket-spacing': 'off',
     'no-prototype-builtins': 'off',
     'quote-props': 'off',
+    'import/order': 'off',
     'vue/attribute-hyphenation': 'off',
     'vue/attributes-order': 'off',
     'vue/html-self-closing': 'off',

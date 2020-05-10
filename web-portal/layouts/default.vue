@@ -4,7 +4,9 @@
     <ii-notifications />
 
     <!-- Toolbar and Nav -->
-    <ii-toolbar />
+    <ii-toolbar>
+      <ii-site-navigation slot="navigation" />
+    </ii-toolbar>
     <main>
       <!-- Content -->
       <nuxt />
@@ -23,10 +25,12 @@
   import Notifications from '../components/Notifications.vue'
   import Subscribe from '../components/Subscribe.vue'
   import Modal from '../components/Modal.vue'
+  import SiteNavigation from '../components/SiteNavigation.vue'
 
   export default {
     components: {
       'ii-toolbar': Toolbar,
+      'ii-site-navigation': SiteNavigation,
       'ii-notifications': Notifications,
       'ii-modal': Modal,
       'ii-subscribe': Subscribe

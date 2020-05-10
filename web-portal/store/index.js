@@ -24,7 +24,9 @@ export const state = () => {
     all_local_events: [],
     all_streaming_events: [],
 
-    editable_event: {} // currently unused
+    editable_event: {}, // currently unused
+
+    announcements: []
   }
 }
 
@@ -63,6 +65,16 @@ export const getters = {
 
   GetCurrentList: (state) => {
     return state.current_list
+  },
+
+  GetAnnouncements: (state) => {
+    return state.announcements
+  },
+
+  GetActiveAnnouncement: (state) => {
+    if (state.announcements && state.announcements.length > 0) {
+      return state.announcements[state.announcements.length - 1]
+    }
   },
 
   GetSettings: () => {
@@ -136,6 +148,10 @@ export const mutations = {
 
   REMOVE_FROM_CURRENT_LIST: (state, payload) => {
     state.current_list.events = state.current_list.events.filter(event => event.id !== payload.id)
+  },
+
+  POPULATE_ANNOUNCEMENTS: (state, payload) => {
+    state.announcements = payload && payload.length > 0 ? [...payload] : []
   },
 
   // POPULATE_calendar_event: (state, event) => {
@@ -314,5 +330,52 @@ export const actions = {
           message: 'Hrrmm... unable to get list data. Please contact us and we will figure out what went wrong. Code: #11007'
         })
       })
+  },
+
+  LoadAnnouncements: (context) => {
+    return ApiService.get('/announcements')
+      .then((_response) => {
+        if (_response.data.status === 'success') {
+          context.commit('POPULATE_ANNOUNCEMENTS', _response.data.announcements)
+        } else console.error('Error processing announcements', _response.data)
+      })
+      .catch((error) => {
+        console.error('Unable to load announcements', error)
+      })
+  },
+  FindOrCreateActiveAnnouncement: (context, payload) => {
+    const idToken = payload.idToken
+
+    return ApiService.post(
+      '/announcements/ensure-one-announcement',
+      { announcement: { message: '' } },
+      idToken
+    ).then((response) => {
+      if (response.data.status === 'success') {
+        context.commit('POPULATE_ANNOUNCEMENTS', response.data.announcements)
+      } else {
+        console.error('Unable to ensure announcement', response.data.error)
+      }
+    }).catch((error) => {
+      console.error('Failed making request to ensure announcements', error)
+      throw new Error('Failed ensuring the existence of an announcement entity') // pass error on to caller
+    })
+  },
+  UpdateActiveAnnouncement: (context, payload) => {
+    const idToken = payload.idToken
+    const announcement = payload.announcement
+
+    return ApiService.put(
+      `/announcements/${announcement.id}`,
+      { announcement },
+      idToken
+    ).then((response) => {
+      if (response.data.status !== 'success') {
+        console.error('Unable to ensure announcement', response.data.error)
+      }
+    }).catch((error) => {
+      console.error('Failed making request to ensure announcements', error)
+      throw new Error('Failed to update the message') // pass error on to caller
+    })
   }
 }

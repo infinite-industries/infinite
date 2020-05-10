@@ -25,6 +25,10 @@ export class ApiService {
     return axios.delete(API_URL + path, idToken ? { headers: { 'x-access-token': userToken } } : null)
   }
 
+  static all(calls) {
+    return axios.all(calls)
+  }
+
   static makeApiCall(verb, path, postBody, apiKey, userToken) {
     let url = API_URL + '/' + path
     let args = []
