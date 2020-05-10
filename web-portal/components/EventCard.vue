@@ -186,7 +186,7 @@
     justify-content: space-between;
 
     width: 240px;
-    height: 100%;
+    height: 390px;
 
     margin-left: auto;
     margin-right: auto;
