@@ -186,7 +186,7 @@
     justify-content: space-between;
 
     width: 240px;
-    height: 390px;
+    height: 100%;
 
     margin-left: auto;
     margin-right: auto;
@@ -289,7 +289,7 @@
     padding-right: 12px;
 
     margin-top: 10px;
-    margin-bottom: 30px;
+    padding-bottom: 30px;
   }
 
   .btn-actions {
