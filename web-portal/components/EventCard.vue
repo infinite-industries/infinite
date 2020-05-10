@@ -171,9 +171,10 @@
   }
 
   .card-container {
+    display: flex;
+    flex-direction: column;
     min-width: 240px;
     min-height: 400px;
-
     padding:5px;
   }
 
@@ -186,7 +187,9 @@
     justify-content: space-between;
 
     width: 240px;
-    height: 100%;
+    /* this makes the card fill the vertical space available in its container */
+    /* it roughly accomplishes what you would think height: 100% would do */
+    flex-grow: 1;
 
     margin-left: auto;
     margin-right: auto;
@@ -429,7 +432,6 @@
     top: 200px;
     left: 0px;
 
-    min-height: 300px;
     min-width: 240px;
 
     padding: 18px;
