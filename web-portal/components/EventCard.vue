@@ -289,7 +289,7 @@
     padding-right: 12px;
 
     margin-top: 10px;
-    margin-bottom: 30px;
+    padding-bottom: 30px;
   }
 
   .btn-actions {
