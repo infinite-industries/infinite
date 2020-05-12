@@ -154,7 +154,6 @@ export const actions = {
       .then(function (_response) {
         console.log('Trying to delete event \n data from server: ', _response.data.events)
         if (_response.data.status === 'success') {
-          // context.commit('POPULATE_CURRENT_LIST', _response.data)
           ComponentEventBus.$emit('CALENDAR_EVENT_DELETED', { id: _response.data.id })
         } else {
           ComponentEventBus.$emit('SHOW_ALERT', {
@@ -183,7 +182,6 @@ export const mutations = {
   },
   CHANGE_STATE_TO_VERIFIED: (state, payload) => {
     console.log(state.unverified_events.find(event => event.id === payload.id))
-    // state.all_local_events.push(state.unverified_events.find(event => event.id === payload.id))
     state.unverified_events = state.unverified_events.filter(event => event.id !== payload.id)
   }
 }
