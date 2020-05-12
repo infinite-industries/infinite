@@ -11,6 +11,9 @@
   // import { ApiService } from '../services/ApiService'
 
   export default {
+    props: [
+      'id'
+    ],
     middleware: 'auth',
     layout: 'admin',
     head: function () {
@@ -35,21 +38,6 @@
         store.dispatch('LoadAllVenueData')
       ])
     },
-    props: [
-      'id'
-    ],
-    mounted: function () {
-      console.log('MY ID:', this.id)
-      // this.$store.dispatch('LoadCurrentEvent', this.id)
-    },
-    // computed: {
-    //   values_to_edit: function() {
-    //     return this.$store.getters.GetCurrentEvent
-    //   }
-    // },
-    // methods: {
-    //
-    // },
     components: {
       'submission-form': SubmissionForm
     }
