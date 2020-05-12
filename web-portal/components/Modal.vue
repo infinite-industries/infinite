@@ -25,7 +25,7 @@
     },
     methods: {
       CloseModal: function () {
-        this.$store.dispatch('showModal', { open: false })
+        this.$store.dispatch('ui/showModal', { open: false })
       }
     }
   }
