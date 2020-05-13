@@ -1,5 +1,4 @@
 import { ApiService } from '../services/ApiService'
-import ComponentEventBus from '../helpers/ComponentEventBus'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
 export const state = () => {
@@ -126,9 +125,7 @@ export const actions = {
       })
       .catch((error) => {
         console.error(error)
-        ComponentEventBus.$emit('SHOW_ALERT', {
-          message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.'
-        })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.' }, { root: true })
       })
   },
   LoadAllStreamingEventData: (context) => {
@@ -138,9 +135,7 @@ export const actions = {
       })
       .catch((error) => {
         console.error(error)
-        ComponentEventBus.$emit('SHOW_ALERT', {
-          message: 'Hrrmm... unable to get some event data. Please contact us and we will endeavor to address it.'
-        })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get some event data. Please contact us and we will endeavor to address it.' }, { root: true })
       })
   },
   LoadAllVenueData: (context) => {
@@ -150,9 +145,7 @@ export const actions = {
       })
       .catch((error) => {
         console.error(error)
-        ComponentEventBus.$emit('SHOW_ALERT', {
-          message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.'
-        })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.' }, { root: true })
       })
   },
 
