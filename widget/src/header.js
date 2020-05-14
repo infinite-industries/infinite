@@ -1,10 +1,8 @@
 import ConfigService from './configService.js'
 
-const infinite_widget_container = ConfigService.getContainer()
-const widget_title = ConfigService.getWidgetTitle()
-
 export default function Header (){
 
+    const widget_title = ConfigService.getWidgetTitle()
     if(widget_title === null){ widget_title = ""}
 
     const template = `
