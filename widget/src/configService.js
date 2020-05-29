@@ -56,6 +56,11 @@ export default class ConfigService {
         return attr ? attr : DEFAULT_PAGE_SIZE
     }
 
+    static getEventId() {
+        const attr = widget_container.getAttribute('data-event-id')
+        return attr ? attr : null
+    }
+
     static getSiteUrl() {
         return URLS[mode].SITE
     }
