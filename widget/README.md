@@ -5,9 +5,10 @@ Widget for embedding events from the Infinite Industries platform on a website.
 ## Installation
 
 - Add an `div` or other element with class `infinite-widget` to your main template where you want to place the widget.
-- Add these attributes to the container element:
+- Add these (optional) attributes to the container element:
   - `data-widget-title`
   - `data-cards-per-page` (controls the number of events that will appear at a time)
+  - `data-event-id` (if set to a valid event ID, will cause the widget to display a single card for that event only)
 - Add this script, replacing `1.0` with the version you want to use:
 
   ```html

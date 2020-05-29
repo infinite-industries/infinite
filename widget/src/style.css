@@ -303,3 +303,7 @@ select {
       transform: rotate(360deg);
     }
   }
+
+.infinite-error {
+    color: white;
+}
