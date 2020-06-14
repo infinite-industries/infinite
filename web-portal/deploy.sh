@@ -41,7 +41,9 @@ function doDeploy {
   npm run build
 
   echo 'stop infinite'
+  set +e
   forever stop infinite
+  set -e
 
   echo 'copying build to running directory'
   set +e
@@ -56,7 +58,7 @@ function doDeploy {
     rm $ROOT/.forever/infinite.log
   fi
 
-  forever start -a --uid infinite -c "npm start" ./
+  forever start -a --uid infinite -c "./node_modules/.bin/nuxt start" ./
   echo 'Done!'
 EOF
 }
