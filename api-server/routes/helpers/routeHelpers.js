@@ -18,21 +18,27 @@ module.exports = {
 };
 
 function getDefaultRouter(router_name, router_name_singular, controller, forcedValues, options) {
+    options = options || {};
+
     const paramID = `${router_name_singular}ID`
     const identifier = paramID + idRegExp;
 
     const postBodyChecker = getPostBodyChecker(router_name_singular)
     const router = express.Router();
-    options = options || {};
+
     const readMiddleware = options.readMiddleware || []; // by default parse any tokens, don't require them
-    let createMiddleware = options.createMiddleware || JWTAuthChain // by default admin only
     const createAfterMethod = options.createAfterMethod || (() => null)
+
+    // by default creates, updates, and deletes will require a valid JWT with admin level access
+    let createMiddleware = options.createMiddleware || JWTAuthChain // by default admin only
     let updateMiddleware = options.updateMiddleware || JWTAuthChain // by default admin only
-    const readFilter = options.readFilter
+    let deleteMiddleware = options.deleteMiddleware || JWTAuthChain // by default admin only
+
+  const readFilter = options.readFilter
 
     // append post body check (eventually i'd like to shift most logic out of this file and into middleware
-    createMiddleware = [...createMiddleware, postBodyChecker]
-    updateMiddleware = [...updateMiddleware, postBodyChecker]
+    createMiddleware = [...createMiddleware, postBodyChecker] // append post body checks
+    updateMiddleware = [...updateMiddleware, postBodyChecker] // append post body checks
 
     logger.debug('establishing router "/" for router "%s"', router_name);
     router.get("/", readMiddleware, function(req, res) {
@@ -165,7 +171,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
 
 	router.delete(
 	    '/:' + identifier,
-        updateMiddleware,
+        deleteMiddleware,
         (req, res) => {
             const id = req.params[paramID]
 	        logger.info(`handling delete request for "${router_name}" for event id "${id}"`)
