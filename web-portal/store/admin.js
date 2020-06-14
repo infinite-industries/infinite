@@ -1,4 +1,3 @@
-import ComponentEventBus from '../helpers/ComponentEventBus.js'
 import { ApiService } from '../services/ApiService'
 
 export const state = () => {
@@ -52,16 +51,12 @@ export const actions = {
           })
           context.commit('POPULATE_UNVERIFIED_LIST', eventList)
         } else {
-          ComponentEventBus.$emit('SHOW_ALERT', {
-            message: 'Was not able to find unverified events.'
-          })
+          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Was not able to find unverified events.' }, { root: true })
         }
       })
       .catch(function (error) {
         console.log(error)
-        ComponentEventBus.$emit('SHOW_ALERT', {
-          message: 'API connection bit the dust. FiX!'
-        })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
       })
   },
   LoadCurrentEvents: (context, payload) => {
@@ -72,16 +67,12 @@ export const actions = {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_VERIFIED_LIST', _response.data.events)
         } else {
-          ComponentEventBus.$emit('SHOW_ALERT', {
-            message: 'Not able to find verified events'
-          })
+          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Not able to find verified events' }, { root: true })
         }
       })
       .catch(function (error) {
         console.error(error)
-        ComponentEventBus.$emit('SHOW_ALERT', {
-          message: 'API connection bit the dust. FIX!'
-        })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FIX!' }, { root: true })
       })
   },
   LoadResourceEvents: (context, payload) => {
@@ -91,16 +82,12 @@ export const actions = {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_RESOURCE_LIST', _response.data.events)
         } else {
-          ComponentEventBus.$emit('SHOW_ALERT', {
-            message: 'Not able to find verified resources'
-          })
+          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Not able to find verified resources' }, { root: true })
         }
       })
       .catch(function (error) {
         console.error(error)
-        ComponentEventBus.$emit('SHOW_ALERT', {
-          message: 'API connection bit the dust. FIX!'
-        })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FIX!' }, { root: true })
       })
   },
   VerifyEvent: (context, payload) => {
@@ -119,9 +106,7 @@ export const actions = {
       })
       .catch(function (error) {
         console.log(error)
-        ComponentEventBus.$emit('SHOW_ALERT', {
-          message: 'API connection bit the dust. FiX!'
-        })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
       })
   },
 
@@ -141,9 +126,7 @@ export const actions = {
       })
       .catch(function (error) {
         console.log(error)
-        ComponentEventBus.$emit('SHOW_ALERT', {
-          message: 'API connection bit the dust. FiX!'
-        })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
       })
   },
 
@@ -153,20 +136,13 @@ export const actions = {
     return ApiService.delete(`/events/${payload.id}`, idToken)
       .then(function (_response) {
         console.log('Trying to delete event \n data from server: ', _response.data.events)
-        if (_response.data.status === 'success') {
-          // context.commit('POPULATE_CURRENT_LIST', _response.data)
-          ComponentEventBus.$emit('CALENDAR_EVENT_DELETED', { id: _response.data.id })
-        } else {
-          ComponentEventBus.$emit('SHOW_ALERT', {
-            message: 'Unable to delete the event'
-          })
+        if (_response.data.status !== 'success') {
+          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Unable to delete the event' }, { root: true })
         }
       })
       .catch(function (error) {
         console.log(error)
-        ComponentEventBus.$emit('SHOW_ALERT', {
-          message: 'API connection bit the dust. FiX!'
-        })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
       })
   }
 }
@@ -183,7 +159,6 @@ export const mutations = {
   },
   CHANGE_STATE_TO_VERIFIED: (state, payload) => {
     console.log(state.unverified_events.find(event => event.id === payload.id))
-    // state.all_local_events.push(state.unverified_events.find(event => event.id === payload.id))
     state.unverified_events = state.unverified_events.filter(event => event.id !== payload.id)
   }
 }

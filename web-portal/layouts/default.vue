@@ -35,16 +35,6 @@
       'ii-modal': Modal,
       'ii-subscribe': Subscribe
     },
-    data() {
-      return {
-        // notification: {
-        //   visible: false,
-        //   type: '',
-        //   message: '',
-        //   timeout: false
-        // }
-      }
-    },
 
     mounted: async function () {
       // Inhale mock user data
@@ -61,18 +51,6 @@
           }
         }
       }
-
-      // this.$store.dispatch('LoadAllVenueData')
-
-      // // Clean up localForage if admin pannel deletes an event
-      // EventsFromStore.$on('CALENDAR_EVENT_DELETED', function(data){
-      //   console.log("Delete the Event ", data.id);
-      // })
-      //
-      // // Clean up localForage if admin verifies the event
-      // EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
-      //   console.log("EVENT CENTRAL cleanup --- Remove Verified Event", data.id);
-      // })
     }
   }
 </script>

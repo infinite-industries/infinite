@@ -177,6 +177,30 @@
  *          $ref: '#definitions/EventsResponse'
  */
 
+/**
+ * @swagger
+ *
+ * /events/{id}:
+ *  delete:
+ *    description: Deletes the event specified by the id
+ *    produces: application/json
+ *    security:
+ *      - jwt:
+ *    parameters:
+ *      - name: id
+ *        description: id of event to delete
+ *        in: path
+ *        required: true
+ *        type: string
+ *    responses:
+ *      200:
+ *        description: Success!
+ *      501:
+ *        description: There was an error processing the request.
+ *      422:
+ *        description: A parameter supplied was not allowed or understood.
+ */
+
 const slack = require('../utils/slackNotify')
 const EventController = require('../controllers/events')
 const CurrentEventController = require('../controllers/currentEvents')
@@ -213,6 +237,7 @@ const router = getDefaultRouter("events", "event", EventController, { verified: 
   byIDMethod: EventController.findByIDAndMergeWithVenues,
   createMiddleware: [DatesToISO, createOverride], // anyone can create a new event; Dates will be converted form local to UTC/ISO
   updateMiddleware: [JWTAuthenticator(true)], // requires admin token to update (put)
+  deleteMiddleware: [JWTAuthenticator(true)],
   readFilter: filterContactInfo // strip contact info
 });
 

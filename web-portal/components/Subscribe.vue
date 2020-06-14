@@ -1,11 +1,4 @@
 <template>
-  <!-- <div id="modal-container" v-if='modal.open'>
-    <div id="modal">
-      <div id="close-modal" @click="CloseModal()">X</div>
-        {{modal.message}}
-    </div>
-  </div> -->
-
   <div id="subscribe-container">
     <nuxt-link to="/subscribe?source='internal'">
       Subscribe
@@ -18,32 +11,13 @@
     name: 'Subscribe',
     data: function () {
       return {
-        // stuff
-      }
-    },
-    computed: {
-      modal: function () {
-        return this.$store.getters.modalData
-      }
-    },
-    methods: {
-      CloseModal: function () {
-        this.$store.dispatch('showModal', { open: false })
+
       }
     }
   }
 </script>
 
 <style scoped>
-
-  /* #modal-test{
-    border: 1px solid red;
-    background-color:green;
-    width: 100%;
-    height: 100%;
-    position: fixed;
-  } */
-
   @media only screen and (min-width: 640px) {
     #subscribe-container {
       display: none;
@@ -74,22 +48,4 @@
   #subscribe-container a:hover {
     color: white;
   }
-
-  #modal{
-    position: relative;
-    background-color: #fefefe;
-    color: white;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-  }
-
-  #close-modal{
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    color: black;
-  }
-
 </style>
