@@ -18,7 +18,7 @@ const router = getDefaultRouter("eventLists", "eventList", EventListController, 
   	readMiddleware: JWTAuthChain,
   	createMiddleware: JWTAuthChain,
   	updateMiddleware: JWTAuthChain,
-		deleteMiddleware: JWTAuthChain,
+    deleteMiddleware: JWTAuthChain,
 });
 
 router.put(
