@@ -1,13 +1,12 @@
-import ConfigService from './configService.js'
 // Import Card template and renderer
 import Card from './card.js'
 import InjectCardImage from './cardImage.js'
 
-export default function CardsViewer(context, events_list, page_size, page_number) {
+export default function CardsViewer(context, container, events_list, page_size, page_number) {
 
     const content = document.createElement('div')
     content.setAttribute("id", "infinite-widget-content")
-    context.appendChild(content)
+    container.appendChild(content)
 
     const start_event = page_size*page_number
     const end_event = parseInt(start_event)+parseInt(page_size)
@@ -16,11 +15,11 @@ export default function CardsViewer(context, events_list, page_size, page_number
         // console.log("start: "+start_event+" end: "+end_event )
         // console.log("\n-----------\n" + JSON.stringify(event))
 
-        content.insertAdjacentHTML('beforeend', Card(event))
+        content.insertAdjacentHTML('beforeend', Card(context, event))
 
         // inject the image -- this is a bit hacky, need to think through a more elegant solution
         const last_child = content.lastChild
-        InjectCardImage(last_child, event.image, ConfigService.getSiteUrl() + '/events/' + event.id)
+        InjectCardImage(last_child, event.image, context.getSiteUrl() + '/events/' + event.id)
     })
 
     console.log(page_number)
