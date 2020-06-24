@@ -1,4 +1,3 @@
-import ConfigService from './configService.js'
 import TimeService from './timeService.js'
 
 const MAX_LENGTH_OF_EVENT_TITLE = 35
@@ -48,7 +47,7 @@ const DateTimeSection = function(event_data) {
     } else return ''
 }
 
-export default function Card (event_data){
+export default function Card (context, event_data){
 
     let processed_brief_description = TitleShortener(event_data.brief_description, MAX_LENGTH_OF_EVENT_DESCRIPTION)
 
@@ -73,7 +72,7 @@ export default function Card (event_data){
         </div>
         <div class="infinite-btn-actions-container">
             <div class="infinite-btn-actions">
-                <a href="${ConfigService.getSiteUrl()}/events/${event_data.id}" target="_new">
+                <a href="${context.getSiteUrl()}/events/${event_data.id}" target="_new">
                     <div id="more-info">More Info</div>
                 </a>
             </div>

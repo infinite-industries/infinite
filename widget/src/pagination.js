@@ -1,8 +1,3 @@
-import ConfigService from './configService.js'
-
-const infinite_widget_container = ConfigService.getContainer()
-const cards_per_page = ConfigService.getPageSize()
-
 const PAGES_WINDOW_SIZE = 5   // maximum number of page numbers appearing
 
 const RenderEllipsis = function(){
@@ -120,7 +115,8 @@ const RenderMobileControls = function(container, which_page, total_number_of_pag
     return container
 }
 
-const UpdateCardsDisplayAndPageNumber = function(which_page, total_number_of_pages){
+const UpdateCardsDisplayAndPageNumber = function(context, which_page, total_number_of_pages){
+    const container = context.getContainer()
     const number_controls = document.createElement('div')
 
     // previous button
@@ -128,7 +124,7 @@ const UpdateCardsDisplayAndPageNumber = function(which_page, total_number_of_pag
 
     // desktop or mobile controls, depending on container size
     // note that this won't get resized automatically
-    if(infinite_widget_container.clientWidth > 768){
+    if(container.clientWidth > 768){
         RenderDesktopControls(number_controls, which_page, total_number_of_pages)
     }
     else{
@@ -142,8 +138,9 @@ const UpdateCardsDisplayAndPageNumber = function(which_page, total_number_of_pag
 }
 
 
-export default function Pagination (events, render_client){
+export default function Pagination (context, events, render_client){
 
+    const cards_per_page = context.getPageSize()
     const total_number_of_pages = Math.ceil(events.length/cards_per_page)
     let which_page = 0
 
@@ -154,16 +151,16 @@ export default function Pagination (events, render_client){
         const new_page = event.target.getAttribute('data-page-number')
         if (new_page) {
             render_client(new_page)
-            pagination.replaceChild(UpdateCardsDisplayAndPageNumber(parseInt(new_page, 10), total_number_of_pages), pagination.firstChild)
+            pagination.replaceChild(UpdateCardsDisplayAndPageNumber(context, parseInt(new_page, 10), total_number_of_pages), pagination.firstChild)
         }
     })
     pagination.addEventListener('change', function (event) {
         const new_page = event.target.value
         render_client(new_page)
-        pagination.replaceChild(UpdateCardsDisplayAndPageNumber(parseInt(new_page, 10), total_number_of_pages), pagination.firstChild)
+        pagination.replaceChild(UpdateCardsDisplayAndPageNumber(context, parseInt(new_page, 10), total_number_of_pages), pagination.firstChild)
     })
 
-    pagination.appendChild(UpdateCardsDisplayAndPageNumber(which_page, total_number_of_pages))
+    pagination.appendChild(UpdateCardsDisplayAndPageNumber(context, which_page, total_number_of_pages))
 
-    infinite_widget_container.appendChild(pagination)
+    context.getContainer().appendChild(pagination)
 }

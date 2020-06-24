@@ -1,15 +1,14 @@
-import ConfigService from './configService.js'
-
 export default class APIService {
 
-    static getEvents(callback) {
-        APIService.get(`${ConfigService.getApiUrl()}/events/current/verified?embed=venue`, function(err, response) {
+    static getEvents(context, callback) {
+        APIService.get(`${context.getApiUrl()}/events/current/verified?embed=venue`, function(err, response) {
             callback(err, response ? response.events : null)
         })
     }
 
-    static getEvent(eventId, callback) {
-        APIService.get(`${ConfigService.getApiUrl()}/events/${eventId}`, function(err, response) {
+    static getEvent(context, callback) {
+        const eventId = context.getEventId()
+        APIService.get(`${context.getApiUrl()}/events/${eventId}`, function(err, response) {
             callback(err, response ? response.event : null)
         })
     }
