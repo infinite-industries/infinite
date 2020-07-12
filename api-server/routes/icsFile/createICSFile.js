@@ -2,7 +2,7 @@ const moment = require('moment-timezone')
 const uuidv4 = require('uuid/v4')
 const express = require('express')
 const router = express.Router()
-const { logger } = require(__dirname + '/../utils/loggers')
+const { logger } = require('../../utils/loggers')
 
 const projectSettings = {
   calscale: 'GREGORIAN',
