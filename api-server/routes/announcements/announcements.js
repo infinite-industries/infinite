@@ -122,10 +122,10 @@
  */
 
 // event related API endpoints
-const AnnouncementController = require("../controllers/announcements");
-const { getDefaultRouter } = require("./helpers/routeHelpers");
-const getPostBodyChecker = require('../routes/middleware/postBodyChecker')
-const JWTAuthenticator = require(__dirname + '/../utils/JWTAuthenticator')
+const AnnouncementController = require("../../controllers/announcements");
+const { getDefaultRouter } = require("../helpers/routeHelpers");
+const getPostBodyChecker = require('../middleware/postBodyChecker')
+const JWTAuthenticator = require('../../utils/JWTAuthenticator')
 
 const routerName = 'announcements'
 const routerSingularName = 'announcement'
