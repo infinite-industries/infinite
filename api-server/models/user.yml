@@ -1,0 +1,20 @@
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: string
+      identifier:
+        type: string
+      nickname:
+        type: string
+      name:
+        type: string
+      picture:
+        type: string
+      settings:
+        type: object
+      permissions_post_as_venues:
+        type: object
+      permissions_edit_lists:
+        type: object

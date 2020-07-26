@@ -1,0 +1,12 @@
+AnnouncementResponse:
+  type: object
+  properties:
+    status:
+      type: string
+      enum: ["success", "failure"]
+    error_message:
+      type: string
+    announcements:
+      type: array
+      items:
+        $ref: '#definitions/Announcement'

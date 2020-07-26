@@ -9,7 +9,7 @@ const getAPIKeyStrategy = require('./expressMiddleWare/DevTokenAuthStrategy')
 const fs = require('fs')
 const sequelize = require('./utils/connection')()
 const secretString = fs.readFileSync(process.env.jwtPEM || './keys/1nfinite.pem')
-const events = require('./routes/events/events')
+const events = require('./routes/events')
 const venues = require("./routes/venues/venues")
 const users = require("./routes/users/users")
 const announcements = require('./routes/announcements/announcements')
@@ -40,7 +40,13 @@ const swaggerDefinition = {
 
 const swaggerSpec = swaggerJSDoc({
   swaggerDefinition,
-  apis: ['./routes/*.js', './routes/**/*.js', './models/*.js']
+  apis: [
+    './routes/*.js',
+    './routes/**/*.js',
+    './models/*.js',
+    './routes/**/*.yml',
+    './models/*.yml',
+  ]
 })
 
 // === Setup Express Routing ===

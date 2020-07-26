@@ -8,15 +8,12 @@ const router = express.Router({ mergeParams: true })
 
 router.use([
   JWTAuthenticator(true),
-  putVerifyEventById]
+  verifyEventById]
 )
 
-function putVerifyEventById(req, res) {
+function verifyEventById(req, res) {
   const id = req.params.id;
   const db = req.app.get('db')
-
-  console.log('!!! WTF: ' + req.params.id)
-  console.log(req.params)
 
   logger.info(`handling request to verify event "${id}"`)
 
