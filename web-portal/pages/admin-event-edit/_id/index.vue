@@ -1,8 +1,10 @@
 <template>
   <div class="container admin-page">
-    <client-only>
-      <submission-form :user_action="'edit'" :user_role="'admin'" :event_id="id"></submission-form>
-    </client-only>
+    <v-app>
+      <client-only>
+        <submission-form :user_action="'edit'" :user_role="'admin'" :event_id="id"></submission-form>
+      </client-only>
+    </v-app>
   </div>
 </template>
 
