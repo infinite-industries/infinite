@@ -149,6 +149,15 @@
       <h3>Full Event Description:</h3>
       <vue-editor id="vue-editor1" v-model="calendar_event.description"></vue-editor>
 
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Tags:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-combobox v-model="generalTags" multiple chips deletable-chips :items="suggestedTags" />
+        </v-flex>
+      </v-layout>
+
       <v-layout row>
         <v-flex xs12>
           <p class="spacer">...</p>
@@ -310,6 +319,8 @@
 
   import { ApiService } from '@/services/ApiService'
   import ImageUploadService from '@/services/ImageUploadService'
+
+  const CONTROL_TAGS = ['remote', 'online-resource', 'postponed', 'cancelled']
 
   const boolToTag = tag => ({
     get: function () {
@@ -594,6 +605,37 @@
 
       showDateTimePicker: function () {
         return [!this.eventIsOnline]
+      },
+
+      // support for editing the tags on the event without considering the ones we
+      // use for specific functionality, which have their own dedicated UI controls
+      generalTags: {
+        get: function () {
+          return this.calendar_event.tags
+            // filter out control tags, which have dedicated UI for adding/removing them
+            ? this.calendar_event.tags.filter(tag => !CONTROL_TAGS.includes(tag))
+            : []
+        },
+        set: function (newValue) {
+          // update with any control tags applied
+          if (this.calendar_event.tags.length > 0) {
+            CONTROL_TAGS.forEach((tag) => {
+              if (this.calendar_event.tags.includes(tag)) newValue.push(tag)
+            })
+          }
+          this.calendar_event.tags = newValue
+        }
+      },
+
+      suggestedTags: function () {
+        return [
+          'gallery',
+          'music',
+          'theater',
+          'film',
+          'talk',
+          'festival'
+        ]
       },
 
       eventRequiredFields: function () {
