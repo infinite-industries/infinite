@@ -13,7 +13,7 @@ const jwtAuthenticator = JWTAuthenticator(true)
 const postBodyChecker = getPostBodyChecker(routerSingularName)
 
 const router = getDefaultRouter(routerName, routerSingularName, AnnouncementController, {}, {
-  createMiddleware: [jwtAuthenticator], // anyone can create a new venue
+  createMiddleware: [jwtAuthenticator],
 });
 
 // makes sure there is at least one announcement either creating and returning it or returning it
