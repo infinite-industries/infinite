@@ -1,16 +1,7 @@
-const moment = require('moment-timezone')
-const uuidv4 = require('uuid/v4')
+const generateICSFileText = require('./helpers/generateICSFileText')
 const express = require('express')
 const router = express.Router()
 const { logger } = require('../../utils/loggers')
-
-const projectSettings = {
-  calscale: 'GREGORIAN',
-  prodid: 'InfiniteIndustries/ics',
-  timezone: 'America/New_York'   // need to figure out a more graceful way to deal with timezones
-}
-
-moment.tz.setDefault(projectSettings.timezone)
 
 router.get('/', (req, res) => {
   try {
@@ -42,28 +33,9 @@ router.get('/', (req, res) => {
       .status(200)
       .send(icsBody)
   } catch (ex) {
-    logger.error(`error generating ics file: ${ex}`)
+    logger.error(`error generating ics file: ${ex}\n ${ex.stack}`)
     res.status(500).send('an error occurred')
   }
 })
-
-function generateICSFileText(summary, dtStart, dtEnd, description, location) {
-  return ['BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    `CALSCALE:${projectSettings.calscale}`,
-    `PRODID:${projectSettings.prodid}`,
-    'METHOD:PUBLISH',
-    'X-PUBLISHED-TTL:PT1H',
-    'BEGIN:VEVENT',
-    `UID:${uuidv4()}`,
-    `SUMMARY:${summary}`,
-    `DTSTAMP:${moment().utc().format('YYYYMMDDTHHmmss')}Z`,
-    `DTSTART:${moment(dtStart).format('YYYYMMDDTHHmmss')}`,
-    `DTEND:${moment(dtEnd).format('YYYYMMDDTHHmmss')}`,
-    `DESCRIPTION:${description}`,
-    location ? `LOCATION:${location}` : '',
-    'END:VEVENT',
-    'END:VCALENDAR'].filter(l => !!l).join('\n')
-}
 
 module.exports = router

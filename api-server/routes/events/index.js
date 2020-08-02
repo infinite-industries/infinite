@@ -1,47 +1,5 @@
 // --- event related API endpoints /events/* ---
 
-/**
- * @swagger
- *
- * definitions:
- *  EventsResponse:
- *    type: object
- *    properties:
- *      status:
- *        type: string
- *        enum: ["success", "failure"]
- *      error_message:
- *        type: string
- *      events:
- *        type: array
- *        items:
- *          $ref: '#definitions/CurrentEvent'
- */
-
-/**
- * @swagger
- *
- * /events/{id}:
- *  delete:
- *    description: Deletes the event specified by the id
- *    produces: application/json
- *    security:
- *      - jwt:
- *    parameters:
- *      - name: id
- *        description: id of event to delete
- *        in: path
- *        required: true
- *        type: string
- *    responses:
- *      200:
- *        description: Success!
- *      501:
- *        description: There was an error processing the request.
- *      422:
- *        description: A parameter supplied was not allowed or understood.
- */
-
 const EventController = require('../../controllers/events')
 const { getDefaultRouter } = require('../helpers/routeHelpers')
 const DatesToISO = require('../middleware/datesToISO')
@@ -51,7 +9,7 @@ const getCurrentNonVerifiedEvents = require('./handlers/getCurrentNonVerifiedEve
 const getAllEventsBySingleTag = require('./handlers/getBySingleTag/getAllEventsBySingleTag')
 const getVerifiedEventsBySingleTag = require('./handlers/getBySingleTag/getVerifiedEventsBySingleTag')
 const getNonVerifiedEventsBySingleTag = require('./handlers/getBySingleTag/getNonVerifiedEventsBySingleTag')
-const putVerifyEventById = require('./handlers/putVerifyEventById')
+const verifyEventById = require('./handlers/verifyEventById')
 const postCreateEventOverride = require('./defaultCrudOverrides/postCreateEventOverride')
 const { filterContactInfo } = require('./helpers')
 
@@ -71,6 +29,6 @@ router.use('/current/verified', [getCurrentVerifiedEvents])
 router.get('/non-verified/tags/:tag', [getNonVerifiedEventsBySingleTag])
 router.get('/tags/:tag', [getAllEventsBySingleTag])
 router.get('/verified/tags/:tag', [getVerifiedEventsBySingleTag])
-router.put('/verify/:id', [putVerifyEventById])
+router.put('/verify/:id', [verifyEventById])
 
 module.exports = router;

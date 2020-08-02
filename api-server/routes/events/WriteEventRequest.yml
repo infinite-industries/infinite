@@ -1,0 +1,9 @@
+definitions:
+  WriteEventRequest:
+    type: object
+    required:
+      - event
+    properties:
+      event:
+        type: object
+        $ref: '#definitions/Event'

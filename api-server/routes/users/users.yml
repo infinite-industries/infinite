@@ -1,0 +1,19 @@
+/users/current:
+  get:
+    description: Returns information about the user of the API based on the JWT token proved
+    produces: application/json
+    security:
+      - jwt:
+    responses:
+      200:
+        description: Success!
+        schema:
+          $ref: '#definitions/UserResponse'
+      501:
+        description: There was an error processing the request.
+        schema:
+          $ref: '#definitions/UserResponse'
+      422:
+        description: A parameter supplied was not allowed or understood.
+        schema:
+          $ref: '#definitions/UserResponse'

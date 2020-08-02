@@ -1,0 +1,13 @@
+definitions:
+  EventsResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        enum: ["success", "failure"]
+      error_message:
+        type: string
+      events:
+        type: array
+        items:
+          $ref: '#definitions/CurrentEvent'
