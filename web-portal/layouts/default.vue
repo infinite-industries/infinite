@@ -4,8 +4,9 @@
     <ii-notifications />
 
     <!-- Toolbar and Nav -->
-    <ii-toolbar />
-
+    <ii-toolbar>
+      <ii-site-navigation slot="navigation" />
+    </ii-toolbar>
     <main>
       <!-- Content -->
       <nuxt />
@@ -20,27 +21,19 @@
 </template>
 
 <script>
-  import Toolbar from '../components/ii-toolbar'
-  import Notifications from '../components/ii-notifications.vue'
-  import Subscribe from '../components/ii-subscribe.vue'
-  import Modal from '../components/ii-modal.vue'
+  import Toolbar from '../components/Toolbar.vue'
+  import Notifications from '../components/Notifications.vue'
+  import Subscribe from '../components/Subscribe.vue'
+  import Modal from '../components/Modal.vue'
+  import SiteNavigation from '../components/SiteNavigation.vue'
 
   export default {
     components: {
       'ii-toolbar': Toolbar,
+      'ii-site-navigation': SiteNavigation,
       'ii-notifications': Notifications,
       'ii-modal': Modal,
       'ii-subscribe': Subscribe
-    },
-    data() {
-      return {
-        // notification: {
-        //   visible: false,
-        //   type: '',
-        //   message: '',
-        //   timeout: false
-        // }
-      }
     },
 
     mounted: async function () {
@@ -58,18 +51,6 @@
           }
         }
       }
-
-      // this.$store.dispatch('LoadAllVenueData')
-
-      // // Clean up localForage if admin pannel deletes an event
-      // EventsFromStore.$on('CALENDAR_EVENT_DELETED', function(data){
-      //   console.log("Delete the Event ", data.id);
-      // })
-      //
-      // // Clean up localForage if admin verifies the event
-      // EventsFromStore.$on('CALENDAR_EVENT_VERIFIED', function(data){
-      //   console.log("EVENT CENTRAL cleanup --- Remove Verified Event", data.id);
-      // })
     }
   }
 </script>
@@ -92,6 +73,15 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
+  }
+
+  /*
+   * Vuetify's light theme uses a slight off-white, which creates a slight
+   * issue on the submission page
+   * This rule can be removed when Vuetify is
+   */
+  .application.theme--light {
+    background: white;
   }
 
   main {

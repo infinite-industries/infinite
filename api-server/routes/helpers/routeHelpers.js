@@ -2,6 +2,7 @@ const express = require("express");
 const uuidv1 = require('uuid/v1');
 const JWTAuthenticator = require(__dirname + '/../../utils/JWTAuthenticator')
 const { logger }  = require(__dirname + '/../../utils/loggers')
+const getPostBodyChecker = require(__dirname + '/../middleware/postBodyChecker')
 
 const JWTAuthChain = [JWTAuthenticator(true)]
 const constants = {
@@ -17,19 +18,29 @@ module.exports = {
 };
 
 function getDefaultRouter(router_name, router_name_singular, controller, forcedValues, options) {
-    const debug = require('debug')('router:' + router_name);
+    options = options || {};
+
     const paramID = `${router_name_singular}ID`
     const identifier = paramID + idRegExp;
 
+    const postBodyChecker = getPostBodyChecker(router_name_singular)
     const router = express.Router();
-    options = options || {};
-    const readMiddleware = options.readMiddleware || []; // by default parse any tokens, don't require them
-    const createMiddleware = options.createMiddleware || JWTAuthChain // by default admin only
-    const createAfterMethod = options.createAfterMethod || (() => null)
-    const updateMiddleware = options.updateMiddleware || JWTAuthChain // by default admin only
-    const readFilter = options.readFilter
 
-    debug('establishing router "/" for router "%s"', router_name);
+    const readMiddleware = options.readMiddleware || []; // by default parse any tokens, don't require them
+    const createAfterMethod = options.createAfterMethod || (() => null)
+
+    // by default creates, updates, and deletes will require a valid JWT with admin level access
+    let createMiddleware = options.createMiddleware || JWTAuthChain // by default admin only
+    let updateMiddleware = options.updateMiddleware || JWTAuthChain // by default admin only
+    let deleteMiddleware = options.deleteMiddleware || JWTAuthChain // by default admin only
+
+  const readFilter = options.readFilter
+
+    // append post body check (eventually i'd like to shift most logic out of this file and into middleware
+    createMiddleware = [...createMiddleware, postBodyChecker] // append post body checks
+    updateMiddleware = [...updateMiddleware, postBodyChecker] // append post body checks
+
+    logger.debug('establishing router "/" for router "%s"', router_name);
     router.get("/", readMiddleware, function(req, res) {
         logger.info("handling request for all " + router_name);
 
@@ -56,7 +67,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
                 logger.warn(`error handling request for all ${router_name}: ${err}`);
                 res.status(500).json({ status: constants.db_error });
             } else {
-                debug('found all requested ' + router_name);
+                logger.debug('found all requested ' + router_name);
 
                 if (sortField) {
                     data = data.sort(function(a, b) {
@@ -76,7 +87,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
         }, query, filter_field);
     });
 
-    debug('establish router /:%s for router %s', identifier, router_name);
+    logger.debug('establish router /:%s for router %s', identifier, router_name);
     router.get("/:" + identifier,
 		readMiddleware,
         function(req, res) {
@@ -92,7 +103,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
                     res.status(500).json({ "status": constants.db_error });
                 }
                 else if (data===null) {
-                    debug('could not find the requested %s:%s', router_name_singular, id);
+                    logger.debug('could not find the requested %s:%s', router_name_singular, id);
                     res.status(404).json({"status":"no_such_id"});
                 }
                 else {
@@ -110,37 +121,30 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
     );
 
     router.put(
-        '/:' + identifier,
-        updateMiddleware,
-        (req, res) => {
-			const id = req.params[paramID];
+      '/:' + identifier,
+      updateMiddleware,
+      (req, res) => {
+          const postJSON = req.postJSON
+          const id = req.params[paramID]
 
-			logger.info(`handling put request for '${router_name}' on id '${id}'`);
-			const postJSON= req.body[router_name_singular];
+          logger.info(`handling put request for '${router_name}' on id '${id}'`)
 
-			if (!postJSON)
-				return res.status(422).json({ status: router_name_singular + ' parameter is required' });
+          controller.update(req.app.get('db'), id, postJSON, function (err) {
+              if (err) {
+                  logger.warn(`error updating ${router_name_singular}: "${err}"`)
+                  return res.status(500).json({status: err})
+              }
 
-			controller.update(req.app.get('db'), id, postJSON, function(err) {
-				if (err) {
-					logger.warn(`error updating ${router_name_singular}: "${err}"`);
-					return res.status(500).json({ status: err });
-				}
+              res.status(200).json({status: 'success', id: postJSON.id})
+          })
+      })
 
-				res.status(200).json({ status: 'success', id: postJSON.id });
-			});
-        });
-
-	router.post(
+    router.post(
 	    '/',
         createMiddleware,
         function(req, res) {
-            logger.info(`handling post request for '$router_name{}'`);
-            const postJSON= req.body[router_name_singular];
-
-            if (!postJSON)
-                return res.status(422).json({ status: router_name_singular + ' parameter is required' });
-
+            logger.info(`handling post request for '${router_name}'`);
+            const postJSON = req.postJSON
             postJSON.id = uuidv1();
 
             if (forcedValues) {
@@ -167,7 +171,7 @@ function getDefaultRouter(router_name, router_name_singular, controller, forcedV
 
 	router.delete(
 	    '/:' + identifier,
-        updateMiddleware,
+        deleteMiddleware,
         (req, res) => {
             const id = req.params[paramID]
 	        logger.info(`handling delete request for "${router_name}" for event id "${id}"`)

@@ -44,7 +44,7 @@
           <!-- G-maps Link -->
           <v-layout row wrap>
             <v-flex xs12>
-              <v-text-field label="Google Maps Link" v-model="new_venue.google_maps_link"></v-text-field>
+              <v-text-field label="Google Maps Link" v-model="new_venue.g_map_link"></v-text-field>
             </v-flex>
           </v-layout>
 
@@ -78,7 +78,7 @@
           city: '',
           zip: '',
           neighborhood: '',
-          google_maps_link: ''
+          g_map_link: ''
         }
       }
     },

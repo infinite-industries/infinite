@@ -18,7 +18,25 @@
         </v-flex>
       </v-layout>
 
-      <date-time-picker v-model="calendar_event.date_times" />
+      <!-- Is event online / remote? -->
+      <v-layout row wrap>
+        <v-flex xs0 sm3></v-flex>
+        <v-flex xs12 sm4 md3>
+          <v-checkbox v-model="eventIsRemote" label="Live Remote Event" />
+        </v-flex>
+        <v-flex xs12 sm4 md4>
+          <v-checkbox v-model="eventIsOnline" label="Online Resource / Project" @change="onOnlineChange" />
+        </v-flex>
+        <v-flex xs8 offset-xs3>
+          <em>Live remote events occur at a particular time. Online Resources are available at any time.</em>
+        </v-flex>
+      </v-layout>
+
+      <v-expansion-panel expand v-model="showDateTimePicker">
+        <v-expansion-panel-content>
+          <date-time-picker v-model="calendar_event.date_times" />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
       <!-- Event Image -->
       <v-layout row wrap>
@@ -26,20 +44,23 @@
           <h3 class="form-label">Event Image<span class="required-field">*</span>:</h3>
         </v-flex>
         <v-flex xs12 sm8>
-          <div v-if="user_action == 'edit'" class="preview-image">
+          <div v-if="user_action === 'edit' && !imageChosen" class="preview-image">
             <img v-if="calendar_event.image" :src="calendar_event.image" alt="">
-            <span>Cannot upload new image at this time</span>
           </div>
           <input
-            v-else
             type="file"
             accept="image/*"
             class="form-control"
-            @change="onFileChange"
             ref="eventImage"
             id="event-image"
             name="event_image"
+            @change="onFileChange('event')"
           >
+          <v-btn
+            v-if="user_action === 'edit' && imageChosen"
+            small
+            @click="onFileClear('event')"
+          >Remove</v-btn>
         </v-flex>
       </v-layout>
 
@@ -49,20 +70,24 @@
           <h3 class="form-label">Social Media Image:</h3>
         </v-flex>
         <v-flex xs12 sm8>
-          <div v-if="user_action =='edit'" class="preview-image">
+          <div v-if="user_action === 'edit' && !socialImageChosen" class="preview-image">
             <img v-if="calendar_event.social_image" :src="calendar_event.social_image" alt="">
-            <span v-if="calendar_event.social_image">Cannot upload new image at this time</span>
-            <span v-else>Not provided; cannot upload at this time</span>
+            <span v-if="!calendar_event.social_image">Not provided</span>
           </div>
           <input
-            v-else
             type="file"
             accept="image/*"
             class="form-control"
             id="event-social-image"
             name="event_social_image"
             ref="eventSocialImage"
+            @change="onFileChange('social')"
           >
+          <v-btn
+            v-if="user_action === 'edit' && socialImageChosen"
+            small
+            @click="onFileClear('social')"
+          >Remove</v-btn>
         </v-flex>
         <v-flex xs8 offset-xs3>
           <em>Image optimized for social media sharing (recommended size 1024X512 under 1MB)</em>
@@ -124,6 +149,15 @@
       <h3>Full Event Description:</h3>
       <vue-editor id="vue-editor1" v-model="calendar_event.description"></vue-editor>
 
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Tags:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-combobox v-model="generalTags" multiple chips deletable-chips :items="suggestedTags" />
+        </v-flex>
+      </v-layout>
+
       <v-layout row>
         <v-flex xs12>
           <p class="spacer">...</p>
@@ -172,6 +206,19 @@
         </v-flex>
       </v-layout>
 
+      <!-- Status (postponed / cancelled) -->
+      <v-layout row wrap v-if="user_action==='edit'" class="status-container">
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Status Flags:</h3>
+        </v-flex>
+        <v-flex xs12 sm3 md2>
+          <v-checkbox v-model="eventIsPostponed" label="Postponed" />
+        </v-flex>
+        <v-flex xs12 sm3 md2>
+          <v-checkbox v-model="eventIsCancelled" label="Cancelled" />
+        </v-flex>
+      </v-layout>
+
       <!-- SUBMIT BUTTON -->
       <v-layout row wrap v-if="user_action==='upload'" class="submit-container">
         <v-flex xs12>
@@ -200,11 +247,23 @@
         <v-flex xs12>
           <div class="text-xs-center">
             <v-btn @click="UpdateEvent()">Save</v-btn>
-            <v-btn @click="VerifyEvent()" v-if="user_role==='admin'" class="btn-verify">Verify</v-btn>
+            <v-btn @click="VerifyEvent()" v-if="!calendar_event.verified && user_role==='admin'" class="btn-verify">Verify</v-btn>
             <v-btn @click="ConfirmDeleteEvent()">Delete</v-btn>
           </div>
         </v-flex>
       </v-layout>
+
+      <!-- PROMPT SAVE IF UNSAVED CHANGES ON VERIFICATION -->
+      <v-dialog v-model="dirtyOnVerifyDialog" persistent max-width="300">
+        <v-card>
+          <v-card-title class="headline">Verifying event will not save your edits - click Save too</v-card-title>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn color="green darken-1" flat="flat" @click.native="dirtyOnVerifyDialog = false">Close</v-btn>
+            <v-btn color="green darken-1" @click.native="dirtyOnVerifyDialog = false; UpdateEvent()">Save Now</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
       <!-- CONFIRM EVENT DELETION -->
       <v-dialog v-model="dialog" persistent max-width="300">
@@ -248,6 +307,8 @@
 </template>
 
 <script>
+  import VueScrollTo from 'vue-scrollto'
+  import isEqual from 'lodash.isequal'
   import moment from 'moment'
   // import VueEditor from 'vue2-editor'
 
@@ -259,16 +320,33 @@
   import { ApiService } from '@/services/ApiService'
   import ImageUploadService from '@/services/ImageUploadService'
 
+  const CONTROL_TAGS = ['remote', 'online-resource', 'postponed', 'cancelled']
+
+  const boolToTag = tag => ({
+    get: function () {
+      return this.calendar_event.tags && this.calendar_event.tags.includes(tag)
+    },
+    set: function (newValue) {
+      if (newValue) {
+        if (!this.calendar_event.tags.includes(tag)) this.calendar_event.tags.push(tag)
+      } else {
+        this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(tag), 1)
+      }
+    }
+  })
+
   export default {
-    props: ['event_id', 'user_role', 'user_action'],
+    props: ['event_id', 'user_role', 'user_action', 'reviewOrg'],
     // user_role --> admin, venue, regular
     // user_action --> upload, edit
     data: function () {
       return {
         dialog: false,
+        dirtyOnVerifyDialog: false,
 
         calendar_event: null,
         imageChosen: false,
+        socialImageChosen: false,
         showPromoTools: false,
         showSubmitError: false,
         promoHTML: '',
@@ -284,18 +362,41 @@
     created: function () {
       const new_event = this.$store.getters.GetCurrentEvent
       this.calendar_event = Object.assign({}, new_event, {
-        date_times: new_event.date_times.map(dt => ({ ...dt }))
+        date_times: new_event.date_times.map(dt => ({ ...dt })),
+        tags: new_event.tags ? new_event.tags.map(t => t) : []
       })
     },
     methods: {
       UpdateEvent: function () {
         console.log(this.calendar_event)
         this.showEventLoadingSpinner = true
-        this.$store.dispatch('admin/UpdateEvent', {
-          id: this.calendar_event.id,
-          event_data: this.calendar_event,
-          idToken: this.$auth.$storage.getState('_token.auth0')
-        }).finally(() => { this.showEventLoadingSpinner = false })
+
+        new Promise((resolve, reject) => {
+          // if new images have been selected, upload them
+          if (
+            this.$refs.eventImage.files.length > 0 ||
+            this.$refs.eventSocialImage.files.length > 0
+          ) {
+            ImageUploadService.forEvent(
+              this.$refs.eventImage.files[0],
+              this.$refs.eventSocialImage.files[0]
+            ).then(resolve).catch(reject)
+          } else resolve({})
+        }).then((response) => {
+          // if response, update event prior to saving
+          const data = response.data
+          if (data && data.hero) this.calendar_event.image = data.hero
+          if (data && data.social) this.calendar_event.social_image = data.social
+
+          this.$store.dispatch('admin/UpdateEvent', {
+            id: this.calendar_event.id,
+            event_data: this.calendar_event,
+            idToken: this.$auth.$storage.getState('_token.auth0')
+          }).finally(() => { this.showEventLoadingSpinner = false })
+        }).catch((error) => {
+          console.error(error)
+          this.showSubmitError = true
+        })
       },
       ConfirmDeleteEvent: function () {
         this.dialog = true
@@ -313,13 +414,21 @@
       VerifyEvent: function () {
         this.showEventLoadingSpinner = true
 
+        const isDirty = !isEqual(this.calendar_event, this.$store.getters.GetCurrentEvent)
+
         this.$store.dispatch('admin/VerifyEvent', {
           id: this.calendar_event.id,
           idToken: this.$auth.$storage.getState('_token.auth0')
         })
           .then(() => {
             this.showEventLoadingSpinner = false
-            this.$router.push('/admin')
+            if (isDirty) {
+              // workaround to avoid accidentally unverifying
+              this.calendar_event.verified = true
+              this.dirtyOnVerifyDialog = true
+            } else {
+              this.$router.push('/admin')
+            }
           })
           .catch(() => {
             this.showEventLoadingSpinner = false
@@ -339,12 +448,13 @@
 
         const event = {
           ...this.calendar_event,
-          organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : []
+          organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
+          reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
         }
 
         ImageUploadService.forEvent(
-          document.getElementById('event-image').files[0],
-          document.getElementById('event-social-image').files[0]
+          this.$refs.eventImage.files[0],
+          this.$refs.eventSocialImage.files[0]
         ).then((response) => {
           event.image = response.data.hero
           if (response.data.social) event.social_image = response.data.social
@@ -355,7 +465,8 @@
           this.showPromoTools = true
           console.log('GOT BACK - ' + JSON.stringify(response.data))
           this.parseEventToHTML(event, response.data.id)
-          this.$SmoothScroll(this.$refs.promoTools)
+
+          VueScrollTo.scrollTo(this.$refs.promoTools)
         }).catch((error) => {
           console.log(error)
           this.showEventLoadingSpinner = false
@@ -424,9 +535,27 @@
 
       // console.log(this.promoHTML)
       },
-      onFileChange: function () {
+      onOnlineChange: function () {
+        if (this.eventIsOnline) {
+          this.calendar_event.date_times = []
+        }
+      },
+      onFileChange: function (type) {
         // files.length will be a 0 for no image, 1 for image
-        this.imageChosen = this.$refs.eventImage.files.length
+        if (type === 'event') {
+          this.imageChosen = this.$refs.eventImage.files.length
+        } else if (type === 'social') {
+          this.socialImageChosen = this.$refs.eventSocialImage.files.length
+        }
+      },
+      onFileClear: function (type) {
+        if (type === 'event') {
+          this.$refs.eventImage.value = null
+          this.imageChosen = 0
+        } else if (type === 'social') {
+          this.$refs.eventSocialImage.value = null
+          this.socialImageChosen = 0
+        }
       },
       isEmail: function (text) {
         const regex = /\S+@\S+\.\S+/
@@ -434,11 +563,9 @@
       },
       hasValidDateTimes: function () {
         if (this.calendar_event.hasOwnProperty('date_times')) {
-          if (this.calendar_event.date_times.length > 0) {
-            return true
-          } else {
-            return false
-          }
+          // online resources don't have fixed times
+          if (this.calendar_event.tags.includes('online-resource')) return this.calendar_event.date_times.length === 0
+          else return this.calendar_event.date_times.length > 0
         } else {
           return false
         }
@@ -468,6 +595,47 @@
         }
 
         return this.$store.getters.GetAllVenues
+      },
+
+      eventIsRemote: boolToTag('remote'),
+      eventIsOnline: boolToTag('online-resource'),
+
+      eventIsPostponed: boolToTag('postponed'),
+      eventIsCancelled: boolToTag('cancelled'),
+
+      showDateTimePicker: function () {
+        return [!this.eventIsOnline]
+      },
+
+      // support for editing the tags on the event without considering the ones we
+      // use for specific functionality, which have their own dedicated UI controls
+      generalTags: {
+        get: function () {
+          return this.calendar_event.tags
+            // filter out control tags, which have dedicated UI for adding/removing them
+            ? this.calendar_event.tags.filter(tag => !CONTROL_TAGS.includes(tag))
+            : []
+        },
+        set: function (newValue) {
+          // update with any control tags applied
+          if (this.calendar_event.tags.length > 0) {
+            CONTROL_TAGS.forEach((tag) => {
+              if (this.calendar_event.tags.includes(tag)) newValue.push(tag)
+            })
+          }
+          this.calendar_event.tags = newValue
+        }
+      },
+
+      suggestedTags: function () {
+        return [
+          'gallery',
+          'music',
+          'theater',
+          'film',
+          'talk',
+          'festival'
+        ]
       },
 
       eventRequiredFields: function () {
@@ -588,6 +756,10 @@
 .preview-image span {
   vertical-align: top;
   line-height: 2;
+}
+
+.status-container .v-input--checkbox {
+  margin-top: 22px;
 }
 
 </style>

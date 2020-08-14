@@ -61,6 +61,7 @@ function doDeploy {
 
   echo 'starting server'
   cd $ROOT/infinite
+  npm run db:migrate
   forever start -a --uid infinite index.js
   echo 'Done!'
 EOF

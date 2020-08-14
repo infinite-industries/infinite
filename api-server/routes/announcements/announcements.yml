@@ -1,0 +1,72 @@
+/announcements:
+  get:
+    description: gets the list of announcements
+    produces: application/json
+    responses:
+      200:
+        description: Success!
+        schema:
+          $ref: '#definitions/AnnouncementResponse'
+      501:
+        description: There was an error processing the request.
+        schema:
+          $ref: '#definitions/AnnouncementResponse'
+      422:
+        description: A parameter supplied was not allowed or understood.
+        schema:
+          $ref: '#definitions/AnnouncementResponse'
+  post:
+    description: creates a new announcement (requires admin access)
+    produces: application/json
+    security:
+      - jwt:
+    parameters:
+      - in: body
+        name: announcement
+        description: the announcement to create
+        schema:
+          $ref: '#/definitions/NewAnnouncementRequest'
+    responses:
+      200:
+        description: Success!
+        schema:
+          $ref: '#definitions/AnnouncementResponse'
+      501:
+        description: There was an error processing the request.
+        schema:
+          $ref: '#definitions/AnnouncementResponse'
+      422:
+        description: A parameter supplied was not allowed or understood.
+        schema:
+          $ref: '#definitions/AnnouncementResponse'
+
+/announcements/{id}:
+  put:
+    description: updates an announcement (requires admin access)
+    produces: application/json
+    security:
+      - jwt:
+    parameters:
+      - name: id
+        description: the announcement to update
+        in: path
+        required: true
+        type: string
+      - in: body
+        name: announcement
+        description: the announcement to create
+        schema:
+          $ref: '#/definitions/NewAnnouncementRequest'
+    responses:
+      200:
+        description: Success!
+        schema:
+          $ref: '#definitions/AnnouncementResponse'
+      501:
+        description: There was an error processing the request.
+        schema:
+          $ref: '#definitions/AnnouncementResponse'
+      422:
+        description: A parameter supplied was not allowed or understood.
+        schema:
+          $ref: '#definitions/AnnouncementResponse'

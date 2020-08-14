@@ -1,6 +1,4 @@
-// working on seeding the database
-
-require('dotenv').config()
+require('dotenv').config() // load dotenv early to provide access to env values
 
 const JWTParser = require(__dirname + '/utils/JWTParser')
 const userController = require(__dirname + '/controllers/users')
@@ -12,11 +10,44 @@ const fs = require('fs')
 const sequelize = require('./utils/connection')()
 const secretString = fs.readFileSync(process.env.jwtPEM || './keys/1nfinite.pem')
 const events = require('./routes/events')
-const venues = require("./routes/venues")
-const eventLists = require("./routes/eventLists")
-const users = require("./routes/users")
-const createICSFile = require('./routes/createICSFile')
+const venues = require("./routes/venues/venues")
+const users = require("./routes/users/users")
+const announcements = require('./routes/announcements/announcements')
+const createICSFile = require('./routes/icsFile/createICSFile')
 const { logger }  = require(__dirname + '/utils/loggers')
+const swaggerJSDoc = require('swagger-jsdoc')
+const swaggerUi = require('swagger-ui-express')
+
+// === Setup Constants ===
+const appPort = process.env.PORT || 3003;
+const schemes = [process.env.API_SCHEME || 'http']
+const defaultAPIHost = 'localhost:' + appPort
+const apiHost = process.env.API_HOST || defaultAPIHost
+
+// === Setup Swagger Docs (/api-docs) ===
+const swaggerDefinition = {
+  info: {
+    title: 'Infinite Industries API',
+    version: '1.0.0',
+    description: [
+      'This api provides information about cultural events in and around Lexington Kentucky.',
+      'It provides the backing for https://infinite.industries.'].join(' '),
+  },
+  host: apiHost,
+  basePath: '/',
+  schemes
+}
+
+const swaggerSpec = swaggerJSDoc({
+  swaggerDefinition,
+  apis: [
+    './routes/*.js',
+    './routes/**/*.js',
+    './models/*.js',
+    './routes/**/*.yml',
+    './models/*.yml',
+  ]
+})
 
 // === Setup Express Routing ===
 const app = express()
@@ -24,6 +55,7 @@ const app = express()
 app.set('db', sequelize)
 app.set('superSecret', secretString)
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(bodyParser.json())
 app.use(passport.initialize())
 passport.use(getAPIKeyStrategy(sequelize))
@@ -74,12 +106,11 @@ app.use((req, res, next) => {
 
 app.use("/events", events)
 app.use("/venues", venues)
-app.use("/event-lists", eventLists)
 app.use("/users", users)
 app.use('/create-ics-file', createICSFile)
+app.use('/announcements', announcements)
 
-const appPort = process.env.PORT || '3003';
-
+// === Setup Sequelize Database Access ===
 logger.info('Connecting to database')
 sequelize
   .authenticate()

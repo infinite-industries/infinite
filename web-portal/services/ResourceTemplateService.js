@@ -3,7 +3,7 @@
  *
  * returns a new calendar event for the submission form
  *
- * @returns {{website_link: string, image: string, venue: {createdAt: string, address: string, name: string, id: string, slug: string, updatedAt: string, g_map_link: string}, multi_day: boolean, address: string, brief_description: string, ticket_link: string, additional_dates: [], description: string, title: string, social_image: string, admission_fee: string, eventbrite_link: string, organizers: string, date_times: [], id: string, organizer_contact: string, fb_event_link: string}}
+ * @returns {{website_link: string, image: string, venue: {createdAt: string, address: string, name: string, id: string, slug: string, updatedAt: string, g_map_link: string}, multi_day: boolean, address: string, brief_description: string, ticket_link: string, additional_dates: [], description: string, title: string, social_image: string, admission_fee: string, eventbrite_link: string, organizers: string, date_times: [], id: string, organizer_contact: string, fb_event_link: string, tags: []}}
  */
 export function getEmptyCalendarEvent() {
   return {
@@ -34,7 +34,8 @@ export function getEmptyCalendarEvent() {
     ticket_link: '',
     organizer_contact: '',
     multi_day: false,
-    additional_dates: []
+    additional_dates: [],
+    tags: []
 
   }
 }

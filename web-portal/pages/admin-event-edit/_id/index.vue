@@ -1,8 +1,10 @@
 <template>
   <div class="container admin-page">
-    <client-only>
-      <submission-form :user_action="'edit'" :user_role="'admin'" :event_id="id"></submission-form>
-    </client-only>
+    <v-app>
+      <client-only>
+        <submission-form :user_action="'edit'" :user_role="'admin'" :event_id="id"></submission-form>
+      </client-only>
+    </v-app>
   </div>
 </template>
 
@@ -11,7 +13,11 @@
   // import { ApiService } from '../services/ApiService'
 
   export default {
+    props: [
+      'id'
+    ],
     middleware: 'auth',
+    layout: 'admin',
     head: function () {
       const event = this.$store.getters.GetCurrentEvent
       return {
@@ -26,27 +32,14 @@
         venues: []
       }
     },
-    fetch: function ({ store, params }) {
+    fetch: function ({ store, params, app }) {
+      const idToken = app.$auth.$storage.getState('_token.auth0')
+
       return Promise.all([
-        store.dispatch('admin/LoadCurrentEvent', params.id),
+        store.dispatch('admin/LoadCurrentEvent', { id: params.id, idToken }),
         store.dispatch('LoadAllVenueData')
       ])
     },
-    props: [
-      'id'
-    ],
-    mounted: function () {
-      console.log('MY ID:', this.id)
-      // this.$store.dispatch('LoadCurrentEvent', this.id)
-    },
-    // computed: {
-    //   values_to_edit: function() {
-    //     return this.$store.getters.GetCurrentEvent
-    //   }
-    // },
-    // methods: {
-    //
-    // },
     components: {
       'submission-form': SubmissionForm
     }
@@ -55,9 +48,6 @@
 
 <style scoped>
   .admin-page {
-    background: white;
-    color: black;
-    border-radius: 10px;
     width: 95%;
     max-width: unset;
   }
