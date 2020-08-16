@@ -18,8 +18,6 @@ Artists constantly evolve, inventing new genres and redefining their methods. Th
 <a href="https://github.com/infinite-industries/infinite/tree/master/web-portal">Web Portal Documentation</a>
 ### Widget
 <a href="https://github.com/infinite-industries/infinite/tree/master/widget">Widget Documentation</a>
-## Contributing to Infinite Industries
-Please contact us at info@infiniteindustries
 
 ## Current Project Team Members
 + Matthew
@@ -29,6 +27,8 @@ Please contact us at info@infiniteindustries
 Past Contributors
 + Evan
 + Eugene
+
+Please contact us at info@infiniteindustries We will walk you through how to start running various components in your local dev environment.
 
 ## License
 
