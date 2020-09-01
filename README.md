@@ -14,23 +14,25 @@ Artists constantly evolve, inventing new genres and redefining their methods. Th
 ## Project Components
 The project is split into API and various components that source information from it. We are intentionally trying to centralize the information and de-centralize the types of services that consume the data.
 ### API
-Our db and a RESTful interface to our db. <br/>
-<a href="https://github.com/infinite-industries/infinite/tree/master/api-server">API Documentation</a>
+Our db and a RESTful interface to our db.
+
+[API Documentation](https://github.com/infinite-industries/infinite/tree/master/api-server)
 ### Web Portal
-Most of the world sees us here. <br/>
-<a href="https://github.com/infinite-industries/infinite/tree/master/web-portal">Web Portal Documentation</a>
+Most of the world sees us here.
+
+[Web Portal Documentation](https://github.com/infinite-industries/infinite/tree/master/web-portal)
 ### Widget
-Can be embedded in partner websites and services.<br/>
-<a href="https://github.com/infinite-industries/infinite/tree/master/widget">Widget Documentation</a>
+Can be embedded in partner websites and services.
+[Widget Documentation](https://github.com/infinite-industries/infinite/tree/master/widget)
 
 ## Current Project Team Members
-+ <a href="https://github.com/MatthewGidcomb" target="_new">Matthew Gidcomb</a>
-+ <a href="https://github.com/chriswininger" target="_new">Chris Wininger</a>
-+ <a href="https://github.com/Digi-D" target="_new">Dima Strakovsky</a>
++ [Matthew Gidcomb](https://github.com/MatthewGidcomb)
++ [Chris Wininger](https://github.com/chriswininger)
++ [Dima Strakovsky](https://github.com/Digi-D)
 
 #### Past Contributors
-+ <a href="https://github.com/epheat" target="_new">Evan Heaton</a>
-+ <a href="https://github.com/dix-icomys" target="_new">Yevhen Lukin</a>
++ [Evan Heaton](https://github.com/epheat)
++ [Yevhen Lukin](https://github.com/dix-icomys)
 
 Please contact us at info@infiniteindustries We will walk you through how to start running various components in your local dev environment.
 
