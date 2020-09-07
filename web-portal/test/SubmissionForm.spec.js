@@ -1,5 +1,6 @@
 import Vuex from 'vuex'
 import Vuetify from 'vuetify'
+import moment from 'moment'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import SubmissionForm from '../components/SubmissionForm'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
@@ -38,6 +39,9 @@ describe('SubmissionForm component', () => {
 
   it('.parseEventToHTML should generate previews with the correct times', async () => {
     const filledOutEvent = getFilledOutEvent()
+    const formattedEventDate = moment(filledOutEvent.date_times[0].start_time).format('dddd, MMMM Do, YYYY')
+    const formattedEventStart = moment(filledOutEvent.date_times[0].start_time).format('h:mma')
+    const formattedEventEnd = moment(filledOutEvent.date_times[0].end_time).format('h:mma')
 
     ApiService.get.mockResolvedValue(getMockVenueResponse(filledOutEvent.venue_id))
 
@@ -46,7 +50,7 @@ describe('SubmissionForm component', () => {
     // fetches the correct venue through the api
     expect(ApiService.get).toBeCalledWith(`/venues/${filledOutEvent.venue_id}`)
 
-    expect(wrapper.vm.promoHTML).toContain('Friday, January 31st, 2020 - 1:00pm to 2:00pm')
+    expect(wrapper.vm.promoHTML).toContain(`${formattedEventDate} - ${formattedEventStart} to ${formattedEventEnd}`)
   })
 
   function getFilledOutEvent() {
