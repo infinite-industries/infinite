@@ -1,0 +1,33 @@
+name: Widget Tests
+
+on:
+  pull_request:
+    branches:
+      - development
+      - master
+    paths:
+      - 'widget/**'
+  push:
+    branches:
+      - development
+      - master
+    paths:
+      - 'widget/**'
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12 # TODO: what are we actually running on production?
+      - name: Check Node version
+        run: node --version
+      - name: Install Widget Dependencies
+        run: npm ci
+        working-directory: './widget'
+      - name: Run Unit Tests
+        run: npm run test
+        working-directory: './widget'
