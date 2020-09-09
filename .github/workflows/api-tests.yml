@@ -43,9 +43,10 @@ jobs:
         run: npm run db:refresh:it # TODO: is this the right command?
         working-directory: './api-server'
         env:
+          NODE_ENV: test
           POSTGRES_USER: infinite
           POSTGRES_PW: infinite
-          POSTGRES_HOST: localhost
+          POSTGRES_HOST: '127.0.0.1'
           POSTGRES_PORT: 5432
           POSTGRES_DB: infinie
       - name: Run Tests
