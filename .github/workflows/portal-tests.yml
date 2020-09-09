@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: '8.12'
       - name: Check Node version
         run: node --version
       - name: Install Portal Dependencies
