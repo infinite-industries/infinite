@@ -22,7 +22,10 @@
     "art",
     "api"
   ],
-  "author": "Infinite Industries",
+  "author": {
+    "name": "Infinite Crew",
+    "url": "https://infinite.industries/who-we-are"
+  },
   "license": "MIT",
   "devDependencies": {
     "faker": "^4.1.0",
