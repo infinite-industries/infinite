@@ -50,7 +50,7 @@ jobs:
           POSTGRES_PW: infinite
           POSTGRES_HOST: '127.0.0.1'
           POSTGRES_PORT: 5432
-          POSTGRES_DB: infinie
+          POSTGRES_DB: infinite
       - name: Run Tests
         run: npm run test
         working-directory: './api-server'
