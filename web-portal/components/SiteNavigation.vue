@@ -4,9 +4,6 @@
       <nuxt-link to="/">Home</nuxt-link>
     </li>
     <li>
-      <nuxt-link to="/remote">Remote</nuxt-link>
-    </li>
-    <li>
       <nuxt-link to="/our-mission">Our Mission</nuxt-link>
     </li>
     <li>
@@ -24,11 +21,14 @@
     <li>
       <nuxt-link to="/legal">Legal</nuxt-link>
     </li>
-    <li v-if="$auth.loggedIn">
-      <nuxt-link to="/logout">Logout</nuxt-link>
+    <li>
+      <nuxt-link to="/donate">Donate</nuxt-link>
     </li>
     <li>
       <nuxt-link to="/contact">Contact</nuxt-link>
+    </li>
+    <li v-if="$auth.loggedIn">
+      <nuxt-link to="/logout">Logout</nuxt-link>
     </li>
   </ul>
 </template>
