@@ -1,5 +1,6 @@
 # Infinite Industries
-<img src="./docs/doc-splash.png">
+
+![Infinite Industries screen cap](./docs/doc-splash.png)
 
 ## Mission Statement
 
