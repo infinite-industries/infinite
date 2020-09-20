@@ -64,7 +64,7 @@ This application communicates with an [API server](https://github.com/infinite-i
 
 2. Start the Nuxt production server
  ```bash
- npm run start
+npm run start:dev
  ```
 
 ## Running Tests

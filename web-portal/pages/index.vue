@@ -4,6 +4,9 @@
     <ii-jumbotron />
 
     <ii-list-viewer :calendar_events="events" />
+
+    <h2>Online Resources / Projects</h2>
+    <ii-list-viewer :calendar_events="streamEvents" />
   </div>
 </template>
 
@@ -20,11 +23,15 @@
     computed: {
       events: function () {
         return this.$store.getters.GetAllLocalEvents
+      },
+      streamEvents: function () {
+        return this.$store.getters.GetAllStreamEvents
       }
     },
     fetch: function ({ store }) {
       return Promise.all([
         store.dispatch('LoadAllLocalEventData'),
+        store.dispatch('LoadAllStreamingEventData'),
         store.dispatch('LoadAllVenueData')
       ])
     },
@@ -36,5 +43,15 @@
 </script>
 
 <style scoped>
+  h2 {
+    text-align: center;
+    color: white;
+  }
 
+  @media only screen and (min-width: 480px) {
+    h2 {
+      text-align: left;
+      padding: 0 20px;
+    }
+  }
 </style>
