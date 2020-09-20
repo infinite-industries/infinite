@@ -15,24 +15,8 @@
 <script>
   export default {
     data: function () {
-      return {
-        show_blank: true
-      }
-    },
-    methods: {
-      FillInTheBlank: function (status) {
-        if (status === 'ON') {
-          this.show_blank = false
-        } else {
-          this.show_blank = true
-        }
-      }
+      return {}
     }
   }
 </script>
 
-<style scoped>
-  #fill-in-the-blank{
-    cursor: pointer;
-  }
-</style>
