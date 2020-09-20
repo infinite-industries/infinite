@@ -17,7 +17,7 @@ const test_event = {
     }
 }
 
-const expected_event_url = SITE_URL + "/events/" + test_event.id
+const expected_event_url = "https://infinite.industries/events/" + test_event.id
 
 const long_description = [
     'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet,',
@@ -25,15 +25,19 @@ const long_description = [
     'Lorem ipsum dolor sit amet, Lorem ipsum dolor sit amet,'
 ].join(' ')
 
+const test_context = {
+    getSiteUrl: jest.fn(() => 'https://infinite.industries')
+}
+
 test('renders a card', () => {
-    expect(Card(test_event)).toContain(test_event.title)
-    expect(Card(test_event)).toContain(test_event.brief_description)
-    expect(Card(test_event)).toContain(expected_event_url)
-    expect(Card(test_event)).toContain("February")
+    expect(Card(test_context, test_event)).toContain(test_event.title)
+    expect(Card(test_context, test_event)).toContain(test_event.brief_description)
+    expect(Card(test_context, test_event)).toContain(expected_event_url)
+    expect(Card(test_context, test_event)).toContain("February")
 })
 
 test('truncates a long description', () => {
-    const testRender = Card(Object.assign({}, test_event, {
+    const testRender = Card(test_context, Object.assign({}, test_event, {
         brief_description: long_description
     }))
     // does not contain the full description

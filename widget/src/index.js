@@ -1,63 +1,71 @@
 // Infinite Industries Widget
 
-const PATH = `${API_URL}/events/current/verified?embed=venue`
-
 // Import API helper
 import APIService from './apiService.js'
-// Import Card template and renderer
-import Card from './card.js'
-import Header from './header.js'
+import Context from './context.js'
+import RenderCardsViewer from './cardsViewer.js'
+import RenderEventViewer from './eventViewer.js'
+import RenderHeader from './header.js'
 import Loader from './loader.js'
+import Pagination from './pagination.js'
+import ErrorMessage from './errorMessage.js'
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("begin injecting widget content")
-    const infinite_widget_container = document.querySelector('#infinite-widget')
+    // console.log("begin injecting widget content")
+    let which_page = 0
 
-    if(infinite_widget_container !== null){
+    const elements = document.querySelectorAll('#infinite-widget')
 
-        const title = infinite_widget_container.getAttribute("data-widget-title")
+    if (elements.length > 0) {
+        elements.forEach(function (element) {
+            const context = new Context(element)
+            element.innerHTML = RenderHeader(context.getTitle(), context.getSiteUrl())
 
-        if (title !== null) {
-            infinite_widget_container.innerHTML = Header(title)
-        }
-        else {
-            infinite_widget_container.innerHTML = Header()
-        }
+            // spinny thingy while loading
+            const loader = document.createElement('div')
+            loader.innerHTML = Loader()
+            loader.style.alignContent = 'center'
+            element.appendChild(loader)
 
+            console.log("Loading widget content...")
 
-        // spinny thingy while loading
-        const loader = document.createElement('div')
-        loader.innerHTML = Loader()
-        infinite_widget_container.appendChild(loader)
-
-        console.log("Loading widget content...")
-
-        APIService.get(PATH, (err, events) => {
-            if(err){
-                infinite_widget_container.innerHTML = "<h2>Unable to reach the server :(</h2> <p>For the nerds among us, the error output is in the console log.</p>"
-                console.log(err)
-            }
-            else {
-                loader.remove()
-                const content = document.createElement('div')
-                content.setAttribute("id", "infinite-widget-content")
-                infinite_widget_container.appendChild(content)
-
-                events.forEach((event)=>{
-                    console.log("\n-----------\n" + JSON.stringify(event))
-                    content.insertAdjacentHTML('beforeend', Card(event))
-
-                    // inject the image -- this is a bit hacky, need to think through a more elegant solution
-                    const last_child = content.lastChild
-                    const image_container = last_child.querySelector(".infinite-image-container")
-
-                    image_container.innerHTML = '<a href="' + SITE_URL + '/events/' + event.id +'" target="_new"><div class="image-surface" style="width:100%;height:150px; background:url(' + event.image + ') center center / cover no-repeat;cursor:pointer;"></div></a>'
-
+            if (context.getEventId()) {
+                // special mode: render single card
+                APIService.getEvent(context, (err, event) => {
+                    if (err) {
+                        element.innerHTML = ErrorMessage(err)
+                    } else {
+                        loader.remove()
+                        RenderEventViewer(context, event)
+                    }
+                })
+            } else {
+                // render list
+                const cards_per_page = context.getPageSize()
+                APIService.getEvents(context, (err, events) => {
+                    if(err){
+                        element.innerHTML = ErrorMessage(err)
+                    }
+                    else {
+                        loader.remove()
+    
+                        const cards_viewer_container = document.createElement('div')
+                        cards_viewer_container.setAttribute("id", "infinite-card-viewer-container")
+                        element.appendChild(cards_viewer_container)
+    
+                        let cards_viewer = RenderCardsViewer(context, cards_viewer_container, events, cards_per_page, which_page)
+    
+                        if((events.length - cards_per_page)>=0){
+                            Pagination(context, events, function (new_page_number) {
+                                cards_viewer.remove()
+                                cards_viewer = RenderCardsViewer(context, cards_viewer_container, events, cards_per_page, new_page_number)
+                            })
+                        }
+                    }
                 })
             }
         })
-    }
-    else {
+    } else {
         console.log("Please make sure that element with id \"infinite-widget\" is present in the body of your document.")
     }
 })

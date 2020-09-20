@@ -1,0 +1,9 @@
+definitions:
+  WriteResponse:
+    type: object
+    properties:
+      status:
+        type: string
+        enum: ["success", "failure"]
+      id:
+        type: string

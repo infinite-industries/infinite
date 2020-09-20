@@ -1,7 +1,7 @@
 // User (devs curators) management here
-const UsersController = require("../controllers/users");
-const JWTAuthenticator = require(__dirname + '/../utils/JWTAuthenticator')
-const { logger } = require(__dirname + '/../utils/loggers')
+const UsersController = require("../../controllers/users");
+const JWTAuthenticator = require('../../utils/JWTAuthenticator')
+const { logger } = require('../../utils/loggers')
 
 const authChain = [JWTAuthenticator(false)] // require token
 
@@ -9,7 +9,7 @@ const constants = {
 	db_error: "db_fail",
 	success_status: "success"
 };
-const { getDefaultRouter } = require("./helpers/routeHelpers");
+const { getDefaultRouter } = require("../helpers/routeHelpers");
 const router = getDefaultRouter("users", "user", UsersController, {}, {
 	// provides special controller methods for getters to merge data from multiple tables
 	allMethod: UsersController.allAndMergeWithEventLists,

@@ -10,11 +10,10 @@ const fs = require('fs')
 const sequelize = require('./utils/connection')()
 const secretString = fs.readFileSync(process.env.jwtPEM || './keys/1nfinite.pem')
 const events = require('./routes/events')
-const venues = require("./routes/venues")
-const eventLists = require("./routes/eventLists")
-const users = require("./routes/users")
-const announcements = require('./routes/announcements')
-const createICSFile = require('./routes/createICSFile')
+const venues = require("./routes/venues/venues")
+const users = require("./routes/users/users")
+const announcements = require('./routes/announcements/announcements')
+const createICSFile = require('./routes/icsFile/createICSFile')
 const { logger }  = require(__dirname + '/utils/loggers')
 const swaggerJSDoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
@@ -41,7 +40,13 @@ const swaggerDefinition = {
 
 const swaggerSpec = swaggerJSDoc({
   swaggerDefinition,
-  apis: ['./routes/*.js', './models/*.js']
+  apis: [
+    './routes/*.js',
+    './routes/**/*.js',
+    './models/*.js',
+    './routes/**/*.yml',
+    './models/*.yml',
+  ]
 })
 
 // === Setup Express Routing ===
@@ -101,7 +106,6 @@ app.use((req, res, next) => {
 
 app.use("/events", events)
 app.use("/venues", venues)
-app.use("/event-lists", eventLists)
 app.use("/users", users)
 app.use('/create-ics-file', createICSFile)
 app.use('/announcements', announcements)

@@ -1,0 +1,28 @@
+/create-ics-file:
+  get:
+    descripton: returns an ics file to use for adding an event to a calander program
+    parameters:
+      - name: title
+        in: query
+        required: true
+        type: string
+      - name: time_start
+        in: query
+        required: true
+        description: the starting date and time for the event
+      - name: time_end
+        in: query
+        required: true
+        description: the ending date and time for the even
+      - name: location
+        in: query
+        required: false
+        description: the location of the event if applicable
+      - name: description
+        in: query
+        required: false
+    produces: text
+    responses:
+      200:
+        description: Success!
+        type: string

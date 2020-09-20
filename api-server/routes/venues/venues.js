@@ -1,8 +1,8 @@
 // event related API endpoints
-const VenueController = require("../controllers/venues");
-const { getDefaultRouter } = require("./helpers/routeHelpers");
-const slack = require('../utils/slackNotify')
-const { logger } = require(__dirname + '/../utils/loggers')
+const VenueController = require("../../controllers/venues");
+const { getDefaultRouter } = require("../helpers/routeHelpers");
+const slack = require('../../utils/slackNotify')
+const { logger } = require('../../utils/loggers')
 const env = process.env.ENV || 'dev'
 
 const router = getDefaultRouter("venues", "venue", VenueController, {}, {

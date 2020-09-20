@@ -1,0 +1,74 @@
+/events/{id}:
+  delete:
+    description: Deletes the event specified by the id
+    produces: application/json
+    security:
+      - jwt:
+    parameters:
+      - name: id
+        description: id of event to delete
+        in: path
+        required: true
+        type: string
+    responses:
+      200:
+        description: Success!
+      501:
+        description: There was an error processing the request.
+      422:
+        description: A parameter supplied was not allowed or understood.
+  put:
+    description: Updates the event specified by the id
+    produces: application/json
+    security:
+      - jwt:
+    parameters:
+      - name: id
+        description: id of event to update
+        in: path
+        required: true
+        type: string
+      - name: event
+        in: body
+        description: the event to upate
+        type: object
+        schema:
+          $ref: '#/definitions/WriteEventRequest'
+    responses:
+      200:
+        description: Success!
+        schema:
+          $ref: '#definitions/WriteResponse'
+      501:
+        description: There was an error processing the request.
+        schema:
+          $ref: '#definitions/WriteResponse'
+      422:
+        description: A parameter supplied was not allowed or understood.
+        schema:
+          $ref: '#definitions/WriteResponse'
+
+/events:
+  post:
+    description: Creates a new un-verified event and alerts
+    produces: application/json
+    parameters:
+      - name: event
+        in: body
+        description: the event to create
+        type: object
+        schema:
+          $ref: '#/definitions/WriteEventRequest'
+    responses:
+      200:
+        description: Success!
+        schema:
+          $ref: '#definitions/WriteResponse'
+      501:
+        description: There was an error processing the request.
+        schema:
+          $ref: '#definitions/WriteResponse'
+      422:
+        description: A parameter supplied was not allowed or understood.
+        schema:
+          $ref: '#definitions/WriteResponse'

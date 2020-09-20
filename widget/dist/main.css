@@ -56,11 +56,11 @@
 @supports (display: grid) {
     #infinite-widget-content{
         display: grid;
-        grid-template-columns: repeat(auto-fill,minmax(275px,1fr));
+        grid-template-columns: repeat(auto-fit,minmax(275px,290px));
         grid-gap: 5px;
 
+        justify-content: center;
         justify-items: center;
-        align-items: top;
     }
 }
 
@@ -137,6 +137,12 @@
     font-size: 1.1em;
 }
 
+#infinite-card-viewer-container {
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 550px;
+}
+
 .infinite-card-title {
     margin-bottom: 0px;
 }
@@ -192,6 +198,57 @@
 .infinite-btn-actions a:link, .infinite-btn-actions a:visited, .infinite-btn-actions a:hover  {
     text-decoration: none;
 }
+
+#infinite-widget-pagination {
+    color: white;
+    text-align: center;
+    margin-top: 20px;
+    font-family: 'Open Sans', Tahoma, Geneva, Verdana, sans-serif;
+
+    display: flex;
+    justify-content: space-around;
+}
+
+#infinite-mobile-cards-page-number {
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    margin:10px;
+    padding-left:20px;
+    padding-right: 15px;
+}
+
+select {
+    height:40px;
+    line-height:40px;
+
+    /* no down arrow */
+    appearance:none;
+	-webkit-appearance:none;
+	-moz-appearance:none;
+	-ms-appearance:none;
+}
+
+#infinite-cards-next, #infinite-cards-previous, .infinite-cards-page-number {
+    margin: 10px;
+    padding: 5px;
+}
+
+#infinite-cards-next:hover, #infinite-cards-previous:hover, .infinite-cards-page-number:hover {
+    border: 1px solid white;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+#infinite-cards-next:hover, #infinite-cards-previous:hover {
+    margin: 9px;
+}
+
+.infinite-cards-page-number.current {
+    border: 1px solid white;
+}
+
 .infinite-loader-container{
     width: 100%;
     height: 100%;

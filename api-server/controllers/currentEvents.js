@@ -1,5 +1,6 @@
 const getDefaultController = require('./helpers/controllerGenerator');
-module.exports = {
+
+const CurrentEventsController = {
   ...getDefaultController('current_event'),
   allAndMergeWithVenues: function(db, callback) {
     // includes venue info in the event selection
@@ -13,3 +14,5 @@ module.exports = {
       .catch(err => callback(err))
   },
 }
+
+module.exports = CurrentEventsController
