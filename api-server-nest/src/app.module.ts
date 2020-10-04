@@ -3,6 +3,7 @@ import {VenuesModule} from "./venues/venues.module";
 import {SequelizeModule} from "@nestjs/sequelize";
 import {CurrentEventsModule} from "./current-events/current-events.module";
 import {AppController} from "./app.controller";
+import {EventsModule} from "./events/events.module";
 
 require('dotenv').config();
 
@@ -19,7 +20,8 @@ require('dotenv').config();
             database: process.env.DB_NAME
         }),
         VenuesModule,
-        CurrentEventsModule
+        CurrentEventsModule,
+        EventsModule
     ],
     controllers: [AppController]
 })

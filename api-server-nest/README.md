@@ -15,6 +15,8 @@ This version of the API is a work in progress making use of the nest framework
 * Implement proper logging with Winston
 * Ensure error logging works properly
 * Implement more routes
+* Tests
+* Make sure we still do time conversion stuff on create event
 
 ## Installation
 

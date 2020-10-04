@@ -1,14 +1,23 @@
-import {BelongsTo, Column, DataType, ForeignKey, HasOne, IsUUID, Model, PrimaryKey, Table} from "sequelize-typescript";
+import {
+    BelongsTo,
+    Column,
+    DataType,
+    ForeignKey,
+    IsUUID,
+    Model,
+    PrimaryKey,
+    Table
+} from "sequelize-typescript";
 import {Venue} from "../../venues/dto/venue.model";
-import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 import {ApiProperty} from "@nestjs/swagger";
+import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 
 const EXAMPLE_DATE = new Date();
 const EXAMPLE_START_DATE = new Date(new Date().setDate(new Date().getHours() + 1));
 const EXAMPLE_END_DATE = new Date(new Date().setDate(new Date().getHours() + 2));
 
-@Table({tableName: 'current_events'})
-export class CurrentEvent extends Model<CurrentEvent> {
+@Table({tableName: 'events'})
+export class Event extends Model<Event> {
     @IsUUID(4)
     @PrimaryKey
     @Column
@@ -100,16 +109,7 @@ export class CurrentEvent extends Model<CurrentEvent> {
     @ApiProperty({example: 'radio-mc-radio-station'})
     reviewed_by_org: boolean;
 
-    @Column
-    @ApiProperty({example: EXAMPLE_START_DATE})
-    first_day_start_time: Date;
-
-    @Column
-    @ApiProperty({example: EXAMPLE_END_DATE})
-    last_day_end_time: Date;
-
-
-    @Column(DataType.ARRAY(DataType.JSON))
+    @Column(DataType.JSONB)
     @ApiProperty({example: [{start_time: EXAMPLE_START_DATE, end_time: EXAMPLE_END_DATE}]})
     date_times: StartEndTimePairs[];
 
