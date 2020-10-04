@@ -1,7 +1,7 @@
 import {Controller, Get, HttpException, HttpStatus, Query, UseGuards, UseInterceptors} from "@nestjs/common";
 import {CurrentEventsService} from "./current-events.service";
 import {CurrentEvent} from "./dto/current-event.model";
-import {Venue} from "../venues/dto/venue.model";
+import {Venue} from "../venues/models/venue.model";
 import {FindOptions} from "sequelize";
 import {AuthGuard} from "../authentication/auth.guard";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";

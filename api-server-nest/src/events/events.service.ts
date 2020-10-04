@@ -1,9 +1,11 @@
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
-import {FindOptions} from "sequelize";
-import {Event} from "./dto/event.model";
+import {FindOptions, UpdateOptions} from "sequelize";
+import {Event} from "./models/event.model";
 import {DbUpdateResponse} from "../shared-types/db-update-response";
 import {v4 as uuidv4} from 'uuid';
+import {CreateEventRequest} from "./dto/create-event-request";
+import {UpdateEventRequest} from "./dto/update-event-request";
 
 @Injectable()
 export class EventsService {
@@ -13,8 +15,13 @@ export class EventsService {
         return this.eventModel.findAll(findOptions)
     }
 
-    update(id: string, values: Partial<Event>): Promise<DbUpdateResponse<Event>> {
-        return this.eventModel.update(values, {where: {id}})
+    update(id: string, values: Partial<UpdateEventRequest>): Promise<DbUpdateResponse<Event>> {
+        const updateQueryOptions: UpdateOptions = {
+            where: {id},
+            returning: true
+        }
+
+        return this.eventModel.update(values, updateQueryOptions)
             .then((response: [number, Event []]) => {
                 const numberOfAffectedEntities = response[0]
                 const updatedEntities = response[1]
@@ -26,10 +33,8 @@ export class EventsService {
             })
     }
 
-    create(event: Event): Promise<Event> {
-        console.log('!!! create ' + JSON.stringify(event, null, 4))
+    create(newEvent: CreateEventRequest): Promise<Event> {
         const id = uuidv4();
-
-        return this.eventModel.create({ ...event.get(), id })
+        return this.eventModel.create({ ...newEvent, id })
     }
 }

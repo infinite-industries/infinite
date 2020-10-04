@@ -1,10 +1,11 @@
-import {Event} from '../events/dto/event.model'
+import {Event} from '../events/models/event.model'
 import {HttpException} from "@nestjs/common";
+import {CreateEventRequest} from "../events/dto/create-event-request";
 
-export function mapDateTimesToIso(event: Event): Event {
+export function mapDateTimesToIso(event: CreateEventRequest): CreateEventRequest {
     if (event && event.date_times) {
         try {
-            const convertedEvent = {
+            const convertedEvent: CreateEventRequest = {
                 ...event,
                 date_times: event.date_times.map(dtEntry => {
                     return {
@@ -15,7 +16,7 @@ export function mapDateTimesToIso(event: Event): Event {
                 })
             }
 
-            return new Event(convertedEvent)
+            return new CreateEventRequest(convertedEvent)
         } catch (ex) {
             throw new HttpException('could not parse date formats', 400);
         }

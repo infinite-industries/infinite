@@ -8,7 +8,7 @@ import {
     PrimaryKey,
     Table
 } from "sequelize-typescript";
-import {Venue} from "../../venues/dto/venue.model";
+import {Venue} from "../../venues/models/venue.model";
 import {ApiProperty} from "@nestjs/swagger";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 
@@ -114,7 +114,6 @@ export class Event extends Model<Event> {
     date_times: StartEndTimePairs[];
 
     @Column(DataType.ARRAY(DataType.STRING))
-
     @ApiProperty({example: ['remote']})
     tags: Array<string>;
 

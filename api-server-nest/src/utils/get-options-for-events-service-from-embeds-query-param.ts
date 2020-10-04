@@ -1,5 +1,5 @@
 import {FindOptions} from "sequelize";
-import {Venue} from "../venues/dto/venue.model";
+import {Venue} from "../venues/models/venue.model";
 import {HttpException, HttpStatus} from "@nestjs/common";
 
 type EmbedableModels = typeof Venue

@@ -2,6 +2,7 @@ import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import registerSwaggerDocsModule from "./registerSwaggerDocsModule";
 import {isNullOrUndefined} from "./utils";
+import {ValidationPipe} from "@nestjs/common";
 
 require('dotenv').config();
 
@@ -10,6 +11,12 @@ const PORT = isNullOrUndefined(process.env.PORT) ? DEFAULT_PORT : process.env.PO
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    app.useGlobalPipes(new ValidationPipe({
+        whitelist: true,
+        transform: true,
+        forbidNonWhitelisted: true
+    }));
 
     registerSwaggerDocsModule(app);
 

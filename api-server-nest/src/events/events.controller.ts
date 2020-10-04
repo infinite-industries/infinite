@@ -10,14 +10,16 @@ import {
     UseInterceptors
 } from "@nestjs/common";
 import {EventsService} from "./events.service";
-import {Event} from "./dto/event.model";
+import {Event} from "./models/event.model";
 import {AuthGuard} from "../authentication/auth.guard";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
 import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-options-for-events-service-from-embeds-query-param";
-import {v4 as uuidv4} from 'uuid';
 import {mapDateTimesToIso} from "../utils/map-date-times-to-iso";
+import {CreateEventRequest} from "./dto/create-event-request";
+import {UpdateEventRequest} from "./dto/update-event-request";
+import {ApiImplicitParam} from "@nestjs/swagger/dist/decorators/api-implicit-param.decorator";
 
 @Controller(`${VERSION_1_URI}/events`)
 @UseInterceptors(LoggingInterceptor)
@@ -69,24 +71,43 @@ export class EventsController {
         return this.eventsService.findAll(findOptions);
     }
 
-    @Put(':id')
+    @Put('/verify/:id')
     @UseGuards(AuthGuard)
     @ApiOperation({ summary: 'Verify the event, making it visible to the public' })
+    @ApiImplicitParam({ name: 'id', type: String })
     @ApiResponse({ status:  403, description: "Forbidden" })
     @ApiBearerAuth()
-    putVerifyEvent(@Param() params: { id: string }): Promise<Event> {
+    verifyEvent(@Param() params: { id: string }): Promise<Event> {
         const id = params.id
 
         return this.eventsService.update(id, { verified: true })
             .then(response => response.updatedEntities[0])
     }
 
+    @Put(':id')
+    @UseGuards(AuthGuard)
+    @ApiOperation({ summary: 'Update fields on an existing event' })
+    @ApiResponse({ status:  403, description: "Forbidden" })
+    @ApiBearerAuth()
+    updateEvent(
+        @Param() params: { id: string },
+        @Body() updatedValues: UpdateEventRequest
+    ): Promise<Event> {
+        const id = params.id
+
+        // TODO (CAW) -- This needs to happen here too
+        // const eventWithDateTimesInISOFormat = mapDateTimesToIso(newEvent)
+
+        return this.eventsService.update(id, updatedValues)
+            .then(response => response.updatedEntities[0])
+    }
+
     @Post()
     @ApiOperation({ summary: 'Create a new event. It will be initially un-verified' })
-    createUnverifiedEvent(@Body() event: Event): Promise<Event> {
-        const eventWithDateTimesInISOFormat = mapDateTimesToIso(event)
+    createUnverifiedEvent(@Body() newEvent: CreateEventRequest): Promise<Event> {
 
-        console.log('!!! incoming mapped event: ' + JSON.stringify(event, null, 4))
+        const eventWithDateTimesInISOFormat = mapDateTimesToIso(newEvent)
+
         return this.eventsService.create(eventWithDateTimesInISOFormat);
     }
 }

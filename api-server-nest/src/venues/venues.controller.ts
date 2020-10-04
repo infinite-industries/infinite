@@ -1,8 +1,9 @@
 import {Controller, Get, Header, Post, Body} from "@nestjs/common";
 import {VenuesService} from "./venues.service";
-import {Venue} from "./dto/venue.model";
+import {Venue} from "./models/venue.model";
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
+import {CreateVenueRequest} from "./dto/create-venue-request";
 
 @Controller(`${VERSION_1_URI}/venues`)
 @ApiTags('venues')
@@ -32,7 +33,7 @@ export class VenuesController {
         description: 'create a venue',
         type: Venue
     })
-    create(@Body() venue: Venue): Promise<Venue> {
+    create(@Body() venue: CreateVenueRequest): Promise<Venue> {
         return this.venuesService.create(venue);
     }
 }

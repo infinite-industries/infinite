@@ -1,127 +1,109 @@
-import {BelongsTo, Column, DataType, ForeignKey, HasOne, IsUUID, Model, PrimaryKey, Table} from "sequelize-typescript";
+import {Column, ForeignKey} from "sequelize-typescript";
+import {ApiProperty} from "@nestjs/swagger";
 import {Venue} from "../../venues/models/venue.model";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
-import {ApiProperty} from "@nestjs/swagger";
+import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
+import cloneAttributes from "../../utils/colone-attributes";
+import {
+    IsNotEmpty,
+    IsOptional
+} from "class-validator";
 
-const EXAMPLE_DATE = new Date();
 const EXAMPLE_START_DATE = new Date(new Date().setDate(new Date().getHours() + 1));
 const EXAMPLE_END_DATE = new Date(new Date().setDate(new Date().getHours() + 2));
 
-@Table({tableName: 'current_events'})
-export class CurrentEvent extends Model<CurrentEvent> {
-    @IsUUID(4)
-    @PrimaryKey
-    @Column
-    @ApiProperty({example: '166ab8f0-a067-11ea-aa51-cdc3fe7afefa'})
-    id: string;
+export class CreateEventRequest {
+    constructor(copy?: CreateEventRequest) {
+        if (isNotNullOrUndefined(copy)) {
+            cloneAttributes<CreateEventRequest>(copy, this)
+
+            console.log('!!! this.title: ' + this.title)
+        }
+    }
 
     @Column
     @ApiProperty({example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa'})
     @ForeignKey(() => Venue)
-    venue_id: string;
+    @IsOptional()
+    venue_id?: string;
 
-    @Column
     @ApiProperty({example: 'Infinite Gallery Opening'})
+    @IsNotEmpty()
     title: string;
 
-    @Column
     @ApiProperty({example: 'infinite-gallery-opening'})
+    @IsNotEmpty()
     slug: string;
 
-    @Column
     @ApiProperty({example: false})
+    @IsOptional()
     multi_day: boolean;
 
-    @Column
-    @ApiProperty({example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa'})
+    @ApiProperty({example: 'https://i.picsum.photos/id/258/536/354.jpg?hmac=FJZvafgClrsfFxn1Ce6YeBIo2958pGQCb4jCbEc3SRA'})
+    @IsNotEmpty()
     image: string;
 
-    @Column
-    @ApiProperty({example: 'https://s3-us-west-2.amazonaws.com/infinite-industries-event-images/uploads/a4da445e-a656-461c-8bcf-4ea8af626e81.jpg'})
+    @ApiProperty({example: 'https://picsum.photos/536/354'})
+    @IsOptional()
     social_image: string;
 
-    @Column
     @ApiProperty({example: '5'})
+    @IsOptional()
     admission_fee: string;
 
-    @Column
     @ApiProperty({example: '549 Gallery Dr'})
+    @IsOptional()
     address: string;
 
-    @Column
     @ApiProperty({example: 'bob.vance@refridgeration.com'})
+    @IsNotEmpty()
     organizer_contact: string;
 
-    @Column
     @ApiProperty({example: 'https://www.google.com/maps/things/and/stuff'})
+    @IsOptional()
     map_link: string;
 
-    @Column
     @ApiProperty({example: 'The gallery is open'})
+    @IsNotEmpty()
     brief_description: string;
 
-    @Column
     @ApiProperty({example: '<h2>The Gallery Is Open</h2><p>Some details</p>'})
+    @IsNotEmpty()
     description: string;
 
-    @Column
     @ApiProperty({example: 'https://www.wegotrats.com'})
+    @IsOptional()
     website_link: string;
 
-    @Column
     @ApiProperty({example: 'https://www.wegotussometickets.com'})
+    @IsOptional()
     ticket_link: string;
 
-    @Column
     @ApiProperty({example: 'https://thebookwhoshallnotbenames.com/foobar'})
+    @IsOptional()
     fb_event_link: string;
 
-    @Column
     @ApiProperty({example: 'https://eventbrite.com/foobar'})
+    @IsOptional()
     eventbrite_link: string;
 
-    @Column
     @ApiProperty({example: 'https://bitly.com/foobar'})
+    @IsOptional()
     bitly_link: string;
 
-    @Column
-    @ApiProperty({example: true})
-    verified: boolean;
-
-    @Column
-    @ApiProperty({example: EXAMPLE_DATE})
-    createdAt: Date;
-
-    @Column
-    @ApiProperty({example: EXAMPLE_DATE})
-    updatedAt: Date;
-
-    @Column
     @ApiProperty({example: 'radio-mc-radio-station'})
+    @IsOptional()
     reviewed_by_org: boolean;
 
-    @Column
-    @ApiProperty({example: EXAMPLE_START_DATE})
-    first_day_start_time: Date;
-
-    @Column
-    @ApiProperty({example: EXAMPLE_END_DATE})
-    last_day_end_time: Date;
-
-
-    @Column(DataType.ARRAY(DataType.JSON))
     @ApiProperty({example: [{start_time: EXAMPLE_START_DATE, end_time: EXAMPLE_END_DATE}]})
+    @IsNotEmpty()
     date_times: StartEndTimePairs[];
 
-    @Column(DataType.ARRAY(DataType.STRING))
-
     @ApiProperty({example: ['remote']})
+    @IsOptional()
     tags: Array<string>;
 
-    @Column(DataType.ARRAY(DataType.STRING))
     @ApiProperty({example: []})
+    @IsOptional()
     links: Array<string>;
-
-    @BelongsTo(() => Venue)
-    venue: Venue;
 }

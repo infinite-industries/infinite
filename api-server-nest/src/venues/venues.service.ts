@@ -1,7 +1,8 @@
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
-import {Venue} from "./dto/venue.model";
+import {Venue} from "./models/venue.model";
 import {v4 as uuidv4} from 'uuid';
+import {CreateVenueRequest} from "./dto/create-venue-request";
 
 @Injectable()
 export class VenuesService {
@@ -12,8 +13,9 @@ export class VenuesService {
         return this.venueModel.findAll();
     }
 
-    create(newVenue: Venue): Promise<Venue> {
-        newVenue.id = uuidv4();
-        return this.venueModel.create(newVenue);
+    create(newVenue: CreateVenueRequest): Promise<Venue> {
+        const id = uuidv4();
+
+        return this.venueModel.create({ ...newVenue, id });
     }
 }
