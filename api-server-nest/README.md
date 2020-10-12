@@ -18,7 +18,7 @@ This version of the API is a work in progress making use of the nest framework
 * Tests
 * Make sure we still do time conversion stuff on create event
 * Remove slugs from create/update requests and make sure they are server side genearated
-
+* THIS MAY HELP: https://www.freecodecamp.org/news/build-web-apis-with-nestjs-beginners-guide/
 
 ## Installation
 

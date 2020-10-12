@@ -16,8 +16,7 @@ const VENUE = 'Venue';
 @UseInterceptors(LoggingInterceptor)
 @ApiTags('current events')
 export class CurrentEventsController {
-    constructor(private readonly currentEventsService: CurrentEventsService) {
-    }
+    constructor(private readonly currentEventsService: CurrentEventsService) {}
 
     @Get('verified')
     @ApiOperation({summary: 'Get current events that have been verified (for public consumptions)'})

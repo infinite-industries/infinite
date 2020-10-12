@@ -16,8 +16,6 @@ export class CreateEventRequest {
     constructor(copy?: CreateEventRequest) {
         if (isNotNullOrUndefined(copy)) {
             cloneAttributes<CreateEventRequest>(copy, this)
-
-            console.log('!!! this.title: ' + this.title)
         }
     }
 

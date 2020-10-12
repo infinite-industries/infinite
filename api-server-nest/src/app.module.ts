@@ -4,11 +4,16 @@ import {SequelizeModule} from "@nestjs/sequelize";
 import {CurrentEventsModule} from "./current-events/current-events.module";
 import {AppController} from "./app.controller";
 import {EventsModule} from "./events/events.module";
-
-require('dotenv').config();
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            envFilePath: [
+                '.env.test',
+                '.env'
+            ]
+        }),
         SequelizeModule.forRoot({
             dialect: 'postgres',
             autoLoadModels: true,
@@ -25,5 +30,4 @@ require('dotenv').config();
     ],
     controllers: [AppController]
 })
-export class AppModule {
-}
+export class AppModule {}

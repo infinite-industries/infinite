@@ -10,6 +10,4 @@ export default function cloneAttributes<T>(from: T, to: T): void {
             to[key] = value
         }
     })
-
-    console.log('!!! to: ' + JSON.stringify(to, null, 4))
 }
