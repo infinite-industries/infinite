@@ -13,24 +13,24 @@ import {CurrentEventsService} from "../src/current-events/current-events.service
 import * as request from "supertest";
 import {AppModule} from "../src/app.module";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
+import {VenuesService} from "../src/venues/venues.service";
+import { Event } from '../src/events/models/event.model'
+import {EventsService} from "../src/events/events.service";
+import generateEvent from "../src/fakers/event.faker";
+import generateVenue from "../src/fakers/venue.faker";
 
 
 const today = new Date(Date.now());
 const eventWindow = 24; // maximum hours in past events will remain visible for
 const apiUrl = 'http://localhost:3000/v1';
 
-const DB_PORT = 5432;
-const DB_USERNAME = 'foobar';
-const DB_PASSWORD = 'foobar';
-const DB_NAME = 'infinite'
-const DB_HOST = 'localhost'
-const TMP_FS = {"/temp_pgdata": "rw,noexec,nosuid,size=65536k"};
-
 let app: INestApplication;
 let dbContainer: StartedTestContainer;
-let mappedDbPort: number
+let currentEventsService: CurrentEventsService
+let eventsService: EventsService
+let venuesService: VenuesService
 
-beforeEach(async (done) => {
+beforeAll(async (done) => {
     //await startDatabase()
 
     // const module: TestingModule = await Test.createTestingModule({
@@ -51,13 +51,6 @@ beforeEach(async (done) => {
     //     ]
     // }).compile();
 
-    // also kind of working (neither give access to our models though :-(
-    const module: TestingModule =  await Test.createTestingModule({
-        imports: [
-            AppModule
-        ]
-    }).compile();
-
     // ok, kind of working :shrug:
     // const module: TestingModule = await Test.createTestingModule({
     //     imports: [
@@ -77,6 +70,13 @@ beforeEach(async (done) => {
     //     ]
     // }).compile();
 
+    // also kind of working (neither give access to our models though :-(
+    const module: TestingModule =  await Test.createTestingModule({
+        imports: [
+            AppModule
+        ]
+    }).compile();
+
     app = module.createNestApplication();
 
     app.useGlobalPipes(new ValidationPipe({
@@ -88,18 +88,14 @@ beforeEach(async (done) => {
     await app.init();
 
     // Should be able to ask for CurrentEvent this way, but :shrug:
-    const test: CurrentEventsService = module.get('CurrentEventsService');
-
-    const grr  = test['currentEventModel'] as typeof CurrentEvent
-    console.log('!!! go: ' + await grr.findAll())
+    currentEventsService = module.get('CurrentEventsService');
+    eventsService = module.get('EventsService');
+    venuesService = module.get('VenuesService');
 
     done()
-
 }, 30000);
 
 afterAll(async (done) => {
-    console.log('!!! run afterall')
-
     if (isNotNullOrUndefined(app)) {
         await app.close();
     }
@@ -111,62 +107,49 @@ afterAll(async (done) => {
     done()
 }, 30000);
 
-// async function startDatabase() {
-//     console.log('!!! try to start the damn thing')
-//     dbContainer = await new GenericContainer('postgres', '9.6.2-alpine')
-//         .withExposedPorts(DB_PORT)
-//         .withTmpFs(TMP_FS)
-//         .withEnv('POSTGRES_USER', DB_USERNAME)
-//         .withEnv('POSTGRES_PASSWORD', DB_PASSWORD)
-//         .withEnv('POSTGRES_DB', DB_NAME)
-//         .start();
-//
-//     console.log('!!! started the damn thing: ' + dbContainer.getMappedPort(DB_PORT))
-//
-//     mappedDbPort = dbContainer.getMappedPort(DB_PORT)
-//
-//
-//     // require('dotenv').config()
-//     // process.env.DB_PORT = mappedDbPort.toString()
-// }
 
-// beforeEach(async () => {
-//   await deleteAllEvents()
-//   await deleteAllVenues()
-// })
+beforeEach(async (done) => {
+    await deleteAllEvents()
+    await deleteAllVenues()
+
+    done()
+})
+
 //
 // function deleteAllEvents() {
 //   const test: unknown = module.get('UserModel')
 // }
 //
 it('can query current-events', () => {
-    console.log('!!! start test: ')
-
     return request(app.getHttpServer())
         .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
         .expect(200)
 });
-//
-// it('returns only verified events', async function() {
-//   const dateTimesForEventInFuture1 = getDateTimesInFuture()
-//   const dateTimesForEventInFuture2 = getDateTimesInFuture()
-//
-//   const venue = await createVenue(generateVenue())
-//   const eventVerified = await createEvent(
-//     generateEvent(venue.id, true, dateTimesForEventInFuture1))
-//   const eventNonVerified = await createEvent(
-//     generateEvent(venue.id, false, dateTimesForEventInFuture2))
-//
-//   return frisby.get(apiUrl + '/events/current/verified')
-//     .expect('status', 200)
-//     .then(async (response) => {
-//       // should only get back 2 of the three events
-//       expect(response.json.events.length).toEqual(1)
-//
-//       // should only have the verified event in the list
-//       expect(response.json.events.map(event => event.id)).toEqual([eventVerified.id])
-//     })
-// })
+
+it('returns only verified events', async function(done) {
+  const dateTimesForEventInFuture1 = getDateTimesInFuture()
+  const dateTimesForEventInFuture2 = getDateTimesInFuture()
+
+  const venue = await createVenue(generateVenue())
+  const eventVerified = await createEvent(
+    generateEvent(venue.id, true, dateTimesForEventInFuture1))
+  const eventNonVerified = await createEvent(
+    generateEvent(venue.id, false, dateTimesForEventInFuture2))
+
+  return request(app.getHttpServer())
+      .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
+      .expect(200)
+      .then(async (response) => {
+          expect(response.body.status).toEqual('success')
+          // should only get back 2 of the three events
+          expect(response.body.events.length).toEqual(1)
+
+          // should only have the verified event in the list
+          expect(response.body.events.map(event => event.id)).toEqual([eventVerified.id])
+
+          done()
+    })
+})
 //
 // it('returns only events in the future or recent past', async function() {
 //   const dateTimesForEventTooFarInPast = getDateTimesInPastBeyondWindow()
@@ -330,42 +313,88 @@ it('can query current-events', () => {
 //     end_time: endTime.toISOString()
 //   }
 // }
+
+function getDateTimesInFuture() {
+  const startTime = new Date(today)
+  startTime.setDate(today.getDate() + 1)
+
+  const endTime = new Date(startTime)
+  endTime.setHours(startTime.getHours() + 1)
+
+  return [{
+    start_time: startTime.toISOString(),
+    end_time: endTime.toISOString()
+  }]
+}
+
+function getDateTimesInPastBeyondWindow() {
+  const startTime = new Date(today)
+  startTime.setHours(startTime.getHours() - eventWindow -1)
+
+  const endTime = new Date(startTime)
+  endTime.setHours(startTime.getHours() + 1)
+
+  return [{
+    start_time: startTime.toISOString(),
+    end_time: endTime.toISOString()
+  }]
+}
+
+function getDateTimesInPastButInsideWindow() {
+  const startTime = new Date(today)
+  startTime.setHours(startTime.getHours() - eventWindow + 1)
+
+  const endTime = new Date(startTime)
+  endTime.setHours(startTime.getHours() + 1)
+
+  return [{
+    start_time: startTime.toISOString(),
+    end_time: endTime.toISOString()
+  }]
+}
+
+async function createEvent(event: Event) {
+    return event.save()
+}
+
+async function deleteEvent(event: Event) {
+    return event.destroy()
+}
+
+async function createVenue(venue: Venue) {
+    return venue.save()
+}
+
+async function deleteVeneu(venue: Venue) {
+    return venue.destroy()
+}
+
+async function deleteAllEvents() {
+    const eventModel = eventsService['eventModel'] as typeof Event
+    return eventModel.destroy({   where: {} })
+}
+
+async function deleteAllVenues() {
+    const venueModel = venuesService['venueModel'] as typeof Venue
+    venueModel.destroy({   where: {} })
+}
+
+
+// async function startDatabase() {
+//     console.log('!!! try to start the damn thing')
+//     dbContainer = await new GenericContainer('postgres', '9.6.2-alpine')
+//         .withExposedPorts(DB_PORT)
+//         .withTmpFs(TMP_FS)
+//         .withEnv('POSTGRES_USER', DB_USERNAME)
+//         .withEnv('POSTGRES_PASSWORD', DB_PASSWORD)
+//         .withEnv('POSTGRES_DB', DB_NAME)
+//         .start();
 //
-// function getDateTimesInFuture() {
-//   const startTime = new Date(today)
-//   startTime.setDate(today.getDate() + 1)
+//     console.log('!!! started the damn thing: ' + dbContainer.getMappedPort(DB_PORT))
 //
-//   const endTime = new Date(startTime)
-//   endTime.setHours(startTime.getHours() + 1)
+//     mappedDbPort = dbContainer.getMappedPort(DB_PORT)
 //
-//   return [{
-//     start_time: startTime.toISOString(),
-//     end_time: endTime.toISOString()
-//   }]
-// }
 //
-// function getDateTimesInPastBeyondWindow() {
-//   const startTime = new Date(today)
-//   startTime.setHours(startTime.getHours() - eventWindow -1)
-//
-//   const endTime = new Date(startTime)
-//   endTime.setHours(startTime.getHours() + 1)
-//
-//   return [{
-//     start_time: startTime.toISOString(),
-//     end_time: endTime.toISOString()
-//   }]
-// }
-//
-// function getDateTimesInPastButInsideWindow() {
-//   const startTime = new Date(today)
-//   startTime.setHours(startTime.getHours() - eventWindow + 1)
-//
-//   const endTime = new Date(startTime)
-//   endTime.setHours(startTime.getHours() + 1)
-//
-//   return [{
-//     start_time: startTime.toISOString(),
-//     end_time: endTime.toISOString()
-//   }]
+//     // require('dotenv').config()
+//     // process.env.DB_PORT = mappedDbPort.toString()
 // }

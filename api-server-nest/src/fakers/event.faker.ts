@@ -1,7 +1,9 @@
-import faker from 'faker'
 import { v4 as uuidv4 } from 'uuid';
 import { Event } from '../events/models/event.model'
 import {StartEndTimePairs} from "../shared-types/start-end-time-pairs";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const faker = require('faker')
 
 function generateEvent(
     venue_id: string,

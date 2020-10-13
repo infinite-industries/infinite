@@ -1,12 +1,12 @@
 import {Controller, Get, HttpException, HttpStatus, Query, UseGuards, UseInterceptors} from "@nestjs/common";
 import {CurrentEventsService} from "./current-events.service";
-import {CurrentEvent} from "./dto/current-event.model";
 import {Venue} from "../venues/models/venue.model";
 import {FindOptions} from "sequelize";
 import {AuthGuard} from "../authentication/auth.guard";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
 import {LoggingInterceptor} from "../logging/logging.interceptor";
+import {CurrentEventsResponse} from "./dto/current-events-response";
 
 type EmbedableModels = typeof Venue
 
@@ -23,16 +23,17 @@ export class CurrentEventsController {
     @ApiResponse({
         status: 200,
         description: 'Current verified events',
-        type: CurrentEvent,
+        type: CurrentEventsResponse,
         isArray: true
     })
-    getAllCurrentVerified(@Query('embed') embed: string[] | string = []): Promise<CurrentEvent []> {
+    getAllCurrentVerified(@Query('embed') embed: string[] | string = []): Promise<CurrentEventsResponse> {
         const findOptions = {
             ...this.getOptionsForCurrentEvents(embed),
             where: {verified: true}
         };
 
-        return this.currentEventsService.findAll(findOptions);
+        return this.currentEventsService.findAll(findOptions)
+            .then(events => new CurrentEventsResponse({ events }));
     }
 
     @Get('non-verified')
@@ -40,13 +41,14 @@ export class CurrentEventsController {
     @ApiOperation({summary: 'Get current events that have not yet been verified (admin only)'})
     @ApiResponse({status: 403, description: 'Forbidden'})
     @ApiBearerAuth()
-    getAllCurrentNonVerified(@Query('embed') embed: string[] | string = []): Promise<CurrentEvent []> {
+    getAllCurrentNonVerified(@Query('embed') embed: string[] | string = []): Promise<CurrentEventsResponse> {
         const findOptions = {
             ...this.getOptionsForCurrentEvents(embed),
             where: {verified: false}
         };
 
-        return this.currentEventsService.findAll(findOptions);
+        return this.currentEventsService.findAll(findOptions)
+            .then(events => new CurrentEventsResponse({ events }));
     }
 
     @Get()
@@ -54,10 +56,11 @@ export class CurrentEventsController {
     @ApiOperation({summary: 'Get current events, both verified and non (admin only)'})
     @ApiResponse({status: 403, description: 'Forbidden'})
     @ApiBearerAuth()
-    getAllCurrent(@Query('embed') embed: string[] | string = []): Promise<CurrentEvent []> {
+    getAllCurrent(@Query('embed') embed: string[] | string = []): Promise<CurrentEventsResponse> {
         const findOptions = this.getOptionsForCurrentEvents(embed);
 
-        return this.currentEventsService.findAll(findOptions);
+        return this.currentEventsService.findAll(findOptions)
+            .then(events => new CurrentEventsResponse({ events }));
     }
 
     private getOptionsForCurrentEvents(embedsFromQueryString: string[] | string): FindOptions {

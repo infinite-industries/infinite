@@ -19,9 +19,7 @@ export class CreateEventRequest {
         }
     }
 
-    @Column
     @ApiProperty({example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa'})
-    @ForeignKey(() => Venue)
     @IsOptional()
     venue_id?: string;
 

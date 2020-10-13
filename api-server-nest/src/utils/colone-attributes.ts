@@ -1,4 +1,4 @@
-export default function cloneAttributes<T>(from: T, to: T): void {
+export default function cloneAttributes<T>(from: Partial<T>, to: T): void {
     Object.keys(from).forEach((key: string) => {
         const value = from[key]
 
