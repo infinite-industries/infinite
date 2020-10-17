@@ -6,7 +6,7 @@ import {VenuesModule} from "../src/venues/venues.module";
 import isNotNullOrUndefined from "../src/utils/is-not-null-or-undefined";
 import {CurrentEvent} from "../src/current-events/dto/current-event.model";
 // @ts-ignore
-import { GenericContainer, StartedTestContainer } from "testcontainers";
+import {GenericContainer, StartedTestContainer} from "testcontainers";
 import {Venue} from "../dist/venues/dto/venue.model";
 import {CurrentEventsController} from "../src/current-events/current-events.controller";
 import {CurrentEventsService} from "../src/current-events/current-events.service";
@@ -14,7 +14,7 @@ import * as request from "supertest";
 import {AppModule} from "../src/app.module";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
 import {VenuesService} from "../src/venues/venues.service";
-import { Event } from '../src/events/models/event.model'
+import {Event} from '../src/events/models/event.model';
 import {EventsService} from "../src/events/events.service";
 import generateEvent from "../src/fakers/event.faker";
 import generateVenue from "../src/fakers/venue.faker";
@@ -26,9 +26,9 @@ const apiUrl = 'http://localhost:3000/v1';
 
 let app: INestApplication;
 let dbContainer: StartedTestContainer;
-let currentEventsService: CurrentEventsService
-let eventsService: EventsService
-let venuesService: VenuesService
+let currentEventsService: CurrentEventsService;
+let eventsService: EventsService;
+let venuesService: VenuesService;
 
 beforeAll(async (done) => {
     //await startDatabase()
@@ -71,7 +71,7 @@ beforeAll(async (done) => {
     // }).compile();
 
     // also kind of working (neither give access to our models though :-(
-    const module: TestingModule =  await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
         imports: [
             AppModule
         ]
@@ -92,7 +92,7 @@ beforeAll(async (done) => {
     eventsService = module.get('EventsService');
     venuesService = module.get('VenuesService');
 
-    done()
+    done();
 }, 30000);
 
 afterAll(async (done) => {
@@ -104,16 +104,16 @@ afterAll(async (done) => {
         await dbContainer.stop();
     }
 
-    done()
+    done();
 }, 30000);
 
 
 beforeEach(async (done) => {
-    await deleteAllEvents()
-    await deleteAllVenues()
+    await deleteAllEvents();
+    await deleteAllVenues();
 
-    done()
-})
+    done();
+});
 
 //
 // function deleteAllEvents() {
@@ -123,58 +123,65 @@ beforeEach(async (done) => {
 it('can query current-events', () => {
     return request(app.getHttpServer())
         .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
-        .expect(200)
+        .expect(200);
 });
 
-it('returns only verified events', async function(done) {
-  const dateTimesForEventInFuture1 = getDateTimesInFuture()
-  const dateTimesForEventInFuture2 = getDateTimesInFuture()
+it('returns only verified events', async function (done) {
+    const dateTimesForEventInFuture1 = getDateTimesInFuture();
+    const dateTimesForEventInFuture2 = getDateTimesInFuture();
 
-  const venue = await createVenue(generateVenue())
-  const eventVerified = await createEvent(
-    generateEvent(venue.id, true, dateTimesForEventInFuture1))
-  const eventNonVerified = await createEvent(
-    generateEvent(venue.id, false, dateTimesForEventInFuture2))
+    const venue = await createVenue(generateVenue());
+    const eventVerified = await createEvent(
+        generateEvent(venue.id, true, dateTimesForEventInFuture1));
+    await createEvent(
+        generateEvent(venue.id, false, dateTimesForEventInFuture2));
 
-  return request(app.getHttpServer())
-      .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
-      .expect(200)
-      .then(async (response) => {
-          expect(response.body.status).toEqual('success')
-          // should only get back 2 of the three events
-          expect(response.body.events.length).toEqual(1)
+    return request(app.getHttpServer())
+        .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
+        .expect(200)
+        .then(async (response) => {
+            expect(response.body.status).toEqual('success');
+            // should only get back 2 of the three events
+            expect(response.body.events.length).toEqual(1);
 
-          // should only have the verified event in the list
-          expect(response.body.events.map(event => event.id)).toEqual([eventVerified.id])
+            // should only have the verified event in the list
+            expect(response.body.events.map(event => event.id)).toEqual([eventVerified.id]);
 
-          done()
-    })
-})
-//
-// it('returns only events in the future or recent past', async function() {
-//   const dateTimesForEventTooFarInPast = getDateTimesInPastBeyondWindow()
-//   const dateTimesForEventInFuture = getDateTimesInFuture()
-//   const dateTimesForEvenInPast = getDateTimesInPastButInsideWindow()
-//
-//   // create a venue tRo associate the events with
-//   const venue = await createVenue(generateVenue())
-//
-//   const eventInFuture = await createEvent(
-//     generateEvent(venue.id, true, dateTimesForEventInFuture))
-//   const eventInRecentPast = await createEvent(generateEvent(venue.id, true, dateTimesForEvenInPast))
-//   const eventInDistantPast = await createEvent(generateEvent(venue.id, true, dateTimesForEventTooFarInPast))
-//
-//   return frisby.get(apiUrl + '/events/current/verified')
-//     .expect('status', 200)
-//     .then(async (response) => {
-//       // should only get back 2 of the three events
-//       expect(response.json.events.length).toEqual(2)
-//
-//       // should be the correct two events with oldest first
-//       expect(response.json.events.map(event => event.id)).toEqual([eventInRecentPast.id, eventInFuture.id])
-//     })
-// })
-//
+            done();
+        });
+});
+
+it('returns only events in the future or recent past', async function () {
+    const dateTimesForEventTooFarInPast = getDateTimesInPastBeyondWindow();
+    const dateTimesForEventInFuture = getDateTimesInFuture();
+    const dateTimesForEvenInPast = getDateTimesInPastButInsideWindow();
+
+    // create a venue tRo associate the events with
+    const venue = await createVenue(generateVenue());
+
+    const eventInFuture = await createEvent(
+        generateEvent(venue.id, true, dateTimesForEventInFuture));
+    const eventInRecentPast = await createEvent(generateEvent(venue.id, true, dateTimesForEvenInPast));
+
+    // event in distant past
+    await createEvent(generateEvent(venue.id, true, dateTimesForEventTooFarInPast));
+
+    const expectedEventIdsReturned = [eventInRecentPast.id, eventInFuture.id]
+
+    return request(app.getHttpServer())
+        .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
+        .expect(200)
+        .then(async (response) => {
+            // should only get back 2 of the three events
+            expect(response.body.events.length).toEqual(2);
+
+            // should be the correct two events with oldest first
+            const returnedIds = response.body.events.map(event => event.id)
+
+            expect(returnedIds).toEqual(expectedEventIdsReturned);
+        });
+});
+
 // it('sorts multi-date events by most recent non-expired start-time', async () => {
 //   // order in this list shouldn't matter
 //   const multiDayDateTimes = [,
@@ -315,68 +322,68 @@ it('returns only verified events', async function(done) {
 // }
 
 function getDateTimesInFuture() {
-  const startTime = new Date(today)
-  startTime.setDate(today.getDate() + 1)
+    const startTime = new Date(today);
+    startTime.setDate(today.getDate() + 1);
 
-  const endTime = new Date(startTime)
-  endTime.setHours(startTime.getHours() + 1)
+    const endTime = new Date(startTime);
+    endTime.setHours(startTime.getHours() + 1);
 
-  return [{
-    start_time: startTime.toISOString(),
-    end_time: endTime.toISOString()
-  }]
+    return [{
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString()
+    }];
 }
 
 function getDateTimesInPastBeyondWindow() {
-  const startTime = new Date(today)
-  startTime.setHours(startTime.getHours() - eventWindow -1)
+    const startTime = new Date(today);
+    startTime.setHours(startTime.getHours() - eventWindow - 1);
 
-  const endTime = new Date(startTime)
-  endTime.setHours(startTime.getHours() + 1)
+    const endTime = new Date(startTime);
+    endTime.setHours(startTime.getHours() + 1);
 
-  return [{
-    start_time: startTime.toISOString(),
-    end_time: endTime.toISOString()
-  }]
+    return [{
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString()
+    }];
 }
 
 function getDateTimesInPastButInsideWindow() {
-  const startTime = new Date(today)
-  startTime.setHours(startTime.getHours() - eventWindow + 1)
+    const startTime = new Date(today);
+    startTime.setHours(startTime.getHours() - eventWindow + 1);
 
-  const endTime = new Date(startTime)
-  endTime.setHours(startTime.getHours() + 1)
+    const endTime = new Date(startTime);
+    endTime.setHours(startTime.getHours() + 1);
 
-  return [{
-    start_time: startTime.toISOString(),
-    end_time: endTime.toISOString()
-  }]
+    return [{
+        start_time: startTime.toISOString(),
+        end_time: endTime.toISOString()
+    }];
 }
 
 async function createEvent(event: Event) {
-    return event.save()
+    return event.save();
 }
 
 async function deleteEvent(event: Event) {
-    return event.destroy()
+    return event.destroy();
 }
 
 async function createVenue(venue: Venue) {
-    return venue.save()
+    return venue.save();
 }
 
 async function deleteVeneu(venue: Venue) {
-    return venue.destroy()
+    return venue.destroy();
 }
 
 async function deleteAllEvents() {
-    const eventModel = eventsService['eventModel'] as typeof Event
-    return eventModel.destroy({   where: {} })
+    const eventModel = eventsService['eventModel'] as typeof Event;
+    return eventModel.destroy({where: {}});
 }
 
 async function deleteAllVenues() {
-    const venueModel = venuesService['venueModel'] as typeof Venue
-    venueModel.destroy({   where: {} })
+    const venueModel = venuesService['venueModel'] as typeof Venue;
+    venueModel.destroy({where: {}});
 }
 
 

@@ -1,8 +1,11 @@
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
 import {CurrentEvent} from "./dto/current-event.model";
-import {FindOptions} from "sequelize";
-import {Model} from "sequelize-typescript";
+import sequelize, {FindOptions} from "sequelize";
+
+const DEFAULT_FIND_OPTIONS: FindOptions = {
+    order: sequelize.literal('first_day_start_time ASC')
+}
 
 @Injectable()
 export class CurrentEventsService {
@@ -10,7 +13,12 @@ export class CurrentEventsService {
     }
 
     findAll(findOptions?: FindOptions): Promise<CurrentEvent []> {
-        findOptions = findOptions || {};
+        findOptions = findOptions || {}
+        findOptions = {
+            ...DEFAULT_FIND_OPTIONS,
+            ...findOptions
+        }
+
         return this.currentEventModel.findAll(findOptions);
     }
 }
