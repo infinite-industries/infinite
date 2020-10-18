@@ -6,11 +6,12 @@ import {StartEndTimePairs} from "../shared-types/start-end-time-pairs";
 const faker = require('faker')
 
 function generateEvent(
+    EventModel: typeof Event,
     venue_id: string,
     verified: boolean,
     date_times: StartEndTimePairs[]
 ): Event {
-  return new Event({
+  return new EventModel({
     id: uuidv4(),
     venue_id,
     verified,
