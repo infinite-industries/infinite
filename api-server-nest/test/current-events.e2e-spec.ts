@@ -19,15 +19,15 @@ import {EventsService} from "../src/events/events.service";
 import generateEvent from "../src/fakers/event.faker";
 import generateVenue from "../src/fakers/venue.faker";
 import {ChildProcessWithoutNullStreams, execSync, spawn} from "child_process";
-import { v4 as uuidv4 } from 'uuid';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const faker = require('faker')
+const path = require('path')
 
 const today = new Date(Date.now());
 const eventWindow = 24; // maximum hours in past events will remain visible for
 
-const server = request('http://localhost:3000')
+const APP_PORT = process.env.PORT || 3003
+const server = request('http://localhost:' + APP_PORT)
 
 const DB_INTERNAL_PORT = 5432
 const TMP_FS = { "/temp_pgdata": "rw,noexec,nosuid,size=65536k" }
@@ -80,7 +80,7 @@ describe('CurrentEvents (e2e)', () => {
         console.log('test suite ready')
 
         done();
-    }, 30000);
+    }, 60000);
 
     afterAll(async (done) => {
         if (isNotNullOrUndefined(appUnderTest)) {
@@ -97,15 +97,19 @@ describe('CurrentEvents (e2e)', () => {
     beforeEach(async (done) => {
         console.info('preparing for test')
 
-        await deleteAllEvents();
-        await deleteAllVenues();
+        if (eventModel)
+            await deleteAllEvents()
+
+        if (venueModel)
+            await deleteAllVenues();
 
         done();
     });
 
 
     it('can query current-events', async () => {
-        console.info('running first test: ' + `http://localhost:3000/${CURRENT_VERSION_URI}/current-events/verified`)
+        console.info('running first test: ' +
+            `http://localhost:${APP_PORT}/${CURRENT_VERSION_URI}/current-events/verified`)
 
         return server
             .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
@@ -374,23 +378,26 @@ describe('CurrentEvents (e2e)', () => {
     async function startDatabase() {
         console.info('starting a database for e2e tests')
 
+        const databaseReadyMessage = 'database system is ready to accept connections'
+
         dbContainer = await new GenericContainer('postgres', '9.6.2-alpine')
             .withExposedPorts(DB_INTERNAL_PORT)
             .withTmpFs(TMP_FS)
             .withEnv('POSTGRES_USER', DB_USERNAME)
             .withEnv('POSTGRES_PASSWORD', DB_PASSWORD)
             .withEnv('POSTGRES_DB', DB_NAME)
-            // .withWaitStrategy("postgres_1", Wait.forHealthCheck())
+            .withWaitStrategy(Wait.forLogMessage(databaseReadyMessage))
             .start();
 
         dbHostPort = dbContainer.getMappedPort(DB_INTERNAL_PORT)
         console.info('database running on port: ' + dbHostPort)
-
-        return sleep(5000)
     }
 
     async function startApplication() {
-        appUnderTest = spawn('./node_modules/.bin/nest', ['start'],  {
+        const appReadyMessage = 'Nest application successfully started'
+        const timeOut = 10000
+
+        appUnderTest = spawn('node', ['/home/chris/projects/infinite/api-server-nest/dist/main'],  {
             env: {
                 ...process.env,
                 DB_HOST,
@@ -401,17 +408,24 @@ describe('CurrentEvents (e2e)', () => {
             }
         });
 
-        appUnderTest.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
-        });
+        console.info(`waiting on app ${appUnderTest.pid} to finnish loading`)
 
-        appUnderTest.stderr.on('data', (data) => {
-            console.error(`stderr: ${data}`);
-        });
+        return new Promise((resolve, reject) => {
+            appUnderTest.stdout.on('data', (data) => {
+                console.log(`running-app -> ${data}`);
 
-        console.info('waiting on app to start')
+                if (data && data.indexOf(appReadyMessage) >= 0) {
+                    console.log('the app is ready')
+                    resolve()
+                }
+            });
 
-        return sleep(10000)
+            appUnderTest.stderr.on('data', (data) => {
+                console.error(`running-app -> ${data}`);
+            });
+
+            setTimeout(() => reject(new Error('timed out waiting on app to start')), timeOut)
+        })
     }
 
     function killApp(): Promise<void> {
@@ -432,17 +446,42 @@ describe('CurrentEvents (e2e)', () => {
     }
 
     function runMigrations() {
-        execSync('npm run db:migrate',{
-            stdio: 'inherit',
-            env: {
-                ...process.env,
-                DB_HOST,
-                DB_PORT: dbHostPort + '',
-                DB_USER_NAME: DB_USERNAME,
-                DB_PASSWORD,
-                DB_NAME
+        console.log('running migrations')
+
+        const numTries = 5
+
+        let finalEx: Error | null = null
+
+        for (let i = 0; i < numTries; i++) {
+            try {
+                _doRunMigration()
+
+                finalEx = null
+
+                break
+            } catch (ex) {
+                finalEx = ex
             }
-        })
+        }
+
+        function _doRunMigration() {
+            execSync('npm run db:migrate', {
+                stdio: 'inherit',
+                env: {
+                    ...process.env,
+                    DB_HOST,
+                    DB_PORT: dbHostPort + '',
+                    DB_USER_NAME: DB_USERNAME,
+                    DB_PASSWORD,
+                    DB_NAME
+                }
+            })
+
+            if (finalEx !== null) {
+                throw new Error('failed to run migrations: ' + finalEx)
+        }}
+
+        console.log('migrations complete')
     }
 
     function sleep(ms) {
