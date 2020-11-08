@@ -1,4 +1,4 @@
-import {Controller, Get, HttpException, HttpStatus, Query, UseGuards, UseInterceptors} from "@nestjs/common";
+import {Controller, Get, HttpException, HttpStatus, Query, Req, UseGuards, UseInterceptors} from "@nestjs/common";
 import {CurrentEventsService} from "./current-events.service";
 import {Venue} from "../venues/models/venue.model";
 import {FindOptions} from "sequelize";
@@ -7,6 +7,11 @@ import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger
 import {VERSION_1_URI} from "../utils/versionts";
 import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {CurrentEventsResponse} from "./dto/current-events-response";
+import {Request} from "express";
+import isAdminUser from "../authentication/is-admin-user";
+import {CurrentEvent} from "./dto/current-event.model";
+import {removeContactInfoFromResultsForNonAdminsFromCurrentEvents} from
+        '../authentication/filters/remove-contact-info-from-results-for-non-admins'
 
 type EmbedableModels = typeof Venue
 
@@ -26,14 +31,21 @@ export class CurrentEventsController {
         type: CurrentEventsResponse,
         isArray: true
     })
-    getAllCurrentVerified(@Query('embed') embed: string[] | string = []): Promise<CurrentEventsResponse> {
+    async getAllCurrentVerified(
+        @Query('embed') embed: string[] | string = [],
+        @Req() request: Request
+    ): Promise<CurrentEventsResponse> {
         const findOptions = {
             ...this.getOptionsForCurrentEvents(embed),
             where: {verified: true}
         };
 
-        return this.currentEventsService.findAll(findOptions)
-            .then(events => new CurrentEventsResponse({ events }));
+        const events = await this.currentEventsService.findAll(findOptions)
+
+        const filteredEvents =
+            await removeContactInfoFromResultsForNonAdminsFromCurrentEvents(request, events) as CurrentEvent[]
+
+        return new CurrentEventsResponse({ events: filteredEvents})
     }
 
     @Get('non-verified')
