@@ -5,6 +5,7 @@ import {CurrentEventsModule} from "./current-events/current-events.module";
 import {AppController} from "./app.controller";
 import {EventsModule} from "./events/events.module";
 import { ConfigModule } from '@nestjs/config';
+import {AnnouncementsModule} from "./announcements/announcements.module";
 
 @Module({
     imports: [
@@ -26,7 +27,8 @@ import { ConfigModule } from '@nestjs/config';
         }),
         VenuesModule,
         CurrentEventsModule,
-        EventsModule
+        EventsModule,
+        AnnouncementsModule
     ],
     controllers: [AppController]
 })

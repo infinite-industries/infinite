@@ -1,30 +1,21 @@
-import {INestApplication, ValidationPipe} from "@nestjs/common";
-import {Test, TestingModule} from "@nestjs/testing";
-import {SequelizeModule} from "@nestjs/sequelize";
-import {CurrentEventsModule} from "../src/current-events/current-events.module";
-import {VenuesModule} from "../src/venues/venues.module";
+import { TestingModule } from "@nestjs/testing";
 import isNotNullOrUndefined from "../src/utils/is-not-null-or-undefined";
-import {CurrentEvent} from "../src/current-events/dto/current-event.model";
 // @ts-ignore
-import {GenericContainer, StartedTestContainer, Wait} from "testcontainers";
+import {StartedTestContainer } from "testcontainers";
 import {Venue} from "../dist/venues/dto/venue.model";
-import {CurrentEventsController} from "../src/current-events/current-events.controller";
-import {CurrentEventsService} from "../src/current-events/current-events.service";
 import * as request from "supertest";
-import {AppModule} from "../src/app.module";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
-import {VenuesService} from "../src/venues/venues.service";
 import {Event} from '../src/events/models/event.model';
-import {EventsService} from "../src/events/events.service";
-import generateEvent from "../src/fakers/event.faker";
-import generateVenue from "../src/fakers/venue.faker";
-import {ChildProcessWithoutNullStreams, execSync, spawn} from "child_process";
-import startDatabase, {DB_HOST, DB_USERNAME, DB_NAME, DB_PASSWORD} from "./test-helpers/e2e-stack/start-database";
+import generateEvent from "./fakers/event.faker";
+import generateVenue from "./fakers/venue.faker";
+import {ChildProcessWithoutNullStreams} from "child_process";
 import runMigrations from "./test-helpers/e2e-stack/run-migrations";
 import startApplication from "./test-helpers/e2e-stack/start-application";
 import buildDbConnectionsForTests from "./test-helpers/e2e-stack/build-db-connection-for-tests";
 import killApp from "./test-helpers/e2e-stack/kill-app";
 import stopDatabase from "./test-helpers/e2e-stack/stop-database";
+import startDatabase from "./test-helpers/e2e-stack/start-database";
+import sleep from "./test-helpers/sleep";
 
 
 const today = new Date(Date.now());
@@ -51,7 +42,7 @@ describe('CurrentEvents (e2e)', () => {
         dbContainer = dbInfo.dbContainer;
         dbHostPort = dbInfo.dbHostPort;
 
-        runMigrations(dbHostPort);
+        await runMigrations(dbHostPort);
 
         appUnderTest = await startApplication(dbHostPort);
 
@@ -67,13 +58,19 @@ describe('CurrentEvents (e2e)', () => {
     }, 30000);
 
     afterAll(async (done) => {
+        console.info('begin cleanup for events')
+
         await killApp(appUnderTest);
+
+        appUnderTest.removeAllListeners()
 
         await stopDatabase(dbContainer);
 
-        if (isNotNullOrUndefined(testingModule))
+        if (isNotNullOrUndefined(testingModule)) {
             await testingModule.close();
+        }
 
+        console.info('done cleaning up for events')
         done();
     }, 30000);
 

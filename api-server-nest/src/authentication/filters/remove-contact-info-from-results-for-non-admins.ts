@@ -1,5 +1,5 @@
 import {Request} from "express";
-import {CurrentEvent} from "../../current-events/dto/current-event.model";
+import {CurrentEvent} from "../../current-events/models/current-event.model";
 import {Event} from '../../events/models/event.model'
 import isAdminUser from "../is-admin-user";
 

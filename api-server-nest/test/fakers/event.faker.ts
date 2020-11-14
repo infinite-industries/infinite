@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Event } from '../events/models/event.model'
-import {StartEndTimePairs} from "../shared-types/start-end-time-pairs";
+import { Event } from '../../src/events/models/event.model'
+import {StartEndTimePairs} from "../../src/shared-types/start-end-time-pairs";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const faker = require('faker')

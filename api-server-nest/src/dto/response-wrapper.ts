@@ -4,3 +4,4 @@ export class ResponseWrapper {
     @ApiProperty({example: 'success'})
     status = 'success'
 }
+

@@ -2,7 +2,7 @@ import {ChildProcessWithoutNullStreams} from "child_process";
 import isNotNullOrUndefined from "../../../src/utils/is-not-null-or-undefined";
 
 function killApp(appUnderTest: ChildProcessWithoutNullStreams): Promise<void> {
-    console.log('stopping the test app')
+    console.info('stopping the test app')
 
     if (isNotNullOrUndefined(appUnderTest)) {
         return new Promise(resolve => {
@@ -12,7 +12,8 @@ function killApp(appUnderTest: ChildProcessWithoutNullStreams): Promise<void> {
             appUnderTest.on('exit', (code) => {
                 appUnderTest.removeAllListeners()
 
-                console.log(`child process exited with code ${code}`);
+                console.log(`child process ${appUnderTest.pid} exited with code ${code}`);
+
                 resolve()
             })
 

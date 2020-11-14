@@ -1,7 +1,7 @@
 import {ResponseWrapper} from "../../dto/response-wrapper";
 import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
 import cloneAttributes from "../../utils/colone-attributes";
-import {CurrentEvent} from "./current-event.model";
+import {CurrentEvent} from "../models/current-event.model";
 
 export class CurrentEventsResponse extends ResponseWrapper {
     events: CurrentEvent []

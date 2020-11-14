@@ -1,6 +1,6 @@
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
-import {CurrentEvent} from "./dto/current-event.model";
+import {CurrentEvent} from "./models/current-event.model";
 import sequelize, {FindOptions} from "sequelize";
 
 const DEFAULT_FIND_OPTIONS: FindOptions = {

@@ -1,10 +1,11 @@
-import {execSync} from "child_process";
+import {execSync, ExecSyncOptions} from "child_process";
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME} from "./start-database";
+import sleep from "../sleep";
 
-function runMigrations(dbPort: number): void {
+async function runMigrations(dbPort: number): Promise<void> {
     console.log('running migrations');
 
-    const numTries = 5;
+    const numTries = 10;
 
     let finalEx: Error | null = null;
 
@@ -18,10 +19,12 @@ function runMigrations(dbPort: number): void {
         } catch (ex) {
             finalEx = ex;
         }
+
+        await sleep(1000)
     }
 
     if (finalEx !== null) {
-        throw new Error('failed to run migrations: ' + finalEx);
+        throw new Error(`failed to run migrations after ${numTries} tries: ${finalEx}`);
     }
 
     console.log('migrations complete');
@@ -37,10 +40,16 @@ function doRunMigration(dbPort: number) {
         DB_NAME
     };
 
-    execSync('npm run db:migrate', {
-        stdio: 'inherit',
-        env
-    });
+    const options: ExecSyncOptions= {
+        env,
+        stdio: 'ignore'
+    }
+
+    if (process.env.DEBUG_MIGRATION) {
+        options.stdio = 'inherit'
+    }
+
+    execSync('npm run db:migrate', options);
 }
 
 export default runMigrations;

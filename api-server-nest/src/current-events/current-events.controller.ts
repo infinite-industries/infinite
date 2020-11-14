@@ -9,7 +9,7 @@ import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {CurrentEventsResponse} from "./dto/current-events-response";
 import {Request} from "express";
 import isAdminUser from "../authentication/is-admin-user";
-import {CurrentEvent} from "./dto/current-event.model";
+import {CurrentEvent} from "./models/current-event.model";
 import {removeContactInfoFromResultsForNonAdminsFromCurrentEvents} from
         '../authentication/filters/remove-contact-info-from-results-for-non-admins'
 

@@ -2,7 +2,7 @@ import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
 import {FindOptions, UpdateOptions} from "sequelize";
 import {Event} from "./models/event.model";
-import {DbUpdateResponse} from "../shared-types/db-update-response";
+import DbUpdateResponse, {toDbUpdateResponse} from "../shared-types/db-update-response";
 import {v4 as uuidv4} from 'uuid';
 import {CreateEventRequest} from "./dto/create-event-request";
 import {UpdateEventRequest} from "./dto/update-event-request";
@@ -22,15 +22,7 @@ export class EventsService {
         }
 
         return this.eventModel.update(values, updateQueryOptions)
-            .then((response: [number, Event []]) => {
-                const numberOfAffectedEntities = response[0]
-                const updatedEntities = response[1]
-
-                return {
-                    numberOfAffectedEntities,
-                    updatedEntities
-                }
-            })
+            .then(toDbUpdateResponse)
     }
 
     create(newEvent: CreateEventRequest): Promise<Event> {
