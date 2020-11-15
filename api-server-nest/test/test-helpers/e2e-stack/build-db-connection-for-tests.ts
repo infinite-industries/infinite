@@ -2,7 +2,7 @@ import {Test, TestingModule} from "@nestjs/testing";
 import {SequelizeModule} from "@nestjs/sequelize";
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME} from "./start-database";
 import {CurrentEvent} from "../../../src/current-events/models/current-event.model";
-import {Venue} from "../../../dist/venues/dto/venue.model";
+import {Venue} from "../../../src/venues/models/venue.model";
 import {Event} from "../../../src/events/models/event.model";
 import {EventsService} from "../../../src/events/events.service";
 import {VenuesService} from "../../../src/venues/venues.service";

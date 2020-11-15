@@ -7,7 +7,7 @@ async function startApplication(dbPort: number): Promise<ChildProcessWithoutNull
     const appReadyMessage = 'Nest application successfully started'
     const timeOut = 10000
 
-    const appUnderTest = spawn('node', ['/home/chris/projects/infinite/api-server-nest/dist/main'],  {
+    const appUnderTest = spawn('node', [__dirname + '/../../../dist/main'],  {
         env: {
             ...process.env,
             DB_HOST,

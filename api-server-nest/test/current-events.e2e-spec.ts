@@ -2,7 +2,7 @@ import { TestingModule } from "@nestjs/testing";
 import isNotNullOrUndefined from "../src/utils/is-not-null-or-undefined";
 // @ts-ignore
 import {StartedTestContainer } from "testcontainers";
-import {Venue} from "../dist/venues/dto/venue.model";
+import {Venue} from "../src/venues/models/venue.model"
 import * as request from "supertest";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
 import {Event} from '../src/events/models/event.model';
