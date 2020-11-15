@@ -17,11 +17,8 @@ export class AnnouncementsController {
     @Get()
     @ApiOperation({ summary: 'return all events (currently this will always be a list of one)'})
     getAll(): Promise<AnnouncementResponse> {
-        console.log('!!! HERE I AM: ')
         return this.announcementService.findAll()
-            .then(announcements => {
-                console.log('!!! and then: ' + JSON.stringify(announcements, null, 4))
-                return new AnnouncementResponse({ announcements }}))
+            .then(announcements => new AnnouncementResponse({ announcements }))
     }
 
     @Post('/ensure-one-announcement')
