@@ -26,6 +26,10 @@ This version of the API is a work in progress making use of the nest framework
 $ npm install
 ```
 
+## running integration tests
+* put keys in the keys directory
+* `npm run test:e2e`
+
 ## Running the app
 
 ```bash
