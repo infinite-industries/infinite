@@ -19,6 +19,9 @@ This version of the API is a work in progress making use of the nest framework
 * Make sure we still do time conversion stuff on create event
 * Remove slugs from create/update requests and make sure they are server side genearated
 * THIS MAY HELP: https://www.freecodecamp.org/news/build-web-apis-with-nestjs-beginners-guide/
+* Setup test keys for the e2e to use
+* Dockerise running of app in e2e
+* create script which builds a token using tests keys that you can paste into locally running swagger docs
 
 ## Installation
 

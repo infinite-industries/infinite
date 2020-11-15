@@ -7,6 +7,8 @@ async function startApplication(dbPort: number): Promise<ChildProcessWithoutNull
     const appReadyMessage = 'Nest application successfully started'
     const timeOut = 10000
 
+    const testPem = './test-keys/1nfinite_testing.pem'
+
     const appUnderTest = spawn('node', [__dirname + '/../../../dist/main'],  {
         env: {
             ...process.env,
@@ -14,7 +16,8 @@ async function startApplication(dbPort: number): Promise<ChildProcessWithoutNull
             DB_PORT: dbPort + '',
             DB_USER_NAME: DB_USERNAME,
             DB_PASSWORD,
-            DB_NAME
+            DB_NAME,
+            JWT_PEM: testPem
         }
     });
 
