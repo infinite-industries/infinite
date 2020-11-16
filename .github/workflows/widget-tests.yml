@@ -28,8 +28,6 @@ jobs:
       - name: Install Widget Dependencies
         run: npm ci
         working-directory: './widget'
-      - name: Timezone Sanity-Check
-        run: node --eval "console.log((new Date()).getTimezoneOffset())"
       - name: Run Unit Tests
         run: npm run test
         working-directory: './widget'
