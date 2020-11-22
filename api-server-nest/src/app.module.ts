@@ -6,6 +6,7 @@ import {AppController} from "./app.controller";
 import {EventsModule} from "./events/events.module";
 import { ConfigModule } from '@nestjs/config';
 import {AnnouncementsModule} from "./announcements/announcements.module";
+import {UsersModules} from "./users/users.modules";
 
 @Module({
     imports: [
@@ -28,7 +29,8 @@ import {AnnouncementsModule} from "./announcements/announcements.module";
         VenuesModule,
         CurrentEventsModule,
         EventsModule,
-        AnnouncementsModule
+        AnnouncementsModule,
+        UsersModules
     ],
     controllers: [AppController]
 })

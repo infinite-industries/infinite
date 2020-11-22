@@ -1,9 +1,10 @@
 import {Controller, Get, Header, Post, Body} from "@nestjs/common";
 import {VenuesService} from "./venues.service";
-import {Venue} from "./models/venue.model";
+import {VenueModel} from "./models/venue.model";
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
 import {CreateVenueRequest} from "./dto/create-venue-request";
+import {VenuesResponse} from "./dto/venues-response";
 
 @Controller(`${VERSION_1_URI}/venues`)
 @ApiTags('venues')
@@ -18,11 +19,12 @@ export class VenuesController {
     @ApiResponse({
         status: 200,
         description: 'all venues',
-        type: Venue,
+        type: VenueModel,
         isArray: true
     })
-    getAll(): Promise<Venue []> {
-        return this.venuesService.findAll();
+    getAll(): Promise<VenuesResponse> {
+        return this.venuesService.findAll()
+            .then(venues => new VenuesResponse({ venues }));
     }
 
     @Post()
@@ -31,9 +33,10 @@ export class VenuesController {
     @ApiResponse({
         status: 200,
         description: 'create a venue',
-        type: Venue
+        type: VenueModel
     })
-    create(@Body() venue: CreateVenueRequest): Promise<Venue> {
-        return this.venuesService.create(venue);
+    create(@Body() venue: CreateVenueRequest): Promise<VenuesResponse> {
+        return this.venuesService.create(venue)
+            .then(venue => new VenuesResponse({ venues: [venue] }));
     }
 }

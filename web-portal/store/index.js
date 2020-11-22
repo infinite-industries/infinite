@@ -1,6 +1,8 @@
 import { ApiService } from '../services/ApiService'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
+const CURRENT_EVENTS_VERIFIED_PATH = '/current-events/verified'
+
 export const state = () => {
   return {
     util: {
@@ -118,7 +120,7 @@ export const actions = {
 
   LoadAllLocalEventData: (context) => {
     context.commit('SET_LOADING_STATUS', true)
-    return ApiService.get('/events/current/verified/')
+    return ApiService.get(CURRENT_EVENTS_VERIFIED_PATH)
       .then((_response) => {
         context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
         context.commit('SET_LOADING_STATUS', false)

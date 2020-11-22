@@ -4,7 +4,7 @@ import {ApiProperty} from "@nestjs/swagger";
 const EXAMPLE_STATE = new Date();
 
 @Table({tableName: 'venues'})
-export class Venue extends Model<Venue> {
+export class VenueModel extends Model<VenueModel> {
     @PrimaryKey
     @IsUUID(4)
     @Column

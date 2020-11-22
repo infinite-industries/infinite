@@ -1,6 +1,6 @@
 import {Column, ForeignKey} from "sequelize-typescript";
 import {ApiProperty} from "@nestjs/swagger";
-import {Venue} from "../../venues/models/venue.model";
+import {VenueModel} from "../../venues/models/venue.model";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
 import cloneAttributes from "../../utils/colone-attributes";

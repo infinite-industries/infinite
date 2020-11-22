@@ -8,6 +8,9 @@ export const state = () => {
   }
 }
 
+const CURRENT_EVENTS_VERIFIED_PATH = '/current-events/verified'
+const CURRENT_EVENTS_NON_VERIFIED_PATH = '/events/current/non-verified'
+
 export const getters = {
   GetUnverifiedEvents: (state, getters) => {
     return state.unverified_events
@@ -37,7 +40,7 @@ export const actions = {
     const idToken = payload.idToken
 
     ApiService.all([
-      ApiService.get('/events/current/non-verified', idToken),
+      ApiService.get(CURRENT_EVENTS_NON_VERIFIED_PATH, idToken),
       ApiService.get('/events/non-verified/tags/online-resource', idToken)
     ])
       .then(function (_responses) {
@@ -62,7 +65,7 @@ export const actions = {
   LoadCurrentEvents: (context, payload) => {
     const idToken = payload.idToken
 
-    ApiService.get('/events/current/verified', idToken)
+    ApiService.get(CURRENT_EVENTS_VERIFIED_PATH, idToken)
       .then(function (_response) {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_VERIFIED_LIST', _response.data.events)

@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize'
 import { Event } from '../../src/events/models/event.model'
-import { Venue } from '../../src/venues/models/venue.model'
+import { VenueModel } from '../../src/venues/models/venue.model'
 import {Model} from "sequelize-typescript";
 
 const DB_DIALECT = 'postgres'

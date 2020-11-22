@@ -1,6 +1,6 @@
 import {Controller, Get, HttpException, HttpStatus, Query, Req, UseGuards, UseInterceptors} from "@nestjs/common";
 import {CurrentEventsService} from "./current-events.service";
-import {Venue} from "../venues/models/venue.model";
+import {VenueModel} from "../venues/models/venue.model";
 import {FindOptions} from "sequelize";
 import {AuthGuard} from "../authentication/auth.guard";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
@@ -13,7 +13,7 @@ import {CurrentEvent} from "./models/current-event.model";
 import {removeContactInfoFromResultsForNonAdminsFromCurrentEvents} from
         '../authentication/filters/remove-contact-info-from-results-for-non-admins'
 
-type EmbedableModels = typeof Venue
+type EmbedableModels = typeof VenueModel
 
 const VENUE = 'Venue';
 
@@ -94,7 +94,7 @@ export class CurrentEventsController {
     private getModelsForEmbedding(modelNames: string[]): EmbedableModels [] {
         return modelNames.map(modelName => {
             if (modelName === VENUE) {
-                return Venue;
+                return VenueModel;
             } else {
                 throw new HttpException(`"${modelName}" is not an allowable embed`, HttpStatus.BAD_REQUEST);
             }

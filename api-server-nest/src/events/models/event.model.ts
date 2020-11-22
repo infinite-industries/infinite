@@ -8,7 +8,7 @@ import {
     PrimaryKey,
     Table
 } from "sequelize-typescript";
-import {Venue} from "../../venues/models/venue.model";
+import {VenueModel} from "../../venues/models/venue.model";
 import {ApiProperty} from "@nestjs/swagger";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 
@@ -26,7 +26,7 @@ export class Event extends Model<Event> {
 
     @Column
     @ApiProperty({example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa'})
-    @ForeignKey(() => Venue)
+    @ForeignKey(() => VenueModel)
     venue_id: string;
 
     @Column
@@ -121,6 +121,6 @@ export class Event extends Model<Event> {
     @ApiProperty({example: []})
     links: Array<string>;
 
-    @BelongsTo(() => Venue)
-    venue: Venue;
+    @BelongsTo(() => VenueModel)
+    venue: VenueModel;
 }
