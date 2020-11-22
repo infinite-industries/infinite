@@ -1,5 +1,11 @@
 #!/usr/bin/env node
 
+/*
+ *
+ * arguments: venue-file, eventFile
+ *
+ *
+ */
 require('dotenv').config()
 
 const fs = require('fs')
