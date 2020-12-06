@@ -16,6 +16,7 @@ import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger
 import {VERSION_1_URI} from "../utils/versionts";
 import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-options-for-events-service-from-embeds-query-param";
+import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events"
 import {mapDateTimesToIso} from "../utils/map-date-times-to-iso";
 import {CreateEventRequest} from "./dto/create-event-request";
 import {UpdateEventRequest} from "./dto/update-event-request";
@@ -37,10 +38,13 @@ export class EventsController {
         type: Event,
         isArray: true
     })
-    getAllCurrentVerified(@Query('embed') embed: string[] | string = []): Promise<Event []> {
+    getAllCurrentVerified(
+        @Query('embed') embed: string[] | string = [],
+        @Query('tags') tags: string[] | string = [],
+    ): Promise<Event []> {
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-            where: {verified: true}
+            where: getCommonQueryTermsForEvents(true, tags)
         };
 
         return this.eventsService.findAll(findOptions);
@@ -51,7 +55,10 @@ export class EventsController {
     @ApiOperation({summary: 'Get events that have not yet been verified (admin only)'})
     @ApiResponse({status: 403, description: 'Forbidden'})
     @ApiBearerAuth()
-    getAllCurrentNonVerified(@Query('embed') embed: string[] | string = []): Promise<Event []> {
+    getAllCurrentNonVerified(
+        @Query('embed') embed: string[] | string = [],
+        @Query('tags') tags: string[] | string = []
+    ): Promise<Event []> {
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
             where: {verified: false}
@@ -65,8 +72,14 @@ export class EventsController {
     @ApiOperation({summary: 'Get events, both verified and non (admin only)'})
     @ApiResponse({status: 403, description: 'Forbidden'})
     @ApiBearerAuth()
-    getAllCurrent(@Query('embed') embed: string[] | string = []): Promise<Event []> {
-        const findOptions = getOptionsForEventsServiceFromEmbedsQueryParam(embed);
+    getAllCurrent(
+        @Query('embed') embed: string[] | string = [],
+        @Query('tags') tags: string[] | string = [],
+    ): Promise<Event []> {
+        const findOptions = {
+            ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+            where: getCommonQueryTermsForEvents(null, tags)
+        };
 
         return this.eventsService.findAll(findOptions);
     }
