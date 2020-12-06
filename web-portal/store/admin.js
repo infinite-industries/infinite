@@ -41,7 +41,7 @@ export const actions = {
 
     ApiService.all([
       ApiService.get(CURRENT_EVENTS_NON_VERIFIED_PATH, idToken),
-      ApiService.get('/events/non-verified/tags/online-resource', idToken)
+      ApiService.get('/events/non-verified?tags=online-resource', idToken)
     ])
       .then(function (_responses) {
         const [_eventRes, _resourceRes] = _responses
@@ -80,7 +80,7 @@ export const actions = {
   },
   LoadResourceEvents: (context, payload) => {
     const idToken = payload.idToken
-    ApiService.get('/events/verified/tags/online-resource', idToken)
+    ApiService.get('/events/verified?tags=online-resource', idToken)
       .then(function (_response) {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_RESOURCE_LIST', _response.data.events)

@@ -131,7 +131,7 @@ export const actions = {
       })
   },
   LoadAllStreamingEventData: (context) => {
-    return ApiService.get('/events/verified/tags/online-resource')
+    return ApiService.get(CURRENT_EVENTS_VERIFIED_PATH + '?tags=online-resource')
       .then((_response) => {
         context.commit('UPDATE_STREAMING_EVENTS', _response.data.events)
       })
