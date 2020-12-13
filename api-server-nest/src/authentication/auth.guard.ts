@@ -11,6 +11,8 @@ export class AuthGuard implements CanActivate {
         try {
             const userInformation: UserInformation = await parseJwt(request);
 
+            request.userInformation = userInformation
+
             return userInformation.isInfiniteAdmin;
         } catch (ex) {
             console.error(ex);
