@@ -62,7 +62,6 @@ export const getters = {
   },
 
   IsUserAdmin: (state) => {
-    console.log('!!! state.user: ' + JSON.stringify(state.user_data, null, 4))
     return !!state.user_data && state.user_data.isInfiniteAdmin
   }
 }
@@ -113,11 +112,9 @@ export const actions = {
   },
 
   LoadAllUserData: (context, payload) => {
-    console.log('!!! make request: ' + payload.idToken)
     debugger
     return ApiService.get('/users/current', payload.idToken)
       .then(function (_response) {
-        console.log('!!! result: ' + JSON.stringify(_response.data, null, 4))
         context.commit('UPDATE_USER_DATA', _response.data)
       })
   },
