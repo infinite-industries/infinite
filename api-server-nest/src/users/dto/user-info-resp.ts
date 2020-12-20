@@ -1,6 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
 import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
-import cloneAttributes from "../../utils/colone-attributes";
+import cloneAttributes from "../../utils/clone-attributes";
 import {v4 as uuidv4} from 'uuid';
 
 const SAMPLE_GUID_1 = uuidv4()

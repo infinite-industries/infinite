@@ -3,7 +3,7 @@ import {ApiProperty} from "@nestjs/swagger";
 import {VenueModel} from "../../venues/models/venue.model";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
-import cloneAttributes from "../../utils/colone-attributes";
+import cloneAttributes from "../../utils/clone-attributes";
 import {
     IsNotEmpty,
     IsOptional
