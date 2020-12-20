@@ -18,6 +18,14 @@ async function bootstrap() {
         forbidNonWhitelisted: true
     }));
 
+    app.enableCors({
+        origin: '*',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+        allowedHeaders: 'x-access-token, content-type',
+        credentials: true,
+        optionsSuccessStatus: 204
+    })
+
     registerSwaggerDocsModule(app);
 
     await app.listen(PORT);
