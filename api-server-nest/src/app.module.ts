@@ -8,6 +8,8 @@ import { ConfigModule } from '@nestjs/config';
 import {AnnouncementsModule} from "./announcements/announcements.module";
 import {UsersModules} from "./users/users.modules";
 
+require('dotenv').config();
+
 @Module({
     imports: [
         ConfigModule.forRoot({
