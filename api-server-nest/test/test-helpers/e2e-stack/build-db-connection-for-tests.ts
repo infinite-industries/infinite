@@ -9,6 +9,7 @@ import {VenuesService} from "../../../src/venues/venues.service";
 import {CurrentEventsService} from "../../../src/current-events/current-events.service";
 import {AnnouncementModel} from "../../../src/announcements/models/announcement.model";
 import {AnnouncementsService} from "../../../src/announcements/announcements.service";
+import BitlyService from "../../../dist/events/bitly.service";
 
 const NUXT_INTERNAL_POSTFIX = 'Repository'
 
@@ -32,7 +33,8 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
             EventsService,
             VenuesService,
             CurrentEventsService,
-            AnnouncementsService
+            AnnouncementsService,
+            BitlyService
         ]
     }).compile();
 
