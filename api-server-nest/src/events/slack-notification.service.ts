@@ -3,8 +3,6 @@ import {Injectable} from "@nestjs/common";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const SlackNotify = require('slack-notify')
 
-console.log('!!! SlackNotify: ' + SlackNotify)
-
 require('dotenv').config()
 
 const SLACK_WEBHOOK_TEST = process.env.SLACK_WEBHOOK_TEST
@@ -21,8 +19,6 @@ const SLACK_SENDER_VENUE: SlackChannelSender = SlackNotify(SLACK_WEBHOOK_VENUE_S
 export default class SlackNotificationService {
     public sendNotification(channelKey: ChannelKey, payload) {
         const channelName = '#' + channelKey
-
-        console.log('!!! channelKey: ' + channelKey + ' - ' + SLACK_WEBHOOK_EVENT_SUBMISSION)
 
         const channel = this.getChannel(channelKey)
 
