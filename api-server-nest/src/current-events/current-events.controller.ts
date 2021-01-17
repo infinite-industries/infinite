@@ -1,6 +1,5 @@
-import {Controller, Get, HttpException, HttpStatus, Query, Req, UseGuards, UseInterceptors} from "@nestjs/common";
+import {Controller, Get, Query, Req, UseGuards, UseInterceptors} from "@nestjs/common";
 import {CurrentEventsService} from "./current-events.service";
-import {FindOptions} from "sequelize";
 import {AuthGuard} from "../authentication/auth.guard";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
@@ -9,7 +8,6 @@ import {CurrentEventsResponse} from "./dto/current-events-response";
 import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-options-for-events-service-from-embeds-query-param";
 import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
 import {Request} from "express";
-import isAdminUser from "../authentication/is-admin-user";
 import {CurrentEvent} from "./models/current-event.model";
 import {removeContactInfoFromResultsForNonAdminsFromCurrentEvents} from
         '../authentication/filters/remove-contact-info-from-results-for-non-admins'

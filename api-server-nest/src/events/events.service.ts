@@ -17,6 +17,10 @@ export class EventsService {
         private readonly bitlyService: BitlyService
     ) {}
 
+    findById(id: string): Promise<Event> {
+        return this.eventModel.findOne({ where: { id }})
+    }
+
     findAll(findOptions?: FindOptions): Promise<Event []> {
         return this.eventModel.findAll(findOptions)
     }

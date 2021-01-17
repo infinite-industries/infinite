@@ -112,7 +112,6 @@ export const actions = {
   },
 
   LoadAllUserData: (context, payload) => {
-    debugger
     return ApiService.get('/users/current', payload.idToken)
       .then(function (_response) {
         context.commit('UPDATE_USER_DATA', _response.data)

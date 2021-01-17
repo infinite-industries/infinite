@@ -12,6 +12,8 @@ import {CreateEventRequest} from "./dto/create-event-request";
 import {UpdateEventRequest} from "./dto/update-event-request";
 import {ApiImplicitParam} from "@nestjs/swagger/dist/decorators/api-implicit-param.decorator";
 import SlackNotificationService, {EVENT_SUBMIT} from "./slack-notification.service";
+import {EventsResponse} from "./dto/events-response";
+import {SingleEventResponse} from "./dto/single-event-response";
 
 require('dotenv').config()
 
@@ -25,25 +27,26 @@ export class EventsController {
         private readonly eventsService: EventsService,
         private readonly slackNotificationService: SlackNotificationService) {}
 
+
     @Get('verified')
     @UseGuards(AuthGuard)
     @ApiOperation({summary: 'Get current events that have been verified (for public consumptions)'})
     @ApiResponse({
         status: 200,
         description: 'verified events',
-        type: Event,
-        isArray: true
+        type: EventsResponse
     })
     getAllCurrentVerified(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = [],
-    ): Promise<Event []> {
+    ): Promise<EventsResponse> {
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
             where: getCommonQueryTermsForEvents(true, tags)
         };
 
-        return this.eventsService.findAll(findOptions);
+        return this.eventsService.findAll(findOptions)
+            .then(events => new EventsResponse({ events }));
     }
 
     @Get('non-verified')
@@ -54,13 +57,28 @@ export class EventsController {
     getAllCurrentNonVerified(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = []
-    ): Promise<Event []> {
+    ): Promise<EventsResponse> {
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
             where: {verified: false}
         };
 
-        return this.eventsService.findAll(findOptions);
+        return this.eventsService.findAll(findOptions)
+            .then(events => new EventsResponse({events}));
+    }
+
+    @Get('/:id')
+    @ApiOperation({ summary: 'Get single event by id'})
+    @ApiResponse({
+        status: 200,
+        description: 'get single event',
+    })
+    getEventById(@Param() params: { id: string }): Promise<SingleEventResponse> {
+        // TODO: This will need to strip organizer when non-authenticated but keep it when authenticated
+        const id = params.id
+
+        return this.eventsService.findById(id)
+            .then(event => ({ event, status: 'success' }))
     }
 
     @Get()
@@ -71,13 +89,14 @@ export class EventsController {
     getAllCurrent(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = [],
-    ): Promise<Event []> {
+    ): Promise<EventsResponse> {
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
             where: getCommonQueryTermsForEvents(null, tags)
         };
 
-        return this.eventsService.findAll(findOptions);
+        return this.eventsService.findAll(findOptions)
+            .then(events => new EventsResponse({ events }));
     }
 
     @Put('/verify/:id')
