@@ -39,20 +39,32 @@ export const actions = {
   LoadUnverifiedEvents: (context, payload) => {
     const idToken = payload.idToken
 
+    const isResponseSuccess = respObj => respObj && respObj.data && respObj.data.status === 'success'
+
     ApiService.all([
       ApiService.get(CURRENT_EVENTS_NON_VERIFIED_PATH, idToken),
       ApiService.get('/events/non-verified?tags=online-resource', idToken)
     ])
-      .then(function (_responses) {
-        const [_eventRes, _resourceRes] = _responses
-        console.log('data from server: ', _eventRes.data.events, _resourceRes.data.events)
-        if (_eventRes.data.status === 'success' && _resourceRes.data.status === 'success') {
-          const eventList = _eventRes.data.events
-          const eventIds = eventList.map(function (event) { return event.id })
-          _resourceRes.data.events.forEach(function (resource) {
-            if (!eventIds.includes(resource.id)) eventList.push(resource)
+      .then(function (responses) {
+        const [currentNonVerifiedResponse, allNonVerifiedResponse] = responses
+
+        console.log('data from server: ', currentNonVerifiedResponse.data.events, allNonVerifiedResponse.data.events)
+
+        if (isResponseSuccess(currentNonVerifiedResponse) && isResponseSuccess(allNonVerifiedResponse)) {
+          const currentNonVerifiedEventsList = currentNonVerifiedResponse.data.events
+          const currentNonVerifiedEventIds = currentNonVerifiedEventsList.map(function (event) { return event.id })
+
+          const unionOfEventSets = [...currentNonVerifiedEventIds]
+
+          const allNonVerifiedEventsList = allNonVerifiedResponse.data.events
+
+          allNonVerifiedEventsList.forEach(function (resource) {
+            if (!currentNonVerifiedEventIds.includes(resource.id)) {
+              unionOfEventSets.push(resource)
+            }
           })
-          context.commit('POPULATE_UNVERIFIED_LIST', eventList)
+
+          context.commit('POPULATE_UNVERIFIED_LIST', unionOfEventSets)
         } else {
           context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Was not able to find unverified events.' }, { root: true })
         }
