@@ -4,7 +4,7 @@ import registerSwaggerDocsModule from "./registerSwaggerDocsModule";
 import {isNullOrUndefined} from "./utils";
 import {ValidationPipe} from "@nestjs/common";
 
-//require('dotenv').config();
+require('dotenv').config();
 
 const DEFAULT_PORT = 3000;
 const PORT = isNullOrUndefined(process.env.PORT) ? DEFAULT_PORT : process.env.PORT;
@@ -15,7 +15,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe({
         whitelist: true,
         transform: true,
-        forbidNonWhitelisted: true
+        forbidNonWhitelisted: false
     }));
 
     app.enableCors({
