@@ -1,4 +1,4 @@
-import {Controller, Get, Header, Post, Body} from "@nestjs/common";
+import {Controller, Get, Header, Post, Body, Param} from "@nestjs/common";
 import {VenuesService} from "./venues.service";
 import {VenueModel} from "./models/venue.model";
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
@@ -14,13 +14,26 @@ export class VenuesController {
     ) {
     }
 
+    @Get('/:id')
+    @ApiOperation({ summary: 'get a venue by id'})
+    @ApiResponse({
+        status: 200,
+        description: 'single venue',
+        type: VenuesResponse
+    })
+    get(@Param() params: { id: string }): Promise<VenuesResponse> {
+        const id = params.id
+
+        return this.venuesService.findById(id)
+            .then(venue => new VenuesResponse({ venues: [venue] }))
+    }
+
     @Get()
     @ApiOperation({summary: 'get a list of all the venues'})
     @ApiResponse({
         status: 200,
         description: 'all venues',
-        type: VenueModel,
-        isArray: true
+        type: VenuesResponse
     })
     getAll(): Promise<VenuesResponse> {
         return this.venuesService.findAll()
@@ -33,7 +46,7 @@ export class VenuesController {
     @ApiResponse({
         status: 200,
         description: 'create a venue',
-        type: VenueModel
+        type: VenuesResponse
     })
     create(@Body() venue: CreateVenueRequest): Promise<VenuesResponse> {
         return this.venuesService.create(venue)
