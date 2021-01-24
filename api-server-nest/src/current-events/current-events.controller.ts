@@ -9,8 +9,8 @@ import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-optio
 import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
 import {Request} from "express";
 import {CurrentEvent} from "./models/current-event.model";
-import {removeContactInfoFromResultsForNonAdminsFromCurrentEvents} from
-        '../authentication/filters/remove-contact-info-from-results-for-non-admins'
+import removeSensitiveDataForNonAdmins from
+        '../authentication/filters/remove-sensitive-data-for-non-admins'
 
 @Controller(`${VERSION_1_URI}/current-events`)
 @UseInterceptors(LoggingInterceptor)
@@ -36,12 +36,9 @@ export class CurrentEventsController {
             where: getCommonQueryTermsForEvents(true, tags)
         };
 
-        const events = await this.currentEventsService.findAll(findOptions)
-
-        const filteredEvents =
-            await removeContactInfoFromResultsForNonAdminsFromCurrentEvents(request, events) as CurrentEvent[]
-
-        return new CurrentEventsResponse({ events: filteredEvents})
+        return this.currentEventsService.findAll(findOptions)
+            .then(events => removeSensitiveDataForNonAdmins(request, events))
+            .then((filteredEvents: CurrentEvent[]) => new CurrentEventsResponse({ events: filteredEvents}))
     }
 
     @Get('non-verified')
@@ -59,7 +56,7 @@ export class CurrentEventsController {
         };
 
         return this.currentEventsService.findAll(findOptions)
-            .then(events => new CurrentEventsResponse({ events }));
+            .then((events: CurrentEvent[]) => new CurrentEventsResponse({ events }));
     }
 
     @Get()
