@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Post, Put, Query, UseGuards, UseInterceptors} from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards, UseInterceptors} from "@nestjs/common";
 import {EventsService} from "./events.service";
 import {Event} from "./models/event.model";
 import {AuthGuard} from "../authentication/auth.guard";
@@ -14,6 +14,8 @@ import {ApiImplicitParam} from "@nestjs/swagger/dist/decorators/api-implicit-par
 import SlackNotificationService, {EVENT_SUBMIT} from "./slack-notification.service";
 import {EventsResponse} from "./dto/events-response";
 import {SingleEventResponse} from "./dto/single-event-response";
+import {Request} from "express";
+import {removeSensitiveDataForNonAdmins} from "../authentication/filters/remove-sensitive-data-for-non-admins";
 
 require('dotenv').config()
 
@@ -73,12 +75,13 @@ export class EventsController {
         status: 200,
         description: 'get single event',
     })
-    getEventById(@Param() params: { id: string }): Promise<SingleEventResponse> {
+    getEventById(@Param() params: { id: string }, @Req() request: Request): Promise<SingleEventResponse> {
         // TODO: This will need to strip organizer when non-authenticated but keep it when authenticated
         const id = params.id
 
         return this.eventsService.findById(id)
-            .then(event => ({ event, status: 'success' }))
+            .then(event => removeSensitiveDataForNonAdmins(request, event))
+            .then((event: Event) => ({ event, status: 'success' }))
     }
 
     @Get()
