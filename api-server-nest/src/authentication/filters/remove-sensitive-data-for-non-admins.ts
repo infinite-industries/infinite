@@ -7,7 +7,7 @@ import {Model} from "sequelize-typescript";
 type GenericEvent = Event | CurrentEvent
 type GenericEventList = Event[] | CurrentEvent[]
 
-export default async function removeSensitiveDataForNonAdmins(
+export async function removeSensitiveDataForNonAdmins(
     request: Request,
     events: GenericEvent | GenericEventList
 ): Promise<GenericEvent | GenericEventList> {

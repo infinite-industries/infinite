@@ -9,8 +9,7 @@ import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-optio
 import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
 import {Request} from "express";
 import {CurrentEvent} from "./models/current-event.model";
-import removeSensitiveDataForNonAdmins from
-        '../authentication/filters/remove-sensitive-data-for-non-admins'
+import {removeSensitiveDataForNonAdmins} from "../authentication/filters/remove-sensitive-data-for-non-admins";
 
 @Controller(`${VERSION_1_URI}/current-events`)
 @UseInterceptors(LoggingInterceptor)

@@ -14,8 +14,8 @@ import {ApiImplicitParam} from "@nestjs/swagger/dist/decorators/api-implicit-par
 import SlackNotificationService, {EVENT_SUBMIT} from "./slack-notification.service";
 import {EventsResponse} from "./dto/events-response";
 import {SingleEventResponse} from "./dto/single-event-response";
-import removeSensitiveDataForNonAdmins from "../authentication/filters/remove-sensitive-data-for-non-admins";
 import {Request} from "express";
+import {removeSensitiveDataForNonAdmins} from "../authentication/filters/remove-sensitive-data-for-non-admins";
 
 require('dotenv').config()
 
