@@ -102,41 +102,10 @@ export class EventsController {
             .then(events => new EventsResponse({ events }));
     }
 
-    @Put('/verify/:id')
-    @UseGuards(AuthGuard)
-    @ApiOperation({summary: 'Verify the event, making it visible to the public'})
-    @ApiImplicitParam({name: 'id', type: String})
-    @ApiResponse({status: 403, description: "Forbidden"})
-    @ApiBearerAuth()
-    verifyEvent(@Param() params: { id: string }): Promise<Event> {
-        const id = params.id;
-
-        return this.eventsService.update(id, {verified: true})
-            .then(response => response.updatedEntities[0]);
-    }
-
-    @Put(':id')
-    @UseGuards(AuthGuard)
-    @ApiOperation({summary: 'Update fields on an existing event'})
-    @ApiResponse({status: 403, description: "Forbidden"})
-    @ApiBearerAuth()
-    updateEvent(
-        @Param() params: { id: string },
-        @Body() updatedValues: UpdateEventRequest
-    ): Promise<Event> {
-        const id = params.id;
-
-        // TODO (CAW) -- This needs to happen here too
-        // const eventWithDateTimesInISOFormat = mapDateTimesToIso(newEvent)
-
-        return this.eventsService.update(id, updatedValues)
-            .then(response => response.updatedEntities[0]);
-    }
-
     @Post()
     @ApiOperation({summary: 'Create a new event. It will be initially un-verified'})
     async createUnverifiedEvent(@Body() newEvent: CreateEventRequest): Promise<Event> {
-        const eventWithDateTimesInISOFormat = mapDateTimesToIso(newEvent)
+        const eventWithDateTimesInISOFormat = mapDateTimesToIso<CreateEventRequest>(newEvent, CreateEventRequest)
 
         const submissionResult = await this.eventsService.create(eventWithDateTimesInISOFormat)
 
