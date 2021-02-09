@@ -29,7 +29,7 @@
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "multiparty": "^4.2.1",
-    "nuxt": "^2.12.0",
+    "nuxt": "^2.14.12",
     "nuxt-clipboard2": "^0.2.1",
     "slack-notify": "^0.1.7",
     "uuid": "^3.3.2",
