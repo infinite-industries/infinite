@@ -5,13 +5,13 @@ import {EventsController} from "./events.controller";
 import {EventsService} from "./events.service";
 import BitlyService from "./bitly.service";
 import SlackNotificationService from "./slack-notification.service";
-import AuthenticatedEventsController from "./authenticated-events.controller";
+import EventsAuthenticatedController from "./events.authenticated.controller";
 
 @Module({
     imports: [
         SequelizeModule.forFeature([Event])
     ],
-    controllers: [AuthenticatedEventsController, EventsController],
+    controllers: [EventsAuthenticatedController, EventsController],
     providers: [
         EventsService,
         BitlyService,

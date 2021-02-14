@@ -108,16 +108,11 @@ export const actions = {
   VerifyEvent: (context, payload) => {
     const idToken = payload.idToken
 
-    return ApiService.put(`/events/verify/${payload.id}`, null, idToken)
+    return ApiService.put(`/authenticated/events/verify/${payload.id}`, null, idToken)
       .then(function (_response) {
-        // console.log("data from server: ",response.data.events);
-        if (_response.data.status === 'success') {
-          context.commit('CHANGE_STATE_TO_VERIFIED', payload)
+        context.commit('CHANGE_STATE_TO_VERIFIED', payload)
 
-          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Event was successfuly verified.' }, { root: true })
-        } else {
-          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Unable to verify the event.' }, { root: true })
-        }
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Event was successfuly verified.' }, { root: true })
       })
       .catch(function (error) {
         console.log(error)
@@ -128,16 +123,9 @@ export const actions = {
   UpdateEvent: (context, payload) => {
     const idToken = payload.idToken
 
-    return ApiService.put(`/events/${payload.id}`, { event: { ...payload.event_data } }, idToken)
+    return ApiService.put(`/authenticated/events/${payload.id}`, { ...payload.event_data }, idToken)
       .then(function (_response) {
-        // console.log("data from server: ",response.data.events);
-        if (_response.data.status === 'success') {
-          console.log('event updated')
-
-          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Content of the event updated.' }, { root: true })
-        } else {
-          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Unable to update :(' }, { root: true })
-        }
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Content of the event updated.' }, { root: true })
       })
       .catch(function (error) {
         console.log(error)
