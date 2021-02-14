@@ -5,6 +5,7 @@ import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
 import {CreateVenueRequest} from "./dto/create-venue-request";
 import {VenuesResponse} from "./dto/venues-response";
+import FindByIdParams from "../dto/find-by-id-params";
 
 @Controller(`${VERSION_1_URI}/venues`)
 @ApiTags('venues')
@@ -21,7 +22,7 @@ export class VenuesController {
         description: 'single venue',
         type: VenuesResponse
     })
-    get(@Param() params: { id: string }): Promise<VenuesResponse> {
+    get(@Param() params: FindByIdParams): Promise<VenuesResponse> {
         const id = params.id
 
         return this.venuesService.findById(id)

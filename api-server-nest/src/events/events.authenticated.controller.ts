@@ -1,6 +1,5 @@
 import {Body, Controller, Get, Param, Put, UseGuards, UseInterceptors} from "@nestjs/common";
 import {VERSION_1_URI} from "../utils/versionts";
-import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {AuthGuard} from "../authentication/auth.guard"
 import {SingleEventResponse} from "./dto/single-event-response";
@@ -9,9 +8,9 @@ import {UpdateEventRequest} from "./dto/update-event-request";
 import {Event} from "./models/event.model";
 import {mapDateTimesToIso} from "../utils/map-date-times-to-iso";
 import {ApiImplicitParam} from "@nestjs/swagger/dist/decorators/api-implicit-param.decorator";
+import FindByIdParams from "../dto/find-by-id-params";
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
-@UseInterceptors(LoggingInterceptor)
 @UseGuards(AuthGuard)
 @ApiTags('events -- authenticated')
 @ApiBearerAuth()
@@ -37,7 +36,7 @@ export default class EventsAuthenticatedController {
     @ApiOperation({summary: 'Update fields on an existing event'})
     @ApiImplicitParam({name: 'id', type: String})
     updateEvent(
-        @Param() params: { id: string },
+        @Param() params: FindByIdParams,
         @Body() updatedValues: UpdateEventRequest
     ): Promise<Event> {
         const id = params.id;
@@ -51,7 +50,7 @@ export default class EventsAuthenticatedController {
     @Put('/verify/:id')
     @ApiOperation({summary: 'Verify the event, making it visible to the public'})
     @ApiImplicitParam({name: 'id', type: String})
-    verifyEvent(@Param() params: { id: string }): Promise<Event> {
+    verifyEvent(@Param() params: FindByIdParams): Promise<Event> {
         const id = params.id;
 
         return this.eventsService.update(id, {verified: true})
