@@ -2,7 +2,6 @@ import {Request} from "express";
 import {CurrentEvent} from "../../current-events/models/current-event.model";
 import {Event} from '../../events/models/event.model'
 import isAdminUser from "../is-admin-user";
-import {Model} from "sequelize-typescript";
 
 type GenericEvent = Event | CurrentEvent
 type GenericEventList = Event[] | CurrentEvent[]
@@ -26,9 +25,11 @@ export async function removeSensitiveDataForNonAdmins(
 
 function removeSensitiveDataForSingleEvent(infiniteEvent: GenericEvent): GenericEvent {
     if (infiniteEvent instanceof CurrentEvent) {
-        return buildModelWithSensitiveDataRemoved<CurrentEvent>(infiniteEvent, CurrentEvent)
+        infiniteEvent.setDataValue('organizer_contact', undefined)
+        return infiniteEvent // buildModelWithSensitiveDataRemoved<CurrentEvent>(infiniteEvent, CurrentEvent)
     } else {
-        return buildModelWithSensitiveDataRemoved<Event>(infiniteEvent, Event)
+        infiniteEvent.setDataValue('organizer_contact', undefined)
+        return infiniteEvent
     }
 }
 
@@ -37,16 +38,27 @@ function removeSensitiveDataList(currentEvents: GenericEventList): GenericEventL
         return []
     } else if (currentEvents[0] instanceof CurrentEvent) {
         return (currentEvents as CurrentEvent[])
-            .map(e => buildModelWithSensitiveDataRemoved<CurrentEvent>(e, CurrentEvent))
+            .map(e => {
+                e.setAttributes('organizer_contact', undefined)
+                return e
+            });
     } else {
         return (currentEvents as Event[])
-            .map(e => buildModelWithSensitiveDataRemoved<Event>(e, Event))
+            .map(e => {
+                e.setAttributes('organizer_contact', undefined)
+                return e
+            });
     }
 }
 
-function buildModelWithSensitiveDataRemoved<T extends Model>(event: T, t: new (any) => T): T {
-    return new t({
-        ...event.toJSON(),
-        organizer_contact: undefined
-    });
-}
+// function buildModelWithSensitiveDataRemoved<T extends Model>(event: T, t: new (any) => T): T {
+//     const cleanInstance = new t({
+//         ...event.toJSON(),
+//         organizer_contact: undefined
+//     });
+//
+//     (cleanInstance as unknown as Event)
+//         .setDataValue('venue', (event as unknown as Event).getDataValue('venue'));
+//
+//    return cleanInstance
+// }
