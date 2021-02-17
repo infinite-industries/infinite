@@ -8,6 +8,8 @@ import { ConfigModule } from '@nestjs/config';
 import {AnnouncementsModule} from "./announcements/announcements.module";
 import {UsersModules} from "./users/users.modules";
 import LoggingMiddleware from "./logging/logging.middleware";
+import { WinstonModule } from 'nest-winston';
+import { format, transports } from 'winston'
 
 require('dotenv').config();
 
@@ -31,6 +33,21 @@ const isSequelizeLoggingEnabled = !!process.env.SEQUELIZE_LOGGING
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
             logging: isSequelizeLoggingEnabled
+        }),
+        WinstonModule.forRoot({
+            transports: [
+                // TODO: should we factor this out into a secondary file? 
+                new transports.Console({
+                    format: format.combine(
+                        format.label({ label: `TEST:api-server:${process.pid}` }),
+                        format.timestamp(),
+                        format.colorize(),
+                        format.printf(({ level, message, label, timestamp }) => {
+                            return `${level}: ${timestamp} [${label}] -- ${message}`;
+                        })
+                    )
+                })
+            ]
         }),
         VenuesModule,
         CurrentEventsModule,
