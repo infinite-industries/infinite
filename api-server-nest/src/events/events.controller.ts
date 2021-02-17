@@ -2,6 +2,7 @@ import {Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards, UseInter
 import {EventsService} from "./events.service";
 import {Event} from "./models/event.model";
 import {AuthGuard} from "../authentication/auth.guard";
+import { Inject, LoggerService } from "@nestjs/common";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
 import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-options-for-events-service-from-embeds-query-param";
@@ -14,6 +15,7 @@ import {SingleEventResponse} from "./dto/single-event-response";
 import {Request} from "express";
 import {removeSensitiveDataForNonAdmins} from "../authentication/filters/remove-sensitive-data-for-non-admins";
 import FindByIdParams from "../dto/find-by-id-params";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 require('dotenv').config()
 
@@ -24,7 +26,9 @@ const env = process.env.ENV || 'dev'
 export class EventsController {
     constructor(
         private readonly eventsService: EventsService,
-        private readonly slackNotificationService: SlackNotificationService) {}
+        private readonly slackNotificationService: SlackNotificationService,
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService
+    ) {}
 
 
     @Get('verified')
@@ -128,7 +132,7 @@ export class EventsController {
 
             this.slackNotificationService.sendNotification(EVENT_SUBMIT, message)
         } catch (exSlack) {
-            console.error(`error notifying slack of new event: ${exSlack}`)
+            this.logger.error(`error notifying slack of new event: ${exSlack}`)
         }
     }
 }
