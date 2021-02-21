@@ -99,13 +99,13 @@
       },
       submitNewVenue: function () {
         this.showVenueLoadingSpinner = true
-        ApiService.post('/venues/', { venue: { ...this.new_venue } })
+        ApiService.post('/venues/', { ...this.new_venue })
           .then((response) => {
             this.showVenueLoadingSpinner = false
             this.closeVenueDropdown()
             if (response.data.status === 'success') {
               this.$store.dispatch('LoadAllVenueData')
-              this.$emit('newVenue', { ...this.new_venue, id: response.data.id })
+              this.$emit('newVenue', response.data.venue)
             }
           }).catch((err) => {
             console.error(err)

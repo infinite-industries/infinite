@@ -6,10 +6,6 @@ export class CreateVenueRequest {
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({example: 'chill-bar'})
-    @IsNotEmpty()
-    slug: string;
-
     @ApiProperty({example: '232 Paper St. Scranton, Pennsylvania'})
     @IsOptional()
     address?: string;

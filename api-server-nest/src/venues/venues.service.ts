@@ -4,6 +4,7 @@ import {VenueModel} from "./models/venue.model";
 import {v4 as uuidv4} from 'uuid';
 import {CreateVenueRequest} from "./dto/create-venue-request";
 import {FindOptions} from "sequelize";
+import getSlug from "../utils/get-slug";
 
 @Injectable()
 export class VenuesService {
@@ -24,7 +25,8 @@ export class VenuesService {
 
     create(newVenue: CreateVenueRequest): Promise<VenueModel> {
         const id = uuidv4();
+        const slug = getSlug(newVenue.name)
 
-        return this.venueModel.create({ ...newVenue, id });
+        return this.venueModel.create({ ...newVenue, id, slug });
     }
 }
