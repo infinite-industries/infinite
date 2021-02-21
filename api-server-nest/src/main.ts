@@ -3,6 +3,7 @@ import {AppModule} from './app.module';
 import registerSwaggerDocsModule from "./registerSwaggerDocsModule";
 import {isNullOrUndefined} from "./utils";
 import {ValidationPipe} from "@nestjs/common";
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 require('dotenv').config();
 
@@ -11,6 +12,8 @@ const PORT = isNullOrUndefined(process.env.PORT) ? DEFAULT_PORT : process.env.PO
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER))
 
     app.useGlobalPipes(new ValidationPipe({
         whitelist: true,

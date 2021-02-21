@@ -1,5 +1,6 @@
-import {Injectable} from "@nestjs/common";
+import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import axios from "axios";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
 
 require('dotenv').config();
@@ -9,6 +10,10 @@ const BITLY_TOKEN = process.env.BITLY_TOKEN
 
 @Injectable()
 export default class BitlyService {
+    constructor (
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService
+    ) {}
+
     async createLink (infiniteUrl: string): Promise<string | null> {
         const headers = this.buildHeader()
 
@@ -21,7 +26,7 @@ export default class BitlyService {
                 ? (ex.response.data.length ? ex.response.data.map(e => e.message).join(', ') : ex.response.data.message)
                 : 'n/a'
 
-            console.error(`Link shortener failed (${ex.response && ex.response.status}: ${errors}) -- ${ex}`)
+            this.logger.error(`Link shortener failed (${ex.response && ex.response.status}: ${errors}) -- ${ex}`)
 
             throw new Error('Link shortener failed')
         }

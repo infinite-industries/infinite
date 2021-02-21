@@ -1,6 +1,5 @@
 import {Controller, Get, Header, Post, Body, Param} from "@nestjs/common";
 import {VenuesService} from "./venues.service";
-import {VenueModel} from "./models/venue.model";
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
 import {CreateVenueRequest} from "./dto/create-venue-request";
