@@ -72,12 +72,18 @@ export class EventsController {
         status: 200,
         description: 'get single event',
     })
-    getEventById(@Param() params: FindByIdParams, @Req() request: Request): Promise<SingleEventResponse> {
-        // TODO: This will need to strip organizer when non-authenticated but keep it when authenticated
+    getEventById(
+        @Param() params: FindByIdParams,
+        @Query('embed') embed: string[] | string = [],
+        @Req() request: Request
+    ): Promise<SingleEventResponse> {
         const id = params.id
+        const findOptions  = getOptionsForEventsServiceFromEmbedsQueryParam(embed)
 
-        return this.eventsService.findById(id)
+        return this.eventsService.findById(id, findOptions)
+            .then(event => Promise.resolve(event))
             .then(event => removeSensitiveDataForNonAdmins(request, event))
+            .then(event =>  Promise.resolve(event))
             .then((event: Event) => ({ event, status: 'success' }))
     }
 
