@@ -10,6 +10,8 @@ import {CurrentEventsService} from "../../../src/current-events/current-events.s
 import {AnnouncementModel} from "../../../src/announcements/models/announcement.model";
 import {AnnouncementsService} from "../../../src/announcements/announcements.service";
 import BitlyService from "../../../dist/events/bitly.service";
+import {WinstonModule} from "nest-winston";
+import {format, transports} from "winston";
 
 const NUXT_INTERNAL_POSTFIX = 'Repository'
 
@@ -27,7 +29,22 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
                 database: DB_NAME,
                 models: [CurrentEvent, VenueModel, Event, AnnouncementModel]
             }),
-            SequelizeModule.forFeature([Event, VenueModel, CurrentEvent, AnnouncementModel])
+            SequelizeModule.forFeature([Event, VenueModel, CurrentEvent, AnnouncementModel]),
+            WinstonModule.forRoot({
+                transports: [
+                    // TODO: should we factor this out into a secondary file?
+                    new transports.Console({
+                        format: format.combine(
+                            format.label({ label: `TEST:api-server:${process.pid}` }),
+                            format.timestamp(),
+                            format.colorize(),
+                            format.printf(({ level, message, label, timestamp }) => {
+                                return `${level}: ${timestamp} [${label}] -- ${message}`;
+                            })
+                        )
+                    })
+                ]
+            })
         ],
         providers: [
             EventsService,
