@@ -17,6 +17,8 @@ export default class BitlyService {
     async createLink (infiniteUrl: string): Promise<string | null> {
         const headers = this.buildHeader()
 
+        this.logger.debug(`Sending ${infiniteUrl} to Link shortener`)
+
         try {
             const response = await axios.post(BITLY_URI, { long_url: infiniteUrl }, { headers })
 

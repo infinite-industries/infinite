@@ -1,4 +1,5 @@
-import {Injectable} from "@nestjs/common";
+import {Inject, Injectable, LoggerService} from "@nestjs/common";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const SlackNotify = require('slack-notify')
@@ -17,15 +18,30 @@ const SLACK_SENDER_VENUE: SlackChannelSender = SlackNotify(SLACK_WEBHOOK_VENUE_S
 
 @Injectable()
 export default class SlackNotificationService {
+    constructor (
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService
+    ) {}
+
     public sendNotification(channelKey: ChannelKey, payload) {
         const channelName = '#' + channelKey
 
         const channel = this.getChannel(channelKey)
 
+        this.logger.debug(`Sending Slack notification to ${channelName}: ${payload}`)
+
         channel.send({
             channel: channelName,
             icon_emoji: ':computer:',
             text: payload
+        }, function (err) {
+            if (err) {
+                this.logger.warn(`Slack notification failed: ${err}`)
+                // TODO: do we even want this service to rethrow an error?
+                // does calling code need to know, or can we just log it here
+                throw err
+            } else {
+                this.logger.debug(`Slack notification successfully sent to ${channelName}`)
+            }
         })
     }
 
@@ -57,5 +73,5 @@ export type SlackChannelGrouper = {
 }
 
 export type SlackChannelSender = {
-    send: (any) => any
+    send: (any: any, callback: (err?) => void) => any
 }
