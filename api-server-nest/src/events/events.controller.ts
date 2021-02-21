@@ -4,25 +4,22 @@ import {Event} from "./models/event.model";
 import {AuthGuard} from "../authentication/auth.guard";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
-import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-options-for-events-service-from-embeds-query-param";
 import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
 import {mapDateTimesToIso} from "../utils/map-date-times-to-iso";
 import {CreateEventRequest} from "./dto/create-event-request";
-import {UpdateEventRequest} from "./dto/update-event-request";
-import {ApiImplicitParam} from "@nestjs/swagger/dist/decorators/api-implicit-param.decorator";
 import SlackNotificationService, {EVENT_SUBMIT} from "./slack-notification.service";
 import {EventsResponse} from "./dto/events-response";
 import {SingleEventResponse} from "./dto/single-event-response";
 import {Request} from "express";
 import {removeSensitiveDataForNonAdmins} from "../authentication/filters/remove-sensitive-data-for-non-admins";
+import FindByIdParams from "../dto/find-by-id-params";
 
 require('dotenv').config()
 
 const env = process.env.ENV || 'dev'
 
 @Controller(`${VERSION_1_URI}/events`)
-@UseInterceptors(LoggingInterceptor)
 @ApiTags('events')
 export class EventsController {
     constructor(
@@ -75,12 +72,18 @@ export class EventsController {
         status: 200,
         description: 'get single event',
     })
-    getEventById(@Param() params: { id: string }, @Req() request: Request): Promise<SingleEventResponse> {
-        // TODO: This will need to strip organizer when non-authenticated but keep it when authenticated
+    getEventById(
+        @Param() params: FindByIdParams,
+        @Query('embed') embed: string[] | string = [],
+        @Req() request: Request
+    ): Promise<SingleEventResponse> {
         const id = params.id
+        const findOptions  = getOptionsForEventsServiceFromEmbedsQueryParam(embed)
 
-        return this.eventsService.findById(id)
+        return this.eventsService.findById(id, findOptions)
+            .then(event => Promise.resolve(event))
             .then(event => removeSensitiveDataForNonAdmins(request, event))
+            .then(event =>  Promise.resolve(event))
             .then((event: Event) => ({ event, status: 'success' }))
     }
 

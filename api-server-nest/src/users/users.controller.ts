@@ -1,9 +1,7 @@
 import {Controller, Get, Req, UseGuards, UseInterceptors} from "@nestjs/common";
 import {VERSION_1_URI} from "../utils/versionts";
-import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {AuthGuard} from "../authentication/auth.guard";
-import {UserModel} from "./models/user.model";
 import { Request } from 'express';
 import {UserInformation} from "../authentication/parse-jwt";
 import UsersService from "./users.service";
@@ -11,7 +9,6 @@ import {buildFromUserInfo} from "./dto/new-user";
 import {UserInfoResp} from "./dto/user-info-resp";
 
 @Controller(`${VERSION_1_URI}/users`)
-@UseInterceptors(LoggingInterceptor)
 @ApiTags('users')
 export class UsersController {
 

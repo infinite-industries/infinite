@@ -3,7 +3,6 @@ import {CurrentEventsService} from "./current-events.service";
 import {AuthGuard} from "../authentication/auth.guard";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
-import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {CurrentEventsResponse} from "./dto/current-events-response";
 import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-options-for-events-service-from-embeds-query-param";
 import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
@@ -12,7 +11,6 @@ import {CurrentEvent} from "./models/current-event.model";
 import {removeSensitiveDataForNonAdmins} from "../authentication/filters/remove-sensitive-data-for-non-admins";
 
 @Controller(`${VERSION_1_URI}/current-events`)
-@UseInterceptors(LoggingInterceptor)
 @ApiTags('current events')
 export class CurrentEventsController {
     constructor(private readonly currentEventsService: CurrentEventsService) {}

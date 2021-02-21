@@ -1,6 +1,5 @@
 import {Body, Controller, Get, Post, UseGuards, UseInterceptors} from "@nestjs/common";
 import {VERSION_1_URI} from "../utils/versionts";
-import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {ApiOperation, ApiTags} from "@nestjs/swagger";
 import {AuthGuard} from "../authentication/auth.guard";
 import {AnnouncementsService} from "./announcements.service";
@@ -8,7 +7,6 @@ import {CreateOrUpdateAnnouncementRequest} from "./dto/create-or-update-announce
 import {AnnouncementResponse} from "./dto/announcement-response";
 
 @Controller(`${VERSION_1_URI}/announcements`)
-@UseInterceptors(LoggingInterceptor)
 @ApiTags('announcements')
 export class AnnouncementsController {
 
