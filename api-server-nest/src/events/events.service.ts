@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
 import {FindOptions, UpdateOptions} from "sequelize";
 import {Event} from "./models/event.model";
@@ -8,6 +8,8 @@ import {CreateEventRequest} from "./dto/create-event-request";
 import {UpdateEventRequest} from "./dto/update-event-request";
 import BitlyService from "./bitly.service";
 import getSlug from "../utils/get-slug";
+import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
+import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 
 const INFINITE_WEB_PORTAL_BASE_URL = process.env.APP_URL || 'https://infinite.industries'
 
@@ -15,7 +17,8 @@ const INFINITE_WEB_PORTAL_BASE_URL = process.env.APP_URL || 'https://infinite.in
 export class EventsService {
     constructor(
         @InjectModel(Event) private eventModel: typeof Event,
-        private readonly bitlyService: BitlyService
+        private readonly bitlyService: BitlyService,
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService
     ) {}
 
     findById(id: string, findOptions?: FindOptions): Promise<Event> {
@@ -72,8 +75,9 @@ export class EventsService {
                 bitly_link: bitlyLink
             }
         } else {
-            console
-                .warn( `bitly token not set, no bitly url will be generated, please set BITLY_TOKEN for production`)
+            this.logger.warn(
+                `bitly token not set, no bitly url will be generated, please set BITLY_TOKEN for production`
+            )
 
             return submittedEvent
         }
