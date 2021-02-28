@@ -7,7 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 import {CreateEventRequest} from "./dto/create-event-request";
 import {UpdateEventRequest} from "./dto/update-event-request";
 import BitlyService from "./bitly.service";
-import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
+import getSlug from "../utils/get-slug";
 
 const INFINITE_WEB_PORTAL_BASE_URL = process.env.APP_URL || 'https://infinite.industries'
 
@@ -50,7 +50,7 @@ export class EventsService {
 
     private async fillInServerSideGeneratedAttributes(submittedEvent: CreateEventRequest): Promise<CreateEventRequest> {
         const id = uuidv4()
-        const slug = this.getSlug(submittedEvent.title)
+        const slug = getSlug(submittedEvent.title)
 
         const eventWithSlugAndId = {
             ...submittedEvent,
@@ -77,13 +77,5 @@ export class EventsService {
 
             return submittedEvent
         }
-    }
-
-    private getSlug(title: string): string {
-        if (!title) {
-            return 'missing-title'
-        }
-
-        return title.toLowerCase().replace(/ /g,'-')
     }
 }

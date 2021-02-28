@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Post, Put, Query, Req, UseGuards, UseInterceptors} from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, Query, Req, UseGuards} from "@nestjs/common";
 import {EventsService} from "./events.service";
 import {Event} from "./models/event.model";
 import {AuthGuard} from "../authentication/auth.guard";
