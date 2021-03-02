@@ -9,7 +9,7 @@ import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-optio
 import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
 import {mapDateTimesToIso} from "../utils/map-date-times-to-iso";
 import {CreateEventRequest} from "./dto/create-event-request";
-import SlackNotificationService, {EVENT_SUBMIT} from "./slack-notification.service";
+import SlackNotificationService, {EVENT_SUBMIT} from "../notifications/slack-notification.service";
 import {EventsResponse} from "./dto/events-response";
 import {SingleEventResponse} from "./dto/single-event-response";
 import {Request} from "express";
