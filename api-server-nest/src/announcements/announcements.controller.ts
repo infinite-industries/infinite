@@ -1,10 +1,11 @@
-import {Body, Controller, Get, Post, UseGuards, UseInterceptors} from "@nestjs/common";
+import {Body, Controller, Get, Param, Post, Put, UseGuards} from "@nestjs/common";
 import {VERSION_1_URI} from "../utils/versionts";
 import {ApiOperation, ApiTags} from "@nestjs/swagger";
 import {AuthGuard} from "../authentication/auth.guard";
 import {AnnouncementsService} from "./announcements.service";
 import {CreateOrUpdateAnnouncementRequest} from "./dto/create-or-update-announcement-request";
 import {AnnouncementResponse} from "./dto/announcement-response";
+import FindByIdParams from "../dto/find-by-id-params";
 
 @Controller(`${VERSION_1_URI}/announcements`)
 @ApiTags('announcements')
@@ -25,5 +26,18 @@ export class AnnouncementsController {
     ensureOneAnnouncement(@Body() announcement: CreateOrUpdateAnnouncementRequest): Promise<AnnouncementResponse> {
         return this.announcementService.ensureOne(announcement)
             .then(announcement => new AnnouncementResponse({ announcements: [announcement]}))
+    }
+
+    @Put('/:id')
+    @UseGuards(AuthGuard)
+    @ApiOperation( { summary: 'update an existing announcement' })
+    updateAnnouncement(
+        @Param() params: FindByIdParams,
+        @Body() announcement: CreateOrUpdateAnnouncementRequest
+    ): Promise<AnnouncementResponse> {
+        const { id } = params
+
+        return this.announcementService.update(id, announcement).
+            then(updatedAnnouncement => new AnnouncementResponse({ announcements: [updatedAnnouncement] }));
     }
 }
