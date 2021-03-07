@@ -1,5 +1,4 @@
-import {Body, Controller, Get, Param, Put, UseGuards
-} from "@nestjs/common";
+import {Body, Controller, Get, Param, Put, UseGuards} from "@nestjs/common";
 import {VERSION_1_URI} from "../utils/versionts";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {AuthGuard} from "../authentication/auth.guard"
