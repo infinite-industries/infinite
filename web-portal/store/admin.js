@@ -136,7 +136,7 @@ export const actions = {
   DeleteEvent: (context, payload) => {
     const idToken = payload.idToken
 
-    return ApiService.delete(`/events/${payload.id}`, idToken)
+    return ApiService.delete(`/authenticated/events/${payload.id}`, idToken)
       .then(function (_response) {
         console.log('Trying to delete event \n data from server: ', _response.data.events)
         if (_response.data.status !== 'success') {
