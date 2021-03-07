@@ -7,6 +7,7 @@ import {EventsModule} from "./events/events.module";
 import { ConfigModule } from '@nestjs/config';
 import {AnnouncementsModule} from "./announcements/announcements.module";
 import {UsersModules} from "./users/users.modules";
+import { NotificationsModule } from './notifications/notifications.module';
 import LoggingMiddleware from "./logging/logging.middleware";
 import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston'
@@ -49,6 +50,7 @@ const isSequelizeLoggingEnabled = !!process.env.SEQUELIZE_LOGGING
                 })
             ]
         }),
+        NotificationsModule,
         VenuesModule,
         CurrentEventsModule,
         EventsModule,

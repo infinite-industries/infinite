@@ -6,12 +6,16 @@ import {CreateVenueRequest} from "./dto/create-venue-request";
 import {VenuesResponse} from "./dto/venues-response";
 import FindByIdParams from "../dto/find-by-id-params";
 import {SingleVenueResponse} from "./dto/single-venue-response";
+import SlackNotificationService, { VENUE_SUBMIT } from "../notifications/slack-notification.service";
+
+const ENV = process.env.ENV || 'dev'
 
 @Controller(`${VERSION_1_URI}/venues`)
 @ApiTags('venues')
 export class VenuesController {
     constructor(
-        private readonly venuesService: VenuesService
+        private readonly venuesService: VenuesService,
+        private readonly slackNotificationService: SlackNotificationService
     ) {
     }
 
@@ -51,6 +55,11 @@ export class VenuesController {
     })
     create(@Body() venue: CreateVenueRequest): Promise<SingleVenueResponse> {
         return this.venuesService.create(venue)
+            .then(venue => {
+                const venueData = JSON.stringify((venue as any).dataValues, null, 4)
+                this.slackNotificationService.sendNotification(VENUE_SUBMIT, `(${ENV}) New venue created:\n${venueData}`)
+                return venue
+            })
             .then(venue => new SingleVenueResponse({ venue }));
     }
 }

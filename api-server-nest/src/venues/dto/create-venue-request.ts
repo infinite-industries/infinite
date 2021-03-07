@@ -6,7 +6,7 @@ export class CreateVenueRequest {
     @IsNotEmpty()
     name: string;
 
-    @ApiProperty({example: '232 Paper St. Scranton, Pennsylvania'})
+    @ApiProperty({example: '232 Paper St. Scranton, 18503'})
     @IsOptional()
     address?: string;
 
