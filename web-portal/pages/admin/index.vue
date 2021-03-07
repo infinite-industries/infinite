@@ -1,14 +1,14 @@
 <template>
   <div class="container admin-page">
     <h2>Unverified Events</h2>
-    <admin-events-list :calendar_events="unverified_events"></admin-events-list>
+    <admin-events-list :calendar_events="unverified_events" class="unverified-events" />
     <h2>Current Events</h2>
     <ii-pagination :items="verified_events">
-      <admin-events-list slot-scope="page" :calendar_events="page" />
+      <admin-events-list slot-scope="page" :calendar_events="page" class="current-events" />
     </ii-pagination>
     <h2>Resources</h2>
     <ii-pagination :items="resource_events">
-      <admin-events-list slot-scope="page" :calendar_events="page" />
+      <admin-events-list slot-scope="page" :calendar_events="page" class="resources" />
     </ii-pagination>
   </div>
 </template>

@@ -66,7 +66,6 @@ export class CreateEventRequest {
     brief_description: string;
 
     @ApiProperty({example: '<h2>The Gallery Is Open</h2><p>Some details</p>'})
-    @IsNotEmpty()
     description: string;
 
     @ApiProperty({example: 'https://www.wegotrats.com'})

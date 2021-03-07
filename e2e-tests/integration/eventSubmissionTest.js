@@ -74,14 +74,15 @@ context('Event Submission', () => {
     cy.get('#hamburger').click()
     cy.get('#nav-list li').contains('Admin').click()
     cy.location('pathname').should('include', 'admin')
-    cy.contains('.calendar-events-table tr:last-child td', EVENT_NAME)
-    cy.get('.calendar-events-table tr:last-child a').contains('Edit').click()
+    cy.contains('.unverified-events tr:first-child td', EVENT_NAME)
+    cy.get('.unverified-events tr:first-child a').contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
     cy.get('.submitter-email input').should('have.value', 'test@te.st')
 
     cy.get('button.btn-verify').click()
     cy.get('.calendar-events-table')
-    cy.contains('.calendar-events-table tr:last-child td', EVENT_NAME).should('not.exist')
+    cy.contains('.unverified-events tr:first-child td', EVENT_NAME).should('not.exist')
+    cy.contains('.current-events td', EVENT_NAME).should('exist')
     // cy.get('.alert.alert--dismissible').contains('Success! Event verified.')
   })
 
