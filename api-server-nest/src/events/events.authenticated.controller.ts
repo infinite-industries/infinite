@@ -1,7 +1,8 @@
-import {Body, Controller, Get, Param, Put, UseGuards} from "@nestjs/common";
+import {Body, Controller, Delete, Get, Param, Put, UseGuards} from "@nestjs/common";
 import {VERSION_1_URI} from "../utils/versionts";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {AuthGuard} from "../authentication/auth.guard"
+import {EventIdResponse} from "./dto/event-id-response";
 import {SingleEventResponse} from "./dto/single-event-response";
 import {EventsService} from "./events.service";
 import {UpdateEventRequest} from "./dto/update-event-request";
@@ -55,5 +56,15 @@ export default class EventsAuthenticatedController {
 
         return this.eventsService.update(id, {verified: true})
             .then(response => response.updatedEntities[0]);
+    }
+
+    @Delete(':id')
+    @ApiOperation({summary: 'Delete the event'})
+    @ApiImplicitParam({name: 'id', type: String})
+    deleteEvent(@Param() params: FindByIdParams): Promise<EventIdResponse> {
+        const id = params.id;
+
+        return this.eventsService.delete(id)
+            .then(response => ({ id, status: 'success' }))
     }
 }

@@ -3,6 +3,7 @@ import {InjectModel} from "@nestjs/sequelize";
 import {FindOptions, UpdateOptions} from "sequelize";
 import {Event} from "./models/event.model";
 import DbUpdateResponse, {toDbUpdateResponse} from "../shared-types/db-update-response";
+import DbDeleteResponse, {toDbDeleteResponse} from "../shared-types/db-delete-response";
 import {v4 as uuidv4} from 'uuid';
 import {CreateEventRequest} from "./dto/create-event-request";
 import {UpdateEventRequest} from "./dto/update-event-request";
@@ -49,6 +50,11 @@ export class EventsService {
         const eventWithServerSideGeneratedAttributes = await this.fillInServerSideGeneratedAttributes(newEvent)
 
         return this.eventModel.create(eventWithServerSideGeneratedAttributes)
+    }
+
+    async delete(id: string): Promise<DbDeleteResponse> {
+        return this.eventModel.destroy({ where: { id }})
+            .then(toDbDeleteResponse)
     }
 
     private async fillInServerSideGeneratedAttributes(submittedEvent: CreateEventRequest): Promise<CreateEventRequest> {
