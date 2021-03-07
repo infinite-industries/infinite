@@ -54,7 +54,7 @@ export const actions = {
           const currentNonVerifiedEventsList = currentNonVerifiedResponse.data.events
           const currentNonVerifiedEventIds = currentNonVerifiedEventsList.map(function (event) { return event.id })
 
-          const unionOfEventSets = [...currentNonVerifiedEventIds]
+          const unionOfEventSets = [...currentNonVerifiedEventsList]
 
           const allNonVerifiedEventsList = allNonVerifiedResponse.data.events
 
