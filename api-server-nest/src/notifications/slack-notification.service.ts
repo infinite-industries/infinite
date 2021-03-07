@@ -33,7 +33,7 @@ export default class SlackNotificationService {
             channel: channelName,
             icon_emoji: ':computer:',
             text: payload
-        }, function (err) {
+        }, (err) => {
             if (err) {
                 this.logger.warn(`Slack notification failed: ${err}`)
                 // TODO: do we even want this service to rethrow an error?
