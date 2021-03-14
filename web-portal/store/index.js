@@ -167,7 +167,7 @@ export const actions = {
 
     return ApiService.post(
       '/announcements/ensure-one-announcement',
-      { announcement: { message: '' } },
+      { message: '' },
       idToken
     ).then((response) => {
       if (response.data.status === 'success') {
@@ -186,7 +186,7 @@ export const actions = {
 
     return ApiService.put(
       `/announcements/${announcement.id}`,
-      { announcement },
+      { message: announcement.message },
       idToken
     ).then((response) => {
       if (response.data.status !== 'success') {
