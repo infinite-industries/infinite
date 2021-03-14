@@ -1,13 +1,12 @@
-import {Column, ForeignKey} from "sequelize-typescript";
 import {ApiProperty} from "@nestjs/swagger";
-import {Venue} from "../../venues/models/venue.model";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
-import cloneAttributes from "../../utils/colone-attributes";
+import cloneAttributes from "../../utils/clone-attributes";
 import {
     IsNotEmpty,
     IsOptional
 } from "class-validator";
+import {Exclude} from "class-transformer";
 
 const EXAMPLE_START_DATE = new Date(new Date().setDate(new Date().getHours() + 1));
 const EXAMPLE_END_DATE = new Date(new Date().setDate(new Date().getHours() + 2));
@@ -19,6 +18,9 @@ export class CreateEventRequest {
         }
     }
 
+    @Exclude()
+    id?: string
+
     @ApiProperty({example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa'})
     @IsOptional()
     venue_id?: string;
@@ -28,7 +30,7 @@ export class CreateEventRequest {
     title: string;
 
     @ApiProperty({example: 'infinite-gallery-opening'})
-    @IsNotEmpty()
+    @IsOptional()
     slug: string;
 
     @ApiProperty({example: false})
@@ -64,7 +66,6 @@ export class CreateEventRequest {
     brief_description: string;
 
     @ApiProperty({example: '<h2>The Gallery Is Open</h2><p>Some details</p>'})
-    @IsNotEmpty()
     description: string;
 
     @ApiProperty({example: 'https://www.wegotrats.com'})

@@ -1,6 +1,6 @@
 import {CreateEventRequest} from "./create-event-request";
 import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
-import cloneAttributes from "../../utils/colone-attributes";
+import cloneAttributes from "../../utils/clone-attributes";
 import {ApiProperty} from "@nestjs/swagger";
 import {IsOptional} from "class-validator";
 

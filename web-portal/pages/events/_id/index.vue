@@ -236,7 +236,7 @@
       }
     },
     asyncData({ error, params }) {
-      return ApiService.get('/events/' + params.id).then((response) => {
+      return ApiService.get('/events/' + params.id + '?embed=Venue').then((response) => {
         return { event: response.data.event }
       }).catch((err) => {
         error({ statusCode: err.response.status, message: 'Not Found' })

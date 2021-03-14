@@ -1,24 +1,16 @@
-import {Controller, Get, HttpException, HttpStatus, Query, Req, UseGuards, UseInterceptors} from "@nestjs/common";
+import {Controller, Get, Query, Req, UseGuards, UseInterceptors} from "@nestjs/common";
 import {CurrentEventsService} from "./current-events.service";
-import {Venue} from "../venues/models/venue.model";
-import {FindOptions} from "sequelize";
 import {AuthGuard} from "../authentication/auth.guard";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
-import {LoggingInterceptor} from "../logging/logging.interceptor";
 import {CurrentEventsResponse} from "./dto/current-events-response";
+import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-options-for-events-service-from-embeds-query-param";
+import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
 import {Request} from "express";
-import isAdminUser from "../authentication/is-admin-user";
 import {CurrentEvent} from "./models/current-event.model";
-import {removeContactInfoFromResultsForNonAdminsFromCurrentEvents} from
-        '../authentication/filters/remove-contact-info-from-results-for-non-admins'
-
-type EmbedableModels = typeof Venue
-
-const VENUE = 'Venue';
+import {removeSensitiveDataForNonAdmins} from "../authentication/filters/remove-sensitive-data-for-non-admins";
 
 @Controller(`${VERSION_1_URI}/current-events`)
-@UseInterceptors(LoggingInterceptor)
 @ApiTags('current events')
 export class CurrentEventsController {
     constructor(private readonly currentEventsService: CurrentEventsService) {}
@@ -33,19 +25,17 @@ export class CurrentEventsController {
     })
     async getAllCurrentVerified(
         @Query('embed') embed: string[] | string = [],
+        @Query('tags') tags: string[] | string = [],
         @Req() request: Request
     ): Promise<CurrentEventsResponse> {
         const findOptions = {
-            ...this.getOptionsForCurrentEvents(embed),
-            where: {verified: true}
+            ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+            where: getCommonQueryTermsForEvents(true, tags)
         };
 
-        const events = await this.currentEventsService.findAll(findOptions)
-
-        const filteredEvents =
-            await removeContactInfoFromResultsForNonAdminsFromCurrentEvents(request, events) as CurrentEvent[]
-
-        return new CurrentEventsResponse({ events: filteredEvents})
+        return this.currentEventsService.findAll(findOptions)
+            .then(events => removeSensitiveDataForNonAdmins(request, events))
+            .then((filteredEvents: CurrentEvent[]) => new CurrentEventsResponse({ events: filteredEvents}))
     }
 
     @Get('non-verified')
@@ -53,14 +43,17 @@ export class CurrentEventsController {
     @ApiOperation({summary: 'Get current events that have not yet been verified (admin only)'})
     @ApiResponse({status: 403, description: 'Forbidden'})
     @ApiBearerAuth()
-    getAllCurrentNonVerified(@Query('embed') embed: string[] | string = []): Promise<CurrentEventsResponse> {
+    getAllCurrentNonVerified(
+        @Query('embed') embed: string[] | string = [],
+        @Query('tags') tags: string[] | string = []
+    ): Promise<CurrentEventsResponse> {
         const findOptions = {
-            ...this.getOptionsForCurrentEvents(embed),
-            where: {verified: false}
+            ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+            where: getCommonQueryTermsForEvents(false, tags)
         };
 
         return this.currentEventsService.findAll(findOptions)
-            .then(events => new CurrentEventsResponse({ events }));
+            .then((events: CurrentEvent[]) => new CurrentEventsResponse({ events }));
     }
 
     @Get()
@@ -69,35 +62,9 @@ export class CurrentEventsController {
     @ApiResponse({status: 403, description: 'Forbidden'})
     @ApiBearerAuth()
     getAllCurrent(@Query('embed') embed: string[] | string = []): Promise<CurrentEventsResponse> {
-        const findOptions = this.getOptionsForCurrentEvents(embed);
+        const findOptions = getOptionsForEventsServiceFromEmbedsQueryParam(embed)
 
         return this.currentEventsService.findAll(findOptions)
             .then(events => new CurrentEventsResponse({ events }));
-    }
-
-    private getOptionsForCurrentEvents(embedsFromQueryString: string[] | string): FindOptions {
-        const modelNames = this.ensureEmbedQueryStringIsArray(embedsFromQueryString);
-
-        if (modelNames.length === 0) {
-            return {};
-        } else {
-            const include = this.getModelsForEmbedding(modelNames);
-
-            return {include};
-        }
-    }
-
-    private ensureEmbedQueryStringIsArray(embedsFromQueryString: string[] | string): string [] {
-        return typeof embedsFromQueryString === 'string' ? [embedsFromQueryString] : embedsFromQueryString;
-    }
-
-    private getModelsForEmbedding(modelNames: string[]): EmbedableModels [] {
-        return modelNames.map(modelName => {
-            if (modelName === VENUE) {
-                return Venue;
-            } else {
-                throw new HttpException(`"${modelName}" is not an allowable embed`, HttpStatus.BAD_REQUEST);
-            }
-        });
     }
 }

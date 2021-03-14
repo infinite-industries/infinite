@@ -22,7 +22,12 @@ export class AnnouncementsService {
     ensureOne(announcement: CreateOrUpdateAnnouncementRequest): Promise<AnnouncementModel> {
         const whereAnyAnnouncementExists = sequelize.literal('true = true')
 
-        return this.announcementModel.findOrCreate({ where: whereAnyAnnouncementExists, defaults: announcement })
+        const id = uuidv4()
+
+        return this.announcementModel.findOrCreate(
+            { where: whereAnyAnnouncementExists,
+                defaults: { ...announcement, id }
+            })
             .then(resp => resp[0])
     }
 
@@ -32,13 +37,14 @@ export class AnnouncementsService {
         return this.announcementModel.create({ ...newAnnouncement, id })
     }
 
-    update(id: string, updatedAnnouncement: CreateOrUpdateAnnouncementRequest): Promise<DbUpdateResponse<AnnouncementModel>> {
+    update(id: string, updatedAnnouncement: CreateOrUpdateAnnouncementRequest): Promise<AnnouncementModel> {
         const updateQueryOptions: UpdateOptions = {
             where: {id},
             returning: true
         }
 
         return this.announcementModel.update(updatedAnnouncement, updateQueryOptions)
-            .then(toDbUpdateResponse)
+            .then((toDbUpdateResponse))
+            .then((dbUpdateResponse: DbUpdateResponse<AnnouncementModel>) => dbUpdateResponse[1]);
     }
 }

@@ -2,7 +2,7 @@ import { TestingModule } from "@nestjs/testing";
 import isNotNullOrUndefined from "../src/utils/is-not-null-or-undefined";
 // @ts-ignore
 import {StartedTestContainer } from "testcontainers";
-import {Venue} from "../src/venues/models/venue.model"
+import {VenueModel} from "../src/venues/models/venue.model"
 import * as request from "supertest";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
 import {Event} from '../src/events/models/event.model';
@@ -15,7 +15,6 @@ import buildDbConnectionsForTests from "./test-helpers/e2e-stack/build-db-connec
 import killApp from "./test-helpers/e2e-stack/kill-app";
 import stopDatabase from "./test-helpers/e2e-stack/stop-database";
 import startDatabase from "./test-helpers/e2e-stack/start-database";
-import sleep from "./test-helpers/sleep";
 
 
 const today = new Date(Date.now());
@@ -28,7 +27,7 @@ let appUnderTest: ChildProcessWithoutNullStreams;
 let dbContainer: StartedTestContainer;
 
 let eventModel: typeof Event;
-let venueModel: typeof Venue;
+let venueModel: typeof VenueModel;
 let testingModule: TestingModule;
 
 let dbHostPort: number;
@@ -100,7 +99,7 @@ describe('CurrentEvents (e2e)', () => {
         const dateTimesForEventInFuture1 = getDateTimesInFuture();
         const dateTimesForEventInFuture2 = getDateTimesInFuture();
 
-        const venue = await createVenue(generateVenue(Venue));
+        const venue = await createVenue(generateVenue(VenueModel));
 
         const eventVerified = await createEvent(
             generateEvent(Event, venue.id, true, dateTimesForEventInFuture1));
@@ -128,7 +127,7 @@ describe('CurrentEvents (e2e)', () => {
         const dateTimesForEvenInPast = getDateTimesInPastButInsideWindow();
 
         // create a venue tRo associate the events with
-        const venue = await createVenue(generateVenue(Venue));
+        const venue = await createVenue(generateVenue(VenueModel));
 
         const eventInFuture = await createEvent(
             generateEvent(Event, venue.id, true, dateTimesForEventInFuture));
@@ -338,11 +337,11 @@ describe('CurrentEvents (e2e)', () => {
         return event.destroy();
     }
 
-    async function createVenue(venue: Venue) {
+    async function createVenue(venue: VenueModel) {
         return venueModel.create(venue.get({plain: true}));
     }
 
-    async function deleteVeneu(venue: Venue) {
+    async function deleteVeneu(venue: VenueModel) {
         return venueModel.destroy({where: {id: venue.id}});
     }
 

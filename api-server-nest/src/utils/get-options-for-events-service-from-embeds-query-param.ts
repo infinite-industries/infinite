@@ -1,8 +1,8 @@
 import {FindOptions} from "sequelize";
-import {Venue} from "../venues/models/venue.model";
+import {VenueModel} from "../venues/models/venue.model";
 import {HttpException, HttpStatus} from "@nestjs/common";
 
-type EmbedableModels = typeof Venue
+type EmbedableModels = typeof VenueModel
 
 const VENUE = 'Venue';
 
@@ -25,7 +25,7 @@ function ensureEmbedQueryStringIsArray(embedsFromQueryString: string[] | string)
 function getModelsForEmbedding(modelNames: string[]): EmbedableModels [] {
     return modelNames.map(modelName => {
         if (modelName === VENUE) {
-            return Venue;
+            return VenueModel;
         } else {
             throw new HttpException(`"${modelName}" is not an allowable embed`, HttpStatus.BAD_REQUEST);
         }

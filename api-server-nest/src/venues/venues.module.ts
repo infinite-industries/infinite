@@ -2,11 +2,13 @@ import {Module} from "@nestjs/common";
 import {VenuesController} from "./venues.controller";
 import {VenuesService} from "./venues.service";
 import {SequelizeModule} from "@nestjs/sequelize";
-import {Venue} from "./models/venue.model";
+import {VenueModel} from "./models/venue.model";
+import { NotificationsModule } from "../notifications/notifications.module";
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([Venue])
+        SequelizeModule.forFeature([VenueModel]),
+        NotificationsModule
     ],
     controllers: [VenuesController],
     providers: [VenuesService]

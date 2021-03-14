@@ -1,16 +1,32 @@
 import * as fs from "fs";
 import jwt = require('jsonwebtoken');
 import {Request} from "express";
+import exp from "constants";
 
 const PATH_TO_PEM = process.env.JWT_PEM || './keys/1nfinite.pem';
 const SECRET = fs.readFileSync(PATH_TO_PEM);
 
 export interface UserInformation {
     token: string,
-    decodedToken: Record<string, unknown>,
+    decodedToken: DecodedAuthZeroToken,
     isInfiniteAdmin: boolean,
     venueIds: string []
 
+}
+
+export interface DecodedAuthZeroToken extends Record<string, unknown>{
+    name?: string,
+    "https://infinite.industries.com/isInfiniteAdmin"?: boolean,
+    "https://infinite.industries.com/venueIDs"?: string[]
+    nickname?: string,
+    picture?: string,
+    iss?: string,
+    sub?: string,
+    aud?: string,
+    iat?: number,
+    exp?: number,
+    at_hash?: string,
+    nonce?: string
 }
 
 export function parseJwt(req: Request): Promise<UserInformation> {
@@ -21,7 +37,7 @@ export function parseJwt(req: Request): Promise<UserInformation> {
 
 function getUserInformationFromToken(token: string): Promise<UserInformation> {
     return new Promise((resolve, reject) => {
-        jwt.verify(token, SECRET, (err, decodedToken) => {
+        jwt.verify(token, SECRET, (err, decodedToken: DecodedAuthZeroToken) => {
             if (err) {
                 reject(`error decoding request token: ${err}`);
             } else {
