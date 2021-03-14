@@ -181,6 +181,10 @@ export default {
     extend(config, ctx) {
     }
   },
+  // TODO: publicRuntimeConfig and privateRuntimeConfig now available (Nuxt >2.13)
+  // deprecating env, but are of limited use to us because almost all of these
+  // properties are accessed outside the Vue context, where we don't have access
+  // to the new $config property
   env: {
     CLIENT_ID: process.env.CLIENT_ID,
     CLIENT_DOMAIN: process.env.CLIENT_DOMAIN,
