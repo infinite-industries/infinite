@@ -38,7 +38,7 @@ function doDeploy {
   echo 'Installing npm packages'
   cd $ROOT/temp-infinite/infinite/api-server
   echo "$(pwd)"
-  npm install --production
+  npm ci # can't do --production because we need to execute build process here... for now
 
   echo 'Running Build'
   npm run build
@@ -65,13 +65,13 @@ function doDeploy {
   echo 'starting server'
   cd $ROOT/infinite
   npm run db:migrate
-  forever start -a --uid infinite dist/main
+  forever start -a --uid infinite dist/main.js
   echo 'Done!'
 EOF
   echo "Deploy Complete To $SERVER"
 }
 
-function setAltBranch() {
+function set_alt_branch() {
   if [ -n "$2" ];
   then
     if [[ "production" = $1 ]]; then
@@ -87,12 +87,12 @@ function setAltBranch() {
 if [[ "production" = $1 ]]; then
   SERVER='api.infinite.industries'
   GIT_HEAD='master'
-  setAltBranch $1 $2
+  set_alt_branch $1 $2
   promptUser
 elif [[ "staging" = $1 ]]; then
   SERVER='staging-api.infinite.industries'
   GIT_HEAD='development'
-  setAltBranch $1 $2
+  set_alt_branch $1 $2
   doDeploy
 else
   echo Please specify environment to deploy to.
