@@ -5,8 +5,8 @@
 # It stands up an empty postgres instance using docker. If the instance already exists it
 # removes the instance and re-recreates it to ensure an empty db
 
-db_exposed_port="$1"
-db_container_name="infinite-db-test"
+db_container_name=infinite-db
+db_exposed_port=5436
 db_image_name='postgres:9.6.2-alpine'
 
 db_name=infinite-api
@@ -14,7 +14,7 @@ db_passowrd=xxx
 db_user=postgres
 
 docker stop $db_container_name
-docker rm $db_container_name
+docker rm infinite-db $db_container_name
 
 docker run \
   --name $db_container_name \
@@ -37,6 +37,8 @@ DB_USER=$db_user \
 
 echo 'the database is ready for migrations'
 
-npm run db:migrate -- --url "postgres://$db_user:$db_passowrd@localhost:$db_exposed_port/$db_name"
+npm run db:migrate
 
 echo "done, the database is ready on port $db_exposed_port"
+
+

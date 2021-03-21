@@ -7,8 +7,8 @@ set -e
 ROOT='/home/ubuntu'
 USER='ubuntu'
 GIT_HEAD=''
+
 SERVER=''
-DEPLOY_TYPE=$1
 
 function promptUser {
   echo "WARNING THIS IS PROD: Are you sure?"
@@ -40,9 +40,6 @@ function doDeploy {
   echo "$(pwd)"
   npm install --production
 
-  echo 'Running Build'
-  npm run build
-
   echo 'stopping infinite'
   set +e
   forever stop infinite
@@ -65,35 +62,20 @@ function doDeploy {
   echo 'starting server'
   cd $ROOT/infinite
   npm run db:migrate
-  forever start -a --uid infinite dist/main
+  forever start -a --uid infinite index.js
   echo 'Done!'
 EOF
   echo "Deploy Complete To $SERVER"
 }
 
-function setAltBranch() {
-  if [ -n "$2" ];
-  then
-    if [[ "production" = $1 ]]; then
-      echo "Deploying alternative branches direct to production is not allowed. Is this a typo?"
-      exit
-    fi
-
-    echo "deploying alternative branch to staging server: '$2'"
-    GIT_HEAD=$2
-  fi
-}
-
 if [[ "production" = $1 ]]; then
   SERVER='api.infinite.industries'
   GIT_HEAD='master'
-  setAltBranch $1 $2
-  promptUser
+  #promptUser
 elif [[ "staging" = $1 ]]; then
   SERVER='staging-api.infinite.industries'
   GIT_HEAD='development'
-  setAltBranch $1 $2
-  doDeploy
+  #doDeploy
 else
   echo Please specify environment to deploy to.
   echo Usage: ./deploy.sh environment
@@ -101,4 +83,8 @@ else
   exit
 fi
 
+if [ ! ($2 -eq 0) ]
+  then
+    echo $2
+fi
 
