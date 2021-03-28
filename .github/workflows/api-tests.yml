@@ -1,4 +1,4 @@
-name: Nest API Server Tests
+name: API Server Tests
 
 on:
   pull_request:
@@ -6,14 +6,14 @@ on:
       - development
       - master
     paths:
-      - 'api-server-nest/**'
+      - 'api-server/**'
   push:
     branches:
       - development
       - master
     paths:
-      - 'api-server-nest/**'
-  
+      - 'api-server/**'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -27,9 +27,9 @@ jobs:
         run: node --version
       - name: Install API Server Dependencies
         run: npm ci
-        working-directory: './api-server-nest'
+        working-directory: './api-server'
       - name: Run Tests
         run: npm run test:e2e
-        working-directory: './api-server-nest'
+        working-directory: './api-server'
         env:
           PORT: 3003
