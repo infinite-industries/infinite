@@ -24,24 +24,23 @@
           target="_blank"
           novalidate
         >
-            <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-            <div style="position: absolute; left: -5000px;" aria-hidden="true">
-                <input type="text" name="b_55944da642302ef43bc8c0f27_f571a7e653" tabindex="-1" value="">
-            </div>
+          <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+          <div style="position: absolute; left: -5000px;" aria-hidden="true">
+            <input type="text" name="b_55944da642302ef43bc8c0f27_f571a7e653" tabindex="-1" value="">
+          </div>
 
-            <div class="submit-container">
-                <button type="submit" class="subscribe-button">SUBSCRIBE</button>
-            </div>
+          <div class="submit-container">
+            <button type="submit" class="subscribe-button">SUBSCRIBE</button>
+          </div>
         </form>
+      </div>
+      <div class="copy-container" style="padding-top:0px;">
+        <p>
+          Gallery openings, punk shows, theater, street art, orchestra, museums, hip-hop, dance; it’s all here for you to experience.
+        </p>
+      </div>
     </div>
-    <div class="copy-container" style="padding-top:0px;">
-      <p>
-        Gallery openings, punk shows, theater, street art, orchestra, museums, hip-hop, dance; it’s all here for you to experience.
-      </p>
-    </div>
-</div>
-</div>
-
+  </div>
 </template>
 
 <script>

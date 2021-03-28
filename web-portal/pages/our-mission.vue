@@ -25,7 +25,8 @@
         id="fill-in-the-blank"
         @mouseenter="FillInTheBlank('ON')"
         @click="FillInTheBlank('ON')"
-        @mouseleave="FillInTheBlank('OFF')">
+        @mouseleave="FillInTheBlank('OFF')"
+      >
         <span v-if="show_blank">____________</span>
         <span v-else style="color:white;background-color:black;">...what are the values you'd like to see in the world that are conspicuously absent now, that you believe art can help usher in?</span>
       </span>
