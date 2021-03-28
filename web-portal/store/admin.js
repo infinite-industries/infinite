@@ -9,7 +9,7 @@ export const state = () => {
 }
 
 const CURRENT_EVENTS_VERIFIED_PATH = '/current-events/verified'
-const CURRENT_EVENTS_NON_VERIFIED_PATH = '/current-events/non-verified'
+const EVENTS_NON_VERIFIED_PATH = '/events/non-verified'
 
 export const getters = {
   GetUnverifiedEvents: (state, getters) => {
@@ -41,38 +41,22 @@ export const actions = {
 
     const isResponseSuccess = respObj => respObj && respObj.data && respObj.data.status === 'success'
 
-    ApiService.all([
-      ApiService.get(CURRENT_EVENTS_NON_VERIFIED_PATH, idToken),
-      ApiService.get('/events/non-verified?tags=online-resource', idToken)
-    ])
-      .then(function (responses) {
-        const [currentNonVerifiedResponse, allNonVerifiedResponse] = responses
+    ApiService.get(EVENTS_NON_VERIFIED_PATH, idToken).then(
+      (currentNonVerifiedEventsResponse) => {
+        console.log('data from server: ', currentNonVerifiedEventsResponse.data.events)
 
-        console.log('data from server: ', currentNonVerifiedResponse.data.events, allNonVerifiedResponse.data.events)
-
-        if (isResponseSuccess(currentNonVerifiedResponse) && isResponseSuccess(allNonVerifiedResponse)) {
-          const currentNonVerifiedEventsList = currentNonVerifiedResponse.data.events
-          const currentNonVerifiedEventIds = currentNonVerifiedEventsList.map(function (event) { return event.id })
-
-          const unionOfEventSets = [...currentNonVerifiedEventsList]
-
-          const allNonVerifiedEventsList = allNonVerifiedResponse.data.events
-
-          allNonVerifiedEventsList.forEach(function (resource) {
-            if (!currentNonVerifiedEventIds.includes(resource.id)) {
-              unionOfEventSets.push(resource)
-            }
-          })
-
-          context.commit('POPULATE_UNVERIFIED_LIST', unionOfEventSets)
+        if (isResponseSuccess(currentNonVerifiedEventsResponse)) {
+          const currentNonVerifiedEvents = currentNonVerifiedEventsResponse.data.events
+          context.commit('POPULATE_UNVERIFIED_LIST', currentNonVerifiedEvents)
         } else {
           context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Was not able to find unverified events.' }, { root: true })
         }
-      })
-      .catch(function (error) {
-        console.log(error)
-        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
-      })
+      }
+    ).catch(function (error) {
+      console.log(error)
+      context.commit('ui/SHOW_NOTIFICATIONS',
+        { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
+    })
   },
   LoadCurrentEvents: (context, payload) => {
     const idToken = payload.idToken

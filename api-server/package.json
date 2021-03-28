@@ -44,7 +44,9 @@
     "slack-notify": "^0.1.7",
     "swagger-ui-express": "^4.1.4",
     "uuid": "^8.3.0",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "moment": "~2.29.1",
+    "moment-timezone": "~0.5.33"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",

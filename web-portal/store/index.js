@@ -2,6 +2,7 @@ import { ApiService } from '../services/ApiService'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
 const CURRENT_EVENTS_VERIFIED_PATH = '/current-events/verified'
+const EVENTS_VERIFIED_PATH = '/events/verified'
 
 export const state = () => {
   return {
@@ -131,7 +132,7 @@ export const actions = {
       })
   },
   LoadAllStreamingEventData: (context) => {
-    return ApiService.get(CURRENT_EVENTS_VERIFIED_PATH + '?tags=online-resource')
+    return ApiService.get(EVENTS_VERIFIED_PATH + '?tags=online-resource')
       .then((_response) => {
         context.commit('UPDATE_STREAMING_EVENTS', _response.data.events)
       })

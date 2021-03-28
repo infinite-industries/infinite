@@ -8,8 +8,8 @@ until PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" \
   -p "$DB_PORT" \
   -d "$DB_NAME" \
   -U "$DB_USER" \
-  -c "select 1" > /dev/null 2>&1 || [ "$DB_PASSWORD" -eq 0]; do
-  
+  -c "select 1" > /dev/null 2>&1 || [ $DB_PASSWORD -eq 0 ]; do
+
   echo "Waiting for db $DB_NAME -- Max Retries: $CONNECT_RETRIES"
   connect_retries=$((connect_retries-=1))
 

@@ -32,7 +32,6 @@ export class EventsController {
 
 
     @Get('verified')
-    @UseGuards(AuthGuard)
     @ApiOperation({summary: 'Get current events that have been verified (for public consumptions)'})
     @ApiResponse({
         status: 200,

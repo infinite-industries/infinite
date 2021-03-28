@@ -11,6 +11,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import LoggingMiddleware from "./logging/logging.middleware";
 import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston'
+import {CalendaringModule} from "./calendaring/calendaring.module";
 
 require('dotenv').config();
 
@@ -37,7 +38,7 @@ const isSequelizeLoggingEnabled = !!process.env.SEQUELIZE_LOGGING
         }),
         WinstonModule.forRoot({
             transports: [
-                // TODO: should we factor this out into a secondary file? 
+                // TODO: should we factor this out into a secondary file?
                 new transports.Console({
                     format: format.combine(
                         format.label({ label: `TEST:api-server:${process.pid}` }),
@@ -55,7 +56,8 @@ const isSequelizeLoggingEnabled = !!process.env.SEQUELIZE_LOGGING
         CurrentEventsModule,
         EventsModule,
         AnnouncementsModule,
-        UsersModules
+        UsersModules,
+        CalendaringModule
     ],
     controllers: [AppController]
 })
