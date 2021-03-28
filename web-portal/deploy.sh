@@ -63,13 +63,28 @@ function doDeploy {
 EOF
 }
 
+function set_alt_branch() {
+  if [ -n "$2" ];
+  then
+    if [[ "production" = $1 ]]; then
+      echo "Deploying alternative branches direct to production is not allowed. Is this a typo?"
+      exit
+    fi
+
+    echo "deploying alternative branch to staging server: '$2'"
+    GIT_HEAD=$2
+  fi
+}
+
 if [[ "production" = $1 ]]; then
   SERVER='infinite.industries'
   GIT_HEAD='master'
+  set_alt_branch $1 $2
   promptUser
 elif [[ "staging" = $1 ]]; then
   SERVER='staging.infinite.industries'
   GIT_HEAD='development'
+  set_alt_branch $1 $2
   doDeploy
 else
   echo Please specify environment to deploy to.
