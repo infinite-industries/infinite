@@ -27,8 +27,7 @@
     fetch: function ({ store }) {
       return Promise.all([
         store.dispatch('LoadAllLocalEventData'),
-        store.dispatch('LoadAllStreamingEventData'),
-        store.dispatch('LoadAllVenueData')
+        store.dispatch('LoadAllStreamingEventData')
       ])
     },
     components: {
