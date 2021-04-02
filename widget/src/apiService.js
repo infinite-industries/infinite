@@ -1,7 +1,7 @@
 export default class APIService {
 
     static getEvents(context, callback) {
-        APIService.get(`${context.getApiUrl()}/events/current/verified?embed=venue`, function(err, response) {
+        APIService.get(`${context.getApiUrl()}/current-events/verified?embed=Venue`, function(err, response) {
             callback(err, response ? response.events : null)
         })
     }
