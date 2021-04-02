@@ -129,8 +129,8 @@
 
 .infinite-title-container {
 
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 25px;
+    padding-right: 25px;
 }
 
 .infinite-title-container .infinite-title {
@@ -152,8 +152,8 @@
     line-height: 1.1em;
     font-size: 0.9em;
 
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 25px;
+    padding-right: 25px;
 
     display: flex;
     flex-direction: row;
@@ -303,4 +303,8 @@ select {
       transform: rotate(360deg);
     }
   }
+
+.infinite-error {
+    color: white;
+}
 

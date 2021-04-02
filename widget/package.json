@@ -1,6 +1,6 @@
 {
   "name": "@infinite-industries/widget",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Widget for embedding events from the Infinite Industries platform on a website.",
   "author": {
     "name": "Infinite Crew",

@@ -15,6 +15,8 @@ const URLS = {
     }
 }
 
+const API_VERSION = 'v1'
+
 // DEFAULT_ENV defined by webpack / jest
 const DEFAULT_MODE = typeof DEFAULT_ENV !== 'undefined' ? DEFAULT_ENV : 'production'
 
@@ -67,6 +69,6 @@ export default class Context {
     }
 
     getApiUrl() {
-        return URLS[this.mode].API
+        return `${URLS[this.mode].API}/${API_VERSION}`
     }
 }
