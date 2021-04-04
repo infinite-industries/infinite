@@ -34,6 +34,8 @@ export const ICS_FILE_SETTINGS = {
     timezone: 'America/New_York' // need to figure out a more graceful way to deal with timezone
 }
 
+moment.tz.setDefault(ICS_FILE_SETTINGS.timezone)
+
 function stripEmpty(icsEntries: string [] ) {
     return icsEntries.filter(l => !!l);
 }
