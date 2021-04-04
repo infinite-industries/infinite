@@ -1,7 +1,9 @@
 <template>
   <div>
     <!-- So sometimes we have pandemics in this world -->
-    <ii-jumbotron />
+    <client-only>
+      <ii-jumbotron />
+    </client-only>
 
     <ii-list-viewer :calendar_events="events" />
 
