@@ -36,7 +36,7 @@
       const idToken = app.$auth.$storage.getState('_token.auth0')
 
       return Promise.all([
-        store.dispatch('admin/LoadCurrentEvent', { id: params.id, idToken }),
+        store.dispatch('admin/LoadEvent', { id: params.id, idToken }),
         store.dispatch('LoadAllVenueData')
       ])
     },

@@ -8,6 +8,9 @@ export const state = () => {
   }
 }
 
+const CURRENT_EVENTS_VERIFIED_PATH = '/current-events/verified'
+const EVENTS_NON_VERIFIED_PATH = '/events/non-verified'
+
 export const getters = {
   GetUnverifiedEvents: (state, getters) => {
     return state.unverified_events
@@ -24,11 +27,11 @@ export const getters = {
 }
 
 export const actions = {
-  LoadCurrentEvent: (context, payload) => {
+  LoadEvent: (context, payload) => {
     const id = payload.id
     const idToken = payload.idToken
 
-    return ApiService.get('/events/' + id, idToken)
+    return ApiService.get('/authenticated/events/' + id, idToken)
       .then((response) => {
         if (response.data.status === 'success') { context.commit('POPULATE_CURRENT_EVENT', response.data.event, { root: true }) }
       })
@@ -36,33 +39,29 @@ export const actions = {
   LoadUnverifiedEvents: (context, payload) => {
     const idToken = payload.idToken
 
-    ApiService.all([
-      ApiService.get('/events/current/non-verified', idToken),
-      ApiService.get('/events/non-verified/tags/online-resource', idToken)
-    ])
-      .then(function (_responses) {
-        const [_eventRes, _resourceRes] = _responses
-        console.log('data from server: ', _eventRes.data.events, _resourceRes.data.events)
-        if (_eventRes.data.status === 'success' && _resourceRes.data.status === 'success') {
-          const eventList = _eventRes.data.events
-          const eventIds = eventList.map(function (event) { return event.id })
-          _resourceRes.data.events.forEach(function (resource) {
-            if (!eventIds.includes(resource.id)) eventList.push(resource)
-          })
-          context.commit('POPULATE_UNVERIFIED_LIST', eventList)
+    const isResponseSuccess = respObj => respObj && respObj.data && respObj.data.status === 'success'
+
+    ApiService.get(EVENTS_NON_VERIFIED_PATH, idToken).then(
+      (currentNonVerifiedEventsResponse) => {
+        console.log('data from server: ', currentNonVerifiedEventsResponse.data.events)
+
+        if (isResponseSuccess(currentNonVerifiedEventsResponse)) {
+          const currentNonVerifiedEvents = currentNonVerifiedEventsResponse.data.events
+          context.commit('POPULATE_UNVERIFIED_LIST', currentNonVerifiedEvents)
         } else {
           context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Was not able to find unverified events.' }, { root: true })
         }
-      })
-      .catch(function (error) {
-        console.log(error)
-        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
-      })
+      }
+    ).catch(function (error) {
+      console.log(error)
+      context.commit('ui/SHOW_NOTIFICATIONS',
+        { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
+    })
   },
   LoadCurrentEvents: (context, payload) => {
     const idToken = payload.idToken
 
-    ApiService.get('/events/current/verified', idToken)
+    ApiService.get(CURRENT_EVENTS_VERIFIED_PATH, idToken)
       .then(function (_response) {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_VERIFIED_LIST', _response.data.events)
@@ -77,7 +76,7 @@ export const actions = {
   },
   LoadResourceEvents: (context, payload) => {
     const idToken = payload.idToken
-    ApiService.get('/events/verified/tags/online-resource', idToken)
+    ApiService.get('/events/verified?tags=online-resource', idToken)
       .then(function (_response) {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_RESOURCE_LIST', _response.data.events)
@@ -93,16 +92,11 @@ export const actions = {
   VerifyEvent: (context, payload) => {
     const idToken = payload.idToken
 
-    return ApiService.put(`/events/verify/${payload.id}`, null, idToken)
+    return ApiService.put(`/authenticated/events/verify/${payload.id}`, null, idToken)
       .then(function (_response) {
-        // console.log("data from server: ",response.data.events);
-        if (_response.data.status === 'success') {
-          context.commit('CHANGE_STATE_TO_VERIFIED', payload)
+        context.commit('CHANGE_STATE_TO_VERIFIED', payload)
 
-          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Event was successfuly verified.' }, { root: true })
-        } else {
-          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Unable to verify the event.' }, { root: true })
-        }
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Event was successfuly verified.' }, { root: true })
       })
       .catch(function (error) {
         console.log(error)
@@ -113,16 +107,9 @@ export const actions = {
   UpdateEvent: (context, payload) => {
     const idToken = payload.idToken
 
-    return ApiService.put(`/events/${payload.id}`, { event: { ...payload.event_data } }, idToken)
+    return ApiService.put(`/authenticated/events/${payload.id}`, { ...payload.event_data }, idToken)
       .then(function (_response) {
-        // console.log("data from server: ",response.data.events);
-        if (_response.data.status === 'success') {
-          console.log('event updated')
-
-          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Content of the event updated.' }, { root: true })
-        } else {
-          context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Unable to update :(' }, { root: true })
-        }
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Content of the event updated.' }, { root: true })
       })
       .catch(function (error) {
         console.log(error)
@@ -133,7 +120,7 @@ export const actions = {
   DeleteEvent: (context, payload) => {
     const idToken = payload.idToken
 
-    return ApiService.delete(`/events/${payload.id}`, idToken)
+    return ApiService.delete(`/authenticated/events/${payload.id}`, idToken)
       .then(function (_response) {
         console.log('Trying to delete event \n data from server: ', _response.data.events)
         if (_response.data.status !== 'success') {

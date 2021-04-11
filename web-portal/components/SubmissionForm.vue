@@ -459,7 +459,7 @@
           event.image = response.data.hero
           if (response.data.social) event.social_image = response.data.social
 
-          return ApiService.post('/events', { event })
+          return ApiService.post('/events', event)
         }).then((response) => {
           this.showEventLoadingSpinner = false
           this.showPromoTools = true

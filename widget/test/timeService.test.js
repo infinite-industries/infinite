@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 import TimeService from '../src/timeService.js'
 
 const utc_time_test1 = '2020-01-01T01:33:00.000Z'
@@ -16,20 +18,20 @@ test('returns correct minutes', () => {
 })
 
 test('returns correct month', () => {
-    expect(TimeService.returnMonth(utc_time_test1)).toBe("December")
-    expect(TimeService.returnMonth(utc_time_test2)).toBe("January")
-    expect(TimeService.returnMonth(utc_time_test4)).toBe("December")
+    expect(TimeService.returnMonth(utc_time_test1)).toBe(moment(utc_time_test1).format('MMMM'))
+    expect(TimeService.returnMonth(utc_time_test2)).toBe(moment(utc_time_test2).format('MMMM'))
+    expect(TimeService.returnMonth(utc_time_test4)).toBe(moment(utc_time_test4).format('MMMM'))
 })
 
 test('returns correct date', () => {
     // first example is 1am UTC which is evening of day before EST/EDT
     // unfortunately this test is only accurate in timezones behind UTC
-    expect(TimeService.returnDate(utc_time_test1)).toBe(31)
-    expect(TimeService.returnDate(utc_time_test2)).toBe(29)
+    expect(TimeService.returnDate(utc_time_test1).toString()).toBe(moment(utc_time_test1).format('D'))
+    expect(TimeService.returnDate(utc_time_test2).toString()).toBe(moment(utc_time_test2).format('D'))
 })
 
 test('returns correct day of week', () => {
-    expect(TimeService.returnDay(utc_time_test1)).toBe('Tuesday')
-    expect(TimeService.returnDay(utc_time_test2)).toBe('Wednesday')
-    expect(TimeService.returnDay(utc_time_test3)).toBe('Tuesday')
+    expect(TimeService.returnDay(utc_time_test1)).toBe(moment(utc_time_test1).format('dddd'))
+    expect(TimeService.returnDay(utc_time_test2)).toBe(moment(utc_time_test2).format('dddd'))
+    expect(TimeService.returnDay(utc_time_test3)).toBe(moment(utc_time_test3).format('dddd'))
 })

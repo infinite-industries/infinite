@@ -98,14 +98,25 @@
         this.showAddVenue = []
       },
       submitNewVenue: function () {
+        const newVenue = this.new_venue
+        const payload = {
+          name: newVenue.name,
+          address: [
+            newVenue.address,
+            newVenue.city,
+            newVenue.zip,
+            newVenue.neighborhood
+          ].filter(a => a).join(', '),
+          g_map_link: newVenue.g_map_link
+        }
         this.showVenueLoadingSpinner = true
-        ApiService.post('/venues/', { venue: { ...this.new_venue } })
+        ApiService.post('/venues/', payload)
           .then((response) => {
             this.showVenueLoadingSpinner = false
             this.closeVenueDropdown()
             if (response.data.status === 'success') {
               this.$store.dispatch('LoadAllVenueData')
-              this.$emit('newVenue', { ...this.new_venue, id: response.data.id })
+              this.$emit('newVenue', response.data.venue)
             }
           }).catch((err) => {
             console.error(err)

@@ -5,7 +5,7 @@
 
 import moment from 'moment'
 
-const serviceUrl = process.env.API_URL + '/create-ics-file'
+const serviceUrl = process.env.API_URL + '/calendaring/create-ics-file'
 
 export default class CalendarService {
   /**

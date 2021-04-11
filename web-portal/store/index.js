@@ -1,6 +1,10 @@
 import { ApiService } from '../services/ApiService'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
+const CURRENT_EVENTS_VERIFIED_PATH = '/current-events/verified'
+const EVENTS_VERIFIED_PATH = '/events/verified'
+const EMBED_VENUE = 'embed=Venue'
+
 export const state = () => {
   return {
     util: {
@@ -112,13 +116,13 @@ export const actions = {
   LoadAllUserData: (context, payload) => {
     return ApiService.get('/users/current', payload.idToken)
       .then(function (_response) {
-        context.commit('UPDATE_USER_DATA', _response.data.user)
+        context.commit('UPDATE_USER_DATA', _response.data)
       })
   },
 
   LoadAllLocalEventData: (context) => {
     context.commit('SET_LOADING_STATUS', true)
-    return ApiService.get('/events/current/verified/')
+    return ApiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
       .then((_response) => {
         context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
         context.commit('SET_LOADING_STATUS', false)
@@ -129,7 +133,7 @@ export const actions = {
       })
   },
   LoadAllStreamingEventData: (context) => {
-    return ApiService.get('/events/verified/tags/online-resource')
+    return ApiService.get(`${EVENTS_VERIFIED_PATH}?tags=online-resource&${EMBED_VENUE}`)
       .then((_response) => {
         context.commit('UPDATE_STREAMING_EVENTS', _response.data.events)
       })
@@ -165,7 +169,7 @@ export const actions = {
 
     return ApiService.post(
       '/announcements/ensure-one-announcement',
-      { announcement: { message: '' } },
+      { message: '' },
       idToken
     ).then((response) => {
       if (response.data.status === 'success') {
@@ -184,7 +188,7 @@ export const actions = {
 
     return ApiService.put(
       `/announcements/${announcement.id}`,
-      { announcement },
+      { message: announcement.message },
       idToken
     ).then((response) => {
       if (response.data.status !== 'success') {

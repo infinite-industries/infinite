@@ -16,7 +16,7 @@
           <h4 v-if="showVenue">
             <ii-remote v-if="isRemote || isOnlineResource" iconColor="#B7B09C" width="20" height="20" />
             <ii-location v-else iconColor="#B7B09C" width="20" height="20" />
-            {{ venue_info.name | truncate(60) }}
+            {{ venue.name | truncate(60) }}
           </h4>
 
           <template v-if="showTime">
@@ -73,11 +73,9 @@
         this.showCalendars = false
       },
       AddEventToCalendar(calType) {
-        // the list endpoint omits the venue, and the service expects it,
-        // so have to get creative here
         const event = this.calendar_event && this.calendar_event.venue
           ? this.calendar_event
-          : Object.assign({}, this.calendar_event, { venue: this.venue_info })
+          : Object.assign({}, this.calendar_event, { venue: this.venue })
         CalendarService.generate(event, calType)
       }
     },
@@ -91,20 +89,25 @@
         else return null
       },
       showVenue: function () {
-        return !!this.calendar_event.venue_id && !!this.venue_info && !!this.venue_info.id
+        return !!this.calendar_event.venue_id && (!!this.calendar_event.venue || (!!this.venue && !!this.venue.id))
       },
-      venue_info: function () {
-        const all_venues = this.$store.getters.GetAllVenues
+      venue: function () {
+        // venue should be included on event
+        // if not, the event may have been fetched without the proper flag set,
+        // in which case we may be able to silently recover by consulting a
+        // global list of venues
+        const event = this.calendar_event
+        if (event && event.venue) {
+          return event.venue
+        } else if (event.venue_id) {
+          const all_venues = this.$store.getters.GetAllVenues
 
-        const current_venue = all_venues.find((venue) => {
-          return venue.id === this.calendar_event.venue_id
-        })
+          const current_venue = all_venues.find((venue) => {
+            return venue.id === event.venue_id
+          })
 
-        if (current_venue === undefined) {
-          return {}
-        } else {
-          return current_venue
-        }
+          return current_venue === undefined ? {} : current_venue
+        } else return {}
       },
       showTime: function () {
         return !_hasTag(this.calendar_event, 'online-resource') &&

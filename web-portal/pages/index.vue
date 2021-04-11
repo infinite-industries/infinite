@@ -1,7 +1,9 @@
 <template>
   <div>
     <!-- So sometimes we have pandemics in this world -->
-    <ii-jumbotron />
+    <client-only>
+      <ii-jumbotron />
+    </client-only>
 
     <ii-list-viewer :calendar_events="events" />
 
@@ -31,8 +33,7 @@
     fetch: function ({ store }) {
       return Promise.all([
         store.dispatch('LoadAllLocalEventData'),
-        store.dispatch('LoadAllStreamingEventData'),
-        store.dispatch('LoadAllVenueData')
+        store.dispatch('LoadAllStreamingEventData')
       ])
     },
     components: {

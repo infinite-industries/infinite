@@ -2,7 +2,10 @@
   "name": "web-portal",
   "version": "1.0.0",
   "description": "The web-portal for infinite.industries. A place for Kentucky to discover exciting cultural events.",
-  "author": "infinite crew",
+  "author": {
+    "name": "Infinite Crew",
+    "url": "https://infinite.industries/who-we-are"
+  },
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
@@ -15,18 +18,18 @@
   },
   "dependencies": {
     "@nuxtjs/auth": "4.7.0",
-    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/axios": "^5.12.0",
     "@nuxtjs/google-gtag": "^1.0.4",
     "@nuxtjs/pwa": "^2.6.0",
     "@nuxtjs/vuetify": "0.5.5",
     "aws-sdk": "^2.281.1",
-    "gsap": "^2.1.3",
+    "gsap": "^3.6.0",
     "jwt-decode": "^2.2.0",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
     "multiparty": "^4.2.1",
-    "nuxt": "^2.12.0",
+    "nuxt": "^2.14.12",
     "nuxt-clipboard2": "^0.2.1",
     "slack-notify": "^0.1.7",
     "uuid": "^3.3.2",
