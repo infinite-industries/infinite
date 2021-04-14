@@ -37,3 +37,7 @@ npm install
 `npm run test` runs the unit tests
 
 `npm run build` to build for production
+
+## License
+
+MIT
