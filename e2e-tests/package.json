@@ -2,7 +2,10 @@
   "name": "e2e-tests",
   "version": "1.0.0",
   "description": "End-to-end integration tests for infinite.industries",
-  "author": "infinite crew",
+  "author": {
+    "name": "Infinite Crew",
+    "url": "https://infinite.industries/who-we-are"
+  },
   "private": true,
   "license": "MIT",
   "scripts": {
