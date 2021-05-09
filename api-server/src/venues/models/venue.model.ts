@@ -27,6 +27,10 @@ export class VenueModel extends Model<VenueModel> {
     g_map_link: string;
 
     @Column
+    @ApiProperty({ example: false })
+    is_soft_deleted: boolean;
+
+    @Column
     @ApiProperty({example: EXAMPLE_STATE})
     createdAt: Date;
 
