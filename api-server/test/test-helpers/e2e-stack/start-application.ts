@@ -5,8 +5,6 @@ import * as fs from 'fs';
 async function startApplication(dbPort: number): Promise<ChildProcessWithoutNullStreams> {
     const logFilePath =`${__dirname}/../../logs/api-server.logs`;
 
-    //removeFileIfExists(logFilePath);
-
     const logging = fs.createWriteStream(
         logFilePath,
         { flags: 'a' });
@@ -52,12 +50,6 @@ async function startApplication(dbPort: number): Promise<ChildProcessWithoutNull
             if (logging) {
                 logging.close();
             }
-        } catch(ex) {}
-    }
-
-    function removeFileIfExists(path: string) {
-        try {
-            fs.unlinkSync(path)
         } catch(ex) {}
     }
 }
