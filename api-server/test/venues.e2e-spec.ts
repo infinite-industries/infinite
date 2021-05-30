@@ -331,7 +331,3 @@ describe('Venues (e2e)', () => {
         expect(actualModelWithoutDates).toEqual(expectedModelWithoutDates);
     }
 });
-
-/*
-TODO CAW -- Test create; test update; test delete; test can't hit update or delete unauthenticated
- */
