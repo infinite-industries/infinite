@@ -46,15 +46,22 @@ export class VenuesService {
             values = {...updatedValues};
         }
 
-        return this.venueModel.update(values, { where: { id }})
-            .then((resp: [number, VenueModel[]]) => {
-                return resp[1][0];
-            });
+        return this.venueModel.update(values, {
+            where: { id },
+            returning: true
+        }).then((resp: [number, VenueModel[]]) => {
+            if (resp[0] === 0) {
+                return null;
+            }
+
+            return resp[1][0];
+        });
     }
 
     softDelete(id: string): Promise<VenueModel> {
         return this.venueModel.update({is_soft_deleted: true }, {
-           where: { id }
+           where: { id },
+           returning: true
         }).then((resp: [number, VenueModel[]]) => {
             return resp[1][0];
         })

@@ -15,19 +15,25 @@ import {v4 as uuidv4} from 'uuid';
 import * as faker from 'faker';
 import getSlug from "../src/utils/get-slug";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
-
-const APP_PORT = process.env.PORT || 3003;
-const server = request('http://localhost:' + APP_PORT);
-
-let appUnderTest: ChildProcessWithoutNullStreams;
-let dbContainer: StartedTestContainer;
-
-let venueModel: typeof VenueModel;
-let testingModule: TestingModule
-
-let dbHostPort: number;
+import createJwtForRandomUser from "./test-helpers/creaeteJwt";
 
 describe('Venues (e2e)', () => {
+    const APP_PORT = process.env.PORT || 3003;
+    const server = request('http://localhost:' + APP_PORT);
+
+    const DELETE_END_POINT = `/${CURRENT_VERSION_URI}/authenticated/venues`;
+    const UPDATE_END_POINT = `/${CURRENT_VERSION_URI}/authenticated/venues`;
+    const GET_ALL_VENUES_END_POINT = `/${CURRENT_VERSION_URI}/venues`;
+    const CREATE_VENUES_END_POINT = `/${CURRENT_VERSION_URI}/venues`;
+
+    let appUnderTest: ChildProcessWithoutNullStreams;
+    let dbContainer: StartedTestContainer;
+
+    let venueModel: typeof VenueModel;
+    let testingModule: TestingModule
+
+    let dbHostPort: number;
+
     beforeAll(async (done) => {
         console.info('preparing for test suite -- Venues');
 
@@ -72,17 +78,17 @@ describe('Venues (e2e)', () => {
         await deleteAllAnnouncements()
     })
 
-    it('[GET]/venues should return all non-soft deleted venues when no flags are passed', async (done) => {
-        const { activeVenues } = await createRandomMixOfDeletedAndNonDeletedVenues();
+    it('[GET]/venues should return all non-soft deleted venues given no flags are passed', async (done) => {
+        const { givenActiveVenues } = await createRandomMixOfDeletedAndNonDeletedVenues();
 
         return server
-            .get(`/${CURRENT_VERSION_URI}/venues`)
+            .get(GET_ALL_VENUES_END_POINT)
             .expect(200)
             .then(async (response) => {
                 expect(response.body.status).toEqual('success');
 
                 const responseVenueIds = response.body.venues.map(venue => venue.id);
-                const expectedIds = activeVenues.map(venue => venue.id);
+                const expectedIds = givenActiveVenues.map(venue => venue.id);
                 expectIdsEqualInAnyOrder(responseVenueIds, expectedIds);
 
                 done();
@@ -90,10 +96,11 @@ describe('Venues (e2e)', () => {
     });
 
     it('[GET]/venues?includeDeleted=true should return all venues including soft-deleted when appropriate flag is passed', async (done) => {
-        const { activeVenues, deletedVenues } = await createRandomMixOfDeletedAndNonDeletedVenues();
+        const { givenActiveVenues, givenDeletedVenues } = await createRandomMixOfDeletedAndNonDeletedVenues();
+        const givenFlags = 'includeDeleted=true';
 
         return server
-            .get(`/${CURRENT_VERSION_URI}/venues?includeDeleted=true`)
+            .get(`${GET_ALL_VENUES_END_POINT}?${givenFlags}`)
             .expect(200)
             .then(async (response) => {
                 expect(response.body.status).toEqual('success');
@@ -101,8 +108,8 @@ describe('Venues (e2e)', () => {
                 const responseVenueIds = response.body.venues.map(venue => venue.id);
 
                 const expectedIds = [
-                    ...activeVenues.map(venue => venue.id),
-                    ...deletedVenues.map(venue => venue.id)
+                    ...givenActiveVenues.map(venue => venue.id),
+                    ...givenDeletedVenues.map(venue => venue.id)
                 ];
 
                 expectIdsEqualInAnyOrder(responseVenueIds, expectedIds);
@@ -111,8 +118,158 @@ describe('Venues (e2e)', () => {
             });
     })
 
+    it('[DELETE]/authenticated/venues/:id should soft delete a venue given a valid token and id', async (done) => {
+        const givenValidToken = await createJwtForRandomUser();
+
+        const givenActiveExistingVenue: VenueModel = await insertVenue(generateRandomCreateVenueRequest());
+        const givenValidId = givenActiveExistingVenue.id;
+
+        return server
+            .del(`${DELETE_END_POINT}/${givenValidId}`)
+            .set({ 'x-access-token': givenValidToken })
+            .expect(200)
+            .then(async (response) => {
+                const statusResp: string = response.body.status;
+                const venueResp: Record<string, unknown> = response.body.venue;
+
+                const originalModelAsJson = givenActiveExistingVenue.toJSON() as Record<string, unknown>;
+                const expectedModel: Record<string, unknown> = {
+                    ...givenActiveExistingVenue.toJSON(),
+                    is_soft_deleted: true
+                };
+
+                expect(statusResp).toEqual('success');
+                expect(venueResp).toBeTruthy();
+
+                expect(response.body.venue).not.toEqual(originalModelAsJson);
+                assertVenuesEqualIgnoringDateStamps(venueResp, expectedModel);
+
+                done();
+            });
+    })
+
+    it('[DELETE]/authenticated/venues/:id should return 403 given no token provided', async (done) => {
+        const givenActiveExistingVenue: VenueModel = await insertVenue(generateRandomCreateVenueRequest());
+        const givenValidId = givenActiveExistingVenue.id;
+
+        return server
+            .del(`${DELETE_END_POINT}/${givenValidId}`)
+            .expect(403)
+            .then(() => {
+                done();
+            });
+    })
+
+    it('[PUT]/authenticated/venue:id should return 200 and update model given valid token and inputs', async(done) => {
+        const givenValidToken = await createJwtForRandomUser();
+
+        const givenActiveExistingVenue: VenueModel = await insertVenue(generateRandomCreateVenueRequest());
+        const givenValidId = givenActiveExistingVenue.id;
+
+        const givenNameToUpdate = faker.company.companyName();
+
+        const givenValuesToUpdate = {
+            name: givenNameToUpdate
+        };
+
+        return server
+            .put(`${UPDATE_END_POINT}/${givenValidId}`)
+            .set({ 'x-access-token': givenValidToken })
+            .send(givenValuesToUpdate)
+            .expect(200)
+            .then(async (response) => {
+                const statusResp: string = response.body.status;
+                const venueResp: Record<string, unknown> = response.body.venue;
+
+                const originalModelAsJson = givenActiveExistingVenue.toJSON() as Record<string, unknown>;
+
+                const expectedSlug = getSlug(givenNameToUpdate);
+                const expectedModelResp = {
+                    ...givenActiveExistingVenue.toJSON(),
+                    name: givenNameToUpdate,
+                    slug: expectedSlug
+                };
+
+                expect(statusResp).toEqual('success');
+                expect(venueResp).toBeTruthy();
+
+                expect(response.body.venue).not.toEqual(originalModelAsJson);
+                assertVenuesEqualIgnoringDateStamps(venueResp, expectedModelResp);
+
+                done();
+            });
+    })
+
+    it('[PUT]/authenticated/venue:id should return 400 given empty update but valid token', async(done) => {
+        const givenValidToken = await createJwtForRandomUser();
+
+        const givenActiveExistingVenue: VenueModel = await insertVenue(generateRandomCreateVenueRequest());
+        const givenValidId = givenActiveExistingVenue.id;
+
+        const givenEmptyValuesToUpdate = {}
+
+        return server
+            .put(`${UPDATE_END_POINT}/${givenValidId}`)
+            .set({ 'x-access-token': givenValidToken })
+            .send(givenEmptyValuesToUpdate)
+            .expect(400)
+            .then(async () => {
+                done();
+            });
+    })
+
+    it('[PUT]/authenticated/venue:id should return 403 given no token', async(done) => {
+        const givenActiveExistingVenue: VenueModel = await insertVenue(generateRandomCreateVenueRequest());
+        const givenValidId = givenActiveExistingVenue.id;
+
+        const givenNameToUpdate = faker.company.companyName();
+
+        const givenValuesToUpdate = {
+            name: givenNameToUpdate
+        };
+
+        return server
+            .put(`${UPDATE_END_POINT}/${givenValidId}`)
+            .send(givenValuesToUpdate)
+            .expect(403)
+            .then(() => {
+                done();
+            });
+    })
+
+    it('[POST]/venue should create a new venue and return 201 given valid post body', async(done) => {
+        const givenRequestToCreateVenue: CreateVenueRequest = generateRandomCreateVenueRequest();
+
+        return server
+            .post(CREATE_VENUES_END_POINT)
+            .send(givenRequestToCreateVenue)
+            .expect(201)
+            .then((resp) => {
+                const respStatus = resp.body.status;
+                const respVenue = resp.body.venue;
+                const respVenueWithoutId = {...respVenue, id: null };
+                const expectedRespValue = {
+                    ...givenRequestToCreateVenue,
+                    id: null,
+                    is_soft_deleted: false,
+                    slug: getSlug(givenRequestToCreateVenue.name)
+                };
+
+                expect(respStatus).toEqual('success');
+                expect(respVenue).toBeTruthy();
+
+                expect(respVenue.id).toBeTruthy();
+                expect(respVenue.createdAt).toBeTruthy();
+                expect(respVenue.updatedAt).toBeTruthy();
+
+                assertVenuesEqualIgnoringDateStamps(respVenueWithoutId, expectedRespValue);
+
+                done();
+            });
+    })
+
     async function createRandomMixOfDeletedAndNonDeletedVenues()
-        : Promise<{ activeVenues: VenueModel[], deletedVenues: VenueModel[] }>
+        : Promise<{ givenActiveVenues: VenueModel[], givenDeletedVenues: VenueModel[] }>
     {
         const nonDeletedVenue1: VenueModel = await insertVenue(generateRandomCreateVenueRequest());
         const nonDeletedVenue2: VenueModel = await insertVenue(generateRandomCreateVenueRequest());
@@ -122,8 +279,8 @@ describe('Venues (e2e)', () => {
         const deletedVenue2: VenueModel = await insertVenue(generateRandomCreateVenueRequest(), true);
 
         return {
-            activeVenues: [nonDeletedVenue1, nonDeletedVenue2, nonDeletedVenue3],
-            deletedVenues: [deletedVenue1, deletedVenue2]
+            givenActiveVenues: [nonDeletedVenue1, nonDeletedVenue2, nonDeletedVenue3],
+            givenDeletedVenues: [deletedVenue1, deletedVenue2]
         }
     }
 
@@ -154,6 +311,24 @@ describe('Venues (e2e)', () => {
             g_map_link: faker.random.uuid(),
             ...overrides
         }
+    }
+
+    function assertVenuesEqualIgnoringDateStamps(
+        actualVenueModel: Record<string, unknown>, expectedVenueModel: Record<string, unknown>
+    ) {
+        const actualModelWithoutDates = new VenueModel({
+            ...actualVenueModel,
+            updatedAt: null,
+            createdAt: null,
+        });
+
+        const expectedModelWithoutDates = new VenueModel({
+            ...expectedVenueModel,
+            updatedAt: null,
+            createdAt: null,
+        });
+
+        expect(actualModelWithoutDates).toEqual(expectedModelWithoutDates);
     }
 });
 

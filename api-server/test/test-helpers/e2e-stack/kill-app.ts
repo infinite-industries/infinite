@@ -6,10 +6,9 @@ function killApp(appUnderTest: ChildProcessWithoutNullStreams): Promise<void> {
 
     if (isNotNullOrUndefined(appUnderTest)) {
         return new Promise(resolve => {
-            appUnderTest.stdout.removeAllListeners()
-            appUnderTest.stderr.removeAllListeners()
-
             appUnderTest.on('exit', (code) => {
+                appUnderTest.stdout.removeAllListeners()
+                appUnderTest.stderr.removeAllListeners()
                 appUnderTest.removeAllListeners()
 
                 console.log(`child process ${appUnderTest.pid} exited with code ${code}`);

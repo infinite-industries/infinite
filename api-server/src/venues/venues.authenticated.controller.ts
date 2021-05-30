@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Header, Param, Put, UseGuards} from "@nestjs/common";
+import {BadRequestException, Body, Controller, Delete, Header, Param, Put, UseGuards} from "@nestjs/common";
 import {VERSION_1_URI} from "../utils/versionts";
 import {AuthGuard} from "../authentication/auth.guard";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
@@ -6,13 +6,15 @@ import {SingleVenueResponse} from "./dto/single-venue-response";
 import {VenuesService} from "./venues.service";
 import FindByIdParams from "../dto/find-by-id-params";
 import {UpdateVenueRequest} from "./dto/create-update-venue-request";
+import {response} from "express";
+import isNullUndefinedOrEmpty from "../utils/isNullUndefinedOrEmpty";
 
 @Controller(`${VERSION_1_URI}/authenticated/venues`)
 @ApiTags('venues -- authenticated')
 @UseGuards(AuthGuard)
 @ApiBearerAuth()
 @ApiResponse({status: 403, description: "Forbidden"})
-export default class EventsAuthenticatedController {
+export default class VenuesAuthenticatedController {
     constructor(
         private readonly venuesService: VenuesService
     ) {}
@@ -44,9 +46,15 @@ export default class EventsAuthenticatedController {
         @Param() params: FindByIdParams,
         @Body() updatedValues: UpdateVenueRequest
     ): Promise<SingleVenueResponse> {
+        if (isNullUndefinedOrEmpty(updatedValues)) {
+            throw new BadRequestException('No values supplied for the update');
+        }
+
         const { id } = params;
 
         return this.venuesService.update(id, updatedValues)
-            .then(venue => new SingleVenueResponse({ venue }));
+            .then((venue) => {
+                return new SingleVenueResponse({ venue })
+            });
     }
 }
