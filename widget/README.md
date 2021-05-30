@@ -1,5 +1,8 @@
 # Infinite Industries Widget
 
+[![npm version](https://badgen.net/npm/v/@infinite-industries/widget)](https://www.npmjs.com/package/@infinite-industries/widget)
+[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/@infinite-industries/widget/badge)](https://www.jsdelivr.com/package/npm/@infinite-industries/widget)
+
 Widget for embedding events from the Infinite Industries platform on a website.
 
 ## Installation
@@ -37,3 +40,7 @@ npm install
 `npm run test` runs the unit tests
 
 `npm run build` to build for production
+
+## License
+
+MIT

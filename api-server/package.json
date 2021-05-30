@@ -1,10 +1,13 @@
 {
   "name": "infinite-api",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "database and for art work/event management and presentation",
+  "author": {
+    "name": "Infinite Crew",
+    "url": "https://infinite.industries/who-we-are"
+  },
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",

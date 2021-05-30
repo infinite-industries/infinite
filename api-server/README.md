@@ -1,5 +1,4 @@
-Infinite Industries -- API Server
-------------
+# Infinite Industries API Server
 
 Backend API powering [Infinite Industries](https://infinite.industries).
 
@@ -35,8 +34,9 @@ $ npm install
 ```
 
 ## running integration tests
-* put keys in the keys directory
-* `npm run test:e2e`
+
+- put keys in the keys directory
+- `npm run test:e2e`
 
 ## Running the app
 
@@ -68,8 +68,13 @@ $ npm run test:cov
 
 [host]/api/
 
-## deploying
+## Deploying
+
 This requires that you have access to the target server through ssh-key authentication and that the target server is
 properly configured, with the appropriate .env file and pem file in its home directory
 
-run: `./deploy.sh <enironment>`
+run: `./deploy.sh <environment>`
+
+## License
+
+MIT

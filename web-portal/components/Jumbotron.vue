@@ -19,6 +19,22 @@
 <script>
   import Close from './vectors/Close.vue'
 
+  const THROTTLE_INTERVAL = 5 * 60 * 1000 // 5 minutes
+
+  const LAST_VIEWED = 'ii-jumbotron-viewed-at'
+
+  function getLastViewed() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return window.localStorage.getItem(LAST_VIEWED)
+    } else return null
+  }
+
+  function setLastViewed() {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem(LAST_VIEWED, Date.now())
+    }
+  }
+
   export default {
     name: 'Jumbotron',
     data: function () {
@@ -34,7 +50,11 @@
     fetch: function () {
       return this.$store.dispatch('LoadAnnouncements').then(() => {
         if (this.currentAnnouncement && this.currentAnnouncement.message.trim().length !== 0) {
-          this.open = true
+          const lastViewed = getLastViewed()
+          if (!lastViewed || (Date.now() - parseFloat(lastViewed)) > THROTTLE_INTERVAL) {
+            setLastViewed()
+            this.open = true
+          }
         }
       })
     },
