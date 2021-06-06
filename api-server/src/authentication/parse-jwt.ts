@@ -1,7 +1,6 @@
 import * as fs from "fs";
 import jwt = require('jsonwebtoken');
 import {Request} from "express";
-import exp from "constants";
 
 const PATH_TO_PEM = process.env.JWT_PEM || './keys/1nfinite.pem';
 const SECRET = fs.readFileSync(PATH_TO_PEM);
