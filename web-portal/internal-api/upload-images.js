@@ -4,16 +4,11 @@
  */
 
 const fs = require('fs')
-const aws = require('aws-sdk')
 const multiparty = require('multiparty')
 const uuidv4 = require('uuid/v4')
 const logger = require('./utils').logger
-
-const s3 = new aws.S3({
-  region: process.env.AWS_REGION,
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-})
+const LocalUploader = require('./upload-managers/LocalUploader')
+const S3Uploader = require('./upload-managers/S3Uploader')
 
 const IMAGE_DESTINATIONS = {
   event: {
@@ -24,9 +19,31 @@ const IMAGE_DESTINATIONS = {
 
 const TYPES = Object.keys(IMAGE_DESTINATIONS)
 
-const s3UrlBase = process.env.AWS_SERVER_URL + process.env.AWS_S3_UPLOADS_BUCKET
+// Send images to AWS S3 only if all environment vars necessary to configure
+// are present, falling back on local upload if not
+// TODO: this check might be better refactored into a factory
+// (especially if/when we introduce support for Azure Blob Storage)
+const uploader = process.env.AWS_REGION &&
+  process.env.AWS_ACCESS_KEY_ID &&
+  process.env.AWS_SECRET_ACCESS_KEY &&
+  process.env.AWS_SERVER_URL &&
+  process.env.AWS_S3_UPLOADS_BUCKET
+  ? new S3Uploader(
+    process.env.AWS_SERVER_URL,
+    process.env.AWS_REGION,
+    process.env.AWS_ACCESS_KEY_ID,
+    process.env.AWS_SECRET_ACCESS_KEY,
+    process.env.AWS_S3_UPLOADS_BUCKET
+  )
+  : new LocalUploader(process.env.APP_URL)
 
-export default function (req, res, next) {
+if (process.env.NODE_ENV === 'production' && uploader instanceof LocalUploader) {
+  logger.error('AWS credentials are not configured; uploads will be stored locally')
+} else {
+  logger.info(`Image uploads will save to ${uploader instanceof S3Uploader ? 'S3' : 'web server'}`)
+}
+
+export default function (req, res) {
   const form = new multiparty.Form()
   form.parse(req, function (err, fields, files) {
     if (err) {
@@ -41,7 +58,7 @@ export default function (req, res, next) {
     // validation
     if (!uploadType || !TYPES.includes(uploadType)) {
       res.statusCode = 422
-      res.end(uploadType ? 'Invalid upload type' + uploadType : 'Upload type not specified')
+      res.end(uploadType ? `Invalid upload type ${uploadType}` : 'Upload type not specified')
     }
 
     if (!fileKeys.every(file => !!IMAGE_DESTINATIONS[uploadType][file.toLowerCase()])) {
@@ -57,18 +74,13 @@ export default function (req, res, next) {
         file => new Promise((resolve, reject) => {
           const type = file.toLowerCase()
           const path = files[file][0].path
-          logger.info('uploading ' + type + ' image ---' + path)
+          logger.info(`uploading ${type} image --- ${path}`)
           fs.readFile(path, function (err, data) {
             if (err) return reject(err)
-            const s3Name = IMAGE_DESTINATIONS[uploadType][type](uploadId)
-            s3.putObject({
-              Body: data,
-              Bucket: process.env.AWS_S3_UPLOADS_BUCKET,
-              Key: s3Name
-            }, function (err, data) {
-              if (err) reject(err)
-              else resolve({ [type]: s3UrlBase + '/' + s3Name })
-            })
+            const finalPath = IMAGE_DESTINATIONS[uploadType][type](uploadId)
+            uploader.upload(finalPath, data).then((url) => {
+              resolve({ [type]: url })
+            }).catch(reject)
           })
         })
       )
@@ -77,7 +89,7 @@ export default function (req, res, next) {
       res.setHeader('Content-Type', 'application/json')
       res.end(JSON.stringify(urls.reduce((memo, url) => Object.assign({}, memo, url))))
     }).catch(function (err) {
-      logger.error(err)
+      logger.error(`error handling image upload: ${err}`)
       res.statusCode = 500
       res.end(err.message)
     })
