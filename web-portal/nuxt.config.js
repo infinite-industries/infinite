@@ -161,7 +161,8 @@ export default {
   ** Server configuration
   */
   server: {
-    port: 7779
+    port: 7779,
+    host: process.env.HOST || 'localhost'
   },
   /*
   ** Server middleware
