@@ -70,7 +70,7 @@ describe("Announcements (e2e)", () => {
         await deleteAllAnnouncements()
     })
 
-    it('can query all announcements', async function () {
+    it('can query all announcements', async function (done) {
         const announcement1 = await createAnnouncement(generateAnnouncementRequest())
         const announcement2 = await createAnnouncement(generateAnnouncementRequest())
 
@@ -82,6 +82,8 @@ describe("Announcements (e2e)", () => {
 
                 expect(response.body.announcements[0].message).toEqual(announcement1.message)
                 expect(response.body.announcements[1].message).toEqual(announcement2.message)
+
+                done()
             })
     })
 

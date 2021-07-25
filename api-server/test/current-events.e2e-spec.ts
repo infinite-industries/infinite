@@ -86,13 +86,14 @@ describe('CurrentEvents (e2e)', () => {
     });
 
 
-    it('can query current-events', async () => {
+    it('can query current-events', async (done) => {
         console.info('running first test: ' +
             `http://localhost:${APP_PORT}/${CURRENT_VERSION_URI}/current-events/verified`);
 
         return server
             .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
-            .expect(200);
+            .expect(200)
+            .then(() => done());
     });
 
     it('returns only verified events', async function (done) {
@@ -121,7 +122,7 @@ describe('CurrentEvents (e2e)', () => {
             });
     });
 
-    it('returns only events in the future or recent past', async function () {
+    it('returns only events in the future or recent past', async function (done) {
         const dateTimesForEventTooFarInPast = getDateTimesInPastBeyondWindow();
         const dateTimesForEventInFuture = getDateTimesInFuture();
         const dateTimesForEvenInPast = getDateTimesInPastButInsideWindow();
@@ -149,10 +150,12 @@ describe('CurrentEvents (e2e)', () => {
                 const returnedIds = response.body.events.map(event => event.id);
 
                 expect(returnedIds).toEqual(expectedEventIdsReturned);
+
+                done()
             });
     });
 
-    it('sorts multi-date events by most recent non-expired start-time', async () => {
+    it('sorts multi-date events by most recent non-expired start-time', async (done) => {
         // order in this list shouldn't matter
         const multiDayDateTimes = [
             getDateTimePair(getTimePlusX(today, 11)),
@@ -193,10 +196,12 @@ describe('CurrentEvents (e2e)', () => {
                         multiDayEvent.id,
                         singleDayEvent2.id
                     ]);
+
+                done();
             });
     });
 
-    it('filters expired events from multi-day events and finds correct first day/last day times', async () => {
+    it('filters expired events from multi-day events and finds correct first day/last day times', async (done) => {
         const firstDayTime = getDateTimePair(getTimePlusX(today, -eventWindow + 1));
         const secondDayTime = getDateTimePair(getTimePlusX(today, -eventWindow + 2));
         // order in this list shouldn't matter
@@ -226,10 +231,12 @@ describe('CurrentEvents (e2e)', () => {
                 expect(remainingTimes[1].start_time).toEqual(secondDayTime.start_time);
                 expect(event.first_day_start_time).toEqual(firstDayTime.start_time);
                 expect(event.last_day_end_time).toEqual(secondDayTime.end_time);
+
+                done();
             });
     });
 
-    it('returns events with all expected field values', async () => {
+    it('returns events with all expected field values', async (done) => {
         const futureTime = getDateTimePair(getTimePlusX(today, 1));
         const venue = await createVenue(generateVenue(venueModel));
 
@@ -269,6 +276,8 @@ describe('CurrentEvents (e2e)', () => {
 
                 // except this one should be empty for non-admins
                 expect(event.organizer_contact).toBeUndefined();
+
+                done();
             });
     });
 
