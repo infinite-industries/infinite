@@ -8,6 +8,7 @@ import {TestingModule} from "@nestjs/testing";
 import killApp from "./test-helpers/e2e-stack/kill-app";
 import stopDatabase from "./test-helpers/e2e-stack/stop-database";
 import isNotNullOrUndefined from "../src/utils/is-not-null-or-undefined";
+import buildDbConnectionsForTests from "./test-helpers/e2e-stack/build-db-connection-for-tests";
 
 
 const APP_PORT = process.env.PORT || 3003;
@@ -32,6 +33,10 @@ describe("Version (e2e)", () => {
         await runMigrations(dbHostPort);
 
         appUnderTest = await startApplication(dbHostPort);
+
+        const databaseModels = await buildDbConnectionsForTests(dbHostPort);
+
+        testingModule = databaseModels.testingModule
 
         console.info('test suite ready');
 
