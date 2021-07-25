@@ -8,8 +8,8 @@ import {CURRENT_VERSION_URI, SUPPORTED_VERSIONS} from "./utils/versionts";
 export class AppController {
   constructor() {}
 
-  @Get('/v1/version')
-  @ApiOperation({ summary: 'says hello to the world' })
+  @Get('version')
+  @ApiOperation({ summary: 'get version information about this api' })
   getVersion(): VersionResponse {
     const version = CURRENT_VERSION_URI;
     const supportedVersions = SUPPORTED_VERSIONS;
