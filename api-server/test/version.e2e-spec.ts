@@ -34,8 +34,8 @@ describe("Version (e2e)", () => {
 
         appUnderTest = await startApplication(dbHostPort);
 
+        // TODO (CAW) -- This should not be needed for this test but for some reason not invoking this leads to failures when tests are ran on github
         const databaseModels = await buildDbConnectionsForTests(dbHostPort);
-
         testingModule = databaseModels.testingModule
 
         console.info('test suite ready');
