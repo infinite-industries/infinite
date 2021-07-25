@@ -56,7 +56,7 @@ describe("Version (e2e)", () => {
 
     it('can query version information', async function (done) {
 
-        return server.get(`/version`)
+        return server.get(`/v1/version`)
             .expect(200)
             .then(async (response) => {
                 // should only get back 2 of the three events
