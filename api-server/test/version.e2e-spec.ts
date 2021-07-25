@@ -54,7 +54,7 @@ describe("Version (e2e)", () => {
         done();
     })
 
-    it('can query version information', async function () {
+    it('can query version information', async function (done) {
 
         return server.get(`/version`)
             .expect(200)
@@ -64,6 +64,8 @@ describe("Version (e2e)", () => {
                    version: 'v1',
                    supportedVersions: ['v1']
                 });
+
+                done();
             })
     })
 
