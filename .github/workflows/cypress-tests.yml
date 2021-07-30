@@ -22,20 +22,6 @@ jobs:
   cypress-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_USER: infinite
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: 'infinite-api'
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - uses: actions/checkout@v2
       - name: Setup Node
@@ -55,32 +41,44 @@ jobs:
       - name: Install Cypress
         run: npm ci --production # TODO: will this work? We don't need the dev dependencies in CI in this case
         working-directory: './e2e-tests'
-      - name: Run Migrations
-        run: npm run db:migrate
-        working-directory: './api-server'
+      - name: Prepare environment
+        run: touch .env.test
+      - name: Start stack
+        run: ./startAll.sh test
         env:
-          DB_USER_NAME: 'infinite'
-          DB_PASSWORD: 'postgres'
-          DB_NAME: 'infinite-api'
-          DB_HOST: 'localhost'
-          DB_PORT: 5432
-      - name: Start API Server
-        run: |
-          npm run start:dev &
-          curl --request 'GET' 'http://localhost:3003/version' \
-               --header 'accept: application/json' \
-               --retry 10 --retry-connrefused
-        working-directory: './api-server'
-        env:
-          DB_USER_NAME: 'infinite'
-          DB_PASSWORD: 'postgres'
-          DB_NAME: 'infinite-api'
-          DB_HOST: 'localhost'
-          DB_PORT: 5432
-          PORT: 3003
-          JWT_PEM: ./test-keys/1nfinite_testing.pem
+          BITLY_TOKEN: ${{ secrets.BITLY_TOKEN }}
+          INFINITE_PEM_FILE_CONTENTS: ${{ secrets.INFINITE_PEM_FILE_CONTENTS }}
       - name: Test an endpoint
         run: |
           curl --request 'GET' 'http://localhost:3003/version' \
                --header 'accept: application/json' \
                --retry 10 --retry-connrefused
+      # - name: Run Migrations
+      #   run: npm run db:migrate
+      #   working-directory: './api-server'
+      #   env:
+      #     DB_USER_NAME: 'infinite'
+      #     DB_PASSWORD: 'postgres'
+      #     DB_NAME: 'infinite-api'
+      #     DB_HOST: 'localhost'
+      #     DB_PORT: 5432
+      # - name: Start API Server
+      #   run: |
+      #     npm run start:dev &
+      #     curl --request 'GET' 'http://localhost:3003/version' \
+      #          --header 'accept: application/json' \
+      #          --retry 10 --retry-connrefused
+      #   working-directory: './api-server'
+      #   env:
+      #     DB_USER_NAME: 'infinite'
+      #     DB_PASSWORD: 'postgres'
+      #     DB_NAME: 'infinite-api'
+      #     DB_HOST: 'localhost'
+      #     DB_PORT: 5432
+      #     PORT: 3003
+      #     JWT_PEM: ./test-keys/1nfinite_testing.pem
+      # - name: Test an endpoint
+      #   run: |
+      #     curl --request 'GET' 'http://localhost:3003/version' \
+      #          --header 'accept: application/json' \
+      #          --retry 10 --retry-connrefused
