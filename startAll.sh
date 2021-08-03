@@ -32,4 +32,5 @@ docker-compose \
   --file $FILE \
   --env-file $ENV_FILE \
   up \
-  --force-recreate
+  --force-recreate \
+  --detach
