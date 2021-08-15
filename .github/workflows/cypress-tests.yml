@@ -52,7 +52,7 @@ jobs:
         run: |
           curl --request 'GET' 'http://localhost:3003/version' \
                --header 'accept: application/json' \
-               --retry 30 --retry-connrefused --retry-delay 10
+               --retry 60 --retry-connrefused --retry-delay 10
       # - name: Run Migrations
       #   run: npm run db:migrate
       #   working-directory: './api-server'
