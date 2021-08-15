@@ -1,5 +1,6 @@
-# waits for 5 minutes (30 retries on 10-second intervals)
-limit=30
+# waits for 5 minutes (60 retries on 5-second intervals)
+limit=60
+interval=5
 
 service_trials=0
 
@@ -14,7 +15,7 @@ until $(curl --output /dev/null --silent --head --fail http://localhost:3003/ver
       exit 1
     fi
 
-    sleep 10
+    sleep $interval
 done
 
 printf '...found service!\n'
