@@ -48,41 +48,10 @@ jobs:
         env:
           BITLY_TOKEN: ${{ secrets.BITLY_TOKEN }}
           INFINITE_PEM_FILE_CONTENTS: ${{ secrets.INFINITE_PEM_FILE_CONTENTS }}
-      - name: Test an endpoint
+      - name: Wait for stack to start
         run: |
           ./wait-for-stack.sh
         working-directory: './e2e-tests'
-      # - name: Test an endpoint
-      #   run: |
-      #     curl --request 'GET' 'http://localhost:3003/version' \
-      #          --header 'accept: application/json' \
-      #          --retry 60 --retry-connrefused --retry-all-errors --retry-delay 10
-      # - name: Run Migrations
-      #   run: npm run db:migrate
-      #   working-directory: './api-server'
-      #   env:
-      #     DB_USER_NAME: 'infinite'
-      #     DB_PASSWORD: 'postgres'
-      #     DB_NAME: 'infinite-api'
-      #     DB_HOST: 'localhost'
-      #     DB_PORT: 5432
-      # - name: Start API Server
-      #   run: |
-      #     npm run start:dev &
-      #     curl --request 'GET' 'http://localhost:3003/version' \
-      #          --header 'accept: application/json' \
-      #          --retry 10 --retry-connrefused
-      #   working-directory: './api-server'
-      #   env:
-      #     DB_USER_NAME: 'infinite'
-      #     DB_PASSWORD: 'postgres'
-      #     DB_NAME: 'infinite-api'
-      #     DB_HOST: 'localhost'
-      #     DB_PORT: 5432
-      #     PORT: 3003
-      #     JWT_PEM: ./test-keys/1nfinite_testing.pem
-      # - name: Test an endpoint
-      #   run: |
-      #     curl --request 'GET' 'http://localhost:3003/version' \
-      #          --header 'accept: application/json' \
-      #          --retry 10 --retry-connrefused
+      - name: Run Cypress
+        run: npm start
+        working-directory: './e2e-tests'
