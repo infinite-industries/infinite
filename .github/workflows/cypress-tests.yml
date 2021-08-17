@@ -53,5 +53,9 @@ jobs:
           ./wait-for-stack.sh
         working-directory: './e2e-tests'
       - name: Run Cypress
-        run: npm start
+        run: |
+          echo $E2E_ENV_JSON > cypress.env.json
+          npm start
         working-directory: './e2e-tests'
+        env:
+          E2E_ENV_JSON: ${{ secrets.E2E_ENV_JSON }}
