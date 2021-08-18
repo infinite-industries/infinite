@@ -52,6 +52,9 @@ jobs:
         run: |
           ./wait-for-stack.sh
         working-directory: './e2e-tests'
+      - name: Troubleshoot the tests by checking for venues
+        run: |
+          curl http://localhost:3003/v1/venues
       - name: Run Cypress
         run: |
           echo $E2E_ENV_JSON > cypress.env.json
