@@ -76,3 +76,11 @@ jobs:
         env:
           ENV_US: ${{ secrets.CYPRESS_AUTH_USER }}
           ENV_PW: ${{ secrets.CYPRESS_AUTH_PASSWORD }}
+      - name: Save artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: cypress-artifacts
+          path: |
+            e2e-tests/screenshots
+            e2e-tests/videos
+          retention-days: 14
