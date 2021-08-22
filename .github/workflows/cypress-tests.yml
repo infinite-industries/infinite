@@ -52,17 +52,22 @@ jobs:
         run: |
           ./wait-for-stack.sh
         working-directory: './e2e-tests'
-      - name: Create Venues
+      # - name: Create Venues
+      #   run: |
+      #     npm run db:seed:venues
+      #   working-directory: './api-server'
+      #   env:
+      #     # these values come from the docker-compose.test.yml file
+      #     DB_HOST: postgres
+      #     DB_NAME: infinite-api
+      #     DB_USER_NAME: infinite
+      #     DB_PASSWORD: xxx
+      #     DB_PORT: 5432
+      - name: Create a venue # needed for the event submission test
         run: |
-          npm run db:seed:venues
-        working-directory: './api-server'
-        env:
-          # these values come from the docker-compose.test.yml file
-          DB_HOST: postgres
-          DB_NAME: infinite-api
-          DB_USER_NAME: infinite
-          DB_PASSWORD: xxx
-          DB_PORT: 5432
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"name": "The Venue", "address": "123 Street, Venueville, 01010", "g_map_link":null}' \
+            http://localhost:3003/v1/venues
       - name: Run Cypress
         run: |
           echo $E2E_ENV_JSON > cypress.env.json
