@@ -70,8 +70,9 @@ jobs:
             http://localhost:3003/v1/venues
       - name: Run Cypress
         run: |
-          echo $E2E_ENV_JSON > cypress.env.json
+          echo "{\"admin_auth_username\":\"$ENV_US\",\"admin_auth_password\":\"$ENV_PW\"}" > cypress.env.json
           npm start
         working-directory: './e2e-tests'
         env:
-          E2E_ENV_JSON: ${{ secrets.E2E_ENV_JSON }}
+          ENV_US: ${{ secrets.CYPRESS_AUTH_USER }}
+          ENV_PW: ${{ secrets.CYPRESS_AUTH_PASSWORD }}
