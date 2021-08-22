@@ -52,9 +52,17 @@ jobs:
         run: |
           ./wait-for-stack.sh
         working-directory: './e2e-tests'
-      - name: Troubleshoot the tests by checking for venues
+      - name: Create Venues
         run: |
-          curl http://localhost:3003/v1/venues
+          npm run db:seed:venues
+        working-directory: './api-server'
+        env:
+          # these values come from the docker-compose.test.yml file
+          DB_HOST: postgres
+          DB_NAME: infinite-api
+          DB_USER_NAME: infinite
+          DB_PASSWORD: xxx
+          DB_PORT: 5432
       - name: Run Cypress
         run: |
           echo $E2E_ENV_JSON > cypress.env.json
