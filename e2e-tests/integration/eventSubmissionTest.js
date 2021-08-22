@@ -58,9 +58,13 @@ context('Event Submission', () => {
     cy.get('.brief-description input').type('still testing')
     cy.get('.submitter-email input').type('test@te.st')
 
+    cy.wait(2500) // troubleshooting on Github
+
     // submit event and wait for promo tools section to expand on success
     cy.get('.submit-container button').click()
     cy.get('.collapsible-content.expanded')
+
+    cy.wait(2500) // troubleshooting on Github
   })
 
   it('Submitted events not displayed immediately after submission', function () {
