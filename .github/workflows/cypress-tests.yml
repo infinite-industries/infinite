@@ -76,8 +76,14 @@ jobs:
         env:
           ENV_US: ${{ secrets.CYPRESS_AUTH_USER }}
           ENV_PW: ${{ secrets.CYPRESS_AUTH_PASSWORD }}
+      - name: Does this run if tests fail
+        run: |
+          echo "hi"
       - name: Save artifacts
         uses: actions/upload-artifact@v2
+        # this might be better as failure(),
+        # but I want to make sure it works first
+        if: ${{ always() }}
         with:
           name: cypress-artifacts
           path: |
