@@ -68,6 +68,10 @@ jobs:
           curl -X POST -H "Content-Type: application/json" \
             -d '{"name": "The Venue", "address": "123 Street, Venueville, 01010", "g_map_link":null}' \
             http://localhost:3003/v1/venues
+      - name: List containers for troublshooting
+        run: |
+          docker ps
+        if: ${{ always() }}
       - name: Run Cypress
         run: |
           echo "{\"admin_auth_username\":\"$ENV_US\",\"admin_auth_password\":\"$ENV_PW\"}" > cypress.env.json
@@ -87,3 +91,7 @@ jobs:
             e2e-tests/screenshots
             e2e-tests/videos
           retention-days: 14 # this gives us two weeks to troubleshoot
+      - name: Experimentally dump one of the logs
+        if: ${{ always() }}
+        run: |
+          docker logs $(docker ps --filter name=docker_api-server --format "{{.ID}}") --tail 50
