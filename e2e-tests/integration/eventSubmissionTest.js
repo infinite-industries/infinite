@@ -62,8 +62,11 @@ context('Event Submission', () => {
 
     // submit event and wait for promo tools section to expand on success
     cy.get('.submit-container button').click()
-    cy.get('.collapsible-content.expanded')
+    cy.get('.collapsible-content.submission-success.expanded')
 
+    // I think the event submission is failing...
+    // can't say for sure but it looks like the text under the submit button is the
+    // Hmmm...something went wrong
     cy.wait(2500) // troubleshooting on Github
   })
 
