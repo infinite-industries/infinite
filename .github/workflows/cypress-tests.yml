@@ -42,7 +42,9 @@ jobs:
         run: npm ci --production # TODO: will this work? We don't need the dev dependencies in CI in this case
         working-directory: './e2e-tests'
       - name: Prepare environment
-        run: touch .env.test
+        run: |
+          touch .env.test
+          mkdir web-portal/static/uploads
       - name: Start stack
         run: ./startAll.sh test
         env:
