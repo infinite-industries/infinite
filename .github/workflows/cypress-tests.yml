@@ -94,4 +94,4 @@ jobs:
       - name: Experimentally dump one of the logs
         if: ${{ always() }}
         run: |
-          docker logs $(docker ps --filter name=docker_api-server --format "{{.ID}}") --tail 50
+          docker logs $(docker ps --filter name=infinite_api-server --format "{{.ID}}") --tail 50
