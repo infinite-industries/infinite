@@ -80,7 +80,7 @@ jobs:
         env:
           ENV_US: ${{ secrets.CYPRESS_AUTH_USER }}
           ENV_PW: ${{ secrets.CYPRESS_AUTH_PASSWORD }}
-      - name: Save artifacts
+      - name: Save Cypress artifacts
         uses: actions/upload-artifact@v2
         # TODO: discuss whether we want to always save these
         # or only save them on a failure
@@ -91,7 +91,8 @@ jobs:
             e2e-tests/screenshots
             e2e-tests/videos
           retention-days: 14 # this gives us two weeks to troubleshoot
-      - name: Experimentally dump one of the logs
+      - name: Dump the logs for troubleshooting
         if: ${{ always() }}
         run: |
-          docker logs $(docker ps --filter name=infinite_api-server --format "{{.ID}}") --tail 50
+          docker logs $(docker ps --filter name=infinite_web-portal --format "{{.ID}}")
+          docker logs $(docker ps --filter name=infinite_api-server --format "{{.ID}}")
