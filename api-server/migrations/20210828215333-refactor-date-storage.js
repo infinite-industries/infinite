@@ -64,10 +64,10 @@ module.exports = {
         FROM events
         JOIN current_date_times_jsonb ON id = event_id;
 
-      DROP TABLE current_events_transform_2;
+      DROP VIEW current_events_transform_2;
 
-      DROP TABLE current_events_transform_1;
-    `
+      DROP VIEW current_events_transform_1;
+    `)
   },
 
   down: async (queryInterface, Sequelize) => {
@@ -141,5 +141,6 @@ module.exports = {
       DROP VIEW current_date_times_jsonb;
       
       DROP TABLE datetime_venue;
+      `)
   }
 };
