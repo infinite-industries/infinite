@@ -22,8 +22,8 @@ module.exports = {
         FROM (
           SELECT
             event_id,
-            start_time,
-            end_time,
+            start_time::timestamptz,
+            end_time::timestamptz,
             optional_title
             FROM datetime_venue
             WHERE end_time >= (now() - '24:00:00'::interval)
@@ -140,7 +140,7 @@ module.exports = {
 
       DROP VIEW current_date_times_jsonb;
       
-      DROP TABLE datetime_venue;
+      DROP VIEW datetime_venue;
       `)
   }
 };
