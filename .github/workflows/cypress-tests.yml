@@ -58,22 +58,22 @@ jobs:
         if: ${{ always() }}
         run: |
           docker ps
-      # - name: Create Venues
-      #   run: |
-      #     npm run db:seed:venues
-      #   working-directory: './api-server'
-      #   env:
-      #     # these values come from the docker-compose.test.yml file
-      #     DB_HOST: postgres
-      #     DB_NAME: infinite-api
-      #     DB_USER_NAME: infinite
-      #     DB_PASSWORD: xxx
-      #     DB_PORT: 5432
-      - name: Create a venue # needed for the event submission test
+      - name: Create Venues
         run: |
-          curl -X POST -H "Content-Type: application/json" \
-            -d '{"name": "The Venue", "address": "123 Street, Venueville, 01010", "g_map_link":null}' \
-            http://localhost:3003/v1/venues
+          npm run db:seed:venues
+        working-directory: './api-server'
+        env:
+          # these values come from the docker-compose.test.yml file
+          DB_HOST: postgres
+          DB_NAME: infinite-api
+          DB_USER_NAME: infinite
+          DB_PASSWORD: xxx
+          DB_PORT: 5432
+      # - name: Create a venue # needed for the event submission test
+      #   run: |
+      #     curl -X POST -H "Content-Type: application/json" \
+      #       -d '{"name": "The Venue", "address": "123 Street, Venueville, 01010", "g_map_link":null}' \
+      #       http://localhost:3003/v1/venues
       - name: Run Cypress
         run: |
           echo "{\"admin_auth_username\":\"$ENV_US\",\"admin_auth_password\":\"$ENV_PW\"}" > cypress.env.json
@@ -94,13 +94,13 @@ jobs:
             e2e-tests/videos
           retention-days: 14 # this gives us two weeks to troubleshoot
       - name: Dump the container logs for troubleshooting
-        if: ${{ always() }}
+        if: ${{ failure() }}
         run: |
           docker logs $(docker ps --filter name=infinite_web-portal --format "{{.ID}}") &> ./web-portal.log
           docker logs $(docker ps --filter name=infinite_api-server --format "{{.ID}}") &> ./api-server.log
       - name: Save log artifacts
         uses: actions/upload-artifact@v2
-        if: ${{ always() }}
+        if: ${{ failure() }}
         with:
           name: docker-artifacts
           path: |
