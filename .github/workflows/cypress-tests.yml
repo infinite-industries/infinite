@@ -48,7 +48,7 @@ jobs:
       - name: Start stack
         run: ./startAll.sh test
         env:
-          BITLY_TOKEN: ${{ secrets.BITLY_TOKEN }}
+          # BITLY_TOKEN: ${{ secrets.BITLY_TOKEN }}
           INFINITE_PEM_FILE_CONTENTS: ${{ secrets.INFINITE_PEM_FILE_CONTENTS }}
       - name: Wait for stack to start
         run: |
