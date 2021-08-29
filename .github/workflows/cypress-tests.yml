@@ -64,7 +64,7 @@ jobs:
         working-directory: './api-server'
         env:
           # these values come from the docker-compose.test.yml file
-          DB_HOST: postgres
+          DB_HOST: localhost
           DB_NAME: infinite-api
           DB_USER_NAME: infinite
           DB_PASSWORD: xxx

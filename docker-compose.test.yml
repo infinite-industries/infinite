@@ -10,6 +10,8 @@ services:
       - POSTGRES_PASSWORD=xxx
     expose:
       - "5432"
+    ports:
+      - "5432:5432"
 
   api-server:
     build:
