@@ -4,22 +4,28 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.sequelize.query(`
       CREATE TABLE if NOT EXISTS datetime_venue(
+         id UUID NOT NULL
+           CONSTRAINT datetime_venue_pkey primary key,
          event_id UUID NOT NULL
          CONSTRAINT datetime_venue_event_id REFERENCES events,
          venue_id UUID
          CONSTRAINT datetime_venue_venue_id REFERENCES venues,
          start_time timestamp with time zone NOT NULL,
          end_time timestamp with time zone NOT NULL,
-         title VARCHAR(255)
+         optional_title VARCHAR(255)
       );
 
-      INSERT INTO datetime_venue (event_id, venue_id, start_time, end_time, title)
-        SELECT id as event_id, venue_id, start_time, end_time, title
+      INSERT INTO datetime_venue (id, event_id, venue_id, start_time, end_time, optional_title)
+        SELECT public.uuid_generate_v4() as id,
+               events.id as event_id,
+               events.venue_id,
+               start_time,
+               end_time,
+               optional_title
         FROM events,
-             jsonb_to_recordset(
-                 events.date_times) AS dates(start_time timestamp,
-                     end_time timestamp,
-                     optional_title character varying(255));
+             (SELECT * FROM events,
+                  jsonb_to_recordset(events.date_times) AS dates(start_time timestamp, end_time timestamp, optional_title character varying(255)))
+                 recordset;
 
       CREATE VIEW current_date_times_jsonb AS
       SELECT event_id, jsonb_agg(date_times ORDER BY date_times->'start_time') as date_times

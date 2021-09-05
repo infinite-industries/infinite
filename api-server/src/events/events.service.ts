@@ -11,6 +11,9 @@ import BitlyService from "./bitly.service";
 import getSlug from "../utils/get-slug";
 import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import { DatetimeVenueModel } from './models/datetime-venue.model';
+import { isNullOrUndefined } from '../utils';
+import { StartEndTimePairs } from '../shared-types/start-end-time-pairs';
 
 const INFINITE_WEB_PORTAL_BASE_URL = process.env.APP_URL || 'https://infinite.industries'
 
@@ -18,6 +21,7 @@ const INFINITE_WEB_PORTAL_BASE_URL = process.env.APP_URL || 'https://infinite.in
 export class EventsService {
     constructor(
         @InjectModel(Event) private eventModel: typeof Event,
+        @InjectModel(DatetimeVenueModel) private dateTimeVenueModel: typeof DatetimeVenueModel,
         private readonly bitlyService: BitlyService,
         @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService
     ) {}
@@ -49,7 +53,29 @@ export class EventsService {
     async create(newEvent: CreateEventRequest): Promise<Event> {
         const eventWithServerSideGeneratedAttributes = await this.fillInServerSideGeneratedAttributes(newEvent)
 
-        return this.eventModel.create(eventWithServerSideGeneratedAttributes)
+        const event = await this.eventModel.create(eventWithServerSideGeneratedAttributes)
+
+        console.log(`!!! event id: ${event.id}`)
+        console.log(`!!! venue id: ${event.venue_id}`)
+        console.log(eventWithServerSideGeneratedAttributes.date_times)
+        this.createDatetimeVenueEntries(event.id, event.venue_id, eventWithServerSideGeneratedAttributes.date_times);
+
+        return event;
+    }
+
+    private createDatetimeVenueEntries(eventId: string, venueId: string, dateTimes: StartEndTimePairs []) {
+        if (isNullOrUndefined(dateTimes))
+            return;
+
+        dateTimes.forEach(({ start_time, end_time, title}) => {
+            const id = uuidv4()
+            this.dateTimeVenueModel.create({
+                id,
+                event_id: eventId,
+                venue_id: venueId,
+                start_time,
+                end_time, title })
+        })
     }
 
     async delete(id: string): Promise<DbDeleteResponse> {
