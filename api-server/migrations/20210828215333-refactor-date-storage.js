@@ -16,16 +16,16 @@ module.exports = {
       );
 
       INSERT INTO datetime_venue (id, event_id, venue_id, start_time, end_time, optional_title)
-        SELECT public.uuid_generate_v4() as id,
-               events.id as event_id,
-               events.venue_id,
-               start_time,
-               end_time,
-               optional_title
-        FROM events,
-             (SELECT * FROM events,
-                  jsonb_to_recordset(events.date_times) AS dates(start_time timestamp, end_time timestamp, optional_title character varying(255)))
-                 recordset;
+          SELECT
+              public.uuid_generate_v4() as id,
+              events.id as event_id,
+              events.venue_id,
+              start_time,
+              end_time,
+              optional_title
+          FROM
+               events,
+               jsonb_to_recordset(events.date_times) AS dates(start_time timestamp, end_time timestamp, optional_title character varying(255));
 
       CREATE VIEW current_date_times_jsonb AS
       SELECT event_id, jsonb_agg(date_times ORDER BY date_times->'start_time') as date_times
