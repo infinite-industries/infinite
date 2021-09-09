@@ -471,17 +471,7 @@
           console.log(error)
           this.showEventLoadingSpinner = false
           this.eventSubmitted = false
-          this.showSubmitError = true;
-          (function (context) {
-            let message = error
-            if (error && error.message) message = error.message
-            if (error && error.config && error.config.url) {
-              message = `${error.config.method ? error.config.method : ''} ${error.config.url} ` + (error.message ? message : '')
-            }
-            context.$store.commit('ui/SHOW_NOTIFICATIONS', {
-              open: true, message: message
-            })
-          })(this)
+          this.showSubmitError = true
         })
       },
       selectVenue: function (venue) {
