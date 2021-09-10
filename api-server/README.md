@@ -78,9 +78,3 @@ run: `./deploy.sh <environment>`
 ## License
 
 MIT
-
-
-TODO:
-STRIP SECRETES
-REARRANGE DIRECTORIES
-CHANGE ENV condition to just HOST REMOVE console log

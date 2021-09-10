@@ -57,7 +57,7 @@ jobs:
         if: ${{ always() }}
         run: |
           docker ps
-      - name: Create Venues
+      - name: Seed venues
         run: |
           npm run db:seed:venues
         working-directory: './api-server'
@@ -68,11 +68,6 @@ jobs:
           DB_USER_NAME: infinite
           DB_PASSWORD: xxx
           DB_PORT: 5432
-      # - name: Create a venue # needed for the event submission test
-      #   run: |
-      #     curl -X POST -H "Content-Type: application/json" \
-      #       -d '{"name": "The Venue", "address": "123 Street, Venueville, 01010", "g_map_link":null}' \
-      #       http://localhost:3003/v1/venues
       - name: Run Cypress
         run: |
           echo "{\"admin_auth_username\":\"$ENV_US\",\"admin_auth_password\":\"$ENV_PW\"}" > cypress.env.json
@@ -83,8 +78,6 @@ jobs:
           ENV_PW: ${{ secrets.CYPRESS_AUTH_PASSWORD }}
       - name: Save Cypress artifacts
         uses: actions/upload-artifact@v2
-        # TODO: discuss whether we want to always save these
-        # or only save them on a failure
         if: ${{ failure() }}
         with:
           name: cypress-artifacts
