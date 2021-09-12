@@ -24,5 +24,14 @@ export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
   end_time: Date;
 
   @Column
-  title: string;
+  optional_title: string;
+}
+
+export interface DateTimeVenueFields  {
+  id?: string
+  event_id?: string
+  venue_id?: string
+  start_time?: Date
+  end_time?: Date
+  optional_title?: string
 }

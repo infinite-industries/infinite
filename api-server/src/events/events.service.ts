@@ -58,8 +58,6 @@ export class EventsService {
 
             const event = await this.eventModel.create(eventWithServerSideGeneratedAttributes, transactionHost)
 
-            console.log('!!! event: ' + event.id);
-
             await this.createDatetimeVenueEntries(
                 event.id,
                 event.venue_id,
