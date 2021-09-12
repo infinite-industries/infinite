@@ -13,8 +13,8 @@ module.exports = {
         start_time TIMESTAMP WITH TIME ZONE NOT NULL,
         end_time TIMESTAMP WITH TIME ZONE NOT NULL,
         optional_title VARCHAR(255),
-        createdAt TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-        updatedAt TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+        "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
       );
 
       INSERT INTO datetime_venue (id, event_id, venue_id, start_time, end_time, optional_title)

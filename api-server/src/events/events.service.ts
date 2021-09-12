@@ -55,9 +55,6 @@ export class EventsService {
 
         const event = await this.eventModel.create(eventWithServerSideGeneratedAttributes)
 
-        console.log(`!!! event id: ${event.id}`)
-        console.log(`!!! venue id: ${event.venue_id}`)
-        console.log(eventWithServerSideGeneratedAttributes.date_times)
         this.createDatetimeVenueEntries(event.id, event.venue_id, eventWithServerSideGeneratedAttributes.date_times);
 
         return event;
@@ -67,14 +64,16 @@ export class EventsService {
         if (isNullOrUndefined(dateTimes))
             return;
 
-        dateTimes.forEach(({ start_time, end_time, title}) => {
+        dateTimes.forEach(({ start_time, end_time, optional_title}) => {
             const id = uuidv4()
+
             this.dateTimeVenueModel.create({
                 id,
                 event_id: eventId,
                 venue_id: venueId,
                 start_time,
-                end_time, title })
+                end_time,
+                optional_title })
         })
     }
 
