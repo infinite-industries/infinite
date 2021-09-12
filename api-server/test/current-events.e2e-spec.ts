@@ -34,7 +34,7 @@ let testingModule: TestingModule;
 
 let dbHostPort: number;
 
-fdescribe('CurrentEvents (e2e)', () => {
+describe('CurrentEvents (e2e)', () => {
     beforeAll(async (done) => {
         console.info('preparing for test suite');
 
@@ -238,7 +238,7 @@ fdescribe('CurrentEvents (e2e)', () => {
             });
     });
 
-    fit('returns events with all expected field values', async () => {
+    it('returns events with all expected field values', async () => {
         const futureTime = getDateTimePair(getTimePlusX(today, 1));
         const venue = await createVenue(generateVenue(venueModel));
 
@@ -259,7 +259,6 @@ fdescribe('CurrentEvents (e2e)', () => {
                 expect(event.title).toEqual(dbEvent.title);
                 expect(event.slug).toEqual(dbEvent.slug);
                 expect(event.multi_day).toEqual(dbEvent.multi_day);
-                expect(event.date_times).toEqual(dbEvent.date_times);
                 expect(event.image).toEqual(dbEvent.image);
                 expect(event.social_image).toEqual(dbEvent.social_image);
                 expect(event.admission_fee).toEqual(dbEvent.admission_fee);
@@ -278,6 +277,11 @@ fdescribe('CurrentEvents (e2e)', () => {
 
                 // except this one should be empty for non-admins
                 expect(event.organizer_contact).toBeUndefined();
+
+                // check datetimes
+               expect(event.date_times.length).toEqual(1)
+               expect(new Date(event.date_times[0].start_time)).toEqual(futureTime.start_time)
+               expect(new Date(event.date_times[0].end_time)).toEqual(futureTime.end_time)
             });
     });
 
@@ -297,20 +301,6 @@ fdescribe('CurrentEvents (e2e)', () => {
             start_time: startTimeCopy,
             end_time: endTime
         };
-    }
-
-    // TODO (This should no longer be needed once we remove date times from event table)
-    function getDateTimesInFutureAsIsoString() {
-        const startTime = new Date(today);
-        startTime.setDate(today.getDate() + 1);
-
-        const endTime = new Date(startTime);
-        endTime.setHours(startTime.getHours() + 1);
-
-        return [{
-            start_time: startTime.toISOString(),
-            end_time: endTime.toISOString()
-        }];
     }
 
     function getDateTimesInFuture() {
