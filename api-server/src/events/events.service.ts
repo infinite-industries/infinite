@@ -1,6 +1,6 @@
 import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
-import {FindOptions, UpdateOptions} from "sequelize";
+import { FindOptions, Sequelize, Transaction, UpdateOptions } from 'sequelize';
 import {Event} from "./models/event.model";
 import DbUpdateResponse, {toDbUpdateResponse} from "../shared-types/db-update-response";
 import DbDeleteResponse, {toDbDeleteResponse} from "../shared-types/db-delete-response";
@@ -9,7 +9,6 @@ import {CreateEventRequest} from "./dto/create-event-request";
 import {UpdateEventRequest} from "./dto/update-event-request";
 import BitlyService from "./bitly.service";
 import getSlug from "../utils/get-slug";
-import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { DatetimeVenueModel } from './models/datetime-venue.model';
 import { isNullOrUndefined } from '../utils';
@@ -22,8 +21,9 @@ export class EventsService {
     constructor(
         @InjectModel(Event) private eventModel: typeof Event,
         @InjectModel(DatetimeVenueModel) private dateTimeVenueModel: typeof DatetimeVenueModel,
+        @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService,
         private readonly bitlyService: BitlyService,
-        @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService
+        private sequelize: Sequelize
     ) {}
 
     findById(id: string, findOptions?: FindOptions): Promise<Event> {
@@ -51,30 +51,45 @@ export class EventsService {
     }
 
     async create(newEvent: CreateEventRequest): Promise<Event> {
-        const eventWithServerSideGeneratedAttributes = await this.fillInServerSideGeneratedAttributes(newEvent)
+        return this.sequelize.transaction(async (transaction) => {
+            const transactionHost = { transaction };
 
-        const event = await this.eventModel.create(eventWithServerSideGeneratedAttributes)
+            const eventWithServerSideGeneratedAttributes = await this.fillInServerSideGeneratedAttributes(newEvent)
 
-        this.createDatetimeVenueEntries(event.id, event.venue_id, eventWithServerSideGeneratedAttributes.date_times);
+            const event = await this.eventModel.create(eventWithServerSideGeneratedAttributes, transactionHost)
 
-        return event;
+            console.log('!!! event: ' + event.id);
+
+            await this.createDatetimeVenueEntries(
+                event.id,
+                event.venue_id,
+                eventWithServerSideGeneratedAttributes.date_times,
+                transactionHost);
+
+            return event;
+        });
     }
 
-    private createDatetimeVenueEntries(eventId: string, venueId: string, dateTimes: StartEndTimePairs []) {
+    private async createDatetimeVenueEntries(
+        eventId: string, venueId: string, dateTimes: StartEndTimePairs [], transactionHost: { transaction: Transaction }
+    ) {
         if (isNullOrUndefined(dateTimes))
             return;
 
-        dateTimes.forEach(({ start_time, end_time, optional_title}) => {
+        const requests = dateTimes.map(( async ({ start_time, end_time, optional_title}) => {
             const id = uuidv4()
 
-            this.dateTimeVenueModel.create({
+            return this.dateTimeVenueModel.create({
                 id,
                 event_id: eventId,
                 venue_id: venueId,
                 start_time,
                 end_time,
-                optional_title })
-        })
+                optional_title
+            }, transactionHost)
+        }))
+
+        return Promise.all(requests)
     }
 
     async delete(id: string): Promise<DbDeleteResponse> {
