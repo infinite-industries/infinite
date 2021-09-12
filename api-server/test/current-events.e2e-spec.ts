@@ -231,14 +231,14 @@ fdescribe('CurrentEvents (e2e)', () => {
                 const remainingTimes = event.date_times;
 
                 expect(remainingTimes.length).toEqual(2);
-                expect(remainingTimes[0].start_time).toEqual(firstDayTime.start_time);
-                expect(remainingTimes[1].start_time).toEqual(secondDayTime.start_time);
-                expect(event.first_day_start_time).toEqual(firstDayTime.start_time);
-                expect(event.last_day_end_time).toEqual(secondDayTime.end_time);
+                expect(new Date(remainingTimes[0].start_time)).toEqual(firstDayTime.start_time);
+                expect(new Date(remainingTimes[1].start_time)).toEqual(secondDayTime.start_time);
+                expect(new Date(event.first_day_start_time)).toEqual(firstDayTime.start_time);
+                expect(new Date(event.last_day_end_time)).toEqual(secondDayTime.end_time);
             });
     });
 
-    it('returns events with all expected field values', async () => {
+    fit('returns events with all expected field values', async () => {
         const futureTime = getDateTimePair(getTimePlusX(today, 1));
         const venue = await createVenue(generateVenue(venueModel));
 
