@@ -5,11 +5,11 @@ module.exports = {
     return queryInterface.sequelize.query(`
       CREATE TABLE if NOT EXISTS datetime_venue(
          id UUID NOT NULL
-           CONSTRAINT datetime_venue_pkey primary key,
+          CONSTRAINT datetime_venue_pkey primary key,
          event_id UUID NOT NULL
-         CONSTRAINT datetime_venue_event_id REFERENCES events,
+          CONSTRAINT datetime_venue_event_id REFERENCES events,
          venue_id UUID
-         CONSTRAINT datetime_venue_venue_id REFERENCES venues,
+          CONSTRAINT datetime_venue_venue_id REFERENCES venues,
          start_time timestamp with time zone NOT NULL,
          end_time timestamp with time zone NOT NULL,
          optional_title VARCHAR(255)
@@ -152,7 +152,7 @@ module.exports = {
 
       DROP VIEW current_date_times_jsonb;
       
-      DROP VIEW datetime_venue;
+      DROP TABLE datetime_venue;
       `)
   }
 };
