@@ -4,15 +4,17 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.sequelize.query(`
       CREATE TABLE if NOT EXISTS datetime_venue(
-         id UUID NOT NULL
+        id UUID NOT NULL
           CONSTRAINT datetime_venue_pkey primary key,
-         event_id UUID NOT NULL
+        event_id UUID NOT NULL
           CONSTRAINT datetime_venue_event_id REFERENCES events,
-         venue_id UUID
+        venue_id UUID
           CONSTRAINT datetime_venue_venue_id REFERENCES venues,
-         start_time timestamp with time zone NOT NULL,
-         end_time timestamp with time zone NOT NULL,
-         optional_title VARCHAR(255)
+        start_time TIMESTAMP WITH TIME ZONE NOT NULL,
+        end_time TIMESTAMP WITH TIME ZONE NOT NULL,
+        optional_title VARCHAR(255),
+        createdAt TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        updatedAt TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
       );
 
       INSERT INTO datetime_venue (id, event_id, venue_id, start_time, end_time, optional_title)
