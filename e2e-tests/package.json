@@ -14,7 +14,7 @@
     "lint": "eslint --ignore-path .gitignore ."
   },
   "dependencies": {
-    "cypress": "^3.6.1"
+    "cypress": "^7.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

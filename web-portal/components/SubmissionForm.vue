@@ -278,14 +278,14 @@
       </v-dialog>
 
       <!-- Submission error -->
-      <div class="collapsible-content" ref="submitError" :class="{ 'expanded': showSubmitError }">
+      <div class="collapsible-content submission-error" ref="submitError" :class="{ 'expanded': showSubmitError }">
         <h3 style="text-align: center">
           Hmmm... something went wrong :( Can you ping the management at <a href="mailto:info@infinite.industries">info@infinite.industries</a>?
         </h3>
       </div>
 
       <!-- Promo tools -->
-      <div class="collapsible-content" ref="promoTools" :class="{'expanded': showPromoTools}" style="margin-top: 10px">
+      <div class="collapsible-content submission-success" ref="promoTools" :class="{'expanded': showPromoTools}" style="margin-top: 10px">
 
         <h3 style="text-align: center">Thank you! Your event should be out of review and on our site within 24 hours.</h3>
 
