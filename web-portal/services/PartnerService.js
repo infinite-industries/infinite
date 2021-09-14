@@ -3,6 +3,11 @@ const PARTNERS = {
     name: 'WRFL',
     logo: '/images/partners/wrfl.svg',
     id: 'wrfl'
+  },
+  tadoo: {
+    name: 'Tadoo',
+    logo: '/images/partners/tadoo.svg',
+    id: 'tadoo'
   }
 }
 
