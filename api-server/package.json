@@ -12,8 +12,8 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start": "sequelize-cli db:migrate && nest start",
+    "start:dev": "sequelize-cli db:migrate && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -24,7 +24,9 @@
     "test:e2e": "node ./test/clearLogFile.js && nest build && jest --config ./test/jest-e2e.json --runInBand",
     "db:migrate": "sequelize-cli db:migrate",
     "db:migrate:down-one": "sequelize-cli db:migrate:undo",
-    "db:migrate:generate": "sequelize-cli migration:generate"
+    "db:migrate:generate": "sequelize-cli migration:generate",
+    "db:seed": "sequelize db:seed:all",
+    "db:seed:venues": "sequelize db:seed --seed 20190929142748-venues.js"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.13",

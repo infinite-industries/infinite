@@ -16,3 +16,5 @@ prep.txt
 data
 api-server/test.dump
 
+.env
+.env.test

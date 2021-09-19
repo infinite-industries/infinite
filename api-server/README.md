@@ -12,7 +12,7 @@ Backend API powering [Infinite Industries](https://infinite.industries).
 
 You will need the following tools:
 
-- [Node.js](https://nodejs.org/en/): 8.9.4 or higher
+- [Node.js -- Install with NVM](https://github.com/nvm-sh/nvm): 12.x.x or higher
 - [npm](https://www.npmjs.com/get-npm): 5.6.0 or higher
 - [Postgres](https://www.postgresql.org/): 9.4.0 or higher
 - [docker](https://www.docker.com)

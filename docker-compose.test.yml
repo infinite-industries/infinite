@@ -1,0 +1,59 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:9.6.2-alpine'
+    environment:
+      - POSTGRES_DB=infinite-api
+      - POSTGRES_USER=infinite
+      - POSTGRES_PASSWORD=xxx
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+
+  api-server:
+    build:
+      context: "./"
+      dockerfile: ./containers/api-server.test.Dockerfile
+    links:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_NAME: infinite-api
+      DB_USER_NAME: infinite
+      DB_PASSWORD: xxx
+      DB_PORT: 5432
+      PORT: 3003
+      BITLY_TOKEN: "${BITLY_TOKEN}"
+      SLACK_WEBHOOK_TEST: "${SLACK_WEBHOOK_TEST}"
+      SLACK_WEBHOOK_CONTACT: "${SLACK_WEBHOOK_CONTACT}"
+      SLACK_WEBHOOK_EVENT_SUBMISSION: "${SLACK_WEBHOOK_EVENT_SUBMISSION}"
+      SLACK_WEBHOOK_VENUE_SUBMISSION: "${SLACK_WEBHOOK_VENUE_SUBMISSION}"
+      INFINITE_PEM_FILE_CONTENTS: "${INFINITE_PEM_FILE_CONTENTS}"
+    expose:
+      - "3003"
+    ports:
+     - "3003:3003"
+
+  web-portal:
+    build:
+      context: "./"
+      dockerfile: ./containers/web-portal.test.Dockerfile
+    links:
+      - api-server
+    environment:
+      ENV: test
+      HOST: 0.0.0.0
+      API_URL: http://localhost:3003/v1
+      APP_URL: http://localhost:7779
+      AUTH0_CLIENT_ID: PYKhof4U0jKE3v4h8xKSgihHz9atBE5O
+      AUTH0_CLIENT_DOMAIN: 1nfinite.auth0.com
+      AUTH0_AUDIENCE: https://1nfinite.auth0.com/api/v2/
+      AWS_REGION: us-east-1
+      AWS_SERVER_URL: https://s3.us-east-2.amazonaws.com/
+      AWS_S3_UPLOADS_BUCKET: test-downloader
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      SLACK_WEBHOOK_CONTACT: "${SLACK_WEBHOOK_CONTACT}"
+    ports:
+    - "7779:7779"

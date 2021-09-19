@@ -35,7 +35,7 @@ export default class BitlyService {
     }
 
     isBitlyTokenSet(): boolean {
-        return isNotNullOrUndefined(BITLY_TOKEN)
+        return isNotNullOrUndefined(BITLY_TOKEN) && (typeof BITLY_TOKEN === 'string' && BITLY_TOKEN.trim() !== '')
     }
 
     private buildHeader(): { Authorization: string, 'Content-Type': string } {
