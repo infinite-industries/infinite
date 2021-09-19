@@ -60,7 +60,7 @@ context('Event Submission', () => {
 
     // submit event and wait for promo tools section to expand on success
     cy.get('.submit-container button').click()
-    cy.get('.collapsible-content.expanded')
+    cy.get('.collapsible-content.submission-success.expanded')
   })
 
   it('Submitted events not displayed immediately after submission', function () {

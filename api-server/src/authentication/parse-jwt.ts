@@ -1,10 +1,10 @@
 import * as fs from "fs";
 import jwt = require('jsonwebtoken');
 import {Request} from "express";
-import exp from "constants";
+import * as path from 'path';
 
 const PATH_TO_PEM = process.env.JWT_PEM || './keys/1nfinite.pem';
-const SECRET = fs.readFileSync(PATH_TO_PEM);
+const SECRET = fs.readFileSync(path.resolve(PATH_TO_PEM));
 
 export interface UserInformation {
     token: string,
