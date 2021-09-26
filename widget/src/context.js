@@ -24,6 +24,17 @@ const DEFAULT_TITLE = ''
 
 const DEFAULT_PAGE_SIZE = '4'
 
+const DYNAMIC_PAGE_SIZE = '*'
+
+function computeDynamicPageSize(element) {
+    const width = element.clientWidth
+    const height = window.innerHeight
+    const col_count = Math.floor(width / 290)
+    const row_count = height >= 400 ? Math.floor(height / 400) : 1
+    console.log(width, height, '->', col_count, row_count)
+    return col_count * row_count
+}
+
 /**
  * Provides instance-level configuration information based on defaults and
  * attributes on the container element
@@ -56,7 +67,9 @@ export default class Context {
 
     getPageSize() {
         const attr = this.element.getAttribute('data-cards-per-page')
-        return attr ? attr : DEFAULT_PAGE_SIZE
+        if (attr === DYNAMIC_PAGE_SIZE) {
+            return computeDynamicPageSize(this.element)
+        } else return attr ? attr : DEFAULT_PAGE_SIZE
     }
 
     getEventId() {
