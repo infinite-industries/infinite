@@ -13,6 +13,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { DatetimeVenueModel } from './models/datetime-venue.model';
 import { isNullOrUndefined } from '../utils';
 import { StartEndTimePairs } from '../shared-types/start-end-time-pairs';
+import { VenueModel } from '../venues/models/venue.model';
 
 const INFINITE_WEB_PORTAL_BASE_URL = process.env.APP_URL || 'https://infinite.industries'
 
@@ -26,14 +27,24 @@ export class EventsService {
         private sequelize: Sequelize
     ) {}
 
-    findById(id: string, findOptions?: FindOptions): Promise<Event> {
-        let options = { where: { id }}
+    async findById(id: string, findOptions?: FindOptions): Promise<Event> {
+        let options = { where: { id }, include: [DatetimeVenueModel, VenueModel]}
 
         if (findOptions) {
            options = { ...findOptions, ...options }
         }
 
+        const dateTimeVenues = await this.dateTimeVenueModel.findOne({ where: { event_id: id }, include: [Event] })
+
+        console.log('!!! dateTimeVenues: ' + JSON.stringify(dateTimeVenues, null, 4));
+        console.log('!!! options: ' + JSON.stringify(options, null, 4));
         return this.eventModel.findOne(options)
+            .then(result => {
+                console.log('!!! grr: ')
+                console.log(result.dateTimes)
+                console.log('!!! event: ' + JSON.stringify(result, null, 4))
+                return result;
+            })
     }
 
     findAll(findOptions?: FindOptions): Promise<Event []> {

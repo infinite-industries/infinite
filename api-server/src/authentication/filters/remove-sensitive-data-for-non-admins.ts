@@ -28,8 +28,10 @@ function removeSensitiveDataList(currentEvents: GenericEventList): GenericEventL
     if (currentEvents.length === 0) {
         return []
     } else if (currentEvents[0] instanceof CurrentEvent) {
+        // @ts-ignore
         return (currentEvents as CurrentEvent[]).map(removeSensitiveDataForSingleEvent);
     } else {
+        // @ts-ignore
         return (currentEvents as Event[]).map(removeSensitiveDataForSingleEvent);
     }
 }

@@ -1,7 +1,19 @@
-import {BelongsTo, Column, DataType, ForeignKey, HasOne, IsUUID, Model, PrimaryKey, Table} from "sequelize-typescript";
+import {
+    BelongsTo,
+    Column,
+    DataType,
+    ForeignKey,
+    HasMany,
+    HasOne,
+    IsUUID,
+    Model,
+    PrimaryKey,
+    Table
+} from 'sequelize-typescript';
 import {VenueModel} from "../../venues/models/venue.model";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 import {ApiProperty} from "@nestjs/swagger";
+import { DatetimeVenueModel } from '../../events/models/datetime-venue.model';
 
 const EXAMPLE_DATE = new Date();
 const EXAMPLE_START_DATE = new Date(new Date().setDate(new Date().getHours() + 1));
@@ -124,4 +136,7 @@ export class CurrentEvent extends Model<CurrentEvent> {
 
     @BelongsTo(() => VenueModel)
     venue: VenueModel;
+
+    // @HasMany(() => DatetimeVenueModel)
+    // dateTimes: DatetimeVenueModel
 }
