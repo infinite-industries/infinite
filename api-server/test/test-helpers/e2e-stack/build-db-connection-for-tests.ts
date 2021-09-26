@@ -12,6 +12,7 @@ import {AnnouncementsService} from "../../../src/announcements/announcements.ser
 import BitlyService from "../../../dist/events/bitly.service";
 import {WinstonModule} from "nest-winston";
 import {format, transports} from "winston";
+import { DatetimeVenueModel } from '../../../src/events/models/datetime-venue.model';
 
 const NUXT_INTERNAL_POSTFIX = 'Repository'
 
@@ -27,9 +28,9 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
                 username: DB_USERNAME,
                 password: DB_PASSWORD,
                 database: DB_NAME,
-                models: [CurrentEvent, VenueModel, Event, AnnouncementModel]
+                models: [CurrentEvent, VenueModel, Event, AnnouncementModel, DatetimeVenueModel]
             }),
-            SequelizeModule.forFeature([Event, VenueModel, CurrentEvent, AnnouncementModel]),
+            SequelizeModule.forFeature([Event, VenueModel, CurrentEvent, AnnouncementModel, DatetimeVenueModel]),
             WinstonModule.forRoot({
                 transports: [
                     // TODO: should we factor this out into a secondary file?
@@ -58,10 +59,12 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
     const eventModel = testingModule.get(`Event${NUXT_INTERNAL_POSTFIX}`) as typeof Event;
     const venueModel = testingModule.get(`VenueModel${NUXT_INTERNAL_POSTFIX}`) as typeof VenueModel;
     const announcementModel = testingModule.get(`AnnouncementModel${NUXT_INTERNAL_POSTFIX}`) as typeof AnnouncementModel;
+    const datetimeVenueModel = testingModule.get(`DatetimeVenueModel${NUXT_INTERNAL_POSTFIX}`) as typeof DatetimeVenueModel;
 
     return {
         eventModel,
         venueModel,
+        datetimeVenueModel,
         announcementModel,
         testingModule
     };
@@ -72,6 +75,7 @@ export default buildDbConnectionsForTests;
 export type DatabaseModels = {
     eventModel: typeof Event,
     venueModel: typeof VenueModel,
+    datetimeVenueModel: typeof DatetimeVenueModel,
     announcementModel: typeof AnnouncementModel,
     testingModule: TestingModule
 }

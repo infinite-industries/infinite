@@ -9,7 +9,7 @@ function generateEvent(
     EventModel: typeof Event,
     venue_id: string,
     verified: boolean,
-    date_times: StartEndTimePairs[]
+    date_times: StartEndTimePairs[] = []
 ): Event {
   return new EventModel({
     id: uuidv4(),

@@ -1,6 +1,5 @@
 import { TestingModule } from "@nestjs/testing";
 import isNotNullOrUndefined from "../src/utils/is-not-null-or-undefined";
-// @ts-ignore
 import {StartedTestContainer } from "testcontainers";
 import {VenueModel} from "../src/venues/models/venue.model"
 import * as request from "supertest";
@@ -15,6 +14,8 @@ import buildDbConnectionsForTests from "./test-helpers/e2e-stack/build-db-connec
 import killApp from "./test-helpers/e2e-stack/kill-app";
 import stopDatabase from "./test-helpers/e2e-stack/stop-database";
 import startDatabase from "./test-helpers/e2e-stack/start-database";
+import { generateDatetimeVenueFaker } from './fakers/generateDatetimeVenue.faker';
+import { DatetimeVenueModel } from '../src/events/models/datetime-venue.model';
 
 
 const today = new Date(Date.now());
@@ -28,6 +29,7 @@ let dbContainer: StartedTestContainer;
 
 let eventModel: typeof Event;
 let venueModel: typeof VenueModel;
+let datetimeVenueModel: typeof DatetimeVenueModel;
 let testingModule: TestingModule;
 
 let dbHostPort: number;
@@ -49,6 +51,8 @@ describe('CurrentEvents (e2e)', () => {
 
         eventModel = databaseModels.eventModel;
         venueModel = databaseModels.venueModel;
+        datetimeVenueModel = databaseModels.datetimeVenueModel;
+
         testingModule = databaseModels.testingModule;
 
         console.log('test suite ready');
@@ -76,6 +80,9 @@ describe('CurrentEvents (e2e)', () => {
     beforeEach(async (done) => {
         console.info('preparing for test');
 
+        if (datetimeVenueModel)
+          await deleteAllDatetimeVenues();
+
         if (eventModel)
             await deleteAllEvents();
 
@@ -102,9 +109,10 @@ describe('CurrentEvents (e2e)', () => {
         const venue = await createVenue(generateVenue(VenueModel));
 
         const eventVerified = await createEvent(
-            generateEvent(Event, venue.id, true, dateTimesForEventInFuture1));
+            generateEvent(Event, venue.id, true), dateTimesForEventInFuture1);
+
         await createEvent(
-            generateEvent(Event, venue.id, false, dateTimesForEventInFuture2));
+            generateEvent(Event, venue.id, false), dateTimesForEventInFuture2);
 
         return server
             .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
@@ -130,11 +138,12 @@ describe('CurrentEvents (e2e)', () => {
         const venue = await createVenue(generateVenue(VenueModel));
 
         const eventInFuture = await createEvent(
-            generateEvent(Event, venue.id, true, dateTimesForEventInFuture));
-        const eventInRecentPast = await createEvent(generateEvent(Event, venue.id, true, dateTimesForEvenInPast));
+            generateEvent(Event, venue.id, true), dateTimesForEventInFuture);
+
+        const eventInRecentPast = await createEvent(generateEvent(Event, venue.id, true), dateTimesForEvenInPast);
 
         // event in distant past
-        await createEvent(generateEvent(Event, venue.id, true, dateTimesForEventTooFarInPast));
+        await createEvent(generateEvent(Event, venue.id, true), dateTimesForEventTooFarInPast);
 
         const expectedEventIdsReturned = [eventInRecentPast.id, eventInFuture.id];
 
@@ -172,12 +181,12 @@ describe('CurrentEvents (e2e)', () => {
         const venue = await createVenue(generateVenue(venueModel));
 
         const multiDayEvent = await createEvent(
-            generateEvent(eventModel, venue.id, true, multiDayDateTimes));
+            generateEvent(eventModel, venue.id, true), multiDayDateTimes);
         const singleDayEvent1 = await createEvent(
-            generateEvent(eventModel, venue.id, true, singleDayEventTimes1)
+            generateEvent(eventModel, venue.id, true), singleDayEventTimes1
         );
         const singleDayEvent2 = await createEvent(
-            generateEvent(eventModel, venue.id, true, singleDayEventTimes2)
+            generateEvent(eventModel, venue.id, true), singleDayEventTimes2
         );
 
         return server.get(`/${CURRENT_VERSION_URI}/current-events/verified`)
@@ -210,7 +219,7 @@ describe('CurrentEvents (e2e)', () => {
         const venue = await createVenue(generateVenue(venueModel));
 
         await createEvent(
-            generateEvent(eventModel, venue.id, true, multiDayDateTimes));
+            generateEvent(eventModel, venue.id, true), multiDayDateTimes);
 
         return server.get(`/${CURRENT_VERSION_URI}/current-events/verified`)
             .expect(200)
@@ -222,10 +231,10 @@ describe('CurrentEvents (e2e)', () => {
                 const remainingTimes = event.date_times;
 
                 expect(remainingTimes.length).toEqual(2);
-                expect(remainingTimes[0].start_time).toEqual(firstDayTime.start_time);
-                expect(remainingTimes[1].start_time).toEqual(secondDayTime.start_time);
-                expect(event.first_day_start_time).toEqual(firstDayTime.start_time);
-                expect(event.last_day_end_time).toEqual(secondDayTime.end_time);
+                expect(new Date(remainingTimes[0].start_time)).toEqual(firstDayTime.start_time);
+                expect(new Date(remainingTimes[1].start_time)).toEqual(secondDayTime.start_time);
+                expect(new Date(event.first_day_start_time)).toEqual(firstDayTime.start_time);
+                expect(new Date(event.last_day_end_time)).toEqual(secondDayTime.end_time);
             });
     });
 
@@ -234,7 +243,7 @@ describe('CurrentEvents (e2e)', () => {
         const venue = await createVenue(generateVenue(venueModel));
 
         const dbEvent = await createEvent(
-            generateEvent(eventModel, venue.id, true, [futureTime]));
+            generateEvent(eventModel, venue.id, true), [futureTime]);
 
         return server.get(`/${CURRENT_VERSION_URI}/current-events/verified`)
             .expect(200)
@@ -250,7 +259,6 @@ describe('CurrentEvents (e2e)', () => {
                 expect(event.title).toEqual(dbEvent.title);
                 expect(event.slug).toEqual(dbEvent.slug);
                 expect(event.multi_day).toEqual(dbEvent.multi_day);
-                expect(event.date_times).toEqual(dbEvent.date_times);
                 expect(event.image).toEqual(dbEvent.image);
                 expect(event.social_image).toEqual(dbEvent.social_image);
                 expect(event.admission_fee).toEqual(dbEvent.admission_fee);
@@ -269,6 +277,11 @@ describe('CurrentEvents (e2e)', () => {
 
                 // except this one should be empty for non-admins
                 expect(event.organizer_contact).toBeUndefined();
+
+                // check datetimes
+               expect(event.date_times.length).toEqual(1)
+               expect(new Date(event.date_times[0].start_time)).toEqual(futureTime.start_time)
+               expect(new Date(event.date_times[0].end_time)).toEqual(futureTime.end_time)
             });
     });
 
@@ -285,64 +298,68 @@ describe('CurrentEvents (e2e)', () => {
         endTime.setHours(endTime.getHours() + 1);
 
         return {
-            start_time: startTimeCopy.toISOString(),
-            end_time: endTime.toISOString()
+            start_time: startTimeCopy,
+            end_time: endTime
         };
     }
 
     function getDateTimesInFuture() {
-        const startTime = new Date(today);
-        startTime.setDate(today.getDate() + 1);
+      const start_time = new Date(today);
+      start_time.setDate(today.getDate() + 1);
 
-        const endTime = new Date(startTime);
-        endTime.setHours(startTime.getHours() + 1);
+      const end_time = new Date(start_time);
+      end_time.setHours(start_time.getHours() + 1);
 
-        return [{
-            start_time: startTime.toISOString(),
-            end_time: endTime.toISOString()
-        }];
+      return [{ start_time, end_time }];
     }
 
     function getDateTimesInPastBeyondWindow() {
-        const startTime = new Date(today);
-        startTime.setHours(startTime.getHours() - eventWindow - 1);
+        const start_time = new Date(today);
+        start_time.setHours(start_time.getHours() - eventWindow - 1);
 
-        const endTime = new Date(startTime);
-        endTime.setHours(startTime.getHours() + 1);
+        const end_time = new Date(start_time);
+        end_time.setHours(start_time.getHours() + 1);
 
         return [{
-            start_time: startTime.toISOString(),
-            end_time: endTime.toISOString()
+            start_time,
+            end_time
         }];
     }
 
     function getDateTimesInPastButInsideWindow() {
-        const startTime = new Date(today);
-        startTime.setHours(startTime.getHours() - eventWindow + 1);
+        const start_time = new Date(today);
+        start_time.setHours(start_time.getHours() - eventWindow + 1);
 
-        const endTime = new Date(startTime);
-        endTime.setHours(startTime.getHours() + 1);
+        const end_time = new Date(start_time);
+        end_time.setHours(start_time.getHours() + 1);
 
         return [{
-            start_time: startTime.toISOString(),
-            end_time: endTime.toISOString()
+            start_time,
+            end_time
         }];
     }
 
-    async function createEvent(event: Event) {
-        return event.save();
-    }
+    async function createEvent(event: Event, startEndTimes: { start_time: Date, end_time: Date } []) {
+        const eventCreated = await event.save();
 
-    async function deleteEvent(event: Event) {
-        return event.destroy();
+        const requests = startEndTimes.map(async (startEndTimePair) => {
+          const datetimeVenueEntry = generateDatetimeVenueFaker({
+            event_id: event.id,
+            venue_id: event.venue_id,
+            start_time: startEndTimePair.start_time,
+            end_time: startEndTimePair.end_time
+          });
+
+          return datetimeVenueEntry.save();
+        });
+
+        await Promise.all(requests);
+
+        return eventCreated;
     }
 
     async function createVenue(venue: VenueModel) {
         return venueModel.create(venue.get({plain: true}));
-    }
-
-    async function deleteVeneu(venue: VenueModel) {
-        return venueModel.destroy({where: {id: venue.id}});
     }
 
     async function deleteAllEvents() {
@@ -352,4 +369,8 @@ describe('CurrentEvents (e2e)', () => {
     async function deleteAllVenues() {
         venueModel.destroy({where: {}});
     }
+
+  async function deleteAllDatetimeVenues() {
+    datetimeVenueModel.destroy({where: {}});
+  }
 });
