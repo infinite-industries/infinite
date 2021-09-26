@@ -7,7 +7,7 @@ module.exports = {
         id UUID NOT NULL
           CONSTRAINT datetime_venue_pkey primary key,
         event_id UUID NOT NULL
-          CONSTRAINT datetime_venue_event_id REFERENCES events,
+          CONSTRAINT datetime_venue_event_id REFERENCES events ON DELETE CASCADE,
         venue_id UUID
           CONSTRAINT datetime_venue_venue_id REFERENCES venues,
         start_time TIMESTAMP WITH TIME ZONE NOT NULL,
