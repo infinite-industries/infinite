@@ -28,20 +28,26 @@ export class EventsService {
     ) {}
 
     async findById(id: string, findOptions?: FindOptions): Promise<Event> {
-        let options = { where: { id }, include: [DatetimeVenueModel, VenueModel]}
+        let options = {
+            where: { id },
+            include: [DatetimeVenueModel, VenueModel]
+        }
 
         if (findOptions) {
            options = { ...findOptions, ...options }
         }
 
-        const dateTimeVenues = await this.dateTimeVenueModel.findOne({ where: { event_id: id }, include: [Event] })
+        await this.dateTimeVenueModel
+            .findOne({ where: { event_id: id }, include: [Event, VenueModel] })
+            .then(result => {
 
-        console.log('!!! dateTimeVenues: ' + JSON.stringify(dateTimeVenues, null, 4));
-        console.log('!!! options: ' + JSON.stringify(options, null, 4));
+                console.log('!!! dateTimeVenues: ' + JSON.stringify(result, null, 4));
+
+                return result;
+            })
+
         return this.eventModel.findOne(options)
             .then(result => {
-                console.log('!!! grr: ')
-                console.log(result.dateTimes)
                 console.log('!!! event: ' + JSON.stringify(result, null, 4))
                 return result;
             })
