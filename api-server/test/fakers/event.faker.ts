@@ -18,8 +18,7 @@ function generateEvent(
     title: faker.company.companyName(),
     slug: faker.lorem.slug(),
     multi_day: false,
-    date_times,
-    dateTimes: date_times.map((dt: StartEndTimePairs) => ({
+    date_times: date_times.map((dt: StartEndTimePairs) => ({
       ...dt,
       start_time: new Date(dt.start_time),
       end_time: new Date(dt.end_time)

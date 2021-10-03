@@ -110,10 +110,6 @@ export class EventModel extends Model<EventModel> {
     @ApiProperty({example: 'radio-mc-radio-station'})
     reviewed_by_org: boolean;
 
-    @Column(DataType.JSONB)
-    @ApiProperty({example: [{start_time: EXAMPLE_START_DATE, end_time: EXAMPLE_END_DATE}]})
-    date_times: StartEndTimePairs[];
-
     @Column(DataType.ARRAY(DataType.STRING))
     @ApiProperty({example: ['remote']})
     tags: Array<string>;
@@ -126,7 +122,7 @@ export class EventModel extends Model<EventModel> {
     // venue: VenueModel;
 
     @HasMany(() => DatetimeVenueModel)
-    dateTimes: DatetimeVenueModel []
+    date_times: DatetimeVenueModel []
 
     @BelongsToMany(() => VenueModel, () => DatetimeVenueModel)
     venues: VenueModel[]

@@ -3,7 +3,7 @@ import EventDTO from "./eventDTO";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 
 export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
-    const date_times: StartEndTimePairs [] = eventModel.dateTimes.map((dt) => {
+    const date_times: StartEndTimePairs [] = eventModel.date_times.map((dt) => {
         return {
             start_time: dt.start_time.toISOString(),
             end_time: dt.end_time.toISOString(),
