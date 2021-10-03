@@ -4,7 +4,7 @@ import {StartedTestContainer } from "testcontainers";
 import {VenueModel} from "../src/venues/models/venue.model"
 import * as request from "supertest";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
-import {Event} from '../src/events/models/event.model';
+import {EventModel} from '../src/events/models/event.model';
 import generateEvent from "./fakers/event.faker";
 import generateVenue from "./fakers/venue.faker";
 import {ChildProcessWithoutNullStreams} from "child_process";
@@ -27,7 +27,7 @@ const server = request('http://localhost:' + APP_PORT);
 let appUnderTest: ChildProcessWithoutNullStreams;
 let dbContainer: StartedTestContainer;
 
-let eventModel: typeof Event;
+let eventModel: typeof EventModel;
 let venueModel: typeof VenueModel;
 let datetimeVenueModel: typeof DatetimeVenueModel;
 let testingModule: TestingModule;
@@ -109,10 +109,10 @@ describe('CurrentEvents (e2e)', () => {
         const venue = await createVenue(generateVenue(VenueModel));
 
         const eventVerified = await createEvent(
-            generateEvent(Event, venue.id, true), dateTimesForEventInFuture1);
+            generateEvent(EventModel, venue.id, true), dateTimesForEventInFuture1);
 
         await createEvent(
-            generateEvent(Event, venue.id, false), dateTimesForEventInFuture2);
+            generateEvent(EventModel, venue.id, false), dateTimesForEventInFuture2);
 
         return server
             .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
@@ -138,12 +138,12 @@ describe('CurrentEvents (e2e)', () => {
         const venue = await createVenue(generateVenue(VenueModel));
 
         const eventInFuture = await createEvent(
-            generateEvent(Event, venue.id, true), dateTimesForEventInFuture);
+            generateEvent(EventModel, venue.id, true), dateTimesForEventInFuture);
 
-        const eventInRecentPast = await createEvent(generateEvent(Event, venue.id, true), dateTimesForEvenInPast);
+        const eventInRecentPast = await createEvent(generateEvent(EventModel, venue.id, true), dateTimesForEvenInPast);
 
         // event in distant past
-        await createEvent(generateEvent(Event, venue.id, true), dateTimesForEventTooFarInPast);
+        await createEvent(generateEvent(EventModel, venue.id, true), dateTimesForEventTooFarInPast);
 
         const expectedEventIdsReturned = [eventInRecentPast.id, eventInFuture.id];
 
@@ -339,7 +339,7 @@ describe('CurrentEvents (e2e)', () => {
         }];
     }
 
-    async function createEvent(event: Event, startEndTimes: { start_time: Date, end_time: Date } []) {
+    async function createEvent(event: EventModel, startEndTimes: { start_time: Date, end_time: Date } []) {
         const eventCreated = await event.save();
 
         const requests = startEndTimes.map(async (startEndTimePair) => {

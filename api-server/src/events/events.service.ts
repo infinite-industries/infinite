@@ -1,7 +1,7 @@
 import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
 import { FindOptions, Sequelize, Transaction, UpdateOptions } from 'sequelize';
-import {Event} from "./models/event.model";
+import {EventModel} from "./models/event.model";
 import DbUpdateResponse, {toDbUpdateResponse} from "../shared-types/db-update-response";
 import DbDeleteResponse, {toDbDeleteResponse} from "../shared-types/db-delete-response";
 import {v4 as uuidv4} from 'uuid';
@@ -13,34 +13,42 @@ import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { DatetimeVenueModel } from './models/datetime-venue.model';
 import { isNullOrUndefined } from '../utils';
 import { StartEndTimePairs } from '../shared-types/start-end-time-pairs';
+import {VenueModel} from "../venues/models/venue.model";
 
 const INFINITE_WEB_PORTAL_BASE_URL = process.env.APP_URL || 'https://infinite.industries'
 
 @Injectable()
 export class EventsService {
     constructor(
-        @InjectModel(Event) private eventModel: typeof Event,
+        @InjectModel(EventModel) private eventModel: typeof EventModel,
         @InjectModel(DatetimeVenueModel) private dateTimeVenueModel: typeof DatetimeVenueModel,
         @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService,
         private readonly bitlyService: BitlyService,
         private sequelize: Sequelize
     ) {}
 
-    findById(id: string, findOptions?: FindOptions): Promise<Event> {
-        let options = { where: { id }}
+    async findById(id: string, findOptions?: FindOptions): Promise<EventModel> {
+        console.log('!!! find by id: ' + id)
+        let options = {
+            where: { id },
+            include: [DatetimeVenueModel, VenueModel] // TODO -- This should be determined by embed flags
+        }
 
         if (findOptions) {
            options = { ...findOptions, ...options }
         }
 
         return this.eventModel.findOne(options)
+            .then(result => {
+                return result;
+            })
     }
 
-    findAll(findOptions?: FindOptions): Promise<Event []> {
+    findAll(findOptions?: FindOptions): Promise<EventModel []> {
         return this.eventModel.findAll(findOptions)
     }
 
-    update(id: string, values: Partial<UpdateEventRequest>): Promise<DbUpdateResponse<Event>> {
+    update(id: string, values: Partial<UpdateEventRequest>): Promise<DbUpdateResponse<EventModel>> {
         const updateQueryOptions: UpdateOptions = {
             where: {id},
             returning: true
@@ -50,7 +58,7 @@ export class EventsService {
             .then(toDbUpdateResponse)
     }
 
-    async create(newEvent: CreateEventRequest): Promise<Event> {
+    async create(newEvent: CreateEventRequest): Promise<EventModel> {
         return this.sequelize.transaction(async (transaction) => {
             const transactionHost = { transaction };
 

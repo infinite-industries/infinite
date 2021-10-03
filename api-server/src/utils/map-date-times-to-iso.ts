@@ -1,4 +1,4 @@
-import {Event} from '../events/models/event.model'
+import {EventModel} from '../events/models/event.model'
 import {HttpException} from "@nestjs/common";
 import {CreateEventRequest} from "../events/dto/create-event-request";
 
