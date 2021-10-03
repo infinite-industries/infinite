@@ -29,7 +29,7 @@ const DYNAMIC_PAGE_SIZE = '*'
 function computeDynamicPageSize(element) {
     const width = element.clientWidth
     const height = window.innerHeight
-    const col_count = Math.floor(width / 290)
+    const col_count = Math.floor(width / 310)
     const row_count = height >= 400 ? Math.floor(height / 400) : 1
     console.log(width, height, '->', col_count, row_count)
     return col_count * row_count

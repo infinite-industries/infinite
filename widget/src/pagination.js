@@ -117,22 +117,29 @@ const RenderMobileControls = function(container, which_page, total_number_of_pag
 
 const UpdateCardsDisplayAndPageNumber = function(context, which_page, total_number_of_pages){
     const container = context.getContainer()
+
     const number_controls = document.createElement('div')
 
-    // previous button
-    number_controls.appendChild(RenderStep("previous", Math.max(which_page - 1, 0)))
+    // do not add any controls if there's only one page
+    // we still need the container element because there's other code expecting it
+    // (and if we ever need to adjust the page size with the window, we may need
+    //  to add controls at that time)
+    if (total_number_of_pages > 1) {
+        // previous button
+        number_controls.appendChild(RenderStep("previous", Math.max(which_page - 1, 0)))
 
-    // desktop or mobile controls, depending on container size
-    // note that this won't get resized automatically
-    if(container.clientWidth > 768){
-        RenderDesktopControls(number_controls, which_page, total_number_of_pages)
-    }
-    else{
-        RenderMobileControls(number_controls, which_page, total_number_of_pages)
-    }
+        // desktop or mobile controls, depending on container size
+        // note that this won't get resized automatically
+        if(container.clientWidth > 768){
+            RenderDesktopControls(number_controls, which_page, total_number_of_pages)
+        }
+        else{
+            RenderMobileControls(number_controls, which_page, total_number_of_pages)
+        }
 
-    // next button
-    number_controls.appendChild(RenderStep("next", Math.min(which_page + 1, total_number_of_pages - 1)))
+        // next button
+        number_controls.appendChild(RenderStep("next", Math.min(which_page + 1, total_number_of_pages - 1)))
+    }
 
     return number_controls
 }

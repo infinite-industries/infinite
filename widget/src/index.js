@@ -62,14 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     else {
                         loader.remove()
     
-                        // Some things:
-                        // 1. we've got to handle the case of cards_per_page = * here
-                        //    biggest implication is that we can't conditionally render
-                        //    the pagination component, unless we determine the page size
-                        //    first
-                        // 2. we may not even need a window.onresize handler if the page
-                        //    size is flexible enough that it adjusts cleanly as the page
-                        //    size changes
+                        // A thing:
+                        // we may not even need a window.onresize handler if the page
+                        // size is flexible enough that it adjusts cleanly as the page
+                        // size changes
 
                         const cards_viewer_container = document.createElement('div')
                         cards_viewer_container.setAttribute("id", "infinite-card-viewer-container")
@@ -77,13 +73,11 @@ document.addEventListener("DOMContentLoaded", () => {
     
                         let cards_viewer = RenderCardsViewer(context, cards_viewer_container, events, cards_per_page, which_page)
     
-                        if((events.length - cards_per_page)>=0){
-                            console.log(events.length, cards_per_page)
-                            Pagination(context, events, function (new_page_number) {
-                                cards_viewer.remove()
-                                cards_viewer = RenderCardsViewer(context, cards_viewer_container, events, cards_per_page, new_page_number)
-                            })
-                        }
+                        console.log(events.length, cards_per_page)
+                        Pagination(context, events, function (new_page_number) {
+                            cards_viewer.remove()
+                            cards_viewer = RenderCardsViewer(context, cards_viewer_container, events, cards_per_page, new_page_number)
+                        })
                     }
                 })
             }
