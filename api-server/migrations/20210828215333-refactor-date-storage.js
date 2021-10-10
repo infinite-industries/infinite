@@ -40,7 +40,7 @@ module.exports = {
             end_time::timestamptz,
             optional_title
             FROM datetime_venue
-            WHERE end_time >= (now() - '24:00:00'::interval)
+            WHERE end_time >= (now() - '2:00:00'::interval)
         ) times) agg
         GROUP BY event_id;
 
