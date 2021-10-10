@@ -26,8 +26,10 @@ module.exports = {
               end_time,
               optional_title
           FROM
-               events,
-               jsonb_to_recordset(events.date_times) AS dates(start_time timestamp, end_time timestamp, optional_title character varying(255));
+              events,
+              jsonb_to_recordset(events.date_times) AS dates(start_time timestamp, end_time timestamp, optional_title character varying(255))
+          ORDER BY
+              start_time;
 
       CREATE VIEW current_date_times_jsonb AS
       SELECT event_id, jsonb_agg(date_times ORDER BY date_times->'start_time') as date_times
