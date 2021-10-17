@@ -19,7 +19,7 @@ import { DatetimeVenueModel } from '../src/events/models/datetime-venue.model';
 
 
 const today = new Date(Date.now());
-const eventWindow = 24; // maximum hours in past events will remain visible for
+const eventWindow = 2; // maximum hours in past events will remain visible for
 
 const APP_PORT = process.env.PORT || 3003;
 const server = request('http://localhost:' + APP_PORT);
@@ -134,7 +134,7 @@ describe('CurrentEvents (e2e)', () => {
         const dateTimesForEventInFuture = getDateTimesInFuture();
         const dateTimesForEvenInPast = getDateTimesInPastButInsideWindow();
 
-        // create a venue tRo associate the events with
+        // create a venue to associate the events with
         const venue = await createVenue(generateVenue(VenueModel));
 
         const eventInFuture = await createEvent(
