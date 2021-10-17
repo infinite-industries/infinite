@@ -28,7 +28,6 @@ export class EventsService {
     ) {}
 
     async findById(id: string, findOptions?: FindOptions): Promise<EventModel> {
-        console.log('!!! find by id: ' + id)
         let options = {
             where: { id },
             include: [DatetimeVenueModel, VenueModel] // TODO -- This should be determined by embed flags

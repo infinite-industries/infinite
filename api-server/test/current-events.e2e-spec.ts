@@ -92,7 +92,6 @@ describe('CurrentEvents (e2e)', () => {
         done();
     });
 
-
     it('can query current-events', async () => {
         console.info('running first test: ' +
             `http://localhost:${APP_PORT}/${CURRENT_VERSION_URI}/current-events/verified`);
