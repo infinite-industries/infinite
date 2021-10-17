@@ -4,7 +4,7 @@
     <div class="infinite-card" :class="{ '-postponed': isPostponed, '-cancelled': isCancelled }">
       <div class="image-info-container">
         <div class="image-container">
-          <nuxt-link :to="{ name: 'events-id', params: { id: calendar_event.id } }">
+          <nuxt-link :to="eventLink">
             <div class="image-surface" :style="backGroundImage"></div>
           </nuxt-link>
         </div>
@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="btn-actions">
-        <nuxt-link class="card-btn more-info" :class="{ '-resource': isOnlineResource}" :to="{ name: 'events-id', params: { id: calendar_event.id } }">
+        <nuxt-link class="card-btn more-info" :class="{ '-resource': isOnlineResource}" :to="eventLink">
           More Info
         </nuxt-link>
         <span v-if="showTime" class="card-btn add-to-calendar" style="cursor: pointer" @click.stop="OpenCalendars()">
@@ -59,7 +59,15 @@
 
   export default {
     name: 'Card',
-    props: ['calendar_event'],
+    props: {
+      calendar_event: {
+        required: true
+      },
+      preview: {
+        type: Boolean,
+        default: false
+      }
+    },
     data: function () {
       return {
         showCalendars: false
@@ -80,6 +88,9 @@
       }
     },
     computed: {
+      eventLink: function () {
+        return !this.preview ? { name: 'events-id', params: { id: this.calendar_event.id } } : { name: 'index' }
+      },
       backGroundImage: function () {
         return 'background: url(\'' + this.calendar_event.image + '\') center center / cover no-repeat; cursor: pointer;'
       },
