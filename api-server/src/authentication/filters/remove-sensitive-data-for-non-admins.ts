@@ -1,11 +1,11 @@
 import {Request} from "express";
 import {CurrentEvent} from "../../current-events/models/current-event.model";
-import {Event} from '../../events/models/event.model'
 import isAdminUser from "../is-admin-user";
 import {VenueModel} from "../../venues/models/venue.model";
+import EventDTO from "../../events/dto/eventDTO";
 
-type GenericEvent = Event | CurrentEvent
-type GenericEventList = Event[] | CurrentEvent[]
+type GenericEvent = EventDTO | CurrentEvent
+type GenericEventList = EventDTO[] | CurrentEvent[]
 
 export async function removeSensitiveDataForNonAdmins(
     request: Request,
@@ -30,7 +30,7 @@ function removeSensitiveDataList(currentEvents: GenericEventList): GenericEventL
     } else if (currentEvents[0] instanceof CurrentEvent) {
         return (currentEvents as CurrentEvent[]).map(removeSensitiveDataForSingleEvent);
     } else {
-        return (currentEvents as Event[]).map(removeSensitiveDataForSingleEvent);
+        return (currentEvents as EventDTO[]).map(removeSensitiveDataForSingleEvent);
     }
 }
 
@@ -41,9 +41,6 @@ function removeSensitiveDataForSingleEvent(infiniteEvent: GenericEvent): Generic
 
         return strippedEvent
     } else {
-        const strippedEvent = Event.build(infiniteEvent.toJSON(), { include: [VenueModel] })
-        strippedEvent.setDataValue('organizer_contact', undefined)
-
-        return strippedEvent
+        return {...infiniteEvent, organizer_contact: undefined }
     }
 }
