@@ -1,6 +1,6 @@
-import { Column, ForeignKey, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, ForeignKey, HasMany, HasOne, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { VenueModel } from '../../venues/models/venue.model';
-import { Event } from './event.model';
+import { EventModel } from './event.model';
 
 @Table({tableName: 'datetime_venue'})
 export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
@@ -10,7 +10,7 @@ export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
   id: string;
 
   @Column
-  @ForeignKey(() => Event)
+  @ForeignKey(() => EventModel)
   event_id: string;
 
   @Column
@@ -25,6 +25,12 @@ export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
 
   @Column
   optional_title: string;
+
+  @BelongsTo(() => EventModel)
+  event: EventModel
+
+  @BelongsTo(() => VenueModel)
+  venue: VenueModel
 }
 
 export interface DateTimeVenueFields  {

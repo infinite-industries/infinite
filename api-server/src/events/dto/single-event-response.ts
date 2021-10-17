@@ -1,6 +1,6 @@
-import {Event} from '../models/event.model'
+import EventDTO from './eventDTO'
 
 export interface SingleEventResponse {
-    event: Event,
+    event: EventDTO,
     status: 'success' | 'failure'
 }
