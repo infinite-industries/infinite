@@ -29,6 +29,12 @@ export class VenuesService {
         })
     }
 
+    findWhereSoftDeleted(): Promise<VenueModel[]> {
+        return this.venueModel.findAll({
+            where: { is_soft_deleted: true }
+        })
+    }
+
     create(newVenue: CreateVenueRequest): Promise<VenueModel> {
         const id = uuidv4();
         const slug = getSlug(newVenue.name)
