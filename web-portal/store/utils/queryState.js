@@ -14,11 +14,13 @@ export function setQueryFetching(queryState) {
 export function setQueryStateSuccess(queryState, data) {
   console.log('!!! here: ' + data)
   queryState.isFetching = false
+  queryState.isSuccess = true
   queryState.error = null
   queryState.data = data
 }
 
 export function setQueryStateFail(queryState, error) {
   queryState.isFetching = false
+  queryState.isSuccess = false
   queryState.error = error
 }

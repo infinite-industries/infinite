@@ -39,15 +39,21 @@
       </button>
 
       <button v-if="venue.is_soft_deleted === true" class="admin-venue-edit-page__venue-card__button">Undelete Event</button>
+
+      <div class="admin-venue-edit-page__venue-card__footer-load-bar">
+        <VenueSpinner :is-shown="isDeleting">Processing Delete...</VenueSpinner>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import { DELETE_VENUE } from '../../../store/venues'
+  import VenueSpinner from './VenueSpinner'
 
   export default {
     name: 'VenueCard',
+    components: { VenueSpinner },
     props: ['venue'],
     methods: {
       onDeleteVenueClick: function () {
@@ -68,8 +74,8 @@
 <style>
   .admin-venue-edit-page__venue-card {
     border: black 1px solid;
-    margin: 1rem;
     padding: 1rem;
+    margin-bottom: 1rem;
   }
 
   .admin-venue-edit-page__venue-card__fields,
@@ -82,5 +88,10 @@
     background-color: #000;
     border-radius: 5px;
     padding: 7px 11px;
+    margin-right: 1rem;
+  }
+
+  .admin-venue-edit-page__venue-card__footer-load-bar {
+    display: inline-block;
   }
 </style>
