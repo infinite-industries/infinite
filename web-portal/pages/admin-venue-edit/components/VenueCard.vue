@@ -38,7 +38,14 @@
         Delete Event
       </button>
 
-      <button v-if="venue.is_soft_deleted === true" class="admin-venue-edit-page__venue-card__button">Undelete Event</button>
+      <button
+        v-if="venue.is_soft_deleted === true"
+        class="admin-venue-edit-page__venue-card__button"
+        @click="onUndoDeleteVenueClick()"
+        :disabled="isActivating"
+      >
+        Undelete Event
+      </button>
 
       <div class="admin-venue-edit-page__venue-card__footer-load-bar">
         <VenueSpinner :is-shown="isDeleting">Processing Delete...</VenueSpinner>
@@ -48,7 +55,7 @@
 </template>
 
 <script>
-  import { DELETE_VENUE } from '../../../store/venues'
+  import { ACTIVATE_VENUE, DELETE_VENUE } from '../../../store/venues'
   import VenueSpinner from './VenueSpinner'
 
   export default {
@@ -58,14 +65,26 @@
     methods: {
       onDeleteVenueClick: function () {
         const id = this.venue.id
-        const idToken = this.$auth.$storage.getState('_token.auth0')
+        const idToken = this.idToken
 
         this.$store.dispatch(DELETE_VENUE, { id, idToken })
+      },
+      onUndoDeleteVenueClick: function () {
+        const id = this.venue.id
+        const idToken = this.idToken
+
+        this.$store.dispatch(ACTIVATE_VENUE, { id, idToken })
       }
     },
     computed: {
       isDeleting: function () {
         return this.$store.state.venues.deleteVenues.isFetching
+      },
+      isActivating: function () {
+        return this.$store.state.venues.activateVenueQuery.isFetching
+      },
+      idToken: function () {
+        return this.$auth.$storage.getState('_token.auth0')
       }
     }
   }

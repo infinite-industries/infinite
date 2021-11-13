@@ -12,7 +12,6 @@ export function setQueryFetching(queryState) {
 }
 
 export function setQueryStateSuccess(queryState, data) {
-  console.log('!!! here: ' + data)
   queryState.isFetching = false
   queryState.isSuccess = true
   queryState.error = null

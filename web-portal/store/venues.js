@@ -5,7 +5,8 @@ export const state = () => {
   return {
     getActiveVenuesQuery: initialQueryState(),
     getDeletedVenuesQuery: initialQueryState(),
-    deleteVenues: initialQueryState()
+    deleteVenues: initialQueryState(),
+    activateVenueQuery: initialQueryState()
   }
 }
 
@@ -43,16 +44,10 @@ export const mutations = {
     setQueryFetching(state.deleteVenues)
   },
   VENUE_DELETE_SUCCESS: (state, { id, venue }) => {
-    console.log('!!! delete succcess: ' + id + ', ' + JSON.stringify(venue))
-
     setQueryStateSuccess(state.deleteVenues, venue)
 
     if (state.getActiveVenuesQuery.isSuccess && !state.getActiveVenuesQuery.isFetching) {
-      console.log('!!! apply the filter to active: ' + state.getActiveVenuesQuery.data.length)
-
       state.getActiveVenuesQuery.data = state.getActiveVenuesQuery.data.filter(venue => venue.id !== id)
-
-      console.log('!!! after filter: ' + state.getActiveVenuesQuery.data.length)
     }
 
     if (state.getDeletedVenuesQuery.isSuccess && !state.getDeletedVenuesQuery.isFetching) {
@@ -61,6 +56,23 @@ export const mutations = {
   },
   VENUE_DELETE_FAIL: (state, payload) => {
     setQueryStateFail(state.deleteVenues, payload)
+  },
+
+  VENUE_ACTIVATE_START: (state) => {
+    setQueryFetching(state.activateVenueQuery)
+  },
+  VENUE_ACTIVATE_SUCCESS: (state, { id, venue }) => {
+    setQueryStateSuccess(state.activateVenueQuery, venue)
+    if (state.getActiveVenuesQuery.isSuccess && !state.getActiveVenuesQuery.isFetching) {
+      state.getActiveVenuesQuery.data.push(venue)
+    }
+
+    if (state.getDeletedVenuesQuery.isSuccess && !state.getDeletedVenuesQuery.isFetching) {
+      state.getDeletedVenuesQuery.data = state.getDeletedVenuesQuery.data.filter(venue => venue.id !== id)
+    }
+  },
+  VENUE_ACTIVATE_FAIL: (state, payload) => {
+    setQueryStateFail(state.activateVenueQuery, payload)
   }
 }
 
@@ -92,14 +104,24 @@ export const actions = {
   DeleteVenue: (context, { id, idToken }) => {
     context.commit('VENUE_DELETE_START')
 
-    console.log('!!! make the request')
     return ApiService.delete(`/authenticated/venues/${id}`, idToken)
       .then((response) => {
-        console.log('!!! got success')
         context.commit('VENUE_DELETE_SUCCESS', { id, venue: response.data.venue })
       })
       .catch((error) => {
         context.commit('VENUE_DELETE_FAIL', error)
+      })
+  },
+
+  ActivateVenue: (context, { id, idToken }) => {
+    context.commit('VENUE_ACTIVATE_START')
+
+    return ApiService.put(`/authenticated/venues/${id}/activate`, null, idToken)
+      .then((response) => {
+        context.commit('VENUE_ACTIVATE_SUCCESS', { id, venue: response.data.venue })
+      })
+      .catch((error) => {
+        context.commit('VENUE_ACTIVATE_FAIL', error)
       })
   }
 }
@@ -107,3 +129,4 @@ export const actions = {
 export const FETCH_ACTIVE_VENUES = 'venues/FetchActiveVenues'
 export const FETCH_DELETED_VENUES = 'venues/FetchDeletedVenues'
 export const DELETE_VENUE = 'venues/DeleteVenue'
+export const ACTIVATE_VENUE = 'venues/ActivateVenue'

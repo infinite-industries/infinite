@@ -72,4 +72,13 @@ export class VenuesService {
             return resp[1][0];
         })
     }
+
+    reactivate(id: string): Promise<VenueModel> {
+        return this.venueModel.update({is_soft_deleted: false }, {
+            where: { id },
+            returning: true
+        }).then((resp: [number, VenueModel[]]) => {
+            return resp[1][0];
+        })
+    }
 }
