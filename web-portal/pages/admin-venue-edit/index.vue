@@ -33,8 +33,8 @@ import { mapGetters, mapActions } from 'vuex'
 
 <script>
   import { FETCH_ACTIVE_VENUES, FETCH_DELETED_VENUES } from '../../store/venues'
-  import VenueCard from './components/VenueCard'
-  import VenueSpinner from './components/VenueSpinner'
+  import VenueCard from '../../components/admin-venue-edit/VenueCard'
+  import VenueSpinner from '../../components/admin-venue-edit/VenueSpinner'
   import Pagination from '../../components/Pagination'
 
   const ACTIVE_VENUE_SELECTION = 'Active Venues'

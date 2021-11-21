@@ -55,7 +55,7 @@
 </template>
 
 <script>
-  import { ACTIVATE_VENUE, DELETE_VENUE } from '../../../store/venues'
+  import { ACTIVATE_VENUE, DELETE_VENUE } from '../../store/venues'
   import VenueSpinner from './VenueSpinner'
 
   export default {
