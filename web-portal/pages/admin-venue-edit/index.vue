@@ -18,12 +18,15 @@ import { mapGetters, mapActions } from 'vuex'
     <div class="admin-event-edit-page_venue-list">
       <VenueSpinner :is-shown="isFetching">Loading Venues...</VenueSpinner>
 
-      <venue-card
-        v-show="!isFetching"
-        v-for="venue in selectedVenueList"
-        :key="venue.id"
-        :venue="venue"
-      />
+      <ii-pagination v-show="!isFetching" :items="selectedVenueList">
+        <template slot-scope="page">
+          <venue-card
+            v-for="venue in page"
+            :venue="venue"
+            :key="venue.id"
+          />
+        </template>
+      </ii-pagination>
     </div>
   </div>
 </template>
@@ -32,13 +35,14 @@ import { mapGetters, mapActions } from 'vuex'
   import { FETCH_ACTIVE_VENUES, FETCH_DELETED_VENUES } from '../../store/venues'
   import VenueCard from './components/VenueCard'
   import VenueSpinner from './components/VenueSpinner'
+  import Pagination from '../../components/Pagination'
 
   const ACTIVE_VENUE_SELECTION = 'Active Venues'
 
   const sortMethod = (venueA, venueB) => venueA.name > venueB.name ? 1 : -1
 
   export default {
-    components: { VenueSpinner, VenueCard },
+    components: { VenueSpinner, VenueCard, 'ii-pagination': Pagination },
     layout: 'admin',
 
     fetch: function () {

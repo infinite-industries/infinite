@@ -35,7 +35,7 @@
         @click="onDeleteVenueClick()"
         :disabled="isDeleting"
       >
-        Delete Event
+        Delete Venue
       </button>
 
       <button
@@ -44,7 +44,7 @@
         @click="onUndoDeleteVenueClick()"
         :disabled="isActivating"
       >
-        Undelete Event
+        Undelete Venue
       </button>
 
       <div class="admin-venue-edit-page__venue-card__footer-load-bar">
