@@ -44,7 +44,7 @@ import { mapGetters, mapActions } from 'vuex'
   export default {
     components: { VenueSpinner, VenueCard, 'ii-pagination': Pagination },
     layout: 'admin',
-
+    middleware: 'auth',
     fetch: function () {
       if (this.selectedList === ACTIVE_VENUE_SELECTION) {
         return this.$store.dispatch(FETCH_ACTIVE_VENUES)

@@ -100,7 +100,7 @@
         if (event && event.venue) {
           return event.venue
         } else if (event.venue_id) {
-          const all_venues = this.$store.getters.GetAllVenues
+          const all_venues = this.$store.getters.GetActiveVenues
 
           const current_venue = all_venues.find((venue) => {
             return venue.id === event.venue_id

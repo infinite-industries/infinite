@@ -26,6 +26,7 @@
 <script>
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import PartnerService from '@/services/PartnerService'
+  import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
   export default {
     data: function () {
@@ -39,9 +40,7 @@
     },
     fetch: function ({ store }) {
       store.dispatch('CreateNewEvent')
-      return Promise.all([
-        store.dispatch('LoadAllVenueData')
-      ])
+      return store.dispatch(FETCH_ACTIVE_VENUES)
     },
     components: {
       'submission-form': SubmissionForm

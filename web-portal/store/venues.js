@@ -86,6 +86,17 @@ export const actions = {
       })
       .catch((error) => {
         context.commit('ACTIVE_VENUES_FETCH_FAIL', error)
+
+        // TODO (CAW): here for backwards compatability, one day we should rethink this and allow individual pages to handle error
+        context.commit(
+          'ui/SHOW_NOTIFICATIONS',
+          {
+            open: true,
+            message: 'Hmmm... unable to get venue data. Please contact us and we will figure out what went wrong.'
+          },
+          { root: true })
+
+        console.error(error)
       })
   },
 
