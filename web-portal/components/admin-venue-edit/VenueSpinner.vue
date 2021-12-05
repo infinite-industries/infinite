@@ -17,7 +17,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .admin-venue-edit-page__spinner {
     width: 1rem;
     display: flex;

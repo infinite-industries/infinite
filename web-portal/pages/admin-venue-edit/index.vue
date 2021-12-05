@@ -1,5 +1,3 @@
-import { mapGetters, mapActions } from 'vuex'
-
 <template>
   <div class="container admin-page admin-event-edit-page">
     <div class="admin-event-edit-page__list-filters">
@@ -120,7 +118,7 @@ import { mapGetters, mapActions } from 'vuex'
   }
 </script>
 
-<style>
+<style scoped>
   .admin-event-edit-page__list-filters {
     margin-bottom: 1rem;
     display: grid;

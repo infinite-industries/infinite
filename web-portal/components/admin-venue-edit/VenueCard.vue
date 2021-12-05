@@ -90,7 +90,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .admin-venue-edit-page__venue-card {
     border: black 1px solid;
     padding: 1rem;
