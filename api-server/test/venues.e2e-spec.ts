@@ -97,7 +97,7 @@ describe('Venues (e2e)', () => {
 
     it('[GET]/venues?includeDeleted=true should return all venues including soft-deleted when appropriate flag is passed', async (done) => {
         const { givenActiveVenues, givenDeletedVenues } = await createRandomMixOfDeletedAndNonDeletedVenues();
-        const givenFlags = 'includeDeleted=true';
+        const givenFlags = 'includeDeleted=yes';
 
         return server
             .get(`${GET_ALL_VENUES_END_POINT}?${givenFlags}`)
