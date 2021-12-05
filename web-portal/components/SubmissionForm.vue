@@ -590,11 +590,11 @@
 
     computed: {
       venues: function () {
-        if (!this.$store.getters.GetAllVenues) {
+        if (!this.$store.getters.GetActiveVenues) {
           return []
         }
 
-        return this.$store.getters.GetAllVenues
+        return this.$store.getters.GetActiveVenues
       },
 
       eventIsRemote: boolToTag('remote'),

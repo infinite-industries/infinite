@@ -10,7 +10,7 @@
 
 <script>
   import SubmissionForm from '@/components/SubmissionForm.vue'
-  // import { ApiService } from '../services/ApiService'
+  import { FETCH_ACTIVE_VENUES } from '../../../store/venues'
 
   export default {
     props: [
@@ -37,7 +37,7 @@
 
       return Promise.all([
         store.dispatch('admin/LoadEvent', { id: params.id, idToken }),
-        store.dispatch('LoadAllVenueData')
+        store.dispatch(FETCH_ACTIVE_VENUES)
       ])
     },
     components: {
