@@ -66,6 +66,7 @@
 
 <script>
   import { ApiService } from '../services/ApiService'
+  import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
   export default {
     data: function () {
@@ -115,7 +116,7 @@
             this.showVenueLoadingSpinner = false
             this.closeVenueDropdown()
             if (response.data.status === 'success') {
-              this.$store.dispatch('LoadAllVenueData')
+              this.$store.dispatch(FETCH_ACTIVE_VENUES)
               this.$emit('newVenue', response.data.venue)
             }
           }).catch((err) => {

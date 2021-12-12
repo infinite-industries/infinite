@@ -13,8 +13,6 @@ export const state = () => {
 
     calendar_event: {},
 
-    all_venues: [],
-
     user_data: {},
     loaded_from_api: false,
 
@@ -29,8 +27,8 @@ export const getters = {
   GetCurrentEvent: (state) => {
     return state.calendar_event
   },
-  GetAllVenues: (state) => {
-    return state.all_venues
+  GetActiveVenues: (state) => {
+    return state.venues.getActiveVenuesQuery.data
   },
   GetLoadingStatus: (state) => {
     return state.util.loading
@@ -92,9 +90,6 @@ export const mutations = {
   UPDATE_STREAMING_EVENTS: (state, payload) => {
     state.all_streaming_events = payload
   },
-  UPDATE_ALL_VENUES: (state, payload) => {
-    state.all_venues = payload
-  },
 
   POPULATE_ANNOUNCEMENTS: (state, payload) => {
     state.announcements = payload && payload.length > 0 ? [...payload] : []
@@ -140,16 +135,6 @@ export const actions = {
       .catch((error) => {
         console.error(error)
         context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get some event data. Please contact us and we will endeavor to address it.' }, { root: true })
-      })
-  },
-  LoadAllVenueData: (context) => {
-    return ApiService.get('/venues')
-      .then((_response) => {
-        context.commit('UPDATE_ALL_VENUES', _response.data.venues)
-      })
-      .catch((error) => {
-        console.error(error)
-        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.' }, { root: true })
       })
   },
 

@@ -30,7 +30,7 @@ describe('Card component', () => {
     event = getEvent()
     store = new Vuex.Store({
       state: {},
-      getters: { GetAllVenues: () => [{ id: venueId, name: venueName }] }
+      getters: { GetActiveVenues: () => [{ id: venueId, name: venueName }] }
     })
     wrapper = shallowMount(Card, {
       localVue,

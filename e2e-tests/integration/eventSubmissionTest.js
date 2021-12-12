@@ -6,6 +6,7 @@
 
 context('Event Submission', () => {
   const EVENT_NAME = 'Test Event'
+  const EVENT_EMAIL = 'test@te.st'
   const ADMIN_USERNAME = Cypress.env('admin_auth_username')
   const ADMIN_PASSWORD = Cypress.env('admin_auth_password')
 
@@ -31,8 +32,9 @@ context('Event Submission', () => {
   })
 
   it('Inputs dummy data into event submission form', () => {
+    const TEMP_EVENT_NAME = 'Temporary Title'
     cy.visit('/submit-event')
-    cy.get('.event-title input').type(EVENT_NAME)
+    cy.get('.event-title input').type(TEMP_EVENT_NAME)
 
     // can't select dates in the past
     // advance calendar one month and select the first
@@ -56,11 +58,29 @@ context('Event Submission', () => {
     cy.get('.results-container > :first-child').click()
 
     cy.get('.brief-description input').type('still testing')
-    cy.get('.submitter-email input').type('test@te.st')
+    cy.get('.submitter-email input').type(EVENT_EMAIL)
 
-    // submit event and wait for promo tools section to expand on success
+    // preview submission
     cy.get('.submit-container button').click()
-    cy.get('.collapsible-content.submission-success.expanded')
+    cy.get('.event-preview').should('exist')
+    cy.get('.event .event-heading h1').contains(TEMP_EVENT_NAME).should('exist')
+    cy.get('.infinite-card h3').contains(TEMP_EVENT_NAME).should('exist')
+
+    // go back to submission form, check that form is still populated
+    cy.get('.preview-controls button:last-child').click()
+    cy.get('.event-title input').should('have.value', TEMP_EVENT_NAME)
+    cy.get('.submitter-email input').should('have.value', EVENT_EMAIL)
+
+    // update event title and preview again
+    cy.get('.event-title input').clear().type(EVENT_NAME)
+    cy.get('.submit-container button').click()
+    cy.get('.event-preview').should('exist')
+    cy.get('.event .event-heading h1').contains(EVENT_NAME).should('exist')
+    cy.get('.infinite-card h3').contains(EVENT_NAME).should('exist')
+
+    // submission event for real
+    cy.get('.preview-controls button:first-child').click()
+    cy.get('h1.centered-header').contains('Thank you!').should('exist')
   })
 
   it('Submitted events not displayed immediately after submission', function () {
@@ -77,7 +97,7 @@ context('Event Submission', () => {
     cy.contains('.unverified-events tr:first-child td', EVENT_NAME)
     cy.get('.unverified-events tr:first-child a').contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
-    cy.get('.submitter-email input').should('have.value', 'test@te.st')
+    cy.get('.submitter-email input').should('have.value', EVENT_EMAIL)
 
     cy.get('button.btn-verify').click()
     cy.get('.calendar-events-table')

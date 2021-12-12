@@ -40,9 +40,12 @@ export class VenuesController {
         description: 'all venues',
         type: VenuesResponse
     })
-    getAll(@Query('includeDeleted') includeDeleted = false): Promise<VenuesResponse> {
-        if (includeDeleted) {
+    getAll(@Query('includeDeleted') includeDeleted: IncludeDeletedFlag = 'no'): Promise<VenuesResponse> {
+        if (includeDeleted === 'yes') {
             return this.venuesService.findAll()
+                .then(venues => new VenuesResponse({venues}));
+        } else if (includeDeleted === 'only') {
+            return this.venuesService.findWhereSoftDeleted()
                 .then(venues => new VenuesResponse({venues}));
         } else {
             return this.venuesService.findWhereNotSoftDeleted()
@@ -68,3 +71,5 @@ export class VenuesController {
             .then(venue => new SingleVenueResponse({ venue }));
     }
 }
+
+type IncludeDeletedFlag = 'yes' | 'no' | 'only';
