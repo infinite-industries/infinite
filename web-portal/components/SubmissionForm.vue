@@ -229,7 +229,7 @@
               :flat="false"
               :outline="!eventRequiredFields"
               depressed
-              @click="PreviewEvent"
+              @click="e => e.shiftKey ? UploadEvent() : PreviewEvent()"
             >Preview Event</v-btn>
           </div>
         </v-flex>
