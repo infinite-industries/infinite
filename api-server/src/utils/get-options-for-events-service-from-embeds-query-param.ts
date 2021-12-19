@@ -1,10 +1,12 @@
 import {FindOptions} from "sequelize";
 import {VenueModel} from "../venues/models/venue.model";
 import {HttpException, HttpStatus} from "@nestjs/common";
+import {DatetimeVenueModel} from "../events/models/datetime-venue.model";
 
-type EmbedableModels = typeof VenueModel
+type EmbedableModels = typeof VenueModel | typeof DatetimeVenueModel
 
 const VENUE = 'Venue';
+const DATE_TIME = 'DATE_TIME'
 
 export function getOptionsForEventsServiceFromEmbedsQueryParam(embedsFromQueryString: string[] | string): FindOptions {
     const modelNames = ensureEmbedQueryStringIsArray(embedsFromQueryString);
@@ -26,6 +28,8 @@ function getModelsForEmbedding(modelNames: string[]): EmbedableModels [] {
     return modelNames.map(modelName => {
         if (modelName === VENUE) {
             return VenueModel;
+        } else if (modelName === DATE_TIME) {
+            return DatetimeVenueModel
         } else {
             throw new HttpException(`"${modelName}" is not an allowable embed`, HttpStatus.BAD_REQUEST);
         }
