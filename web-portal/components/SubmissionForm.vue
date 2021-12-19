@@ -415,8 +415,11 @@
           })
       },
       PreviewEvent: function () {
+        const event = { ...this.calendar_event }
+        event.venue = event.venue_id ? this.venues.find(v => v.id === event.venue_id) : null
         ImageUploadService.asDataUrl(this.$refs.eventImage.files[0]).then((imageUrl) => {
-          this.$emit('preview', this.calendar_event, imageUrl)
+          event.image = imageUrl
+          this.$emit('preview', event)
         })
       },
       UploadEvent: function () {
