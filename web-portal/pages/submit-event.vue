@@ -107,9 +107,8 @@
       return store.dispatch(FETCH_ACTIVE_VENUES)
     },
     methods: {
-      onPreview: function (event, imageUrl) {
-        this.previewEvent = { ...event }
-        this.previewEvent.image = imageUrl
+      onPreview: function (event) {
+        this.previewEvent = event
         this.mode = 'preview'
         this.$nextTick(() => this.$scrollTo(this.$refs.previewHeading, { offset: -200 }))
       },

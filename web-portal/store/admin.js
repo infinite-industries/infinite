@@ -9,7 +9,7 @@ export const state = () => {
 }
 
 const CURRENT_EVENTS_VERIFIED_PATH = '/current-events/verified'
-const EVENTS_NON_VERIFIED_PATH = '/events/non-verified'
+const EVENTS_NON_VERIFIED_PATH = '/events/non-verified?embed=DATE_TIME'
 
 export const getters = {
   GetUnverifiedEvents: (state, getters) => {
