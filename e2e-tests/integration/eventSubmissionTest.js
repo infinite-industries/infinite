@@ -10,6 +10,8 @@ context('Event Submission', () => {
   const ADMIN_USERNAME = Cypress.env('admin_auth_username')
   const ADMIN_PASSWORD = Cypress.env('admin_auth_password')
 
+  const getElementText = $el => $el.text().trim()
+
   // Performs cleanup after all specs in this file have run
   after(() => {
     cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/')
@@ -65,6 +67,11 @@ context('Event Submission', () => {
     cy.get('.event-preview').should('exist')
     cy.get('.event .event-heading h1').contains(TEMP_EVENT_NAME).should('exist')
     cy.get('.infinite-card h3').contains(TEMP_EVENT_NAME).should('exist')
+    // check that venue field contains something
+    // (we just choose the first venue that comes up when the picker is focused,
+    // so we don't know the exact text to look for)
+    cy.get('.event .event-heading h3').then(getElementText).should('not.be.empty')
+    cy.get('.infinite-card h4').then(getElementText).should('not.be.empty')
 
     // go back to submission form, check that form is still populated
     cy.get('.preview-controls button:last-child').click()
@@ -77,6 +84,8 @@ context('Event Submission', () => {
     cy.get('.event-preview').should('exist')
     cy.get('.event .event-heading h1').contains(EVENT_NAME).should('exist')
     cy.get('.infinite-card h3').contains(EVENT_NAME).should('exist')
+    cy.get('.event .event-heading h3').then(getElementText).should('not.be.empty')
+    cy.get('.infinite-card h4').then(getElementText).should('not.be.empty')
 
     // submission event for real
     cy.get('.preview-controls button:first-child').click()
