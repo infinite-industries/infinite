@@ -38,6 +38,21 @@
         const pageSize = this.pageSize
         return items && items.length > 0 ? Math.ceil(items.length / pageSize) : 0
       }
+    },
+    watch: {
+      items: function (newItems, oldItems) {
+        if (newItems.length < oldItems.length) {
+          this.pageNumber = 1
+        }
+      }
     }
   }
 </script>
+
+<style scoped>
+  /* >>> overrides scoping, allowing the targeting of child components */
+  .v-pagination >>> .v-pagination__item--active {
+    color: white;
+    background-color: black;
+  }
+</style>

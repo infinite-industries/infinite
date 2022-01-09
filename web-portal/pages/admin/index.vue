@@ -54,9 +54,5 @@
 </script>
 
 <style scoped>
-  /* >>> overrides scoping, allowing the targeting of child components */
-  .admin-page >>> .v-pagination .v-pagination__item--active {
-    color: white;
-    background-color: black;
-  }
+
 </style>
