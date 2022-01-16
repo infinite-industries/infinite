@@ -36,8 +36,6 @@
     "@nestjs/sequelize": "^0.1.1",
     "@nestjs/swagger": "^4.7.15",
     "@types/jsonwebtoken": "^8.5.1",
-    "auth0": "^2.37.0",
-    "auth0-js": "^9.18.0",
     "axios": "^0.21.1",
     "class-transformer": "^0.3.1",
     "dotenv": "^8.2.0",
