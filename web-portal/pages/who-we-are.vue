@@ -55,6 +55,7 @@
             Becky is a linguist who spent years working for a small speech tech company. It was in that role that she discovered her passion for developing functional, reliable software systems, and grew into a software engineer. She lives in a bright orange house that she's slowly transforming into a little urban farm. She loves making stuff, and she lives for creative collaboration.
           </p>
           <p class="link-block">
+            <a href="https://github.com/rlmead" target="_new">Github</a>
           </p>
         </div>
       </li>
