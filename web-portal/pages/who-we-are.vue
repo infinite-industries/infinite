@@ -47,15 +47,15 @@
       </li>
       <li>
         <div>
-          <img class="member-portrait" src="~/assets/images/who_we_are/evan.jpg" width="150px" height="150px">
+          <img class="member-portrait" src="~/assets/images/who_we_are/becky.jpg" width="150px" height="150px">
         </div>
         <div>
-          <h3>Evan Heaton</h3>
+          <h3>Becky Mead</h3>
           <p class="bio">
-            Evan is a University of Kentucky grad, JavaScript enthusiast, and aspiring producer. He lives where creativity meets code.
+            Becky is a linguist who spent years working in speech technology, which led her to discover her interest in software development. She lives in a bright orange house that she's slowly transforming into a little urban farm. She loves making stuff, especially <a href="https://www.ravelry.com/designers/becky-lee" target="_new">knitwear and patterns that come with automatic sizing calculators</a>, and she lives for creative collaboration.
           </p>
           <p class="link-block">
-            <a href="https://github.com/epheat" target="_new">Github</a> <a href="https://m.soundcloud.com/photographer-746696387" target="_new">Soundcloud</a>
+            <a href="https://github.com/rlmead" target="_new">Github</a>
           </p>
         </div>
       </li>
@@ -88,7 +88,7 @@
     <h2>Thank you! Thank you! Thank you!</h2>
 
     <p>
-      Shout out to all the folks who have made this happen by offering their time and advice: Brian Frye, Arthur Shechet, Eugene Lukin, Jill Schinberg, Nettie Tesmer, Jourdan Rahschulte, Michael Brewster, Reva Russell English, Armando Diaz, Richie Hoagland, Ming Ying Hong, Drura Parrish, Tiffany Palumbo, Roxanne Coburn, Nicole Rademacher.
+      Shout out to all the folks who have made this happen by offering their time and advice: Brian Frye, Arthur Shechet, Eugene Lukin, Jill Schinberg, Evan Heaton, Nettie Tesmer, Jourdan Rahschulte, Michael Brewster, Reva Russell English, Armando Diaz, Richie Hoagland, Ming Ying Hong, Drura Parrish, Tiffany Palumbo, Roxanne Coburn, Nicole Rademacher.
 
       Apologies if we have forgotten anyone. Any omission is simply a function of cluttered minds and short deadlines.
     </p>
