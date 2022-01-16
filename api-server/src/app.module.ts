@@ -12,6 +12,7 @@ import LoggingMiddleware from "./logging/logging.middleware";
 import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston'
 import {CalendaringModule} from "./calendaring/calendaring.module";
+import {AuthenticationModule} from "./authentication/authentication.module";
 
 require('dotenv').config();
 
@@ -70,7 +71,8 @@ const dialectOptions = isUsingSSL
         EventsModule,
         AnnouncementsModule,
         UsersModules,
-        CalendaringModule
+        CalendaringModule,
+        AuthenticationModule
     ],
     controllers: [AppController]
 })
