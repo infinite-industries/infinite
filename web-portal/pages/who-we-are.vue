@@ -52,7 +52,7 @@
         <div>
           <h3>Becky Mead</h3>
           <p class="bio">
-            Becky is a linguist who spent years working for a small speech tech company. It was in that role that she discovered her passion for developing functional, reliable software systems, and grew into a software engineer. She lives in a bright orange house that she's slowly transforming into a little urban farm. She loves making stuff, and she lives for creative collaboration.
+            Becky is a linguist who spent years working in speech technology, which led her to discover her interest in software development. She lives in a bright orange house that she's slowly transforming into a little urban farm. She loves making stuff, especially <a href="https://www.ravelry.com/designers/becky-lee" target="_new">knitwear and patterns that come with automatic sizing calculators</a>, and she lives for creative collaboration.
           </p>
           <p class="link-block">
             <a href="https://github.com/rlmead" target="_new">Github</a>
