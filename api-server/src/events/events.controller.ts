@@ -33,7 +33,7 @@ export class EventsController {
 
 
     @Get('verified')
-    @ApiOperation({summary: 'Get current events that have been verified (for public consumptions)'})
+    @ApiOperation({summary: 'Get all events that have been verified (for public consumptions)'})
     @ApiResponse({
         status: 200,
         description: 'verified events',
