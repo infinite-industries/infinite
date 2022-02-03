@@ -11,6 +11,7 @@
 <script>
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import { FETCH_ACTIVE_VENUES } from '../../../store/venues'
+  import getToken from '../../../store/utils/getToken'
 
   export default {
     props: [
@@ -33,7 +34,7 @@
       }
     },
     fetch: function ({ store, params, app }) {
-      const idToken = app.$auth.$storage.getState('_token.auth0')
+      const idToken = getToken(app.$auth)
 
       return Promise.all([
         store.dispatch('admin/LoadEvent', { id: params.id, idToken }),

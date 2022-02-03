@@ -32,6 +32,8 @@
 </template>
 
 <script>
+  import getToken from '../../store/utils/getToken'
+
   export default {
     name: 'admin-announcement-edit',
     middleware: 'auth',
@@ -56,7 +58,7 @@
     },
     fetch: function () {
       this.loading = true
-      const idToken = this.$auth.$storage.getState('_token.auth0')
+      const idToken = getToken(this.$auth)
 
       return this.$store.dispatch('FindOrCreateActiveAnnouncement', { idToken })
         .then(() => {
@@ -77,7 +79,7 @@
         this.loading = true
         event.preventDefault()
 
-        const idToken = this.$auth.$storage.getState('_token.auth0')
+        const idToken = getToken(this.$auth)
         const message = this.message
 
         const announcement = { ...this.announcement, message }
