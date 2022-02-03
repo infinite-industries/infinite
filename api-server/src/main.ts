@@ -4,6 +4,7 @@ import registerSwaggerDocsModule from "./registerSwaggerDocsModule";
 import {isNullOrUndefined} from "./utils";
 import {ValidationPipe} from "@nestjs/common";
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import {AUTH_USE_TEST_USERS,AUTH_USE_TEST_USERS_WARNING} from "./constants";
 
 require('dotenv').config();
 
@@ -34,6 +35,10 @@ async function bootstrap() {
     await app.listen(PORT);
 
     console.info('application listening on port ', PORT);
+
+    if (AUTH_USE_TEST_USERS) {
+        console.warn(AUTH_USE_TEST_USERS_WARNING)
+    }
 }
 
 bootstrap();
