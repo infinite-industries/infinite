@@ -1,15 +1,11 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import registerSwaggerDocsModule from "./registerSwaggerDocsModule";
-import {isNullOrUndefined} from "./utils";
 import {ValidationPipe} from "@nestjs/common";
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import {AUTH_USE_TEST_USERS,AUTH_USE_TEST_USERS_WARNING} from "./constants";
+import {AUTH_USE_TEST_USERS, AUTH_USE_TEST_USERS_WARNING, PORT} from "./constants";
 
 require('dotenv').config();
-
-const DEFAULT_PORT = 3000;
-const PORT = isNullOrUndefined(process.env.PORT) ? DEFAULT_PORT : process.env.PORT;
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);

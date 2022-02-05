@@ -18,10 +18,9 @@ import FindByIdParams from "../dto/find-by-id-params";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import {eventModelToEventDTO} from "./dto/eventModelToEventDTO";
 import EventDTO from "./dto/eventDTO";
+import {ENV} from "../constants";
 
 require('dotenv').config()
-
-const env = process.env.ENV || 'dev'
 
 @Controller(`${VERSION_1_URI}/events`)
 @ApiTags('events')
@@ -128,7 +127,7 @@ export class EventsController {
             const eventPojo = (newEvent as any ).dataValues
 
             const eventData: string = JSON.stringify(eventPojo, null, 4)
-            const messagePrefix = `(${env}) Review Me. Copy Me. Paste Me. Deploy Me. Love Me.:\n`
+            const messagePrefix = `(${ENV}) Review Me. Copy Me. Paste Me. Deploy Me. Love Me.:\n`
             const message = eventData + messagePrefix
 
             this.slackNotificationService.sendNotification(EVENT_SUBMIT, message)

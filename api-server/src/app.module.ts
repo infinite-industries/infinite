@@ -13,13 +13,11 @@ import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston'
 import {CalendaringModule} from "./calendaring/calendaring.module";
 import {AuthenticationModule} from "./authentication/authentication.module";
+import {SEQUELIZE_LOGGING, SQL_IS_USING_SSL} from "./constants";
 
 require('dotenv').config();
 
-const isSequelizeLoggingEnabled = !!process.env.SEQUELIZE_LOGGING
-const isUsingSSL = (process.env.SQL_IS_USING_SSL || '').toLowerCase() === 'true';
-
-const dialectOptions = isUsingSSL
+const dialectOptions = SQL_IS_USING_SSL
     ?
         {
             ssl: {
@@ -45,8 +43,8 @@ const dialectOptions = isUsingSSL
             username: process.env.DB_USER_NAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_NAME,
-            logging: isSequelizeLoggingEnabled,
-            ssl: isUsingSSL,
+            logging: SEQUELIZE_LOGGING,
+            ssl: SQL_IS_USING_SSL,
             dialectOptions
 
         }),

@@ -14,8 +14,7 @@ import { DatetimeVenueModel } from './models/datetime-venue.model';
 import { isNullOrUndefined } from '../utils';
 import { StartEndTimePairs } from '../shared-types/start-end-time-pairs';
 import {VenueModel} from "../venues/models/venue.model";
-
-const INFINITE_WEB_PORTAL_BASE_URL = process.env.APP_URL || 'https://infinite.industries'
+import {INFINITE_WEB_PORTAL_BASE_URL} from "../constants";
 
 @Injectable()
 export class EventsService {
