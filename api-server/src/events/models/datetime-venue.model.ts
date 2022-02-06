@@ -1,4 +1,12 @@
-import { BelongsTo, Column, ForeignKey, HasMany, HasOne, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table
+} from 'sequelize-typescript';
 import { VenueModel } from '../../venues/models/venue.model';
 import { EventModel } from './event.model';
 

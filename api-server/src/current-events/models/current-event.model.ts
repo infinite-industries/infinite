@@ -1,4 +1,13 @@
-import {BelongsTo, Column, DataType, ForeignKey, HasOne, IsUUID, Model, PrimaryKey, Table} from "sequelize-typescript";
+import {
+    BelongsTo,
+    Column,
+    DataType,
+    ForeignKey,
+    IsUUID,
+    Model,
+    PrimaryKey,
+    Table
+} from "sequelize-typescript";
 import {VenueModel} from "../../venues/models/venue.model";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 import {ApiProperty} from "@nestjs/swagger";
