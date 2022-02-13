@@ -1,33 +1,37 @@
-import * as fs from "fs";
-import * as path from "path";
-import {isNullOrUndefined} from "./utils";
+/* eslint-disable @typescript-eslint/no-var-requires */
 
-require('dotenv').config();
+/* This is a ts wrapper around _constants.js. _constatnts.js is where all environment variable defaulting should happen
+   The reason for this being done in js is that sequelize requires config.js to use common-modules
+*/
 
-const DEFAULT_PORT = 3003;
-export const PORT = isNullOrUndefined(process.env.PORT) ? DEFAULT_PORT : process.env.PORT;
-
-export const ENV = process.env.ENV || 'dev'
-
-export const SEQUELIZE_LOGGING = !!process.env.SEQUELIZE_LOGGING
-export const SQL_IS_USING_SSL = (process.env.SQL_IS_USING_SSL || '').toLowerCase() === 'true';
-
-export const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID
-export const AUTH0_CLIENT_DOMAIN  = process.env.AUTH0_CLIENT_DOMAIN
-export const AUTH0_AUDIENCE = process.env.AUTH0_AUDIENCE
-export const AUTH0_LOGIN_URL = `https://${AUTH0_CLIENT_DOMAIN}/oauth/token`
-export const AUTH0_CLIENT_SECRET = process.env.AUTH0_CLIENT_SECRET
-
-export const AUTH_USE_TEST_USERS = (process.env.AUTH_USE_TEST_USERS || '').toLowerCase() === 'true'
-export const AUTH_USE_TEST_USERS_WARNING = 'LOCAL TEST USERS IS ENABLED. IF THIS IS PRODUCTION THERE IS A PROBLEM'
-
-export const PATH_TO_PEM = process.env.JWT_PEM || getPemPathDefault();
-export const SECRET = fs.readFileSync(path.resolve(PATH_TO_PEM));
-
-export const INFINITE_WEB_PORTAL_BASE_URL = process.env.APP_URL || 'http://localhost:7779/'
-
-function getPemPathDefault() {
-    return AUTH_USE_TEST_USERS
-        ? './test-keys/1nfinite_testing_rsa256.rsa'
-        : './keys/1nfinite.pem'
-}
+export const {
+    PORT,
+    INFINITE_WEB_PORTAL_BASE_URL,
+    ENV,
+    SEQUELIZE_LOGGING,
+    DEBUG_MIGRATION,
+    DB_USER_NAME,
+    DB_PASSWORD,
+    DB_NAME,
+    DB_PORT,
+    DB_HOST,
+    SQL_IS_USING_SSL,
+    POSTGRES_DB,
+    POSTGRES_USER,
+    POSTGRES_PW,
+    AUTH0_CLIENT_ID,
+    AUTH0_CLIENT_DOMAIN,
+    AUTH0_AUDIENCE,
+    AUTH0_LOGIN_URL,
+    AUTH0_CLIENT_SECRET,
+    AUTH_USE_TEST_USERS,
+    AUTH_USE_TEST_USERS_WARNING,
+    PATH_TO_PEM,
+    SECRET,
+    BITLY_URI,
+    BITLY_TOKEN,
+    SLACK_WEBHOOK_TEST,
+    SLACK_WEBHOOK_CONTACT,
+    SLACK_WEBHOOK_EVENT_SUBMISSION,
+    SLACK_WEBHOOK_VENUE_SUBMISSION
+} = require(__dirname + "/_constants.js")

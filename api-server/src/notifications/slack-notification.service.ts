@@ -1,15 +1,14 @@
 import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import {
+    SLACK_WEBHOOK_CONTACT,
+    SLACK_WEBHOOK_EVENT_SUBMISSION,
+    SLACK_WEBHOOK_TEST,
+    SLACK_WEBHOOK_VENUE_SUBMISSION
+} from "../constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const SlackNotify = require('slack-notify')
-
-require('dotenv').config()
-
-const SLACK_WEBHOOK_TEST = process.env.SLACK_WEBHOOK_TEST
-const SLACK_WEBHOOK_CONTACT = process.env.SLACK_WEBHOOK_CONTACT
-const SLACK_WEBHOOK_EVENT_SUBMISSION = process.env.SLACK_WEBHOOK_EVENT_SUBMISSION
-const SLACK_WEBHOOK_VENUE_SUBMISSION = process.env.SLACK_WEBHOOK_VENUE_SUBMISSION
 
 const SLACK_SENDER_TEST: SlackChannelSender = SlackNotify(SLACK_WEBHOOK_TEST) as SlackChannelSender
 const SLACK_SENDER_CONTACT: SlackChannelSender = SlackNotify(SLACK_WEBHOOK_CONTACT) as SlackChannelSender

@@ -2,11 +2,7 @@ import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import axios from "axios";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
-
-require('dotenv').config();
-
-const BITLY_URI ='https://api-ssl.bitly.com/v4/shorten'
-const BITLY_TOKEN = process.env.BITLY_TOKEN
+import {BITLY_TOKEN, BITLY_URI} from "../constants";
 
 @Injectable()
 export default class BitlyService {

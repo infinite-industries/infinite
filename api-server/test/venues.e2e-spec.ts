@@ -16,10 +16,10 @@ import * as faker from 'faker';
 import getSlug from "../src/utils/get-slug";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
 import createJwtForRandomUser from "./test-helpers/creaeteJwt";
+import {PORT} from "../src/constants";
 
 describe('Venues (e2e)', () => {
-    const APP_PORT = process.env.PORT || 3003;
-    const server = request('http://localhost:' + APP_PORT);
+    const server = request('http://localhost:' + PORT);
 
     const DELETE_END_POINT = `/${CURRENT_VERSION_URI}/authenticated/venues`;
     const UPDATE_END_POINT = `/${CURRENT_VERSION_URI}/authenticated/venues`;
