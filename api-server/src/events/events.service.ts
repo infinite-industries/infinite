@@ -48,19 +48,22 @@ export class EventsService {
     }
 
     async update(id: string, values: Partial<UpdateEventRequest>): Promise<DbUpdateResponse<EventModel>> {
-        const updateQueryOptions: UpdateOptions = {
-            where: {id},
-            returning: true
-        }
 
-        return this.sequelize.transaction(async () => {
+        return this.sequelize.transaction(async (transaction) => {
+            const transactionHost = { transaction };
+            const updateQueryOptions: UpdateOptions = {
+                where: {id},
+                returning: true,
+                transaction
+            }
 
             const updatedEvent = await this.eventModel.update(values, updateQueryOptions)
 
             await this.updateDatetimeVenueEntries(
                 id,
                 values.venue_id,
-                values.date_times);
+                values.date_times,
+                transactionHost);
 
             return updatedEvent;
 
@@ -69,26 +72,22 @@ export class EventsService {
     }
 
     private async updateDatetimeVenueEntries(
-        eventId: string, venueId: string, dateTimes: StartEndTimePairs []
+        eventId: string, venueId: string, dateTimes: StartEndTimePairs [], transactionHost: { transaction: Transaction }
     ) {
         if (isNullOrUndefined(dateTimes))
             return;
 
-        const requests = dateTimes.map(( async ({ start_time, end_time, optional_title}) => {
-
-            return this.dateTimeVenueModel.update({
-                venue_id: venueId,
-                start_time,
-                end_time,
-                optional_title
-            },
+            await this.dateTimeVenueModel.destroy(
             {
                 where: {event_id: eventId},
-                returning: true
+                transaction: transactionHost.transaction
             })
-        }))
 
-        return Promise.all(requests)
+            return this.createDatetimeVenueEntries(
+                eventId,
+                venueId,
+                dateTimes,
+                transactionHost)
     }
 
     async create(newEvent: CreateEventRequest): Promise<EventModel> {
