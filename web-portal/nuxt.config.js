@@ -4,8 +4,6 @@ import { json } from 'body-parser'
 
 const API_URL = process.env.API_URL
 
-console.log('!!! ahh: ' + API_URL)
-
 export default {
   mode: 'universal',
   /*
@@ -193,12 +191,7 @@ export default {
   // properties are accessed outside the Vue context, where we don't have access
   // to the new $config property
   env: {
-    CLIENT_ID: process.env.CLIENT_ID,
-    CLIENT_DOMAIN: process.env.CLIENT_DOMAIN,
-    REDIRECT: process.env.REDIRECT,
-    AUDIENCE: process.env.AUDIENCE,
     APP_URL: process.env.APP_URL,
-    API_URL: process.env.API_URL,
-    CALENDAR_SERVICE_URL: process.env.CALENDAR_SERVICE_URL
+    API_URL: process.env.API_URL
   }
 }
