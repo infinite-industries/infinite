@@ -30,12 +30,6 @@ const options = {
   dialectOptions
 };
 
-
-console.log('!!! options: ' + JSON.stringify(options, null, 4));
-// export const development = options;
-// export const test = options;
-// export const production = options;
-
 module.exports = {
   development: options,
   test: options,
