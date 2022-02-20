@@ -10,6 +10,7 @@ import * as path from "path";
 import {NullableOrUndefinable} from "./utils/NullableOrUndefinable";
 import {isNullOrUndefined} from "./utils";
 
+console.log('!!! MUCH HERE: ' + __dirname + "/db_constants.js")
 // db related values have to be defined in commonjs, we re-expose them here for convenience in typescript
 export const {
     SEQUELIZE_LOGGING,

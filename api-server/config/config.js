@@ -7,7 +7,7 @@ const {
   DB_PORT,
   SQL_IS_USING_SSL,
   SEQUELIZE_LOGGING
-} = require(__dirname + "/../db_constants.js");
+} = require(__dirname + "/../src/db_constants.js");
 
 const dialectOptions = SQL_IS_USING_SSL ?
     {
