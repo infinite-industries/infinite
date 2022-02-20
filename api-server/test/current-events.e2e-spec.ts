@@ -105,7 +105,10 @@ describe('CurrentEvents (e2e)', () => {
         const dateTimesForEventInFuture1 = getDateTimesInFuture();
         const dateTimesForEventInFuture2 = getDateTimesInFuture();
 
-        const venue = await createVenue(generateVenue(VenueModel));
+        console.log('!!! what the shit')
+        console.log(VenueModel)
+        console.log("_________")
+        const venue = await createVenue(generateVenue(venueModel));
 
         const eventVerified = await createEvent(
             generateEvent(EventModel, venue.id, true), dateTimesForEventInFuture1);
