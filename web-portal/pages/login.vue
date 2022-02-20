@@ -10,6 +10,7 @@
       <div class="login-page__field">
         <label class="login-page__username-label">username: </label>
         <input
+          class="login-page__username"
           v-model="username"
           type="text"
           placeholder="username"
@@ -19,6 +20,7 @@
       <div class="login-page__field">
         <label class="login-page__password-label">password: </label>
         <input
+          class="login-page__password"
           v-model="password"
           type="password"
           placeholder="password"

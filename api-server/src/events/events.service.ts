@@ -80,8 +80,6 @@ export class EventsService {
         if (isNullOrUndefined(dateTimes))
             return;
 
-        this.dateTimeVenueModel.destroy({})
-
         const requests = dateTimes.map(( async ({ start_time, end_time, optional_title}) => {
             const id = uuidv4()
 
