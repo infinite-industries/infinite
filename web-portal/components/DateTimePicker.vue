@@ -182,6 +182,11 @@
   export default {
     name: 'DateTimePicker',
     props: {
+      mode: {
+        type: String,
+        default: 'upload',
+        validator: value => value === 'upload' || value === 'edit'
+      },
       value: {
         type: Array,
         default: () => []
@@ -214,7 +219,9 @@
     },
     methods: {
       AllowedDates: function (val) {
-        if (moment(val).isSameOrAfter(moment().subtract(1, 'd'))) return val
+        // in edit mode, anything goes
+        // otherwise, disallow days in the past
+        return this.mode === 'edit' || moment(val).isSameOrAfter(moment().subtract(1, 'd'))
       },
 
       /* Converts start and end times stored in data to formatted strings for display in the ui */

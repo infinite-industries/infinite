@@ -44,11 +44,8 @@ jobs:
       - name: Prepare environment
         run: |
           touch .env.test
-          mkdir web-portal/static/uploads
       - name: Start stack
         run: ./startAll.sh test
-        env:
-          INFINITE_PEM_FILE_CONTENTS: ${{ secrets.INFINITE_PEM_FILE_CONTENTS }}
       - name: Wait for stack to start
         run: |
           ./wait-for-stack.sh
@@ -74,8 +71,8 @@ jobs:
           npm start
         working-directory: './e2e-tests'
         env:
-          ENV_US: ${{ secrets.CYPRESS_AUTH_USER }}
-          ENV_PW: ${{ secrets.CYPRESS_AUTH_PASSWORD }}
+          ENV_US: "test"
+          ENV_PW: "xxx"
       - name: Save Cypress artifacts
         uses: actions/upload-artifact@v2
         if: ${{ failure() }}

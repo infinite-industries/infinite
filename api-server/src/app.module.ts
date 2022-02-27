@@ -12,13 +12,10 @@ import LoggingMiddleware from "./logging/logging.middleware";
 import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston'
 import {CalendaringModule} from "./calendaring/calendaring.module";
+import {AuthenticationModule} from "./authentication/authentication.module";
+import {DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER_NAME, SEQUELIZE_LOGGING, SQL_IS_USING_SSL} from './constants';
 
-require('dotenv').config();
-
-const isSequelizeLoggingEnabled = !!process.env.SEQUELIZE_LOGGING
-const isUsingSSL = (process.env.SQL_IS_USING_SSL || '').toLowerCase() === 'true';
-
-const dialectOptions = isUsingSSL
+const dialectOptions = SQL_IS_USING_SSL
     ?
         {
             ssl: {
@@ -39,13 +36,13 @@ const dialectOptions = isUsingSSL
             dialect: 'postgres',
             autoLoadModels: true,
             synchronize: true,
-            host: process.env.DB_HOST,
-            port: +process.env.DB_PORT,
-            username: process.env.DB_USER_NAME,
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_NAME,
-            logging: isSequelizeLoggingEnabled,
-            ssl: isUsingSSL,
+            host: DB_HOST,
+            port: DB_PORT,
+            username: DB_USER_NAME,
+            password: DB_PASSWORD,
+            database: DB_NAME,
+            logging: SEQUELIZE_LOGGING,
+            ssl: SQL_IS_USING_SSL,
             dialectOptions
 
         }),
@@ -70,7 +67,8 @@ const dialectOptions = isUsingSSL
         EventsModule,
         AnnouncementsModule,
         UsersModules,
-        CalendaringModule
+        CalendaringModule,
+        AuthenticationModule
     ],
     controllers: [AppController]
 })

@@ -26,6 +26,7 @@
   import Subscribe from '../components/Subscribe.vue'
   import Modal from '../components/Modal.vue'
   import SiteNavigation from '../components/SiteNavigation.vue'
+  import getToken from '../helpers/getToken'
 
   export default {
     components: {
@@ -42,7 +43,7 @@
       //       Looks like the answer is route-level, because this doesn't run if you change this to `fetch`
       if (this.$auth.loggedIn) {
         try {
-          await this.$store.dispatch('LoadAllUserData', { idToken: this.$auth.$storage.getState('_token.auth0') })
+          await this.$store.dispatch('LoadAllUserData', { idToken: getToken(this.$auth) })
         } catch (error) {
           console.log(`error fetching user data: "${error}"`)
           if (error.response && error.response.status === 403) {

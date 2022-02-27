@@ -2,6 +2,8 @@ import colors from 'vuetify/es5/util/colors'
 import 'dotenv/config'
 import { json } from 'body-parser'
 
+const API_URL = process.env.API_URL
+
 export default {
   mode: 'universal',
   /*
@@ -120,16 +122,18 @@ export default {
   */
   auth: {
     strategies: {
-      local: false,
-      auth0: {
-        scope: ['openid', 'profile'],
-        response_type: 'token id_token',
-        token_key: 'id_token',
-        userinfo_endpoint: false,
-        audience: process.env.AUTH0_AUDIENCE,
-        domain: process.env.AUTH0_CLIENT_DOMAIN,
-        client_id: process.env.AUTH0_CLIENT_ID,
-        redirect_uri: process.env.APP_URL + '/callback'
+      local: {
+        token: {
+          property: 'token',
+          global: true,
+          // required: true,
+          type: 'Bearer'
+        },
+        endpoints: {
+          login: { url: API_URL + '/authentication/login', method: 'post', propertyName: 'token' },
+          user: false,
+          logout: false
+        }
       }
     }
   },
@@ -187,12 +191,7 @@ export default {
   // properties are accessed outside the Vue context, where we don't have access
   // to the new $config property
   env: {
-    CLIENT_ID: process.env.CLIENT_ID,
-    CLIENT_DOMAIN: process.env.CLIENT_DOMAIN,
-    REDIRECT: process.env.REDIRECT,
-    AUDIENCE: process.env.AUDIENCE,
     APP_URL: process.env.APP_URL,
-    API_URL: process.env.API_URL,
-    CALENDAR_SERVICE_URL: process.env.CALENDAR_SERVICE_URL
+    API_URL: process.env.API_URL
   }
 }

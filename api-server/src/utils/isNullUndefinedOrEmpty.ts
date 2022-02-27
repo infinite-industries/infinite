@@ -1,4 +1,3 @@
-import exp from "constants";
 import isEmptyObject from "./is-empty-object";
 
 export default function isNullUndefinedOrEmpty(val: unknown): boolean {

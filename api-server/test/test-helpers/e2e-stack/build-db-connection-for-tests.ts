@@ -9,7 +9,7 @@ import {VenuesService} from "../../../src/venues/venues.service";
 import {CurrentEventsService} from "../../../src/current-events/current-events.service";
 import {AnnouncementModel} from "../../../src/announcements/models/announcement.model";
 import {AnnouncementsService} from "../../../src/announcements/announcements.service";
-import BitlyService from "../../../dist/events/bitly.service";
+import BitlyService from "../../../src/events/bitly.service"
 import {WinstonModule} from "nest-winston";
 import {format, transports} from "winston";
 import { DatetimeVenueModel } from '../../../src/events/models/datetime-venue.model';

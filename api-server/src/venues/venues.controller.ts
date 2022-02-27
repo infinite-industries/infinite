@@ -1,4 +1,4 @@
-import {Controller, Get, Header, Post, Body, Param, Query, Delete} from "@nestjs/common";
+import {Controller, Get, Header, Post, Body, Param, Query } from "@nestjs/common";
 import {VenuesService} from "./venues.service";
 import {ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
 import {VERSION_1_URI} from "../utils/versionts";
@@ -7,8 +7,7 @@ import {VenuesResponse} from "./dto/venues-response";
 import FindByIdParams from "../dto/find-by-id-params";
 import {SingleVenueResponse} from "./dto/single-venue-response";
 import SlackNotificationService, { VENUE_SUBMIT } from "../notifications/slack-notification.service";
-
-const ENV = process.env.ENV || 'dev'
+import {ENV} from "../constants";
 
 @Controller(`${VERSION_1_URI}/venues`)
 @ApiTags('venues')

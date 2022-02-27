@@ -1,6 +1,7 @@
 import {execSync, ExecSyncOptions} from "child_process";
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME} from "./start-database";
 import sleep from "../sleep";
+import {DEBUG_MIGRATION} from "../../../src/constants";
 
 async function runMigrations(dbPort: number): Promise<void> {
     console.log('running migrations');
@@ -45,7 +46,7 @@ function doRunMigration(dbPort: number) {
         stdio: 'ignore'
     }
 
-    if (process.env.DEBUG_MIGRATION) {
+    if (DEBUG_MIGRATION) {
         options.stdio = 'inherit'
     }
 
