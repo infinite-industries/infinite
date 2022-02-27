@@ -16,13 +16,13 @@ import stopDatabase from "./test-helpers/e2e-stack/stop-database";
 import startDatabase from "./test-helpers/e2e-stack/start-database";
 import { generateDatetimeVenueFaker } from './fakers/generateDatetimeVenue.faker';
 import { DatetimeVenueModel } from '../src/events/models/datetime-venue.model';
+import {PORT} from "../src/constants";
 
 
 const today = new Date(Date.now());
 const eventWindow = 2; // maximum hours in past events will remain visible for
 
-const APP_PORT = process.env.PORT || 3003;
-const server = request('http://localhost:' + APP_PORT);
+const server = request('http://localhost:' + PORT);
 
 let appUnderTest: ChildProcessWithoutNullStreams;
 let dbContainer: StartedTestContainer;
@@ -94,7 +94,7 @@ describe('CurrentEvents (e2e)', () => {
 
     it('can query current-events', async () => {
         console.info('running first test: ' +
-            `http://localhost:${APP_PORT}/${CURRENT_VERSION_URI}/current-events/verified`);
+            `http://localhost:${PORT}/${CURRENT_VERSION_URI}/current-events/verified`);
 
         return server
             .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
@@ -105,7 +105,7 @@ describe('CurrentEvents (e2e)', () => {
         const dateTimesForEventInFuture1 = getDateTimesInFuture();
         const dateTimesForEventInFuture2 = getDateTimesInFuture();
 
-        const venue = await createVenue(generateVenue(VenueModel));
+        const venue = await createVenue(generateVenue(venueModel));
 
         const eventVerified = await createEvent(
             generateEvent(EventModel, venue.id, true), dateTimesForEventInFuture1);

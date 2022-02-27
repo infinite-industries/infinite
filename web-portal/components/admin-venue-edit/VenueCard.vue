@@ -3,28 +3,30 @@
     class="admin-venue-edit-page__venue-card"
   >
     <section class="admin-venue-edit-page__venue-card__fields">
-      <div>
-        {{ venue.name }}
+      <div class="admin-venue-edit-page__venue-card__field">
+        <input type="text" :value="venue.name" placeholder="name">
+
+        <div>
+          <span class="admin-venue-edit-page__venue-card__slug admin-venue-edit-page__venue-card__readonly">
+            {{ venue.slug }}
+          </span>
+        </div>
       </div>
 
-      <div>
-        {{ venue.slug }}
+      <div class="admin-venue-edit-page__venue-card__field">
+        <input type="text" :value="venue.address" placeholder="address">
       </div>
 
-      <div>
-        {{ venue.address }}
+      <div class="admin-venue-edit-page__venue-card__field">
+        <input type="text" :value="venue.g_map_link" placeholder="google maps link">
       </div>
 
-      <div>
-        {{ venue.g_map_link }}
+      <div class="admin-venue-edit-page__venue-card__field">
+        <span class="admin-venue-edit-page__venue-card__readonly">{{ venue.createdAt }}</span>
       </div>
 
-      <div>
-        {{ venue.createdAt }}
-      </div>
-
-      <div>
-        {{ venue.updatedAt }}
+      <div class="admin-venue-edit-page__venue-card__field">
+        <span class="admin-venue-edit-page__venue-card__readonly">{{ venue.updatedAt }}</span>
       </div>
     </section>
 
@@ -57,6 +59,7 @@
 <script>
   import { ACTIVATE_VENUE, DELETE_VENUE } from '../../store/venues'
   import VenueSpinner from './VenueSpinner'
+  import getToken from '../../helpers/getToken'
 
   export default {
     name: 'VenueCard',
@@ -84,13 +87,26 @@
         return this.$store.state.venues.activateVenueQuery.isFetching
       },
       idToken: function () {
-        return this.$auth.$storage.getState('_token.auth0')
+        return getToken(this.$auth)
       }
     }
   }
 </script>
 
 <style scoped>
+  .admin-venue-edit-page__venue-card__field {
+    margin-bottom: 1rem;
+  }
+
+  .admin-venue-edit-page__venue-card__readonly {
+    font-style: italic;
+    color: dimgray;
+  }
+
+  .admin-venue-edit-page__venue-card__slug {
+    margin-left: 1rem;
+  }
+
   .admin-venue-edit-page__venue-card {
     border: black 1px solid;
     padding: 1rem;

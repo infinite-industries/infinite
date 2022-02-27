@@ -16,6 +16,7 @@
 <script>
   import AdminEventsList from '../../components/AdminEventsList.vue'
   import Pagination from '../../components/Pagination.vue'
+  import getToken from '../../helpers/getToken'
 
   export default {
     name: 'Admin',
@@ -42,9 +43,9 @@
       }
     },
     mounted: function () {
-      this.$store.dispatch('admin/LoadUnverifiedEvents', { idToken: this.$auth.$storage.getState('_token.auth0') })
-      this.$store.dispatch('admin/LoadCurrentEvents', { idToken: this.$auth.$storage.getState('_token.auth0') })
-      this.$store.dispatch('admin/LoadResourceEvents', { idToken: this.$auth.$storage.getState('_token.auth0') })
+      this.$store.dispatch('admin/LoadUnverifiedEvents', { idToken: getToken(this.$auth) })
+      this.$store.dispatch('admin/LoadCurrentEvents', { idToken: getToken(this.$auth) })
+      this.$store.dispatch('admin/LoadResourceEvents', { idToken: getToken(this.$auth) })
     },
     components: {
       'admin-events-list': AdminEventsList,

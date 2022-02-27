@@ -1,7 +1,5 @@
 import { Sequelize } from 'sequelize'
-import { EventModel } from '../../src/events/models/event.model'
-import { VenueModel } from '../../src/venues/models/venue.model'
-import {Model} from "sequelize-typescript";
+import {POSTGRES_DB, POSTGRES_PW, POSTGRES_USER} from "../../src/constants";
 
 const DB_DIALECT = 'postgres'
 
@@ -20,7 +18,7 @@ export default function getConnection(
         return  cache
     }
 
-    const sequelize = new Sequelize(process.env.POSTGRES_DB, process.env.POSTGRES_USER, process.env.POSTGRES_PW, {
+    const sequelize = new Sequelize(POSTGRES_DB, POSTGRES_USER, POSTGRES_PW, {
         host,
         port,
         dialect: DB_DIALECT,

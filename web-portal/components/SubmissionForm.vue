@@ -292,15 +292,12 @@
 
 <script>
   import isEqual from 'lodash.isequal'
-  // import VueEditor from 'vue2-editor'
-
   import VenuePicker from './VenuePicker.vue'
   import DateTimePicker from './DateTimePicker.vue'
   import AddNewVenue from './AddNewVenue.vue'
-  // import uploadcare from 'uploadcare-widget'
-
   import { ApiService } from '@/services/ApiService'
   import ImageUploadService from '@/services/ImageUploadService'
+  import getToken from '../helpers/getToken'
 
   const CONTROL_TAGS = ['remote', 'online-resource', 'postponed', 'cancelled']
 
@@ -371,7 +368,7 @@
           this.$store.dispatch('admin/UpdateEvent', {
             id: this.calendar_event.id,
             event_data: this.calendar_event,
-            idToken: this.$auth.$storage.getState('_token.auth0')
+            idToken: getToken(this.$auth)
           }).finally(() => { this.showEventLoadingSpinner = false })
         }).catch((error) => {
           console.error(error)
@@ -386,7 +383,7 @@
         this.showEventLoadingSpinner = true
         this.$store.dispatch('admin/DeleteEvent', {
           id: this.calendar_event.id,
-          idToken: this.$auth.$storage.getState('_token.auth0')
+          idToken: getToken(this.$auth)
         })
           .then(() => { this.$router.push('/admin') })
           .finally(() => { this.showEventLoadingSpinner = false })
@@ -398,7 +395,7 @@
 
         this.$store.dispatch('admin/VerifyEvent', {
           id: this.calendar_event.id,
-          idToken: this.$auth.$storage.getState('_token.auth0')
+          idToken: getToken(this.$auth)
         })
           .then(() => {
             this.showEventLoadingSpinner = false

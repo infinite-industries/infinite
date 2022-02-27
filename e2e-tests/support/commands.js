@@ -16,39 +16,10 @@ Cypress.Commands.add('visitAsUser', {}, (username, password, url) => {
     name: 'loginViaAuth0'
   })
 
-  const options = {
-    method: 'POST',
-    url: Cypress.env('auth_url'),
-    body: {
-      grant_type: 'password',
-      username: username,
-      password: password,
-      audience: Cypress.env('auth_audience'),
-      scope: 'openid profile',
-      client_id: Cypress.env('auth_client_id'),
-      client_secret: Cypress.env('auth_client_secret')
-    }
-  }
-
-  return cy.request(options).then((resp) => {
-    return resp.body
-  }).then(async (body) => {
-    const { access_token, expires_in, id_token } = body
-
-    const auth0State = {
-      nonce: '',
-      state: 'some-random-state'
-    }
-
-    const callbackUrl = `/callback#access_token=${access_token}&scope=openid&id_token=${id_token}` +
-      `&expires_in=${expires_in}&token_type=Bearer&state=${auth0State.state}`
-
-    await cy.visit(callbackUrl, {
-      onBeforeLoad(win) {
-        win.document.cookie = 'com.auth0.auth.some-random-state=' + JSON.stringify(auth0State)
-      }
-    })
-
-    cy.visit(url)
-  })
+  cy.visit("/login")
+  cy.get("input.login-page__username").type(username)
+  cy.get("input.login-page__password").type(password)
+  cy.get(".login-page__login-btn").click()
+  cy.location('pathname').should('not.include', 'login')
+  cy.visit(url)
 })
