@@ -39,7 +39,7 @@ export class EventsController {
         description: 'verified events',
         type: EventsResponse
     })
-    getAllCurrentVerified(
+    getAllVerified(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = []
     ): Promise<EventsResponse> {
@@ -57,7 +57,7 @@ export class EventsController {
     @ApiOperation({summary: 'Get events that have not yet been verified (admin only)'})
     @ApiResponse({status: 403, description: 'Forbidden'})
     @ApiBearerAuth()
-    getAllCurrentNonVerified(
+    getAllNonVerified(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = []
     ): Promise<EventsResponse> {
@@ -96,7 +96,7 @@ export class EventsController {
     @ApiOperation({summary: 'Get events, both verified and non (admin only)'})
     @ApiResponse({status: 403, description: 'Forbidden'})
     @ApiBearerAuth()
-    getAllCurrent(
+    getAll(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = [],
     ): Promise<EventsResponse> {
