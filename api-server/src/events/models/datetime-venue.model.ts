@@ -34,6 +34,9 @@ export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
   @Column
   optional_title: string;
 
+  @Column
+  timezone: string;
+
   @BelongsTo(() => EventModel)
   event: EventModel
 
@@ -48,4 +51,5 @@ export interface DateTimeVenueFields  {
   start_time?: Date
   end_time?: Date
   optional_title?: string
+  timezone?: string
 }
