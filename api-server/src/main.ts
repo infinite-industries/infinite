@@ -4,7 +4,7 @@ import registerSwaggerDocsModule from "./registerSwaggerDocsModule";
 import {ValidationPipe} from "@nestjs/common";
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
-import {AUTH_USE_TEST_USERS, AUTH_USE_TEST_USERS_WARNING, PORT} from "./constants";
+import {AUTH_USE_TEST_USERS, AUTH_USE_TEST_USERS_WARNING, PORT, ENV} from "./constants";
 
 require('dotenv').config();
 
@@ -34,6 +34,11 @@ async function bootstrap() {
     console.info('application listening on port ', PORT);
 
     if (AUTH_USE_TEST_USERS) {
+        if (ENV === 'prod' || ENV === 'production') {
+            console.error('You should not start this service in production with AUTH_USE_TEST_USERS set')
+            process.exit(1)
+        }
+
         console.warn(AUTH_USE_TEST_USERS_WARNING)
     }
 }

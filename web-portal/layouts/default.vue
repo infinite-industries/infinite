@@ -26,7 +26,7 @@
   import Subscribe from '../components/Subscribe.vue'
   import Modal from '../components/Modal.vue'
   import SiteNavigation from '../components/SiteNavigation.vue'
-  import getToken from '../store/utils/getToken'
+  import getToken from '../helpers/getToken'
 
   export default {
     components: {

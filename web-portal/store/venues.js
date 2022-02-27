@@ -1,5 +1,5 @@
 import { ApiService } from '../services/ApiService'
-import { initialQueryState, setQueryFetching, setQueryStateFail, setQueryStateSuccess } from './utils/queryState'
+import { initialQueryState, setQueryFetching, setQueryStateFail, setQueryStateSuccess } from '../helpers/queryState'
 
 export const state = () => {
   return {

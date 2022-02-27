@@ -6,7 +6,7 @@
       {{ errorMessage }}
     </div>
 
-    <form v-on:submit.prevent="onLoginClick">
+    <form @submit.prevent="onLoginClick">
       <div class="login-page__field">
         <label class="login-page__username-label">username: </label>
         <input
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-  import getToken from '../store/utils/getToken'
+  import getToken from '../helpers/getToken'
 
   export default {
     name: 'LoginPage',
@@ -75,7 +75,7 @@
   }
 </script>
 
-<style>
+<style scoped>
   .login-page {
     color: white;
   }

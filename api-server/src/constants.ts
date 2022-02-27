@@ -10,7 +10,6 @@ import * as path from "path";
 import {NullableOrUndefinable} from "./utils/NullableOrUndefinable";
 import {isNullOrUndefined} from "./utils";
 
-console.log('!!! try to do a require for: ' + __dirname + '/db_constants.js')
 // db related values have to be defined in commonjs, we re-expose them here for convenience in typescript
 export const {
     SEQUELIZE_LOGGING,
@@ -27,7 +26,6 @@ export const {
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 } = require(__dirname + "/db_constants.js")
 
-console.log('!!! got past that')
 require('dotenv').config();
 
 // === Top Level Service (name, ports env, etc..) ===

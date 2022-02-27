@@ -11,7 +11,7 @@
 <script>
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import { FETCH_ACTIVE_VENUES } from '../../../store/venues'
-  import getToken from '../../../store/utils/getToken'
+  import getToken from '../../../helpers/getToken'
 
   export default {
     props: [

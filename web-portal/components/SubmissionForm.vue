@@ -297,7 +297,7 @@
   import AddNewVenue from './AddNewVenue.vue'
   import { ApiService } from '@/services/ApiService'
   import ImageUploadService from '@/services/ImageUploadService'
-  import getToken from '../store/utils/getToken'
+  import getToken from '../helpers/getToken'
 
   const CONTROL_TAGS = ['remote', 'online-resource', 'postponed', 'cancelled']
 

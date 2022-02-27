@@ -32,7 +32,7 @@
 </template>
 
 <script>
-  import getToken from '../../store/utils/getToken'
+  import getToken from '../../helpers/getToken'
 
   export default {
     name: 'admin-announcement-edit',

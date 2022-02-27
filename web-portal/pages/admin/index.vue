@@ -16,7 +16,7 @@
 <script>
   import AdminEventsList from '../../components/AdminEventsList.vue'
   import Pagination from '../../components/Pagination.vue'
-  import getToken from '../../store/utils/getToken'
+  import getToken from '../../helpers/getToken'
 
   export default {
     name: 'Admin',

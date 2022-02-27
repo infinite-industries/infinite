@@ -59,7 +59,7 @@
 <script>
   import { ACTIVATE_VENUE, DELETE_VENUE } from '../../store/venues'
   import VenueSpinner from './VenueSpinner'
-  import getToken from '../../store/utils/getToken'
+  import getToken from '../../helpers/getToken'
 
   export default {
     name: 'VenueCard',
