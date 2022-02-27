@@ -47,14 +47,47 @@ export class EventsService {
         return this.eventModel.findAll(findOptions)
     }
 
-    update(id: string, values: Partial<UpdateEventRequest>): Promise<DbUpdateResponse<EventModel>> {
-        const updateQueryOptions: UpdateOptions = {
-            where: {id},
-            returning: true
-        }
+    async update(id: string, values: Partial<UpdateEventRequest>): Promise<DbUpdateResponse<EventModel>> {
 
-        return this.eventModel.update(values, updateQueryOptions)
-            .then(toDbUpdateResponse)
+        return this.sequelize.transaction(async (transaction) => {
+            const transactionHost = { transaction };
+            const updateQueryOptions: UpdateOptions = {
+                where: {id},
+                returning: true,
+                transaction
+            }
+
+            const updatedEvent = await this.eventModel.update(values, updateQueryOptions)
+
+            await this.updateDatetimeVenueEntries(
+                id,
+                values.venue_id,
+                values.date_times,
+                transactionHost);
+
+            return updatedEvent;
+
+        }).then(toDbUpdateResponse)
+
+    }
+
+    private async updateDatetimeVenueEntries(
+        eventId: string, venueId: string, dateTimes: StartEndTimePairs [], transactionHost: { transaction: Transaction }
+    ) {
+        if (isNullOrUndefined(dateTimes))
+            return;
+
+            await this.dateTimeVenueModel.destroy(
+            {
+                where: {event_id: eventId},
+                transaction: transactionHost.transaction
+            })
+
+            return this.createDatetimeVenueEntries(
+                eventId,
+                venueId,
+                dateTimes,
+                transactionHost)
     }
 
     async create(newEvent: CreateEventRequest): Promise<EventModel> {
