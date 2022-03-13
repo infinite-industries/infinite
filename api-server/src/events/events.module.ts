@@ -7,10 +7,11 @@ import BitlyService from "./bitly.service";
 import EventsAuthenticatedController from "./events.authenticated.controller";
 import { NotificationsModule } from "../notifications/notifications.module";
 import { DatetimeVenueModel } from './models/datetime-venue.model';
+import {EventAdminMetadataModel} from "./models/event-admin-metadata.model";
 
 @Module({
     imports: [
-        SequelizeModule.forFeature([EventModel, DatetimeVenueModel]),
+        SequelizeModule.forFeature([EventModel, DatetimeVenueModel, EventAdminMetadataModel]),
         NotificationsModule
     ],
     controllers: [EventsAuthenticatedController, EventsController],

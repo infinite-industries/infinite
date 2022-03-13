@@ -11,6 +11,8 @@ import {mapDateTimesToIso} from "../utils/map-date-times-to-iso";
 import {ApiImplicitParam} from "@nestjs/swagger/dist/decorators/api-implicit-param.decorator";
 import FindByIdParams from "../dto/find-by-id-params";
 import {eventModelToEventDTO} from "./dto/eventModelToEventDTO";
+import EventAdminMetadataResponse from "./dto/event-admin-metadata-response";
+import UpsertEventAdminMetadataRequest from "./dto/upsert-event-admin-metadata-request";
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
 @UseGuards(AuthGuard)
@@ -68,5 +70,26 @@ export default class EventsAuthenticatedController {
 
         return this.eventsService.delete(id)
             .then(response => ({ id, status: 'success' }))
+    }
+
+    @Get(':id/admin-metadata')
+    @ApiOperation({ summary: 'Get admin metadata for this event' })
+    @ApiImplicitParam({ name: 'id', type: String })
+    getEventAdminMetadata(@Param() { id }: FindByIdParams): Promise<EventAdminMetadataResponse> {
+        return this.eventsService.getEventMetadata(id)
+            .then((eventAdminMetadata) =>
+                new EventAdminMetadataResponse({ eventAdminMetadata }))
+    }
+
+    @Put(':id/admin-metadata')
+    @ApiOperation({ summary: 'Set admin metadata information for an event' })
+    @ApiImplicitParam({ name: 'id', type: String })
+    upsertAdminMetadata(
+        @Param() { id }: FindByIdParams,
+        @Body() updatedState: UpsertEventAdminMetadataRequest
+    ): Promise<EventAdminMetadataResponse> {
+        return this.eventsService.upsertEventMetadata(id, updatedState)
+            .then((eventAdminMetadata) =>
+                new EventAdminMetadataResponse({ eventAdminMetadata }))
     }
 }
