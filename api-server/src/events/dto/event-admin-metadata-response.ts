@@ -3,14 +3,26 @@ import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
 import cloneAttributes from "../../utils/clone-attributes";
 import {EventAdminMetadataModel} from "../models/event-admin-metadata.model";
 
-export default class EventAdminMetadataResponse extends ResponseWrapper {
+export class EventAdminMetadataSingleResponse extends ResponseWrapper {
     eventAdminMetadata: EventAdminMetadataModel
 
-    constructor(copy?: Partial<EventAdminMetadataResponse>) {
+    constructor(copy?: Partial<EventAdminMetadataSingleResponse>) {
         super()
 
         if (isNotNullOrUndefined(copy)) {
-            cloneAttributes<EventAdminMetadataResponse>(copy, this)
+            cloneAttributes<EventAdminMetadataSingleResponse>(copy, this)
+        }
+    }
+}
+
+export class EventAdminMetadataListResponse extends ResponseWrapper {
+    eventAdminMetadata: EventAdminMetadataModel []
+
+    constructor(copy?: Partial<EventAdminMetadataListResponse>) {
+        super()
+
+        if (isNotNullOrUndefined(copy)) {
+            cloneAttributes<EventAdminMetadataListResponse>(copy, this)
         }
     }
 }

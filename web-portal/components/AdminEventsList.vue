@@ -60,19 +60,22 @@
     },
     methods: {
       isProblem: function (calenderEvent) {
-        return !!(this.metadata[calenderEvent.id] && this.metadata[calenderEvent.id].isProblem)
+        if (!calenderEvent.event_admin_meta_data) {
+          return false
+        } else {
+          return calenderEvent.event_admin_meta_data.is_problem
+        }
+
+        // return !!(this.metadata[calenderEvent.id] && this.metadata[calenderEvent.id].isProblem)
       },
 
       isProblemUpdated: function ({ id }, event) {
         const idToken = getToken(this.$auth)
-        console.log('!!! token: ' + idToken)
         if (!this.metadata[id]) {
           this.metadata[id] = {}
         }
 
         this.metadata[id].isProblem = event.currentTarget.checked
-
-        console.log('!!! jesus: ' + event.currentTarget.checked)
 
         this.$store.dispatch(
           UPSERT_ADMIN_EVENT_METADATA,

@@ -41,7 +41,7 @@ export class EventsController {
     })
     getAllCurrentVerified(
         @Query('embed') embed: string[] | string = [],
-        @Query('tags') tags: string[] | string = [],
+        @Query('tags') tags: string[] | string = []
     ): Promise<EventsResponse> {
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),

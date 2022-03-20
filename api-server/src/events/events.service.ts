@@ -140,6 +140,10 @@ export class EventsService {
         return this.eventAdminMetadataModel.findOne({ where: { id }})
     }
 
+    async getAllEventMetaData(): Promise<EventAdminMetadataModel []> {
+        return this.eventAdminMetadataModel.findAll()
+    }
+
     async upsertEventMetadata(
         eventId: string,
         updatedState: UpsertEventAdminMetadataRequest
