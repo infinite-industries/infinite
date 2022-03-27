@@ -35,6 +35,10 @@ export const actions = {
       })
       .catch((error) => {
         context.commit('GET_UPSERT_EVENT_METADATA_FETCH_FAIL', error)
+        context.commit('ui/SHOW_NOTIFICATIONS', {
+          open: true,
+          message: `there was a problem updating the admin event metadata: "${error}"`
+        }, { root: true })
       })
   }
 }

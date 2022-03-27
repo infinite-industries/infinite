@@ -65,8 +65,6 @@
         } else {
           return calenderEvent.event_admin_meta_data.is_problem
         }
-
-        // return !!(this.metadata[calenderEvent.id] && this.metadata[calenderEvent.id].isProblem)
       },
 
       isProblemUpdated: function ({ id }, event) {
