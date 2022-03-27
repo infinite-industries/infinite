@@ -29,7 +29,14 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
                 username: DB_USERNAME,
                 password: DB_PASSWORD,
                 database: DB_NAME,
-                models: [CurrentEvent, VenueModel, EventModel, AnnouncementModel, DatetimeVenueModel]
+                models: [
+                    CurrentEvent,
+                    VenueModel,
+                    EventModel,
+                    AnnouncementModel,
+                    DatetimeVenueModel,
+                    EventAdminMetadataModel
+                ]
             }),
             SequelizeModule.forFeature([
                 EventModel,
