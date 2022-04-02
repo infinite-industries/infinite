@@ -26,7 +26,6 @@ export default class EventsAuthenticatedController {
     // this probably shouldn't be needed long term, we should just fetch this with the event
     @Get('/admin-metadata')
     @ApiOperation({ summary: 'Get all admin metadata for all events' })
-    @ApiImplicitParam({ name: 'id', type: String })
     getEventAdminMetadata(): Promise<EventAdminMetadataListResponse> {
         return this.eventsService.getAllEventMetaData()
             .then((eventAdminMetadata) =>
