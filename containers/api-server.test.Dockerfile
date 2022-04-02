@@ -1,8 +1,6 @@
 FROM node:fermium-alpine
 
-ENV BITLY_TOKEN = ''
-ENV INFINITE_PEM_FILE_CONTENTS = ''
-
+# This assumes that you mount the pem file into a volume at /api-server/keys/1nfiniteDocker.pem
 ENV JWT_PEM='/api-server/keys/1nfiniteDocker.pem'
 
 ADD containers/api-server.test.docker-scripts /scripts
@@ -11,4 +9,3 @@ ADD api-server /api-server
 #RUN mkdir /keys
 
 CMD /scripts/start.sh
-
