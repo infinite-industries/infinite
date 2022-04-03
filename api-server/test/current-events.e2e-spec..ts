@@ -94,10 +94,10 @@ describe('CurrentEvents (e2e)', () => {
 
     it('can query current-events', async (done) => {
         console.info('running first test: ' +
-            `http://localhost:${PORT}/${CURRENT_VERSION_URI}/current-events/verified`);
+            `http://localhost:${PORT}/${CURRENT_VERSION_URI}/events/current-verified`);
 
         return server
-            .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
+            .get(`/${CURRENT_VERSION_URI}/events/current-verified`)
             .expect(200)
             .then(() => done());
     });
@@ -115,7 +115,7 @@ describe('CurrentEvents (e2e)', () => {
             generateEvent(EventModel, venue.id, false), dateTimesForEventInFuture2);
 
         return server
-            .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
+            .get(`/${CURRENT_VERSION_URI}/events/current-verified`)
             .expect(200)
             .then(async (response) => {
                 expect(response.body.status).toEqual('success');
@@ -148,7 +148,7 @@ describe('CurrentEvents (e2e)', () => {
         const expectedEventIdsReturned = [eventInRecentPast.id, eventInFuture.id];
 
         return server
-            .get(`/${CURRENT_VERSION_URI}/current-events/verified`)
+            .get(`/${CURRENT_VERSION_URI}/events/current-verified`)
             .expect(200)
             .then(async (response) => {
                 // should only get back 2 of the three events
@@ -191,7 +191,7 @@ describe('CurrentEvents (e2e)', () => {
             generateEvent(eventModel, venue.id, true), singleDayEventTimes2
         );
 
-        return server.get(`/${CURRENT_VERSION_URI}/current-events/verified`)
+        return server.get(`/${CURRENT_VERSION_URI}/events/current-verified`)
             .expect(200)
             .then(async (response) => {
                 // should only get back 2 of the three events
@@ -225,7 +225,7 @@ describe('CurrentEvents (e2e)', () => {
         await createEvent(
             generateEvent(eventModel, venue.id, true), multiDayDateTimes);
 
-        return server.get(`/${CURRENT_VERSION_URI}/current-events/verified`)
+        return server.get(`/${CURRENT_VERSION_URI}/events/current-verified`)
             .expect(200)
             .then(async (response) => {
                 // should only get back 2 of the three events
@@ -251,7 +251,7 @@ describe('CurrentEvents (e2e)', () => {
         const dbEvent = await createEvent(
             generateEvent(eventModel, venue.id, true), [futureTime]);
 
-        return server.get(`/${CURRENT_VERSION_URI}/current-events/verified`)
+        return server.get(`/${CURRENT_VERSION_URI}/events/current-verified`)
             .expect(200)
             .then(async (response) => {
                 // should only get back 2 of the three events

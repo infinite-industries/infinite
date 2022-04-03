@@ -44,6 +44,12 @@ export class EventsController {
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = []
     ): Promise<EventsResponse> {
+        if (typeof embed === 'string') {
+            embed = [embed, 'DATE_TIME']
+        } else {
+            embed.push('DATE_TIME')
+        }
+
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
             where: {
