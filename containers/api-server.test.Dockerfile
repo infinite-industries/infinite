@@ -1,4 +1,4 @@
-FROM node:fermium-alpine
+FROM node:gallium
 
 ENV BITLY_TOKEN = ''
 ENV INFINITE_PEM_FILE_CONTENTS = ''
