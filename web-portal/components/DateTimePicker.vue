@@ -182,6 +182,11 @@
   export default {
     name: 'DateTimePicker',
     props: {
+      mode: {
+        type: String,
+        default: 'upload',
+        validator: value => value === 'upload' || value === 'edit'
+      },
       value: {
         type: Array,
         default: () => []
@@ -214,7 +219,9 @@
     },
     methods: {
       AllowedDates: function (val) {
-        if (moment(val).isSameOrAfter(moment().subtract(1, 'd'))) return val
+        // in edit mode, anything goes
+        // otherwise, disallow days in the past
+        return this.mode === 'edit' || moment(val).isSameOrAfter(moment().subtract(1, 'd'))
       },
 
       /* Converts start and end times stored in data to formatted strings for display in the ui */
@@ -335,6 +342,14 @@
         const temp_date_time = moment(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`,
                                       dateTimePickerFormat, clientTimeZone)
 
+        // if start is PM and end is AM, event crosses into the next day
+        // move end time to the next day
+        // TODO: this doesn't handle all cases where start > end, particularly
+        // when you want to do e.g. 10AM - 2AM (next day)
+        // TRY (copied from dead code in SubmissionForm):
+        // if (moment(eventDate.time_end).isBefore(moment(eventDate.time_start))) {
+        //   eventDate.time_end = moment(eventDate.time_end).add(1, 'd').format('YYYY-MM-DD HH:mm:ss')
+        // }
         if ((this.start_ampm === 'pm') && (this.end_ampm === 'am')) {
           return moment(temp_date_time).add(1, 'd')
         } else {

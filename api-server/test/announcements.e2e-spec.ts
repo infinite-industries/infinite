@@ -14,10 +14,9 @@ import {CreateOrUpdateAnnouncementRequest} from "../src/announcements/dto/create
 import generateAnnouncementRequest from "./fakers/announcement.faker";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
 import {v4 as uuidv4} from 'uuid';
+import {PORT} from "../src/constants";
 
-
-const APP_PORT = process.env.PORT || 3003;
-const server = request('http://localhost:' + APP_PORT);
+const server = request('http://localhost:' + PORT);
 
 let appUnderTest: ChildProcessWithoutNullStreams;
 let dbContainer: StartedTestContainer;

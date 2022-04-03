@@ -10,7 +10,8 @@
 
 <script>
   import SubmissionForm from '@/components/SubmissionForm.vue'
-  // import { ApiService } from '../services/ApiService'
+  import { FETCH_ACTIVE_VENUES } from '../../../store/venues'
+  import getToken from '../../../helpers/getToken'
 
   export default {
     props: [
@@ -33,11 +34,11 @@
       }
     },
     fetch: function ({ store, params, app }) {
-      const idToken = app.$auth.$storage.getState('_token.auth0')
+      const idToken = getToken(app.$auth)
 
       return Promise.all([
         store.dispatch('admin/LoadEvent', { id: params.id, idToken }),
-        store.dispatch('LoadAllVenueData')
+        store.dispatch(FETCH_ACTIVE_VENUES)
       ])
     },
     components: {

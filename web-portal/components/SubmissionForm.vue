@@ -22,19 +22,19 @@
       <v-layout row wrap>
         <v-flex xs0 sm3></v-flex>
         <v-flex xs12 sm4 md3>
-          <v-checkbox v-model="eventIsRemote" label="Live Remote Event" />
+          <v-checkbox v-model="eventIsRemote" label="Online Event" />
         </v-flex>
         <v-flex xs12 sm4 md4>
-          <v-checkbox v-model="eventIsOnline" label="Online Resource / Project" @change="onOnlineChange" />
+          <v-checkbox v-model="eventIsOnline" label="Online Resource / Long-term Project" @change="onOnlineChange" />
         </v-flex>
         <v-flex xs8 offset-xs3>
-          <em>Live remote events occur at a particular time. Online Resources are available at any time.</em>
+          <em>Online events occur at a particular time. Online Resources are always available (like a website or a link to a video).</em>
         </v-flex>
       </v-layout>
 
       <v-expansion-panel expand v-model="showDateTimePicker">
         <v-expansion-panel-content>
-          <date-time-picker v-model="calendar_event.date_times" />
+          <date-time-picker v-model="calendar_event.date_times" :mode="user_action" />
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -65,7 +65,7 @@
       </v-layout>
 
       <!-- Event Social Image -->
-      <v-layout row wrap>
+      <!-- <v-layout row wrap>
         <v-flex xs12 sm3>
           <h3 class="form-label">Social Media Image:</h3>
         </v-flex>
@@ -94,7 +94,7 @@
         </v-flex>
       </v-layout>
 
-      <p><br></p>
+      <p><br></p> -->
 
       <!-- Venue -->
       <v-layout row wrap>
@@ -229,8 +229,8 @@
               :flat="false"
               :outline="!eventRequiredFields"
               depressed
-              @click="UploadEvent()"
-            >Submit Event</v-btn>
+              @click="e => e.shiftKey ? UploadEvent() : PreviewEvent()"
+            >Preview Event</v-btn>
           </div>
         </v-flex>
 
@@ -278,26 +278,10 @@
       </v-dialog>
 
       <!-- Submission error -->
-      <div class="collapsible-content" ref="submitError" :class="{ 'expanded': showSubmitError }">
+      <div class="collapsible-content submission-error" ref="submitError" :class="{ 'expanded': showSubmitError }">
         <h3 style="text-align: center">
           Hmmm... something went wrong :( Can you ping the management at <a href="mailto:info@infinite.industries">info@infinite.industries</a>?
         </h3>
-      </div>
-
-      <!-- Promo tools -->
-      <div class="collapsible-content" ref="promoTools" :class="{'expanded': showPromoTools}" style="margin-top: 10px">
-
-        <h3 style="text-align: center">Thank you! Your event should be out of review and on our site within 24 hours.</h3>
-
-        <h1>Event Promotion Tools:</h1>
-        <p>
-          Here is a summary of the information that you have entered for your event. We know that you need to send
-          a bunch of emails for event promo and want to make this task easier. You can copy and paste the text below into your favorite email setup.
-          If you have any suggestions for additional features to make your life easier just reach out to us at info[@]infinite[d0t]industries
-        </p>
-        <client-only>
-          <vue-editor id="vue-editor2" v-model="promoHTML"></vue-editor>
-        </client-only>
       </div>
 
     </v-container>
@@ -307,18 +291,13 @@
 </template>
 
 <script>
-  import VueScrollTo from 'vue-scrollto'
   import isEqual from 'lodash.isequal'
-  import moment from 'moment'
-  // import VueEditor from 'vue2-editor'
-
   import VenuePicker from './VenuePicker.vue'
   import DateTimePicker from './DateTimePicker.vue'
   import AddNewVenue from './AddNewVenue.vue'
-  // import uploadcare from 'uploadcare-widget'
-
   import { ApiService } from '@/services/ApiService'
   import ImageUploadService from '@/services/ImageUploadService'
+  import getToken from '../helpers/getToken'
 
   const CONTROL_TAGS = ['remote', 'online-resource', 'postponed', 'cancelled']
 
@@ -347,9 +326,7 @@
         calendar_event: null,
         imageChosen: false,
         socialImageChosen: false,
-        showPromoTools: false,
         showSubmitError: false,
-        promoHTML: '',
         eventSubmitted: false,
         content: '',
         showEventLoadingSpinner: false,
@@ -374,12 +351,12 @@
         new Promise((resolve, reject) => {
           // if new images have been selected, upload them
           if (
-            this.$refs.eventImage.files.length > 0 ||
-            this.$refs.eventSocialImage.files.length > 0
+            this.$refs.eventImage.files.length > 0
+            // || this.$refs.eventSocialImage.files.length > 0
           ) {
             ImageUploadService.forEvent(
-              this.$refs.eventImage.files[0],
-              this.$refs.eventSocialImage.files[0]
+              this.$refs.eventImage.files[0]
+              // this.$refs.eventSocialImage.files[0]
             ).then(resolve).catch(reject)
           } else resolve({})
         }).then((response) => {
@@ -391,7 +368,7 @@
           this.$store.dispatch('admin/UpdateEvent', {
             id: this.calendar_event.id,
             event_data: this.calendar_event,
-            idToken: this.$auth.$storage.getState('_token.auth0')
+            idToken: getToken(this.$auth)
           }).finally(() => { this.showEventLoadingSpinner = false })
         }).catch((error) => {
           console.error(error)
@@ -406,7 +383,7 @@
         this.showEventLoadingSpinner = true
         this.$store.dispatch('admin/DeleteEvent', {
           id: this.calendar_event.id,
-          idToken: this.$auth.$storage.getState('_token.auth0')
+          idToken: getToken(this.$auth)
         })
           .then(() => { this.$router.push('/admin') })
           .finally(() => { this.showEventLoadingSpinner = false })
@@ -418,7 +395,7 @@
 
         this.$store.dispatch('admin/VerifyEvent', {
           id: this.calendar_event.id,
-          idToken: this.$auth.$storage.getState('_token.auth0')
+          idToken: getToken(this.$auth)
         })
           .then(() => {
             this.showEventLoadingSpinner = false
@@ -434,13 +411,16 @@
             this.showEventLoadingSpinner = false
           })
       },
+      PreviewEvent: function () {
+        const event = { ...this.calendar_event }
+        event.venue = event.venue_id ? this.venues.find(v => v.id === event.venue_id) : null
+        ImageUploadService.asDataUrl(this.$refs.eventImage.files[0]).then((imageUrl) => {
+          event.image = imageUrl
+          this.$emit('preview', event)
+        })
+      },
       UploadEvent: function () {
         console.log('Uploading: -------- :\n' + JSON.stringify(this.calendar_event))
-
-        // this.adjustTimeEnd(this.calendar_event);
-        // this.calendar_event.additional_dates.forEach( eventDate => {
-        //   this.adjustTimeEnd(eventDate);
-        // })
 
         this.showEventLoadingSpinner = true
         this.eventSubmitted = true // to disable button and prevent multiple submissions
@@ -453,8 +433,8 @@
         }
 
         ImageUploadService.forEvent(
-          this.$refs.eventImage.files[0],
-          this.$refs.eventSocialImage.files[0]
+          this.$refs.eventImage.files[0]
+          // this.$refs.eventSocialImage.files[0]
         ).then((response) => {
           event.image = response.data.hero
           if (response.data.social) event.social_image = response.data.social
@@ -462,16 +442,13 @@
           return ApiService.post('/events', event)
         }).then((response) => {
           this.showEventLoadingSpinner = false
-          this.showPromoTools = true
           console.log('GOT BACK - ' + JSON.stringify(response.data))
-          this.parseEventToHTML(event, response.data.id)
-
-          VueScrollTo.scrollTo(this.$refs.promoTools)
+          this.$emit('submitted')
         }).catch((error) => {
           console.log(error)
           this.showEventLoadingSpinner = false
           this.eventSubmitted = false
-          this.showSubmitError = true
+          this.$emit('error')
         })
       },
       selectVenue: function (venue) {
@@ -490,51 +467,6 @@
       sendEmails: function () {
         console.log('Allan please send emails.') // Who is Allan?
       },
-      // for use in promo tools. Takes an event object and makes it into pretty html
-      parseEventToHTML: async function (ii_event, ii_event_id) {
-        let venueResp
-        let venue
-
-        try {
-          // TODO: shouldn't be necessary to pull this from server
-          venueResp = await ApiService.get(`/venues/${ii_event.venue_id}`)
-          venue = venueResp.data && venueResp.data.venue
-        } catch (ex) {
-          console.error(`could not fetch venue ${ii_event.venue_id}: "${ex}"`)
-        }
-
-        const clientTimeZone = moment.tz.guess()
-        const dateTimeStorageFormat = moment.ISO_8601
-
-        const strWhen = ii_event.date_times.map((dtEntry) => {
-          const when_date = moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
-            .format('dddd, MMMM Do, YYYY')
-          const when_time = moment.tz(dtEntry.start_time, dateTimeStorageFormat, clientTimeZone)
-            .format('h:mma')
-
-          const end_time = moment.tz(dtEntry.end_time, dateTimeStorageFormat, clientTimeZone)
-            .format('h:mma')
-
-          return `${when_date} - ${when_time} to ${end_time}`
-        }).join('; ')
-
-        const publicUrl = process.env.APP_URL + '/events/' + ii_event_id
-
-        this.promoHTML = `<h2>${ii_event.title}</h2>`
-        this.promoHTML += `<p><b>When: </b>${strWhen}</p>`
-        this.promoHTML += `<p><b>Location: </b>${venue ? venue.address : 'none'}</p> <p><br></p>`
-        this.promoHTML += `<img src="${ii_event.image}" width="450px" height="auto">`
-
-        this.promoHTML += `<p><b>Admission: </b>${(ii_event.admission_fee || 'none')}</p>`
-
-        this.promoHTML += `<p><b>Description: </b>${(ii_event.description || '')}</p>`
-        // TODO: change this back to bitly link later, maybe
-        // this.promoHTML += `<p><b>Link for More Info: </b><a href="${ii_event.bitly_link}">${ii_event.bitly_link}</a></p>`
-        this.promoHTML += `<p><b>Link for More Info: </b><a href="${publicUrl}">${publicUrl}</a></p>`
-        this.promoHTML += `<p><b>Organizer Contact: </b>${ii_event.organizer_contact}</p>`
-
-      // console.log(this.promoHTML)
-      },
       onOnlineChange: function () {
         if (this.eventIsOnline) {
           this.calendar_event.date_times = []
@@ -544,9 +476,10 @@
         // files.length will be a 0 for no image, 1 for image
         if (type === 'event') {
           this.imageChosen = this.$refs.eventImage.files.length
-        } else if (type === 'social') {
-          this.socialImageChosen = this.$refs.eventSocialImage.files.length
         }
+        // } else if (type === 'social') {
+        //   this.socialImageChosen = this.$refs.eventSocialImage.files.length
+        // }
       },
       onFileClear: function (type) {
         if (type === 'event') {
@@ -579,22 +512,16 @@
         if (this.calendar_event.additional_dates.length === 0) {
           this.calendar_event.multi_day = false
         }
-      },
-      adjustTimeEnd: function (eventDate) {
-        // if time_end is before time_start, assume that time_end should be during the next calendar day
-        if (moment(eventDate.time_end).isBefore(moment(eventDate.time_start))) {
-          eventDate.time_end = moment(eventDate.time_end).add(1, 'd').format('YYYY-MM-DD HH:mm:ss')
-        }
       }
     },
 
     computed: {
       venues: function () {
-        if (!this.$store.getters.GetAllVenues) {
+        if (!this.$store.getters.GetActiveVenues) {
           return []
         }
 
-        return this.$store.getters.GetAllVenues
+        return this.$store.getters.GetActiveVenues
       },
 
       eventIsRemote: boolToTag('remote'),

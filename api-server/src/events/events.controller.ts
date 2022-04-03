@@ -1,6 +1,6 @@
 import {Body, Controller, Get, Param, Post, Query, Req, UseGuards} from "@nestjs/common";
 import {EventsService} from "./events.service";
-import {Event} from "./models/event.model";
+import {EventModel} from "./models/event.model";
 import {AuthGuard} from "../authentication/auth.guard";
 import { Inject, LoggerService } from "@nestjs/common";
 import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
@@ -16,10 +16,11 @@ import {Request} from "express";
 import {removeSensitiveDataForNonAdmins} from "../authentication/filters/remove-sensitive-data-for-non-admins";
 import FindByIdParams from "../dto/find-by-id-params";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
+import {eventModelToEventDTO} from "./dto/eventModelToEventDTO";
+import EventDTO from "./dto/eventDTO";
+import {ENV} from "../constants";
 
 require('dotenv').config()
-
-const env = process.env.ENV || 'dev'
 
 @Controller(`${VERSION_1_URI}/events`)
 @ApiTags('events')
@@ -81,13 +82,13 @@ export class EventsController {
         @Req() request: Request
     ): Promise<SingleEventResponse> {
         const id = params.id
-        const findOptions  = getOptionsForEventsServiceFromEmbedsQueryParam(embed)
+        const findOptions  = getOptionsForEventsServiceFromEmbedsQueryParam(embed);
 
         return this.eventsService.findById(id, findOptions)
             .then(event => Promise.resolve(event))
+            .then(eventModelToEventDTO)
             .then(event => removeSensitiveDataForNonAdmins(request, event))
-            .then(event =>  Promise.resolve(event))
-            .then((event: Event) => ({ event, status: 'success' }))
+            .then((event: EventDTO) => ({ event, status: 'success' }))
     }
 
     @Get()
@@ -110,7 +111,7 @@ export class EventsController {
 
     @Post()
     @ApiOperation({summary: 'Create a new event. It will be initially un-verified'})
-    async createUnverifiedEvent(@Body() newEvent: CreateEventRequest): Promise<Event> {
+    async createUnverifiedEvent(@Body() newEvent: CreateEventRequest): Promise<EventModel> {
         const eventWithDateTimesInISOFormat = mapDateTimesToIso<CreateEventRequest>(newEvent, CreateEventRequest)
 
         const submissionResult = await this.eventsService.create(eventWithDateTimesInISOFormat)
@@ -120,13 +121,13 @@ export class EventsController {
         return submissionResult
     }
 
-    private notifyViaSlackAboutNewEvent(newEvent: Event) {
+    private notifyViaSlackAboutNewEvent(newEvent: EventModel) {
         try {
 
             const eventPojo = (newEvent as any ).dataValues
 
             const eventData: string = JSON.stringify(eventPojo, null, 4)
-            const messagePrefix = `(${env}) Review Me. Copy Me. Paste Me. Deploy Me. Love Me.:\n`
+            const messagePrefix = `(${ENV}) Review Me. Copy Me. Paste Me. Deploy Me. Love Me.:\n`
             const message = eventData + messagePrefix
 
             this.slackNotificationService.sendNotification(EVENT_SUBMIT, message)

@@ -34,6 +34,21 @@ export default class VenuesAuthenticatedController {
             .then(venue => new SingleVenueResponse({ venue }));
     }
 
+    @Put('/:id/activate')
+    @Header('content-type', 'application/json')
+    @ApiOperation({summary: 'undoes a soft delete of an existing venue'})
+    @ApiResponse({
+        status: 200,
+        description: 'state of the reactivated venue',
+        type: SingleVenueResponse
+    })
+    public reactivateVenue(@Param() params: FindByIdParams): Promise<SingleVenueResponse> {
+        const { id } = params;
+
+        return this.venuesService.reactivate(id)
+            .then(venue => new SingleVenueResponse({ venue }));
+    }
+
     @Put('/:id')
     @Header('content-type', 'application/json')
     @ApiOperation({summary: 'updates an existing venue'})

@@ -1,14 +1,12 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import registerSwaggerDocsModule from "./registerSwaggerDocsModule";
-import {isNullOrUndefined} from "./utils";
 import {ValidationPipe} from "@nestjs/common";
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
-require('dotenv').config();
+import {AUTH_USE_TEST_USERS, AUTH_USE_TEST_USERS_WARNING, PORT, ENV} from "./constants";
 
-const DEFAULT_PORT = 3000;
-const PORT = isNullOrUndefined(process.env.PORT) ? DEFAULT_PORT : process.env.PORT;
+require('dotenv').config();
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -34,6 +32,15 @@ async function bootstrap() {
     await app.listen(PORT);
 
     console.info('application listening on port ', PORT);
+
+    if (AUTH_USE_TEST_USERS) {
+        if (ENV === 'prod' || ENV === 'production') {
+            console.error('You should not start this service in production with AUTH_USE_TEST_USERS set')
+            process.exit(1)
+        }
+
+        console.warn(AUTH_USE_TEST_USERS_WARNING)
+    }
 }
 
 bootstrap();

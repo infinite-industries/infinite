@@ -14,7 +14,7 @@ async function startApplication(dbPort: number): Promise<ChildProcessWithoutNull
 
     const testPem = './test-keys/1nfinite_testing_rsa256.rsa'
 
-    const appUnderTest = spawn('node', [__dirname + '/../../../dist/main'],  {
+    const appUnderTest = spawn('node', [__dirname + '/../../../dist/src/main.js'],  {
         env: {
             ...process.env,
             DB_HOST,

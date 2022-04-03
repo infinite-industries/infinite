@@ -9,7 +9,7 @@ export const state = () => {
 }
 
 const CURRENT_EVENTS_VERIFIED_PATH = '/current-events/verified'
-const EVENTS_NON_VERIFIED_PATH = '/events/non-verified'
+const EVENTS_NON_VERIFIED_PATH = '/events/non-verified?embed=DATE_TIME'
 
 export const getters = {
   GetUnverifiedEvents: (state, getters) => {
@@ -43,8 +43,6 @@ export const actions = {
 
     ApiService.get(EVENTS_NON_VERIFIED_PATH, idToken).then(
       (currentNonVerifiedEventsResponse) => {
-        console.log('data from server: ', currentNonVerifiedEventsResponse.data.events)
-
         if (isResponseSuccess(currentNonVerifiedEventsResponse)) {
           const currentNonVerifiedEvents = currentNonVerifiedEventsResponse.data.events
           context.commit('POPULATE_UNVERIFIED_LIST', currentNonVerifiedEvents)
@@ -122,7 +120,6 @@ export const actions = {
 
     return ApiService.delete(`/authenticated/events/${payload.id}`, idToken)
       .then(function (_response) {
-        console.log('Trying to delete event \n data from server: ', _response.data.events)
         if (_response.data.status !== 'success') {
           context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Unable to delete the event' }, { root: true })
         }

@@ -1,23 +1,24 @@
 import {
-    BelongsTo,
+    BelongsToMany,
     Column,
     DataType,
-    ForeignKey,
+    ForeignKey, HasMany,
     IsUUID,
     Model,
     PrimaryKey,
     Table
-} from "sequelize-typescript";
+} from 'sequelize-typescript';
 import {VenueModel} from "../../venues/models/venue.model";
 import {ApiProperty} from "@nestjs/swagger";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
+import { DatetimeVenueModel } from './datetime-venue.model';
 
 const EXAMPLE_DATE = new Date();
 const EXAMPLE_START_DATE = new Date(new Date().setDate(new Date().getHours() + 1));
 const EXAMPLE_END_DATE = new Date(new Date().setDate(new Date().getHours() + 2));
 
 @Table({tableName: 'events'})
-export class Event extends Model<Event> {
+export class EventModel extends Model<EventModel> {
     @IsUUID(4)
     @PrimaryKey
     @Column
@@ -109,10 +110,6 @@ export class Event extends Model<Event> {
     @ApiProperty({example: 'radio-mc-radio-station'})
     reviewed_by_org: boolean;
 
-    @Column(DataType.JSONB)
-    @ApiProperty({example: [{start_time: EXAMPLE_START_DATE, end_time: EXAMPLE_END_DATE}]})
-    date_times: StartEndTimePairs[];
-
     @Column(DataType.ARRAY(DataType.STRING))
     @ApiProperty({example: ['remote']})
     tags: Array<string>;
@@ -121,6 +118,12 @@ export class Event extends Model<Event> {
     @ApiProperty({example: []})
     links: Array<string>;
 
-    @BelongsTo(() => VenueModel)
-    venue: VenueModel;
+    // @BelongsTo(() => VenueModel)
+    // venue: VenueModel;
+
+    @HasMany(() => DatetimeVenueModel)
+    date_times: DatetimeVenueModel []
+
+    @BelongsToMany(() => VenueModel, () => DatetimeVenueModel)
+    venues: VenueModel[]
 }

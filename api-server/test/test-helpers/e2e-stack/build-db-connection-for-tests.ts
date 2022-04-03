@@ -3,15 +3,16 @@ import {SequelizeModule} from "@nestjs/sequelize";
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME} from "./start-database";
 import {CurrentEvent} from "../../../src/current-events/models/current-event.model";
 import {VenueModel} from "../../../src/venues/models/venue.model";
-import {Event} from "../../../src/events/models/event.model";
+import {EventModel} from "../../../src/events/models/event.model";
 import {EventsService} from "../../../src/events/events.service";
 import {VenuesService} from "../../../src/venues/venues.service";
 import {CurrentEventsService} from "../../../src/current-events/current-events.service";
 import {AnnouncementModel} from "../../../src/announcements/models/announcement.model";
 import {AnnouncementsService} from "../../../src/announcements/announcements.service";
-import BitlyService from "../../../dist/events/bitly.service";
+import BitlyService from "../../../src/events/bitly.service"
 import {WinstonModule} from "nest-winston";
 import {format, transports} from "winston";
+import { DatetimeVenueModel } from '../../../src/events/models/datetime-venue.model';
 
 const NUXT_INTERNAL_POSTFIX = 'Repository'
 
@@ -27,9 +28,9 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
                 username: DB_USERNAME,
                 password: DB_PASSWORD,
                 database: DB_NAME,
-                models: [CurrentEvent, VenueModel, Event, AnnouncementModel]
+                models: [CurrentEvent, VenueModel, EventModel, AnnouncementModel, DatetimeVenueModel]
             }),
-            SequelizeModule.forFeature([Event, VenueModel, CurrentEvent, AnnouncementModel]),
+            SequelizeModule.forFeature([EventModel, VenueModel, CurrentEvent, AnnouncementModel, DatetimeVenueModel]),
             WinstonModule.forRoot({
                 transports: [
                     // TODO: should we factor this out into a secondary file?
@@ -55,13 +56,15 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
         ]
     }).compile();
 
-    const eventModel = testingModule.get(`Event${NUXT_INTERNAL_POSTFIX}`) as typeof Event;
+    const eventModel = testingModule.get(`EventModel${NUXT_INTERNAL_POSTFIX}`) as typeof EventModel;
     const venueModel = testingModule.get(`VenueModel${NUXT_INTERNAL_POSTFIX}`) as typeof VenueModel;
     const announcementModel = testingModule.get(`AnnouncementModel${NUXT_INTERNAL_POSTFIX}`) as typeof AnnouncementModel;
+    const datetimeVenueModel = testingModule.get(`DatetimeVenueModel${NUXT_INTERNAL_POSTFIX}`) as typeof DatetimeVenueModel;
 
     return {
         eventModel,
         venueModel,
+        datetimeVenueModel,
         announcementModel,
         testingModule
     };
@@ -70,8 +73,9 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
 export default buildDbConnectionsForTests;
 
 export type DatabaseModels = {
-    eventModel: typeof Event,
+    eventModel: typeof EventModel,
     venueModel: typeof VenueModel,
+    datetimeVenueModel: typeof DatetimeVenueModel,
     announcementModel: typeof AnnouncementModel,
     testingModule: TestingModule
 }

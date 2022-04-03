@@ -11,7 +11,8 @@ Widget for embedding events from the Infinite Industries platform on a website.
   (note that while duplicate IDs on elements are usually frowned on, the widget has been set up to support it)
 - Add these (optional) attributes to the container element(s):
   - `data-widget-title`
-  - `data-cards-per-page` (controls the number of events that will appear at a time)
+  - `data-cards-per-page` (controls the number of events that will appear at a time; use `*` to compute based on the size of the window)
+  - `data-rows-per-page` (when using `data-cards-per-page="*"`, controls the number of rows that will be rendered on a page; has no effect when `data-cards-per-page` is a number)
   - `data-event-id` (if set to a valid event ID, will cause the widget to display a single card for that event only)
 - Add this script, replacing `1.0` with the version you want to use:
 

@@ -1,29 +1,37 @@
-require('dotenv').config();
+/* eslint-disable @typescript-eslint/no-var-requires */
+const {
+  DB_USER_NAME,
+  DB_PASSWORD,
+  DB_NAME,
+  DB_HOST,
+  DB_PORT,
+  SQL_IS_USING_SSL,
+  SEQUELIZE_LOGGING
+} = require(__dirname + "/../src/db_constants.js");
+
+const dialectOptions = SQL_IS_USING_SSL ?
+    {
+      ssl: {
+        require: true
+      }
+    }
+    : undefined;
+
+
+const options = {
+  logging: SEQUELIZE_LOGGING ? console.log : undefined,
+  username: DB_USER_NAME,
+  password: DB_PASSWORD,
+  database: DB_NAME,
+  host: DB_HOST,
+  port: DB_PORT,
+  dialect: "postgres",
+  ssl: SQL_IS_USING_SSL,
+  dialectOptions
+};
 
 module.exports = {
-  "development": {
-    //logging: console.log, # Uncomment this to output
-    "username": process.env.DB_USER_NAME,
-    "password": process.env.DB_PASSWORD,
-    "database": process.env.DB_NAME,
-    "host": process.env.DB_HOST,
-    "port": process.env.DB_PORT,
-    "dialect": "postgres"
-  },
-  "test": {
-    "username": process.env.DB_USER_NAME,
-    "password": process.env.DB_PASSWORD,
-    "database": process.env.DB_NAME,
-    "host": process.env.DB_HOST,
-    "port": process.env.DB_PORT,
-    "dialect": "postgres"
-  },
-  "production": {
-    "username": process.env.DB_USER_NAME,
-    "password": process.env.DB_PASSWORD,
-    "database": process.env.DB_NAME,
-    "host": process.env.DB_HOST,
-    "port": process.env.DB_PORT,
-    "dialect": "postgres"
-  }
-}
+  development: options,
+  test: options,
+  production: options
+};

@@ -10,4 +10,13 @@ export default class ImageUploadService {
     if (socialImage) data.append('social', socialImage)
     return axios.post(URL, data)
   }
+
+  static asDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.addEventListener('load', e => resolve(e.target.result))
+      reader.addEventListener('error', e => reject(e))
+      reader.readAsDataURL(file)
+    })
+  }
 }

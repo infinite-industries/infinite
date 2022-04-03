@@ -1,0 +1,97 @@
+name: Cypress E2E Tests
+
+on:
+  pull_request:
+    branches:
+      - development
+      - master
+    paths:
+      - 'api-server/**'
+      - 'web-portal/**'
+      - 'e2e-tests/**'
+  push:
+    branches:
+      - development
+      - master
+    paths:
+      - 'api-server/**'
+      - 'web-portal/**'
+      - 'e2e-tests/**'
+
+jobs:
+  cypress-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - name: Check Node version
+        run: |
+          node --version
+          npm --version
+      - name: Install API Server Dependencies
+        run: npm ci
+        working-directory: './api-server'
+      - name: Install Web Portal Dependencies
+        run: npm ci
+        working-directory: './web-portal'
+      - name: Install Cypress
+        run: npm ci --production
+        working-directory: './e2e-tests'
+      - name: Prepare environment
+        run: |
+          touch .env.test
+      - name: Start stack
+        run: ./startAll.sh test
+      - name: Wait for stack to start
+        run: |
+          ./wait-for-stack.sh
+        working-directory: './e2e-tests'
+      - name: List containers for troubleshooting
+        if: ${{ always() }}
+        run: |
+          docker ps
+      - name: Seed venues
+        run: |
+          npm run db:seed:venues
+        working-directory: './api-server'
+        env:
+          # these values come from the docker-compose.test.yml file
+          DB_HOST: localhost
+          DB_NAME: infinite-api
+          DB_USER_NAME: infinite
+          DB_PASSWORD: xxx
+          DB_PORT: 5432
+      - name: Run Cypress
+        run: |
+          echo "{\"admin_auth_username\":\"$ENV_US\",\"admin_auth_password\":\"$ENV_PW\"}" > cypress.env.json
+          npm start
+        working-directory: './e2e-tests'
+        env:
+          ENV_US: "test"
+          ENV_PW: "xxx"
+      - name: Save Cypress artifacts
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: cypress-artifacts
+          path: |
+            e2e-tests/screenshots
+            e2e-tests/videos
+          retention-days: 14 # this gives us two weeks to troubleshoot
+      - name: Dump the container logs for troubleshooting
+        if: ${{ failure() }}
+        run: |
+          docker logs $(docker ps --filter name=infinite_web-portal --format "{{.ID}}") &> ./web-portal.log
+          docker logs $(docker ps --filter name=infinite_api-server --format "{{.ID}}") &> ./api-server.log
+      - name: Save log artifacts
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: docker-artifacts
+          path: |
+            *.log
+          retention-days: 14
