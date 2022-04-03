@@ -2,7 +2,7 @@ import {
     BelongsToMany,
     Column,
     DataType,
-    ForeignKey, HasMany,
+    ForeignKey, HasMany, HasOne,
     IsUUID,
     Model,
     PrimaryKey,
@@ -12,6 +12,7 @@ import {VenueModel} from "../../venues/models/venue.model";
 import {ApiProperty} from "@nestjs/swagger";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 import { DatetimeVenueModel } from './datetime-venue.model';
+import {EventAdminMetadataModel} from "./event-admin-metadata.model";
 
 const EXAMPLE_DATE = new Date();
 const EXAMPLE_START_DATE = new Date(new Date().setDate(new Date().getHours() + 1));
@@ -126,4 +127,7 @@ export class EventModel extends Model<EventModel> {
 
     @BelongsToMany(() => VenueModel, () => DatetimeVenueModel)
     venues: VenueModel[]
+
+    @HasOne(() => EventAdminMetadataModel)
+    event_admin_meta_data?: EventAdminMetadataModel
 }
