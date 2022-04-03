@@ -76,6 +76,11 @@ export default {
     ],
     script: [
       {
+        src: '/internal-api/env.js',
+        body: false,
+        async: false
+      },
+      {
         src: '/workers/workers.js?v=\'1.0.01\''
       }
     ]
@@ -191,6 +196,10 @@ export default {
   // properties are accessed outside the Vue context, where we don't have access
   // to the new $config property
   env: {
+    APP_URL: process.env.APP_URL,
+    API_URL: process.env.API_URL
+  },
+  publicRuntimeConfig: {
     APP_URL: process.env.APP_URL,
     API_URL: process.env.API_URL
   }

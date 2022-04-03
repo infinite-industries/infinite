@@ -1,10 +1,13 @@
 FROM node:gallium
 
-ADD containers/api-server.test.docker-scripts /scripts
-ADD api-server /api-server
+ADD ./ /api-server
 WORKDIR /api-server
+
+RUN npm install -g npm@8.6.0
 
 RUN npm ci
 RUN npm run build
 
-ENTRYPOINT run start
+EXPOSE 3003
+
+ENTRYPOINT npm run start

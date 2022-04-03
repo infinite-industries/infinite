@@ -109,6 +109,8 @@ export const actions = {
   },
 
   LoadAllUserData: (context, payload) => {
+    console.log('!!! LoadAllUserData: ' + context.config.API_URL)
+
     return ApiService.get('/users/current', payload.idToken)
       .then(function (_response) {
         context.commit('UPDATE_USER_DATA', _response.data)
@@ -116,6 +118,7 @@ export const actions = {
   },
 
   LoadAllLocalEventData: (context) => {
+    console.log('!!! LoadAllLocalEventData: ' + this.config.API_URL)
     context.commit('SET_LOADING_STATUS', true)
     return ApiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
       .then((_response) => {
