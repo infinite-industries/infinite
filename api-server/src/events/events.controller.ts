@@ -1,3 +1,5 @@
+import * as moment from 'moment';
+import { Op } from "sequelize";
 import {Body, Controller, Get, Param, Post, Query, Req, UseGuards} from "@nestjs/common";
 import {EventsService} from "./events.service";
 import {EventModel} from "./models/event.model";
@@ -31,6 +33,34 @@ export class EventsController {
         @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService
     ) {}
 
+    @Get('current-verified')
+    @ApiOperation({ summary: 'Get current events that have been verified (for public consumptions)' })
+    @ApiResponse({
+        status: 200,
+        description: 'current verified events',
+        type: EventsResponse
+    })
+    getAllCurrentVerified(
+        @Query('embed') embed: string[] | string = [],
+        @Query('tags') tags: string[] | string = []
+    ): Promise<EventsResponse> {
+        const findOptions = {
+            ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+            where: {
+                [Op.and]: [
+                    getCommonQueryTermsForEvents(true, tags),
+                    {
+                        "$date_times.end_time$": {
+                            [Op.gte]: moment().subtract(2, 'hours').toDate()
+                        }
+                    }
+                ]
+            }
+        };
+
+        return this.eventsService.findAll(findOptions)
+            .then(events => new EventsResponse({ events }));
+    }
 
     @Get('verified')
     @ApiOperation({summary: 'Get all events that have been verified (for public consumptions)'})
