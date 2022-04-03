@@ -121,7 +121,12 @@ export class EventsController {
         @Req() request: Request
     ): Promise<SingleEventResponse> {
         const id = params.id
-        const findOptions = getOptionsForEventsServiceFromEmbedsQueryParam(embed);
+        const findOptions = {
+            ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+            order: [
+                literal('date_times.start_time ASC')
+            ]
+        };
 
         return this.eventsService.findById(id, findOptions)
             .then(event => Promise.resolve(event))
