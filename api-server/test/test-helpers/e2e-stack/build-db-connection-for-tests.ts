@@ -13,6 +13,7 @@ import BitlyService from "../../../src/events/bitly.service"
 import {WinstonModule} from "nest-winston";
 import {format, transports} from "winston";
 import { DatetimeVenueModel } from '../../../src/events/models/datetime-venue.model';
+import {EventAdminMetadataModel} from "../../../src/events/models/event-admin-metadata.model";
 
 const NUXT_INTERNAL_POSTFIX = 'Repository'
 
@@ -28,9 +29,23 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
                 username: DB_USERNAME,
                 password: DB_PASSWORD,
                 database: DB_NAME,
-                models: [CurrentEvent, VenueModel, EventModel, AnnouncementModel, DatetimeVenueModel]
+                models: [
+                    CurrentEvent,
+                    VenueModel,
+                    EventModel,
+                    AnnouncementModel,
+                    DatetimeVenueModel,
+                    EventAdminMetadataModel
+                ]
             }),
-            SequelizeModule.forFeature([EventModel, VenueModel, CurrentEvent, AnnouncementModel, DatetimeVenueModel]),
+            SequelizeModule.forFeature([
+                EventModel,
+                VenueModel,
+                CurrentEvent,
+                AnnouncementModel,
+                DatetimeVenueModel,
+                EventAdminMetadataModel
+            ]),
             WinstonModule.forRoot({
                 transports: [
                     // TODO: should we factor this out into a secondary file?
