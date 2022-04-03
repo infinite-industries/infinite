@@ -38,6 +38,7 @@ Can be embedded in partner websites and services.
 
 + [Matthew Gidcomb](https://github.com/MatthewGidcomb)
 + [Chris Wininger](https://github.com/chriswininger)
++ [Becky Mead](https://github.com/rlmead)
 + [Dima Strakovsky](https://github.com/Digi-D)
 
 #### Past Contributors
