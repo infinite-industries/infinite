@@ -1,7 +1,7 @@
 import { ApiService } from '../services/ApiService'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
-const CURRENT_EVENTS_VERIFIED_PATH = '/current-events/verified'
+const CURRENT_EVENTS_VERIFIED_PATH = '/events/current-verified'
 const EVENTS_VERIFIED_PATH = '/events/verified'
 const EMBED_VENUE = 'embed=Venue'
 

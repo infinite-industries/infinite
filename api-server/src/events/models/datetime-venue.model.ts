@@ -1,4 +1,12 @@
-import { BelongsTo, Column, ForeignKey, HasMany, HasOne, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+  BelongsTo,
+  Column,
+  ForeignKey,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table
+} from 'sequelize-typescript';
 import { VenueModel } from '../../venues/models/venue.model';
 import { EventModel } from './event.model';
 
@@ -26,6 +34,9 @@ export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
   @Column
   optional_title: string;
 
+  @Column
+  timezone: string;
+
   @BelongsTo(() => EventModel)
   event: EventModel
 
@@ -40,4 +51,5 @@ export interface DateTimeVenueFields  {
   start_time?: Date
   end_time?: Date
   optional_title?: string
+  timezone?: string
 }

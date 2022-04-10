@@ -1,24 +1,26 @@
-import {Body, Controller, Get, Param, Post, Query, Req, UseGuards} from "@nestjs/common";
-import {EventsService} from "./events.service";
-import {EventModel} from "./models/event.model";
-import {AuthGuard} from "../authentication/auth.guard";
+import * as moment from 'moment';
+import { Op, literal } from "sequelize";
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from "@nestjs/common";
+import { EventsService } from "./events.service";
+import { EventModel } from "./models/event.model";
+import { AuthGuard } from "../authentication/auth.guard";
 import { Inject, LoggerService } from "@nestjs/common";
-import {ApiBearerAuth, ApiOperation, ApiResponse, ApiTags} from "@nestjs/swagger";
-import {VERSION_1_URI} from "../utils/versionts";
-import {getOptionsForEventsServiceFromEmbedsQueryParam} from "../utils/get-options-for-events-service-from-embeds-query-param";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { VERSION_1_URI } from "../utils/versionts";
+import { getOptionsForEventsServiceFromEmbedsQueryParam } from "../utils/get-options-for-events-service-from-embeds-query-param";
 import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
-import {mapDateTimesToIso} from "../utils/map-date-times-to-iso";
-import {CreateEventRequest} from "./dto/create-event-request";
-import SlackNotificationService, {EVENT_SUBMIT} from "../notifications/slack-notification.service";
-import {EventsResponse} from "./dto/events-response";
-import {SingleEventResponse} from "./dto/single-event-response";
-import {Request} from "express";
-import {removeSensitiveDataForNonAdmins} from "../authentication/filters/remove-sensitive-data-for-non-admins";
+import { mapDateTimesToIso } from "../utils/map-date-times-to-iso";
+import { CreateEventRequest } from "./dto/create-event-request";
+import SlackNotificationService, { EVENT_SUBMIT } from "../notifications/slack-notification.service";
+import { EventsResponse } from "./dto/events-response";
+import { SingleEventResponse } from "./dto/single-event-response";
+import { Request } from "express";
+import { removeSensitiveDataForNonAdmins } from "../authentication/filters/remove-sensitive-data-for-non-admins";
 import FindByIdParams from "../dto/find-by-id-params";
 import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import {eventModelToEventDTO} from "./dto/eventModelToEventDTO";
+import { eventModelToEventDTO } from "./dto/eventModelToEventDTO";
 import EventDTO from "./dto/eventDTO";
-import {ENV} from "../constants";
+import { ENV } from "../constants";
 
 require('dotenv').config()
 
@@ -29,17 +31,54 @@ export class EventsController {
         private readonly eventsService: EventsService,
         private readonly slackNotificationService: SlackNotificationService,
         @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService
-    ) {}
+    ) { }
 
+    @Get('current-verified')
+    @ApiOperation({ summary: 'Get current events that have been verified (for public consumptions)' })
+    @ApiResponse({
+        status: 200,
+        description: 'current verified events',
+        type: EventsResponse
+    })
+    getAllCurrentVerified(
+        @Query('embed') embed: string[] | string = [],
+        @Query('tags') tags: string[] | string = []
+    ): Promise<EventsResponse> {
+        if (typeof embed === 'string') {
+            embed = [embed, 'DATE_TIME']
+        } else {
+            embed.push('DATE_TIME')
+        }
+
+        const findOptions = {
+            ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+            where: {
+                [Op.and]: [
+                    getCommonQueryTermsForEvents(true, tags),
+                    {
+                        "$date_times.end_time$": {
+                            [Op.gte]: moment().subtract(2, 'hours').toDate()
+                        }
+                    }
+                ]
+            },
+            order: [
+                literal('date_times.start_time ASC')
+            ]
+        };
+
+        return this.eventsService.findAll(findOptions)
+            .then(events => new EventsResponse({ events }));
+    }
 
     @Get('verified')
-    @ApiOperation({summary: 'Get current events that have been verified (for public consumptions)'})
+    @ApiOperation({ summary: 'Get all events that have been verified (for public consumptions)' })
     @ApiResponse({
         status: 200,
         description: 'verified events',
         type: EventsResponse
     })
-    getAllCurrentVerified(
+    getAllVerified(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = []
     ): Promise<EventsResponse> {
@@ -54,24 +93,24 @@ export class EventsController {
 
     @Get('non-verified')
     @UseGuards(AuthGuard)
-    @ApiOperation({summary: 'Get events that have not yet been verified (admin only)'})
-    @ApiResponse({status: 403, description: 'Forbidden'})
+    @ApiOperation({ summary: 'Get events that have not yet been verified (admin only)' })
+    @ApiResponse({ status: 403, description: 'Forbidden' })
     @ApiBearerAuth()
-    getAllCurrentNonVerified(
+    getAllNonVerified(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = []
     ): Promise<EventsResponse> {
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-            where: {verified: false}
+            where: { verified: false }
         };
 
         return this.eventsService.findAll(findOptions)
-            .then(events => new EventsResponse({events}));
+            .then(events => new EventsResponse({ events }));
     }
 
     @Get('/:id')
-    @ApiOperation({ summary: 'Get single event by id'})
+    @ApiOperation({ summary: 'Get single event by id' })
     @ApiResponse({
         status: 200,
         description: 'get single event',
@@ -82,7 +121,12 @@ export class EventsController {
         @Req() request: Request
     ): Promise<SingleEventResponse> {
         const id = params.id
-        const findOptions  = getOptionsForEventsServiceFromEmbedsQueryParam(embed);
+        const findOptions = {
+            ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+            order: [
+                literal('date_times.start_time ASC')
+            ]
+        };
 
         return this.eventsService.findById(id, findOptions)
             .then(event => Promise.resolve(event))
@@ -93,10 +137,10 @@ export class EventsController {
 
     @Get()
     @UseGuards(AuthGuard)
-    @ApiOperation({summary: 'Get events, both verified and non (admin only)'})
-    @ApiResponse({status: 403, description: 'Forbidden'})
+    @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
+    @ApiResponse({ status: 403, description: 'Forbidden' })
     @ApiBearerAuth()
-    getAllCurrent(
+    getAll(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = [],
     ): Promise<EventsResponse> {
@@ -110,7 +154,7 @@ export class EventsController {
     }
 
     @Post()
-    @ApiOperation({summary: 'Create a new event. It will be initially un-verified'})
+    @ApiOperation({ summary: 'Create a new event. It will be initially un-verified' })
     async createUnverifiedEvent(@Body() newEvent: CreateEventRequest): Promise<EventModel> {
         const eventWithDateTimesInISOFormat = mapDateTimesToIso<CreateEventRequest>(newEvent, CreateEventRequest)
 
@@ -124,7 +168,7 @@ export class EventsController {
     private notifyViaSlackAboutNewEvent(newEvent: EventModel) {
         try {
 
-            const eventPojo = (newEvent as any ).dataValues
+            const eventPojo = (newEvent as any).dataValues
 
             const eventData: string = JSON.stringify(eventPojo, null, 4)
             const messagePrefix = `(${ENV}) Review Me. Copy Me. Paste Me. Deploy Me. Love Me.:\n`

@@ -2,7 +2,9 @@ import {
     BelongsToMany,
     Column,
     DataType,
-    ForeignKey, HasMany, HasOne,
+    ForeignKey,
+    HasMany,
+    HasOne,
     IsUUID,
     Model,
     PrimaryKey,
@@ -10,13 +12,10 @@ import {
 } from 'sequelize-typescript';
 import {VenueModel} from "../../venues/models/venue.model";
 import {ApiProperty} from "@nestjs/swagger";
-import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 import { DatetimeVenueModel } from './datetime-venue.model';
 import {EventAdminMetadataModel} from "./event-admin-metadata.model";
 
 const EXAMPLE_DATE = new Date();
-const EXAMPLE_START_DATE = new Date(new Date().setDate(new Date().getHours() + 1));
-const EXAMPLE_END_DATE = new Date(new Date().setDate(new Date().getHours() + 2));
 
 @Table({tableName: 'events'})
 export class EventModel extends Model<EventModel> {
@@ -118,9 +117,6 @@ export class EventModel extends Model<EventModel> {
     @Column(DataType.ARRAY(DataType.STRING))
     @ApiProperty({example: []})
     links: Array<string>;
-
-    // @BelongsTo(() => VenueModel)
-    // venue: VenueModel;
 
     @HasMany(() => DatetimeVenueModel)
     date_times: DatetimeVenueModel []
