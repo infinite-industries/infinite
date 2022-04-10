@@ -11,6 +11,8 @@ import {mapDateTimesToIso} from "../utils/map-date-times-to-iso";
 import {ApiImplicitParam} from "@nestjs/swagger/dist/decorators/api-implicit-param.decorator";
 import FindByIdParams from "../dto/find-by-id-params";
 import {eventModelToEventDTO} from "./dto/eventModelToEventDTO";
+import UpsertEventAdminMetadataRequest from "./dto/upsert-event-admin-metadata-request";
+import {EventAdminMetadataListResponse, EventAdminMetadataSingleResponse} from "./dto/event-admin-metadata-response";
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
 @UseGuards(AuthGuard)
@@ -20,6 +22,15 @@ import {eventModelToEventDTO} from "./dto/eventModelToEventDTO";
 export default class EventsAuthenticatedController {
 
     constructor(private readonly eventsService: EventsService){}
+
+    // this probably shouldn't be needed long term, we should just fetch this with the event
+    @Get('/admin-metadata')
+    @ApiOperation({ summary: 'Get all admin metadata for all events' })
+    getEventAdminMetadata(): Promise<EventAdminMetadataListResponse> {
+        return this.eventsService.getAllEventMetaData()
+            .then((eventAdminMetadata) =>
+                new EventAdminMetadataListResponse({ eventAdminMetadata }))
+    }
 
     @Get("/:id")
     @ApiOperation({summary: 'Get a single event with no filters applied (authenticated only)'})
@@ -68,5 +79,17 @@ export default class EventsAuthenticatedController {
 
         return this.eventsService.delete(id)
             .then(response => ({ id, status: 'success' }))
+    }
+
+    @Put(':id/admin-metadata')
+    @ApiOperation({ summary: 'Set admin metadata information for an event' })
+    @ApiImplicitParam({ name: 'id', type: String })
+    upsertAdminMetadata(
+        @Param() { id }: FindByIdParams,
+        @Body() updatedState: UpsertEventAdminMetadataRequest
+    ): Promise<EventAdminMetadataSingleResponse> {
+        return this.eventsService.upsertEventMetadata(id, updatedState)
+            .then((eventAdminMetadata) =>
+                new EventAdminMetadataSingleResponse({ eventAdminMetadata }))
     }
 }

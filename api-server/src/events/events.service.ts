@@ -15,11 +15,14 @@ import { isNullOrUndefined } from '../utils';
 import { StartEndTimePairs } from '../shared-types/start-end-time-pairs';
 import {VenueModel} from "../venues/models/venue.model";
 import {INFINITE_WEB_PORTAL_BASE_URL} from "../constants";
+import {EventAdminMetadataModel} from "./models/event-admin-metadata.model";
+import UpsertEventAdminMetadataRequest from "./dto/upsert-event-admin-metadata-request";
 
 @Injectable()
 export class EventsService {
     constructor(
         @InjectModel(EventModel) private eventModel: typeof EventModel,
+        @InjectModel(EventAdminMetadataModel) private eventAdminMetadataModel: typeof EventAdminMetadataModel,
         @InjectModel(DatetimeVenueModel) private dateTimeVenueModel: typeof DatetimeVenueModel,
         @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: LoggerService,
         private readonly bitlyService: BitlyService,
@@ -47,7 +50,6 @@ export class EventsService {
     }
 
     async update(id: string, values: Partial<UpdateEventRequest>): Promise<DbUpdateResponse<EventModel>> {
-
         return this.sequelize.transaction(async (transaction) => {
             const transactionHost = { transaction };
             const updateQueryOptions: UpdateOptions = {
@@ -132,6 +134,25 @@ export class EventsService {
     async delete(id: string): Promise<DbDeleteResponse> {
         return this.eventModel.destroy({ where: { id }})
             .then(toDbDeleteResponse)
+    }
+
+    async getEventMetadata(id: string): Promise<EventAdminMetadataModel> {
+        return this.eventAdminMetadataModel.findOne({ where: { id }})
+    }
+
+    async getAllEventMetaData(): Promise<EventAdminMetadataModel []> {
+        return this.eventAdminMetadataModel.findAll()
+    }
+
+    async upsertEventMetadata(
+        eventId: string,
+        updatedState: UpsertEventAdminMetadataRequest
+    ): Promise<EventAdminMetadataModel> {
+        return this.eventAdminMetadataModel
+            .upsert({ is_problem: updatedState.isProblem, event_id: eventId }, { returning: true})
+            .then(resp => {
+                return resp[0][0]
+            })
     }
 
     private async fillInServerSideGeneratedAttributes(submittedEvent: CreateEventRequest): Promise<CreateEventRequest> {

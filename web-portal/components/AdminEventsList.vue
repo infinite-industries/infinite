@@ -6,6 +6,7 @@
         <th>TITLE</th>
         <th>WHEN</th>
         <th>ACTION</th>
+        <th>PROBLEMS</th>
       </tr>
     </thead>
     <tbody>
@@ -17,6 +18,13 @@
           <template v-if="calendar_event.tags && calendar_event.tags.includes('online-resource')">Online Resource</template>
         </td>
         <td><v-btn nuxt :to="{ name: 'admin-event-edit-id', params: { id: calendar_event.id } }">Edit</v-btn></td>
+        <td>
+          <input
+            type="checkbox"
+            :checked="isProblem(calendar_event)"
+            @change="isProblemUpdated(calendar_event, $event)"
+          >
+        </td>
       </tr>
     </tbody>
   </table>
@@ -26,12 +34,16 @@
   import moment from 'moment'
 
   import PartnerService from '@/services/PartnerService'
+  import { UPSERT_ADMIN_EVENT_METADATA } from '../store/event-admin-metadata'
+  import getToken from '../helpers/getToken'
 
   export default {
     name: 'AdminEventsList',
     props: ['calendar_events'],
     data: function () {
-      return {}
+      return {
+        metadata: {}
+      }
     },
     filters: {
       dateFormat: function (date) {
@@ -44,6 +56,29 @@
       },
       ownerLogo: function (owner) {
         return PartnerService.getLogoForReviewer(owner)
+      }
+    },
+    methods: {
+      isProblem: function (calenderEvent) {
+        if (!calenderEvent.event_admin_meta_data) {
+          return false
+        } else {
+          return calenderEvent.event_admin_meta_data.is_problem
+        }
+      },
+
+      isProblemUpdated: function ({ id }, event) {
+        const idToken = getToken(this.$auth)
+        if (!this.metadata[id]) {
+          this.metadata[id] = {}
+        }
+
+        this.metadata[id].isProblem = event.currentTarget.checked
+
+        this.$store.dispatch(
+          UPSERT_ADMIN_EVENT_METADATA,
+          { eventId: id, isProblem: event.currentTarget.checked, idToken }
+        )
       }
     }
   }

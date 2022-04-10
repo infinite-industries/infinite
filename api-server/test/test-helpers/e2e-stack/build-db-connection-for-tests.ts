@@ -1,18 +1,17 @@
 import {Test, TestingModule} from "@nestjs/testing";
 import {SequelizeModule} from "@nestjs/sequelize";
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME} from "./start-database";
-import {CurrentEvent} from "../../../src/current-events/models/current-event.model";
 import {VenueModel} from "../../../src/venues/models/venue.model";
 import {EventModel} from "../../../src/events/models/event.model";
 import {EventsService} from "../../../src/events/events.service";
 import {VenuesService} from "../../../src/venues/venues.service";
-import {CurrentEventsService} from "../../../src/current-events/current-events.service";
 import {AnnouncementModel} from "../../../src/announcements/models/announcement.model";
 import {AnnouncementsService} from "../../../src/announcements/announcements.service";
 import BitlyService from "../../../src/events/bitly.service"
 import {WinstonModule} from "nest-winston";
 import {format, transports} from "winston";
 import { DatetimeVenueModel } from '../../../src/events/models/datetime-venue.model';
+import {EventAdminMetadataModel} from "../../../src/events/models/event-admin-metadata.model";
 
 const NUXT_INTERNAL_POSTFIX = 'Repository'
 
@@ -28,9 +27,21 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
                 username: DB_USERNAME,
                 password: DB_PASSWORD,
                 database: DB_NAME,
-                models: [CurrentEvent, VenueModel, EventModel, AnnouncementModel, DatetimeVenueModel]
+                models: [
+                    VenueModel,
+                    EventModel,
+                    AnnouncementModel,
+                    DatetimeVenueModel,
+                    EventAdminMetadataModel
+                ]
             }),
-            SequelizeModule.forFeature([EventModel, VenueModel, CurrentEvent, AnnouncementModel, DatetimeVenueModel]),
+            SequelizeModule.forFeature([
+                EventModel,
+                VenueModel,
+                AnnouncementModel,
+                DatetimeVenueModel,
+                EventAdminMetadataModel
+            ]),
             WinstonModule.forRoot({
                 transports: [
                     // TODO: should we factor this out into a secondary file?
@@ -50,7 +61,6 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
         providers: [
             EventsService,
             VenuesService,
-            CurrentEventsService,
             AnnouncementsService,
             BitlyService
         ]
