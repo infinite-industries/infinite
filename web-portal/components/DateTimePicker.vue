@@ -161,7 +161,7 @@
 
 <script>
 
-  const moment = require('moment-timezone')
+  import moment from 'moment-timezone'
 
   const clientTimeZone = moment.tz.guess()
 
