@@ -1,7 +1,6 @@
 import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import {VenuesModule} from "./venues/venues.module";
 import {SequelizeModule} from "@nestjs/sequelize";
-import {CurrentEventsModule} from "./current-events/current-events.module";
 import {AppController} from "./app.controller";
 import {EventsModule} from "./events/events.module";
 import { ConfigModule } from '@nestjs/config';
@@ -63,7 +62,6 @@ const dialectOptions = SQL_IS_USING_SSL
         }),
         NotificationsModule,
         VenuesModule,
-        CurrentEventsModule,
         EventsModule,
         AnnouncementsModule,
         UsersModules,

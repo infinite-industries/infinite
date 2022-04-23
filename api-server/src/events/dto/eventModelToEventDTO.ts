@@ -7,6 +7,7 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
         return {
             start_time: dt.start_time.toISOString(),
             end_time: dt.end_time.toISOString(),
+            venue_id: dt.venue_id,
             optional_title: dt.optional_title
         }
     });
@@ -35,7 +36,6 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
         venue_id: eventModel.venue_id,
         verified: eventModel.verified,
         website_link: eventModel.website_link,
-
         date_times,
         venue: eventModel.venues[0],
 

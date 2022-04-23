@@ -1,4 +1,4 @@
-FROM node:fermium-alpine
+FROM node:gallium
 
 # This assumes that you mount the pem file into a volume at /api-server/keys/1nfiniteDocker.pem
 ENV JWT_PEM='/api-server/keys/1nfiniteDocker.pem'

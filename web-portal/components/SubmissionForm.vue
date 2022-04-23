@@ -154,7 +154,14 @@
           <h3 class="form-label">Tags:</h3>
         </v-flex>
         <v-flex xs12 sm8>
-          <v-combobox v-model="generalTags" multiple chips deletable-chips :items="suggestedTags" />
+          <v-combobox
+            class="tags"
+            v-model="generalTags"
+            multiple
+            chips
+            deletable-chips
+            :items="suggestedTags"
+          />
         </v-flex>
       </v-layout>
 
