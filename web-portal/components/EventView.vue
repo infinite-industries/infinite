@@ -199,7 +199,7 @@
         this.showCalendarDropdown = !this.showCalendarDropdown
       },
       addToCalendar(type) {
-        CalendarService.generate(this.event, type)
+        CalendarService.generate(this.$config.API_URL, this.event, type)
       },
       toggleShare() {
         this.showShareDropdown = !this.showShareDropdown

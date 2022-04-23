@@ -3,7 +3,6 @@
 </template>
 
 <script>
-  import { ApiService } from '@/services/ApiService'
   import PageMetaService from '@/services/PageMetaService'
 
   import EventView from '@/components/EventView.vue'
@@ -56,8 +55,8 @@
         event: null
       }
     },
-    asyncData({ error, params }) {
-      return ApiService.get('/events/' + params.id + '?embed=Venue').then((response) => {
+    asyncData({ error, params, $apiService }) {
+      return $apiService.get('/events/' + params.id + '?embed=Venue').then((response) => {
         return { event: response.data.event }
       }).catch((err) => {
         error({ statusCode: err.response.status, message: 'Not Found' })

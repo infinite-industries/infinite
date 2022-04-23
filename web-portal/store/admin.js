@@ -1,5 +1,3 @@
-import { ApiService } from '../services/ApiService'
-
 export const state = () => {
   return {
     unverified_events: [],
@@ -27,21 +25,21 @@ export const getters = {
 }
 
 export const actions = {
-  LoadEvent: (context, payload) => {
+  LoadEvent: function (context, payload) {
     const id = payload.id
     const idToken = payload.idToken
 
-    return ApiService.get('/authenticated/events/' + id, idToken)
+    return this.$apiService.get('/authenticated/events/' + id, idToken)
       .then((response) => {
         if (response.data.status === 'success') { context.commit('POPULATE_CURRENT_EVENT', response.data.event, { root: true }) }
       })
   },
-  LoadUnverifiedEvents: (context, payload) => {
+  LoadUnverifiedEvents: function (context, payload) {
     const idToken = payload.idToken
 
     const isResponseSuccess = respObj => respObj && respObj.data && respObj.data.status === 'success'
 
-    ApiService.get(EVENTS_NON_VERIFIED_PATH, idToken).then(
+    this.$apiService.get(EVENTS_NON_VERIFIED_PATH, idToken).then(
       (currentNonVerifiedEventsResponse) => {
         if (isResponseSuccess(currentNonVerifiedEventsResponse)) {
           const currentNonVerifiedEvents = currentNonVerifiedEventsResponse.data.events
@@ -56,10 +54,10 @@ export const actions = {
         { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
     })
   },
-  LoadCurrentEvents: (context, payload) => {
+  LoadCurrentEvents: function (context, payload) {
     const idToken = payload.idToken
 
-    ApiService.get(CURRENT_EVENTS_VERIFIED_PATH, idToken)
+    this.$apiService.get(CURRENT_EVENTS_VERIFIED_PATH, idToken)
       .then(function (_response) {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_VERIFIED_LIST', _response.data.events)
@@ -72,9 +70,9 @@ export const actions = {
         context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FIX!' }, { root: true })
       })
   },
-  LoadResourceEvents: (context, payload) => {
+  LoadResourceEvents: function (context, payload) {
     const idToken = payload.idToken
-    ApiService.get('/events/verified?tags=online-resource', idToken)
+    this.$apiService.get('/events/verified?tags=online-resource', idToken)
       .then(function (_response) {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_RESOURCE_LIST', _response.data.events)
@@ -87,10 +85,10 @@ export const actions = {
         context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'API connection bit the dust. FIX!' }, { root: true })
       })
   },
-  VerifyEvent: (context, payload) => {
+  VerifyEvent: function (context, payload) {
     const idToken = payload.idToken
 
-    return ApiService.put(`/authenticated/events/verify/${payload.id}`, null, idToken)
+    return this.$apiService.put(`/authenticated/events/verify/${payload.id}`, null, idToken)
       .then(function (_response) {
         context.commit('CHANGE_STATE_TO_VERIFIED', payload)
 
@@ -102,10 +100,10 @@ export const actions = {
       })
   },
 
-  UpdateEvent: (context, payload) => {
+  UpdateEvent: function (context, payload) {
     const idToken = payload.idToken
 
-    return ApiService.put(`/authenticated/events/${payload.id}`, { ...payload.event_data }, idToken)
+    return this.$apiService.put(`/authenticated/events/${payload.id}`, { ...payload.event_data }, idToken)
       .then(function (_response) {
         context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Content of the event updated.' }, { root: true })
       })
@@ -115,10 +113,10 @@ export const actions = {
       })
   },
 
-  DeleteEvent: (context, payload) => {
+  DeleteEvent: function (context, payload) {
     const idToken = payload.idToken
 
-    return ApiService.delete(`/authenticated/events/${payload.id}`, idToken)
+    return this.$apiService.delete(`/authenticated/events/${payload.id}`, idToken)
       .then(function (_response) {
         if (_response.data.status !== 'success') {
           context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Unable to delete the event' }, { root: true })
