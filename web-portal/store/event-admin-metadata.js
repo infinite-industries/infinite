@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { initialQueryState, setQueryFetching, setQueryStateFail, setQueryStateSuccess } from '../helpers/queryState'
-import { ApiService } from '../services/ApiService'
 
 export const UPSERT_ADMIN_EVENT_METADATA = 'event-admin-metadata/UpsertEventAdminMetadata'
 
@@ -25,10 +24,10 @@ export const mutations = {
 }
 
 export const actions = {
-  UpsertEventAdminMetadata: (context, { eventId, isProblem, idToken }) => {
+  UpsertEventAdminMetadata: function (context, { eventId, isProblem, idToken }) {
     context.commit('GET_UPSERT_EVENT_METADATA_QUERY_FETCH_START')
 
-    return ApiService.put(`/authenticated/events/${eventId}/admin-metadata`, { isProblem }, idToken)
+    return this.$apiService.put(`/authenticated/events/${eventId}/admin-metadata`, { isProblem }, idToken)
       .then((response) => {
         context.commit('admin/UPDATE_ADMIN_METADATA', { eventId, newMetaDateEntry: response.data.eventAdminMetadata }, { root: true })
         context.commit('GET_UPSERT_EVENT_METADATA_FETCH_SUCCESS', response.data.eventAdminMetadata)
