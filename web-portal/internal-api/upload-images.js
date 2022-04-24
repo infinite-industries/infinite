@@ -5,7 +5,7 @@
 
 const fs = require('fs')
 const multiparty = require('multiparty')
-const uuidv4 = require('uuid/v4')
+const { v4: uuidv4 } = require('uuid')
 const logger = require('./utils').logger
 const LocalUploader = require('./upload-managers/LocalUploader')
 const S3Uploader = require('./upload-managers/S3Uploader')
