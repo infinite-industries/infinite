@@ -3,6 +3,7 @@ import 'dotenv/config'
 import { json } from 'body-parser'
 
 const API_URL = process.env.API_URL || 'http://localhost:3003/v1'
+const APP_URL = process.env.APP_URL || 'http://localhost:7779'
 
 export default {
   mode: 'universal',
@@ -101,7 +102,8 @@ export default {
     '~/plugins/vue-moment',
     { src: '~/plugins/vue-editor', ssr: false },
     '~/plugins/close-sidebar-on-nav.client.js', // client-only
-    '~/plugins/api-service-plugin.js'
+    '~/plugins/api-service-plugin.js',
+    '~/plugins/page-meta-plugin.js',
   ],
   /*
   ** Nuxt.js modules
@@ -188,12 +190,9 @@ export default {
     extend(config, ctx) {
     }
   },
+
   publicRuntimeConfig: {
-    APP_URL: process.env.APP_URL,
-    API_URL: API_URL,
-    axios: {
-      browserBaseURL: API_URL,
-      baseURL: process.env.API_URL_SERVER_SIDE || API_URL || 'http://localhost:3003/v1',
-    }
+    APP_URL,
+    API_URL
   }
 }

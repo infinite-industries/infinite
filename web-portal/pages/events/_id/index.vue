@@ -3,8 +3,6 @@
 </template>
 
 <script>
-  import PageMetaService from '@/services/PageMetaService'
-
   import EventView from '@/components/EventView.vue'
 
   export default {
@@ -13,8 +11,8 @@
       const title = this.event && this.event.title ? this.event.title : 'no event loaded'
       // TODO: current view sanitizes brief_description; does vue-meta do that automatically?
       const description = this.event && this.event.brief_description ? this.event.brief_description : ''
-      const url = PageMetaService.urlFor('/events/' + eventId)
-      const defaultImage = PageMetaService.urlFor('/images/default.jpg')
+      const url = this.$urlFor('/events/' + eventId)
+      const defaultImage = this.$urlFor('/images/default.jpg')
 
       const eventImage = this.event && this.event.image && this.event.image !== 'none' ? this.event.image : defaultImage
       const socialImage = (this.event && this.event.social_image && this.event.social_image !== 'none'
