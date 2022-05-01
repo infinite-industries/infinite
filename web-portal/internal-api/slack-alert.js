@@ -49,12 +49,8 @@ function PostToSlack(name, email, comment) {
       channel: 'contact',
       icon_emoji: ':computer:',
       text: messageToAdmin
-    }, function (err) {
-      if (err) {
-        reject(new Error('API error:' + err))
-      } else {
-        resolve('Message received!')
-      }
     })
+      .then(() => resolve('Message received!'))
+      .catch(err => reject(new Error('API error:' + err)))
   })
 }

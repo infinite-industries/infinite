@@ -31,13 +31,12 @@ describe('ListViewer component', () => {
   })
 
   test('renders a list of events', () => {
-    console.log(wrapper.html())
-    expect(wrapper.isVueInstance()).toBeTruthy()
+    expect(wrapper.vm).toBeTruthy() // is a vue instance
 
     // verify that the list contains two "cards" and that they
     // were each passed the correct event as a prop
     // (cards are stubbed out since component is shallow mounted)
-    const cards = wrapper.findAll({ name: 'Card' })
+    const cards = wrapper.findAllComponents({ name: 'Card' })
     expect(cards.length).toBe(2)
     expect(cards.at(0).props('calendar_event')).toEqual(events[0])
     expect(cards.at(1).props('calendar_event')).toEqual(events[1])

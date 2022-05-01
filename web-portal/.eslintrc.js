@@ -8,7 +8,8 @@ module.exports = {
     API_URL: true
   },
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: '@babel/eslint-parser',
+    requireConfigFile: false
   },
   extends: [
     '@nuxtjs',
@@ -26,6 +27,9 @@ module.exports = {
     'no-prototype-builtins': 'off',
     'quote-props': 'off',
     'import/order': 'off',
+    'space-before-function-paren': 'off',
+    'curly': ['error', 'multi-line'],
+    'object-shorthand': 'off',
     'vue/attribute-hyphenation': 'off',
     'vue/attributes-order': 'off',
     'vue/html-self-closing': 'off',
@@ -34,6 +38,7 @@ module.exports = {
     'vue/prop-name-casing': 'off',
     'vue/require-prop-types': 'off',
     'vue/singleline-html-element-content-newline': 'off',
+    'vue/multi-word-component-names': 'off',
     'vue/script-indent': ['error', 2, {
       baseIndent: 1
     }]
