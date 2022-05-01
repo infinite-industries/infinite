@@ -9,7 +9,6 @@
     </ii-toolbar>
     <main>
       <!-- Content -->
-      <div> {{ $config.API_URL}} </div>
       <nuxt />
     </main>
     <!-- PopUps and Modals -->
@@ -39,16 +38,6 @@
     },
 
     mounted: async function () {
-      // if (!process.API_URL && !window.API_URL) {
-      //   const script = document.createElement("script");
-      //   script.onload = this.onScriptLoaded;
-      //   script.type = "text/javascript";
-      //   script.src = "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js";
-      //   document.head.appendChild(script);
-      // } else {
-      //   this.onScriptLoaded();
-      // }
-
       // Inhale mock user data
       // TODO: does this belong in the layout, or should it be in route-level component?
       //       Looks like the answer is route-level, because this doesn't run if you change this to `fetch`
