@@ -72,7 +72,7 @@ export const actions = {
           /* this is a hack to mix metadata into current-events. Once current-events is fixed to return events this
              can be cleaned up
            */
-          return ApiService.get('/authenticated/events/admin-metadata', idToken)
+          return this.$apiService.get('/authenticated/events/admin-metadata', idToken)
             .then((allAdminMetaDataResponse) => {
               const adminMetaData = allAdminMetaDataResponse.data.eventAdminMetadata || []
 
