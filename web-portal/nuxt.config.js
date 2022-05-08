@@ -77,11 +77,6 @@ export default {
     ],
     script: [
       {
-        src: '/internal-api/env.js',
-        body: false,
-        async: false
-      },
-      {
         src: '/workers/workers.js?v=\'1.0.01\''
       }
     ]
