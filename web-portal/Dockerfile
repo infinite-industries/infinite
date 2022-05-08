@@ -4,6 +4,9 @@ ADD ./ /web-portal
 
 RUN npm install -g npm@8.7.0
 
+WORKDIR /web-portal/docker-scripts/proxy-server
+RUN npm install
+
 WORKDIR /web-portal
 
 RUN chmod +x ./docker-scripts/start.sh
