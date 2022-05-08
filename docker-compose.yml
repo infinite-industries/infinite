@@ -1,0 +1,39 @@
+version: '3.5'
+services:
+  postgres:
+    image: 'postgres:9.6.2-alpine'
+    environment:
+      - POSTGRES_DB=infinite-api
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=xxx
+    expose:
+      - "5432"
+    ports:
+      - "5436:5432"
+
+  api-server:
+    image: infinite-api-server:latest
+    depends_on:
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      INFINITE_PEM_FILE_CONTENTS: "${INFINITE_PEM_FILE_CONTENTS}"
+    expose:
+      - "3003"
+    ports:
+      - "3003:3003"
+
+  web-portal:
+    image: infinite-web-portal:latest
+    environment:
+      HOST: 0.0.0.0 # Needed to make nuxt work inside docker
+      USE_PROXY: "true" # starts a proxy service in the container to allow server side requests against localhost to work inside the compose stack
+      API_URL: "http://localhost:3003/v1" # These are defaulted for runtimeConfig but still need set here for server-side middleware
+      APP_URL: "http://localhost:7779"
+    depends_on:
+      - api-server
+    expose:
+      - "7779"
+    ports:
+      - "7779:7779"

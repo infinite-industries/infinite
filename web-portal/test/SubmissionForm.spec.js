@@ -7,7 +7,7 @@ import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
 // import { ApiService } from '@/services/ApiService'
 
-jest.mock('@/services/ApiService')
+// jest.mock('@/services/ApiService')
 
 const localVue = createLocalVue()
 localVue.use(Vuex)

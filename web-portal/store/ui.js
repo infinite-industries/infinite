@@ -46,16 +46,16 @@ export const mutations = {
 }
 
 export const actions = {
-  toggleSidebar: (context) => {
+  toggleSidebar: function (context) {
     context.commit('TOGGLE_SIDEBAR')
   },
-  closeSidebar: (context) => {
+  closeSidebar: function (context) {
     context.commit('CLOSE_SIDEBAR')
   },
-  showNotifications: (context, payload) => {
+  showNotifications: function (context, payload) {
     context.commit('SHOW_NOTIFICATIONS', payload)
   },
-  showModal: (context, payload) => {
+  showModal: function (context, payload) {
     context.commit('SHOW_MODAL', payload)
   }
 }

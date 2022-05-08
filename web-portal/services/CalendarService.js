@@ -5,14 +5,14 @@
 
 import moment from 'moment'
 
-const serviceUrl = process.env.API_URL + '/calendaring/create-ics-file'
-
 export default class CalendarService {
   /**
+   * @param apiUrl String
    * @param event Object
    * @param service String
    */
-  static generate(event, service) {
+  static generate(apiUrl, event, service) {
+    const serviceUrl = apiUrl + '/calendaring/create-ics-file'
     const title = event.title
     const desc = event.brief_description
     const location = includeEventLocation(event)

@@ -1,4 +1,3 @@
-import { ApiService } from '../services/ApiService'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
 const CURRENT_EVENTS_VERIFIED_PATH = '/events/current-verified'
@@ -101,23 +100,24 @@ export const mutations = {
 }
 
 export const actions = {
-  Logout: (context) => {
+  Logout: function (context) {
     context.commit('LOGOUT')
   },
-  CreateNewEvent: (context) => {
+  CreateNewEvent: function (context) {
     context.commit('CREATE_NEW_EVENT')
   },
 
-  LoadAllUserData: (context, payload) => {
-    return ApiService.get('/users/current', payload.idToken)
+  LoadAllUserData: function (context, payload) {
+    return this.$apiService.get('/users/current', payload.idToken)
       .then(function (_response) {
         context.commit('UPDATE_USER_DATA', _response.data)
       })
   },
 
-  LoadAllLocalEventData: (context) => {
+  LoadAllLocalEventData: function (context) {
     context.commit('SET_LOADING_STATUS', true)
-    return ApiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
+
+    return this.$apiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
       .then((_response) => {
         context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
         context.commit('SET_LOADING_STATUS', false)
@@ -127,8 +127,8 @@ export const actions = {
         context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.' }, { root: true })
       })
   },
-  LoadAllStreamingEventData: (context) => {
-    return ApiService.get(`${EVENTS_VERIFIED_PATH}?tags=online-resource&${EMBED_VENUE}`)
+  LoadAllStreamingEventData: function (context) {
+    return this.$apiService.get(`${EVENTS_VERIFIED_PATH}?tags=online-resource&${EMBED_VENUE}`)
       .then((_response) => {
         context.commit('UPDATE_STREAMING_EVENTS', _response.data.events)
       })
@@ -138,8 +138,8 @@ export const actions = {
       })
   },
 
-  LoadAnnouncements: (context) => {
-    return ApiService.get('/announcements')
+  LoadAnnouncements: function (context) {
+    return this.$apiService.get('/announcements')
       .then((_response) => {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_ANNOUNCEMENTS', _response.data.announcements)
@@ -149,10 +149,11 @@ export const actions = {
         console.error('Unable to load announcements', error)
       })
   },
-  FindOrCreateActiveAnnouncement: (context, payload) => {
+
+  FindOrCreateActiveAnnouncement: function (context, payload) {
     const idToken = payload.idToken
 
-    return ApiService.post(
+    return this.$apiService.post(
       '/announcements/ensure-one-announcement',
       { message: '' },
       idToken
@@ -167,11 +168,11 @@ export const actions = {
       throw new Error('Failed ensuring the existence of an announcement entity') // pass error on to caller
     })
   },
-  UpdateActiveAnnouncement: (context, payload) => {
+  UpdateActiveAnnouncement: function (context, payload) {
     const idToken = payload.idToken
     const announcement = payload.announcement
 
-    return ApiService.put(
+    return this.$apiService.put(
       `/announcements/${announcement.id}`,
       { message: announcement.message },
       idToken
