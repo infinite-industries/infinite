@@ -1,4 +1,3 @@
-import { ApiService } from '../services/ApiService'
 import { initialQueryState, setQueryFetching, setQueryStateFail, setQueryStateSuccess } from '../helpers/queryState'
 
 export const state = () => {
@@ -77,10 +76,10 @@ export const mutations = {
 }
 
 export const actions = {
-  FetchActiveVenues: (context) => {
+  FetchActiveVenues: function (context) {
     context.commit('ACTIVE_VENUES_FETCH_START')
 
-    return ApiService.get('/venues?includeDeleted=no')
+    return this.$apiService.get('/venues?includeDeleted=no')
       .then((_response) => {
         context.commit('ACTIVE_VENUES_FETCH_SUCCESS', _response.data.venues)
       })
@@ -100,10 +99,10 @@ export const actions = {
       })
   },
 
-  FetchDeletedVenues: (context) => {
+  FetchDeletedVenues: function (context) {
     context.commit('DELETED_VENUES_FETCH_START')
 
-    return ApiService.get('/venues?includeDeleted=only')
+    return this.$apiService.get('/venues?includeDeleted=only')
       .then((_response) => {
         context.commit('DELETED_VENUES_FETCH_SUCCESS', _response.data.venues)
       })
@@ -112,10 +111,10 @@ export const actions = {
       })
   },
 
-  DeleteVenue: (context, { id, idToken }) => {
+  DeleteVenue: function (context, { id, idToken }) {
     context.commit('VENUE_DELETE_START')
 
-    return ApiService.delete(`/authenticated/venues/${id}`, idToken)
+    return this.$apiService.delete(`/authenticated/venues/${id}`, idToken)
       .then((response) => {
         context.commit('VENUE_DELETE_SUCCESS', { id, venue: response.data.venue })
       })
@@ -124,10 +123,10 @@ export const actions = {
       })
   },
 
-  ActivateVenue: (context, { id, idToken }) => {
+  ActivateVenue: function (context, { id, idToken }) {
     context.commit('VENUE_ACTIVATE_START')
 
-    return ApiService.put(`/authenticated/venues/${id}/activate`, null, idToken)
+    return this.$apiService.put(`/authenticated/venues/${id}/activate`, null, idToken)
       .then((response) => {
         context.commit('VENUE_ACTIVATE_SUCCESS', { id, venue: response.data.venue })
       })

@@ -174,7 +174,7 @@
         else return null
       },
       fullEncodedLinkForShare() {
-        return encodeURI(process.env.APP_URL + '/events/' + this.event.id)
+        return encodeURI(this.$config.API_URL + '/events/' + this.event.id)
       },
       isRemote: function () {
         return _hasTag(this.event, 'remote')
@@ -199,7 +199,7 @@
         this.showCalendarDropdown = !this.showCalendarDropdown
       },
       addToCalendar(type) {
-        CalendarService.generate(this.event, type)
+        CalendarService.generate(this.$config.API_URL, this.event, type)
       },
       toggleShare() {
         this.showShareDropdown = !this.showShareDropdown

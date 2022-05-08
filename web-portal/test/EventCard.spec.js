@@ -45,7 +45,7 @@ describe('Card component', () => {
   })
 
   test('renders title and description', () => {
-    expect(wrapper.isVueInstance()).toBeTruthy()
+    expect(wrapper.vm).toBeTruthy()
     expect(wrapper.html()).toContain(event.title)
     expect(wrapper.html()).toContain(event.brief_description)
   })

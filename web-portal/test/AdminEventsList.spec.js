@@ -25,7 +25,7 @@ describe('AdminEventsList component', () => {
       }
     })
 
-    expect(wrapper.isVueInstance()).toBeTruthy()
+    expect(wrapper.vm).toBeTruthy()
     expect(wrapper.html()).toContain(getEventList()[0].title)
     expect(wrapper.html()).toContain('June 1st 10:00am - 11:00am')
     expect(wrapper.html()).toContain(getEventList()[1].title)

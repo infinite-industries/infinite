@@ -2,7 +2,8 @@ import colors from 'vuetify/es5/util/colors'
 import 'dotenv/config'
 import { json } from 'body-parser'
 
-const API_URL = process.env.API_URL
+const API_URL = process.env.API_URL || 'http://localhost:3003/v1'
+const APP_URL = process.env.APP_URL || 'http://localhost:7779'
 
 export default {
   mode: 'universal',
@@ -95,7 +96,9 @@ export default {
   plugins: [
     '~/plugins/vue-moment',
     { src: '~/plugins/vue-editor', ssr: false },
-    '~/plugins/close-sidebar-on-nav.client.js' // client-only
+    '~/plugins/close-sidebar-on-nav.client.js', // client-only
+    '~/plugins/api-service-plugin.js',
+    '~/plugins/page-meta-plugin.js',
   ],
   /*
   ** Nuxt.js modules
@@ -111,12 +114,8 @@ export default {
     'nuxt-clipboard2',
     'vue-scrollto/nuxt'
   ],
-  /*
-  ** Axios module configuration
-  ** See https://axios.nuxtjs.org/options
-  */
-  axios: {
-  },
+
+
   /*
   ** Auth configuration
   */
@@ -186,12 +185,9 @@ export default {
     extend(config, ctx) {
     }
   },
-  // TODO: publicRuntimeConfig and privateRuntimeConfig now available (Nuxt >2.13)
-  // deprecating env, but are of limited use to us because almost all of these
-  // properties are accessed outside the Vue context, where we don't have access
-  // to the new $config property
-  env: {
-    APP_URL: process.env.APP_URL,
-    API_URL: process.env.API_URL
+
+  publicRuntimeConfig: {
+    APP_URL,
+    API_URL
   }
 }

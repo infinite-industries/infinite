@@ -1,0 +1,4 @@
+node_modules
+docker-scripts/proxy-server/node_modules
+.nuxt
+.env

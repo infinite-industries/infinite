@@ -84,7 +84,7 @@
         const event = this.calendar_event && this.calendar_event.venue
           ? this.calendar_event
           : Object.assign({}, this.calendar_event, { venue: this.venue })
-        CalendarService.generate(event, calType)
+        CalendarService.generate(this.$config.API_URL, event, calType)
       }
     },
     computed: {
@@ -103,13 +103,13 @@
         return !!this.calendar_event.venue_id && (!!this.calendar_event.venue || (!!this.venue && !!this.venue.id))
       },
       venue: function () {
-        // venue should be included on event
+        // venues should be included on event
         // if not, the event may have been fetched without the proper flag set,
         // in which case we may be able to silently recover by consulting a
         // global list of venues
         const event = this.calendar_event
-        if (event && event.venue) {
-          return event.venue
+        if (event.venues && event.venues.length > 0) {
+          return event.venues[0]
         } else if (event.venue_id) {
           const all_venues = this.$store.getters.GetActiveVenues
 

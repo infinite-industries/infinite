@@ -65,7 +65,6 @@
 </template>
 
 <script>
-  import { ApiService } from '../services/ApiService'
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
   export default {
@@ -111,7 +110,7 @@
           g_map_link: newVenue.g_map_link
         }
         this.showVenueLoadingSpinner = true
-        ApiService.post('/venues/', payload)
+        this.$apiService.post('/venues/', payload)
           .then((response) => {
             this.showVenueLoadingSpinner = false
             this.closeVenueDropdown()

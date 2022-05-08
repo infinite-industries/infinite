@@ -302,7 +302,6 @@
   import VenuePicker from './VenuePicker.vue'
   import DateTimePicker from './DateTimePicker.vue'
   import AddNewVenue from './AddNewVenue.vue'
-  import { ApiService } from '@/services/ApiService'
   import ImageUploadService from '@/services/ImageUploadService'
   import getToken from '../helpers/getToken'
 
@@ -446,7 +445,7 @@
           event.image = response.data.hero
           if (response.data.social) event.social_image = response.data.social
 
-          return ApiService.post('/events', event)
+          return this.$apiService.post('/events', event)
         }).then((response) => {
           this.showEventLoadingSpinner = false
           console.log('GOT BACK - ' + JSON.stringify(response.data))
