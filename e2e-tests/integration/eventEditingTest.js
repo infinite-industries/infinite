@@ -22,6 +22,8 @@ context('Event editing:', () => {
   
   let EVENT_ID, VENUES
 
+  cy.log('!!! WTF WHERE ARE MY LOGS')
+
   // create an event before running test
   before(() => {
     // get the venues so we can easily identify a particular one's name
@@ -31,7 +33,7 @@ context('Event editing:', () => {
     }).then((resp) => {
       VENUES = resp.body.venues
 
-      console.log(`!!! ${Cypress.env('api_url')}/events`)
+      cy.log(`!!! ${Cypress.env('api_url')}/events`)
 
       // create an event
       return cy.request({
@@ -64,8 +66,8 @@ context('Event editing:', () => {
         }
       })
     }).then((resp) => {
-      console.log('!!! resp')
-      console.log(resp)
+      cy.log('!!! resp')
+      cy.log('' + resp)
 
       // now we can easily find the event in the UI, regardless of whether
       // other events have similar / the same title
