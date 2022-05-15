@@ -32,20 +32,12 @@ jobs:
         run: |
           node --version
           npm --version
-      - name: Install API Server Dependencies
-        run: npm ci
-        working-directory: './api-server'
-      - name: Install Web Portal Dependencies
-        run: npm ci
-        working-directory: './web-portal'
+      - name: Build and run stack
+        run: ./docker-build-and-run-stack-for-test.sh
+        working-directory: './e2e-tests'
       - name: Install Cypress
         run: npm ci --production
         working-directory: './e2e-tests'
-      - name: Prepare environment
-        run: |
-          touch .env.test
-      - name: Start stack
-        run: ./startAll.sh test
       - name: Wait for stack to start
         run: |
           ./wait-for-stack.sh
@@ -54,17 +46,6 @@ jobs:
         if: ${{ always() }}
         run: |
           docker ps
-      - name: Seed venues
-        run: |
-          npm run db:seed:venues
-        working-directory: './api-server'
-        env:
-          # these values come from the docker-compose.test.yml file
-          DB_HOST: localhost
-          DB_NAME: infinite-api
-          DB_USER_NAME: infinite
-          DB_PASSWORD: xxx
-          DB_PORT: 5432
       - name: Run Cypress
         run: |
           echo "{\"admin_auth_username\":\"$ENV_US\",\"admin_auth_password\":\"$ENV_PW\"}" > cypress.env.json

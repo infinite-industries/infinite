@@ -19,6 +19,7 @@ services:
       DB_HOST: postgres
       DB_PORT: 5432
       INFINITE_PEM_FILE_CONTENTS: "${INFINITE_PEM_FILE_CONTENTS}"
+      SEED_VENUES: "${SEED_VENUES}"
     expose:
       - "3003"
     ports:
