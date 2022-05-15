@@ -22,8 +22,6 @@ context('Event editing:', () => {
   
   let EVENT_ID, VENUES
 
-  cy.log('!!! WTF WHERE ARE MY LOGS')
-
   // create an event before running test
   before(() => {
     // get the venues so we can easily identify a particular one's name
