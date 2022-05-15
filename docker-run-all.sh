@@ -7,4 +7,4 @@ if [ "$RESET_DB" != "false" ]; then
   docker compose down
 fi
 
-docker-compose up
+docker-compose up "$@"
