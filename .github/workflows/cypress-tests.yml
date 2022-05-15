@@ -23,9 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Build and run stack
-        run: ./docker-build-and-run-stack-for-test.sh
-        working-directory: './e2e-tests'
       - uses: actions/checkout@v2
       - name: Setup Node
         uses: actions/setup-node@v1
@@ -35,6 +32,9 @@ jobs:
         run: |
           node --version
           npm --version
+      - name: Build and run stack
+        run: ./docker-build-and-run-stack-for-test.sh
+        working-directory: './e2e-tests'
       - name: Install Cypress
         run: npm ci --production
         working-directory: './e2e-tests'

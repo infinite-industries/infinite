@@ -31,6 +31,8 @@ context('Event editing:', () => {
     }).then((resp) => {
       VENUES = resp.body.venues
 
+      console.log(`!!! ${Cypress.env('api_url')}/events`)
+
       // create an event
       return cy.request({
         method: 'POST',
@@ -62,6 +64,9 @@ context('Event editing:', () => {
         }
       })
     }).then((resp) => {
+      console.log('!!! resp')
+      console.log(resp)
+
       // now we can easily find the event in the UI, regardless of whether
       // other events have similar / the same title
       EVENT_ID = resp.body.id
