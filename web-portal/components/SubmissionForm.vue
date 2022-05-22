@@ -19,7 +19,7 @@
       </v-layout>
 
       <!-- Is event online / remote? -->
-      <v-layout row wrap>
+      <v-layout row wrap v-show="false">
         <v-flex xs0 sm3></v-flex>
         <v-flex xs12 sm4 md3>
           <v-checkbox v-model="eventIsRemote" label="Online Event" />
@@ -29,6 +29,75 @@
         </v-flex>
         <v-flex xs8 offset-xs3>
           <em>Online events occur at a particular time. Online Resources are always available (like a website or a link to a video).</em>
+        </v-flex>
+      </v-layout>
+
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Is your event...<span class="required-field">*</span>:</h3>
+        </v-flex>
+        <v-flex xs12 />
+        <v-flex xs12 sm4 md3 offset-sm1>
+          <label class="category-option">
+            <input type="radio" v-model="eventMode" value="live">
+            <strong>Live</strong> (in-person)
+          </label>
+        </v-flex>
+        <v-flex xs12 sm3>
+          <label class="category-option">
+            <input type="radio" v-model="eventMode" value="online">
+            <strong>Online</strong>
+          </label>
+        </v-flex>
+        <v-flex xs12 sm3>
+          <label class="category-option">
+            <input type="radio" v-model="eventMode" value="hybrid">
+            <strong>Hybrid</strong>
+          </label>
+        </v-flex>
+        <v-flex xs12 sm11 offset-sm1>
+          <em>Online events occur at a particular time. Online Resources are always available (like a website or a link to a video). Hybrid events are a mixture of the two (a live concert with an online streaming component is an example.)</em>
+        </v-flex>
+      </v-layout>
+
+      <v-layout row wrap>
+        <!-- <v-flex xs0 sm3 /> -->
+        <v-flex xs12 sm11 offset-sm1>
+          <h3 class="form-label" style="text-align: left">Which of these best describes your event?</h3>
+        </v-flex>
+        <v-flex xs12 sm11 offset-sm1>
+          <v-radio-group v-model="eventCategory" mandatory v-show="false">
+            <v-radio label="Single-day event" value="single-day-event" />
+            <!-- _Uhg_ v-radio doesn't have slots, only value prop -->
+            <!-- https://www.figma.com/file/TYVAMSagx0ufI1DnT9A7ZZ/Infinite-Industries-Submission-Form-2?node-id=3%3A8 -->
+            <!-- https://v15.vuetifyjs.com/en/components/selection-controls -->
+            <v-radio value="gallery-show"><strong>Gallery show</strong> more description here</v-radio>
+          </v-radio-group>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="single-day-event" />
+            <strong>Single-day Event</strong>, like a music concert or a poetry reading.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="gallery-show" />
+            <strong>Gallery show</strong> stretching over multiple weeks; with an opening and special events.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="multi-day-event" />
+            <strong>Multi-day event</strong>, like a music festival, theater production, or a conference.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="online-resource" />
+            <strong>Online resource</strong> with no specific start/end date. Just a link to share info on a topic or and an idea.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="call-for-entry" />
+            <strong>Call-for-entry</strong> with a single date/time. Invite creative peoples to submit their work.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="other" />
+            <strong>Other</strong>. Surprise us.
+            <v-text-field label="What type of event are you putting on?" v-model="eventCategoryOther" v-if="eventCategory === 'other'" />
+          </label>
         </v-flex>
       </v-layout>
 
@@ -305,7 +374,7 @@
   import ImageUploadService from '@/services/ImageUploadService'
   import getToken from '../helpers/getToken'
 
-  const CONTROL_TAGS = ['remote', 'online-resource', 'postponed', 'cancelled']
+  const CONTROL_TAGS = /^(?:remote|online-resource|postponed|cancelled|mode:\w+|category:[\w-]+(:(.+))?)$/
 
   const boolToTag = tag => ({
     get: function () {
@@ -316,6 +385,24 @@
         if (!this.calendar_event.tags.includes(tag)) this.calendar_event.tags.push(tag)
       } else {
         this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(tag), 1)
+      }
+    }
+  })
+
+  const radioToTag = (prefix, pattern) => ({
+    get: function () {
+      if (this.calendar_event && this.calendar_event.tags) {
+        const tag = this.calendar_event.tags.find(tag => pattern.test(tag))
+        return tag ? pattern.exec(tag)[1] : ''
+      } else return ''
+    },
+    set: function (newValue) {
+      const currentTag = this.calendar_event.tags.find(tag => pattern.test(tag))
+      const newTag = `${prefix}:${newValue}`
+      if (currentTag) {
+        this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(currentTag), 1, newTag)
+      } else {
+        this.calendar_event.tags.push(newTag)
       }
     }
   })
@@ -530,11 +617,26 @@
         return this.$store.getters.GetActiveVenues
       },
 
+      // these two are @deprecated -- migration TBD...
       eventIsRemote: boolToTag('remote'),
       eventIsOnline: boolToTag('online-resource'),
 
       eventIsPostponed: boolToTag('postponed'),
       eventIsCancelled: boolToTag('cancelled'),
+
+      eventMode: radioToTag('mode', /^mode:(\w+)$/),
+      eventCategory: radioToTag('category', /^category:([\w-]+)(:(.+))?$/),
+      eventCategoryOther: {
+        get () {
+          const tag = this.calendar_event && this.calendar_event.tags.find(tag => /^category:other/.test(tag))
+          return tag ? tag.split(':').slice(2).map(chunk => chunk.split('-').join(' ')).join(' ') : ''
+        },
+        set (newValue) {
+          const newTag = `category:other:${newValue.split(' ').join('-')}`
+          const oldTag = this.calendar_event.tags.find(tag => /^category:other/.test(tag))
+          this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(oldTag), 1, newTag)
+        }
+      },
 
       showDateTimePicker: function () {
         return [!this.eventIsOnline]
@@ -546,14 +648,14 @@
         get: function () {
           return this.calendar_event.tags
             // filter out control tags, which have dedicated UI for adding/removing them
-            ? this.calendar_event.tags.filter(tag => !CONTROL_TAGS.includes(tag))
+            ? this.calendar_event.tags.filter(tag => !CONTROL_TAGS.test(tag))
             : []
         },
         set: function (newValue) {
           // update with any control tags applied
           if (this.calendar_event.tags.length > 0) {
-            CONTROL_TAGS.forEach((tag) => {
-              if (this.calendar_event.tags.includes(tag)) newValue.push(tag)
+            this.calendar_event.tags.forEach((tag) => {
+              if (CONTROL_TAGS.test(tag)) newValue.push(tag)
             })
           }
           this.calendar_event.tags = newValue
@@ -680,6 +782,17 @@
   min-height: 50px;
   width: 100%;
   outline: 1px dashed rgb(210, 210, 210)
+}
+
+.category-option {
+  display: block;
+  margin-bottom: 0.5em;
+  font-size: 16px;
+  color: rgba(0,0,0,0.54);
+}
+
+.category-option > strong {
+  color: black;
 }
 
 .preview-image img {
