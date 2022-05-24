@@ -629,10 +629,13 @@
       eventCategoryOther: {
         get () {
           const tag = this.calendar_event && this.calendar_event.tags.find(tag => /^category:other/.test(tag))
-          return tag ? tag.split(':').slice(2).map(chunk => chunk.split('-').join(' ')).join(' ') : ''
+          // note that the description might have a colon (or more than one) in it
+          // that's accounted for here by removing the 'category' and 'other', and
+          // then rejoining the remainder with colons
+          return tag ? tag.split(':').slice(2).join(':') : ''
         },
         set (newValue) {
-          const newTag = `category:other:${newValue.split(' ').join('-')}`
+          const newTag = `category:other:${newValue}`
           const oldTag = this.calendar_event.tags.find(tag => /^category:other/.test(tag))
           this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(oldTag), 1, newTag)
         }
