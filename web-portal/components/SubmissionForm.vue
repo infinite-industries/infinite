@@ -32,7 +32,7 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row wrap>
+      <v-layout row wrap class="event-mode">
         <v-flex xs12 sm3>
           <h3 class="form-label">Is your event...<span class="required-field">*</span>:</h3>
         </v-flex>
@@ -60,13 +60,13 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row wrap>
+      <v-layout row wrap class="event-category">
         <!-- <v-flex xs0 sm3 /> -->
         <v-flex xs12 sm11 offset-sm1>
-          <h3 class="form-label" style="text-align: left">Which of these best describes your event?</h3>
+          <h3 class="form-label" style="text-align: left">Which of these best describes your event?<span class="required-field">*</span></h3>
         </v-flex>
         <v-flex xs12 sm11 offset-sm1>
-          <v-radio-group v-model="eventCategory" mandatory v-show="false">
+          <v-radio-group v-model="eventCategory" mandatory v-if="false">
             <v-radio label="Single-day event" value="single-day-event" />
             <!-- _Uhg_ v-radio doesn't have slots, only value prop -->
             <!-- https://www.figma.com/file/TYVAMSagx0ufI1DnT9A7ZZ/Infinite-Industries-Submission-Form-2?node-id=3%3A8 -->
@@ -96,7 +96,7 @@
           <label class="category-option">
             <input type="radio" v-model="eventCategory" name="eventCategory" value="other" />
             <strong>Other</strong>. Surprise us.
-            <v-text-field label="What type of event are you putting on?" v-model="eventCategoryOther" v-if="eventCategory === 'other'" />
+            <v-text-field class="category-other-description" label="What type of event are you putting on?" v-model="eventCategoryOther" v-if="eventCategory === 'other'" />
           </label>
         </v-flex>
       </v-layout>
@@ -681,6 +681,8 @@
           // this.calendar_event.date != "" &&
           // this.calendar_event.time_start != "" &&
           // this.calendar_event.time_end != "" &&
+          this.eventMode &&
+          this.eventCategory &&
           this.hasValidDateTimes() &&
           this.calendar_event.venue_id !== '' &&
           this.calendar_event.organizer_contact !== '' &&
