@@ -47,14 +47,14 @@ describe('SubmissionForm component', () => {
 
   it('event mode can be selected', async function () {
     expect(wrapper.vm.calendar_event.tags).toEqual([])
-    await wrapper.find('.event-mode input[type="radio"][value="live"]').setChecked(true)
-    expect(wrapper.vm.eventMode).toEqual('live')
-    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:live'])
+    await wrapper.find('.event-mode input[type="radio"][value="in-person"]').setChecked(true)
+    expect(wrapper.vm.eventMode).toEqual('in-person')
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:in-person'])
   })
 
   it('event mode can be changed', async function () {
-    await wrapper.find('.event-mode input[type="radio"][value="live"]').setChecked(true)
-    expect(wrapper.vm.eventMode).toEqual('live')
+    await wrapper.find('.event-mode input[type="radio"][value="in-person"]').setChecked(true)
+    expect(wrapper.vm.eventMode).toEqual('in-person')
     await wrapper.find('.event-mode input[type="radio"][value="hybrid"]').setChecked(true)
     expect(wrapper.vm.eventMode).toEqual('hybrid')
     expect(wrapper.vm.calendar_event.tags).toEqual(['mode:hybrid'])
@@ -75,9 +75,9 @@ describe('SubmissionForm component', () => {
   })
 
   it('event mode and category can be changed without affecting the other', async function () {
-    await wrapper.find('.event-mode input[type="radio"][value="live"]').setChecked(true)
+    await wrapper.find('.event-mode input[type="radio"][value="in-person"]').setChecked(true)
     await wrapper.find('.event-category input[type="radio"][value="single-day-event"]').setChecked(true)
-    expect(wrapper.vm.eventMode).toEqual('live')
+    expect(wrapper.vm.eventMode).toEqual('in-person')
     expect(wrapper.vm.eventCategory).toEqual('single-day-event')
     await wrapper.find('.event-mode input[type="radio"][value="hybrid"]').setChecked(true)
     expect(wrapper.vm.eventMode).toEqual('hybrid')
@@ -108,19 +108,19 @@ describe('SubmissionForm component', () => {
   it('event category "other" can handle punctuation', async function () {
     await wrapper.setData({
       calendar_event: Object.assign({}, wrapper.vm.calendar_event, {
-        tags: ['mode:live', 'category:other:Creativity']
+        tags: ['mode:in-person', 'category:other:Creativity']
       })
     })
     expect(wrapper.vm.eventCategoryOther).toEqual('Creativity')
     wrapper.vm.eventCategoryOther = 'Colons:are:special.'
     expect(wrapper.vm.eventCategory).toEqual('other')
-    expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['mode:live', 'category:other:Colons:are:special.']))
+    expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['mode:in-person', 'category:other:Colons:are:special.']))
   })
 
   it('general tags are not affected by modifying control tags', async function () {
     await wrapper.setData({
       calendar_event: Object.assign({}, wrapper.vm.calendar_event, {
-        tags: ['festival', 'mode:live']
+        tags: ['festival', 'mode:in-person']
       })
     })
     expect(wrapper.vm.generalTags).toEqual(['festival'])
@@ -133,16 +133,16 @@ describe('SubmissionForm component', () => {
   it('control tags are not affected by modifying general tags', async function () {
     await wrapper.setData({
       calendar_event: Object.assign({}, wrapper.vm.calendar_event, {
-        tags: ['festival', 'mode:live', 'category:single-day-event']
+        tags: ['festival', 'mode:in-person', 'category:single-day-event']
       })
     })
     expect(wrapper.vm.generalTags).toEqual(['festival'])
-    expect(wrapper.vm.eventMode).toEqual('live')
+    expect(wrapper.vm.eventMode).toEqual('in-person')
     expect(wrapper.vm.eventCategory).toEqual('single-day-event')
     // another case where it can't find the input, so setting things manually
     wrapper.vm.generalTags = ['convention']
     expect(wrapper.vm.generalTags).toEqual(['convention'])
-    expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['convention', 'mode:live', 'category:single-day-event']))
+    expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['convention', 'mode:in-person', 'category:single-day-event']))
   })
 
   // function getFilledOutEvent() {

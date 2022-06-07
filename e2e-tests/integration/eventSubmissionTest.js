@@ -38,7 +38,7 @@ context('Event Submission', () => {
     cy.visit('/submit-event')
     cy.get('.event-title input').type(TEMP_EVENT_NAME)
 
-    cy.get('.event-mode input[value="live"]').check()
+    cy.get('.event-mode input[value="in-person"]').check()
     cy.get('.event-category input[value="single-day-event"]').check()
 
     // can't select dates in the past

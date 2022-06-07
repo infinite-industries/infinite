@@ -18,20 +18,6 @@
         </v-flex>
       </v-layout>
 
-      <!-- Is event online / remote? -->
-      <v-layout row wrap v-show="false">
-        <v-flex xs0 sm3></v-flex>
-        <v-flex xs12 sm4 md3>
-          <v-checkbox v-model="eventIsRemote" label="Online Event" />
-        </v-flex>
-        <v-flex xs12 sm4 md4>
-          <v-checkbox v-model="eventIsOnline" label="Online Resource / Long-term Project" @change="onOnlineChange" />
-        </v-flex>
-        <v-flex xs8 offset-xs3>
-          <em>Online events occur at a particular time. Online Resources are always available (like a website or a link to a video).</em>
-        </v-flex>
-      </v-layout>
-
       <v-layout row wrap class="event-mode">
         <v-flex xs12 sm3>
           <h3 class="form-label">Is your event...<span class="required-field">*</span>:</h3>
@@ -39,8 +25,8 @@
         <v-flex xs12 />
         <v-flex xs12 sm4 md3 offset-sm1>
           <label class="category-option">
-            <input type="radio" v-model="eventMode" value="live">
-            <strong>Live</strong> (in-person)
+            <input type="radio" v-model="eventMode" value="in-person">
+            <strong>In-person</strong>
           </label>
         </v-flex>
         <v-flex xs12 sm3>
@@ -49,14 +35,11 @@
             <strong>Online</strong>
           </label>
         </v-flex>
-        <v-flex xs12 sm3>
+        <v-flex xs12 sm4>
           <label class="category-option">
             <input type="radio" v-model="eventMode" value="hybrid">
-            <strong>Hybrid</strong>
+            <strong>Hybrid</strong> both in-person and online elements
           </label>
-        </v-flex>
-        <v-flex xs12 sm11 offset-sm1>
-          <em>Online events occur at a particular time. Online Resources are always available (like a website or a link to a video). Hybrid events are a mixture of the two (a live concert with an online streaming component is an example.)</em>
         </v-flex>
       </v-layout>
 
@@ -66,20 +49,13 @@
           <h3 class="form-label" style="text-align: left">Which of these best describes your event?<span class="required-field">*</span></h3>
         </v-flex>
         <v-flex xs12 sm11 offset-sm1>
-          <v-radio-group v-model="eventCategory" mandatory v-if="false">
-            <v-radio label="Single-day event" value="single-day-event" />
-            <!-- _Uhg_ v-radio doesn't have slots, only value prop -->
-            <!-- https://www.figma.com/file/TYVAMSagx0ufI1DnT9A7ZZ/Infinite-Industries-Submission-Form-2?node-id=3%3A8 -->
-            <!-- https://v15.vuetifyjs.com/en/components/selection-controls -->
-            <v-radio value="gallery-show"><strong>Gallery show</strong> more description here</v-radio>
-          </v-radio-group>
           <label class="category-option">
             <input type="radio" v-model="eventCategory" name="eventCategory" value="single-day-event" />
-            <strong>Single-day Event</strong>, like a music concert or a poetry reading.
+            <strong>Single-day event</strong>, like a music concert or a poetry reading.
           </label>
           <label class="category-option">
             <input type="radio" v-model="eventCategory" name="eventCategory" value="gallery-show" />
-            <strong>Gallery show</strong> stretching over multiple weeks; with an opening and special events.
+            <strong>Gallery show</strong> stretching over multiple weeks, with an opening and special events.
           </label>
           <label class="category-option">
             <input type="radio" v-model="eventCategory" name="eventCategory" value="multi-day-event" />
@@ -87,7 +63,7 @@
           </label>
           <label class="category-option">
             <input type="radio" v-model="eventCategory" name="eventCategory" value="online-resource" />
-            <strong>Online resource</strong> with no specific start/end date. Just a link to share info on a topic or and an idea.
+            <strong>Online resource</strong> with no specific start/end date. Just a link to share info on a topic or an idea.
           </label>
           <label class="category-option">
             <input type="radio" v-model="eventCategory" name="eventCategory" value="call-for-entry" />
@@ -374,7 +350,7 @@
   import ImageUploadService from '@/services/ImageUploadService'
   import getToken from '../helpers/getToken'
 
-  const CONTROL_TAGS = /^(?:remote|online-resource|postponed|cancelled|mode:\w+|category:[\w-]+(:(.+))?)$/
+  const CONTROL_TAGS = /^(?:remote|online-resource|postponed|cancelled|mode:[\w-]+|category:[\w-]+(:(.+))?)$/
 
   const boolToTag = tag => ({
     get: function () {
@@ -506,6 +482,7 @@
       },
       PreviewEvent: function () {
         const event = { ...this.calendar_event }
+        if (this.eventCategory === 'online-resource' && event.date_times.length > 0) event.date_times = []
         event.venue = event.venue_id ? this.venues.find(v => v.id === event.venue_id) : null
         ImageUploadService.asDataUrl(this.$refs.eventImage.files[0]).then((imageUrl) => {
           event.image = imageUrl
@@ -559,11 +536,6 @@
 
       sendEmails: function () {
         console.log('Allan please send emails.') // Who is Allan?
-      },
-      onOnlineChange: function () {
-        if (this.eventIsOnline) {
-          this.calendar_event.date_times = []
-        }
       },
       onFileChange: function (type) {
         // files.length will be a 0 for no image, 1 for image
@@ -624,7 +596,7 @@
       eventIsPostponed: boolToTag('postponed'),
       eventIsCancelled: boolToTag('cancelled'),
 
-      eventMode: radioToTag('mode', /^mode:(\w+)$/),
+      eventMode: radioToTag('mode', /^mode:([\w-]+)$/),
       eventCategory: radioToTag('category', /^category:([\w-]+)(:(.+))?$/),
       eventCategoryOther: {
         get () {
@@ -744,6 +716,18 @@
 }
 .submission-btn{
   color:white;
+}
+
+.event-mode {
+  margin-bottom: 1em;
+}
+
+.event-mode .form-label {
+  margin-bottom: 0.8em;
+}
+
+.event-category {
+  margin-bottom: 2em;
 }
 
 #new-venue {
