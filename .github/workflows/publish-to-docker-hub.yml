@@ -12,13 +12,15 @@ jobs:
     environment: docker-publication
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.commit }}
       - run: |
           echo "Publishing '$COMMIT_HASH' to docker hub"
           echo "Tell me your secrect: '${{ secrets.TEST_SECRET }}'"
           echo "$(ls -l)"
           echo "$(pwd)"
-          git checkout $COMMIT_HASH
+          echo "who am i: $(git branch | grep '*')"
         env:
           COMMIT_HASH: ${{ inputs.commit }}
           TEST_SECRET: ${{ secrets.TEST_SECRET }}
