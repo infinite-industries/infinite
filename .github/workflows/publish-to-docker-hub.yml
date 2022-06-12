@@ -4,7 +4,7 @@ on:
       - development
       - master
   workflow_dispatch:
-    environment: publish-to-docker-hub
+    environment: docker-publication
     inputs:
       logLevel:
         description: 'Log level'
@@ -26,7 +26,7 @@ on:
 
 jobs:
   log-the-inputs:
-    environment: publish-to-docker-hub
+    environment: docker-publication
     runs-on: ubuntu-latest
     steps:
       - run: |
