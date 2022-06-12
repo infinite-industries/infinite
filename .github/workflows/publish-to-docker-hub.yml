@@ -16,6 +16,7 @@ jobs:
           echo "Publishing '$COMMIT_HASH' to docker hub"
           echo "Tell me your secrect: '${{ secrets.TEST_SECRET }}'"
           echo "$(ls -l)"
+          echo "$(pwd)"
         env:
           COMMIT_HASH: ${{ inputs.commit }}
           TEST_SECRET: ${{ secrets.TEST_SECRET }}
