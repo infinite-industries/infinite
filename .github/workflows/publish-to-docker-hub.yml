@@ -40,4 +40,4 @@ jobs:
           LEVEL: ${{ inputs.logLevel }}
           TAGS: ${{ inputs.tags }}
           ENVIRONMENT: ${{ inputs.environment }}
-          TEST_SECRET: ${{ environment.TEST_SECRET }}
+          TEST_SECRET: ${{ secrets.TEST_SECRET }}
