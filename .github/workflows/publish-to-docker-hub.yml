@@ -4,6 +4,7 @@ on:
       - development
       - master
   workflow_dispatch:
+    environment: publish-to-docker-hub
     inputs:
       logLevel:
         description: 'Log level'
@@ -31,7 +32,7 @@ jobs:
           echo "Running Jerb"
           echo "Log level: $LEVEL"
           echo "Environment: $ENVIRONMENT"
-          echo "$TEST_SECRET"
+          echo "Tell me your secrect: $TEST_SECRET"
           echo "$(ls -l)"
         env:
           LEVEL: ${{ inputs.logLevel }}
