@@ -41,3 +41,4 @@ jobs:
           TAGS: ${{ inputs.tags }}
           ENVIRONMENT: ${{ inputs.environment }}
           TEST_SECRET: ${{ secrets.TEST_SECRET }}
+          TEST_SECRET_2: ${{ secrets.$TEST_SECRET_2 }}
