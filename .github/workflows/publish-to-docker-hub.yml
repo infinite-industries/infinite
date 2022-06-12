@@ -26,6 +26,7 @@ on:
 
 jobs:
   log-the-inputs:
+    environment: publish-to-docker-hub
     runs-on: ubuntu-latest
     steps:
       - run: |
