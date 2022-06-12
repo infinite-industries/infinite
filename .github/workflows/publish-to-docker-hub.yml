@@ -17,6 +17,8 @@ jobs:
           echo "Tell me your secrect: '${{ secrets.TEST_SECRET }}'"
           echo "$(ls -l)"
           echo "$(pwd)"
+          cd ../
+          echo "$(ls -l)"
         env:
           COMMIT_HASH: ${{ inputs.commit }}
           TEST_SECRET: ${{ secrets.TEST_SECRET }}
