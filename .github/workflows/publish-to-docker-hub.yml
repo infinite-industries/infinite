@@ -18,6 +18,7 @@ jobs:
           echo "Tell me your secrect: '${{ secrets.TEST_SECRET }}'"
           echo "$(ls -l)"
           echo "$(pwd)"
+          git checkout $COMMIT_HASH
         env:
           COMMIT_HASH: ${{ inputs.commit }}
           TEST_SECRET: ${{ secrets.TEST_SECRET }}
