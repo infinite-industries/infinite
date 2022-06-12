@@ -28,9 +28,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
+          echo "Running Jerb"
           echo "Log level: $LEVEL"
-          echo "Tags: $TAGS"
           echo "Environment: $ENVIRONMENT"
+          echo "$TEST_SECRET"
+          echo "$(ls -l)"
         env:
           LEVEL: ${{ inputs.logLevel }}
           TAGS: ${{ inputs.tags }}
