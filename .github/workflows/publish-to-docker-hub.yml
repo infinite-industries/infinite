@@ -1,44 +1,22 @@
 on:
-  pull_request:
-    branches:
-      - development
-      - master
   workflow_dispatch:
     environment: docker-publication
     inputs:
-      logLevel:
-        description: 'Log level'
+      commit:
+        description: 'a commit hash or tag to use'
         required: true
-        default: 'warning'
-        type: choice
-        options:
-          - info
-          - warning
-          - debug
-      tags:
-        description: 'Test scenario tags'
-        required: false
-        type: boolean
-      environment:
-        description: 'Environment to run tests against'
-        type: environment
-        required: true
-
+        default: development
+        type: string
 jobs:
-  log-the-inputs:
+  publish-to-docker-hub-api-server:
     environment: docker-publication
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "Running Jerb"
-          echo "Log level: $LEVEL"
-          echo "Environment: $ENVIRONMENT"
-          echo "Tell me your secrect: '$TEST_SECRET' -- '${{ secrets.TEST_SECRET }}'"
-          echo "grr: $TEST_SECRET_2"
+          echo "Publishing '$COMMIT_HASH' to docker hub"
+          git checkout $COMMIT_HASH
+          echo "Tell me your secrect: '${{ secrets.TEST_SECRET }}'"
           echo "$(ls -l)"
         env:
-          LEVEL: ${{ inputs.logLevel }}
-          TAGS: ${{ inputs.tags }}
-          ENVIRONMENT: ${{ inputs.environment }}
+          COMMIT_HASH: ${{ inputs.commit }}
           TEST_SECRET: ${{ secrets.TEST_SECRET }}
-          TEST_SECRET_2: ${{ secrets.TEST_SECRET_2 }}
