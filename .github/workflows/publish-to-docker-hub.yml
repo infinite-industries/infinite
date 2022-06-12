@@ -14,7 +14,6 @@ jobs:
     steps:
       - run: |
           echo "Publishing '$COMMIT_HASH' to docker hub"
-          git checkout $COMMIT_HASH
           echo "Tell me your secrect: '${{ secrets.TEST_SECRET }}'"
           echo "$(ls -l)"
         env:
