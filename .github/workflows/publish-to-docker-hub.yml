@@ -34,6 +34,7 @@ jobs:
           echo "Log level: $LEVEL"
           echo "Environment: $ENVIRONMENT"
           echo "Tell me your secrect: $TEST_SECRET"
+          ehco "grr: $TEST_SECRET_2"
           echo "$(ls -l)"
         env:
           LEVEL: ${{ inputs.logLevel }}
