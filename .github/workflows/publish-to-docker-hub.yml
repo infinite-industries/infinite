@@ -33,7 +33,7 @@ jobs:
           echo "Running Jerb"
           echo "Log level: $LEVEL"
           echo "Environment: $ENVIRONMENT"
-          echo "Tell me your secrect: $TEST_SECRET"
+          echo "Tell me your secrect: '$TEST_SECRET' -- '${{ secrets.TEST_SECRET }}'"
           echo "grr: $TEST_SECRET_2"
           echo "$(ls -l)"
         env:
