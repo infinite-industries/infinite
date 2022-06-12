@@ -24,7 +24,7 @@ jobs:
           echo "Tell me your secrect: '${{ secrets.TEST_SECRET }}'"
           pushd ./api-server
           ./docker-build.sh "$COMMIT_HASH"
-
+          ./docker-publish.sh "$COMMIT_HASH"
         env:
           COMMIT_HASH: ${{ inputs.commit }}
           TEST_SECRET: ${{ secrets.TEST_SECRET }}
