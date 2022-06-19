@@ -17,7 +17,7 @@ module.exports = {
     
     UPDATE events
     SET tags = array_append(tags, 'mode:remote')
-    WHERE 'remote' = any (tags)
+    WHERE 'remote' = any (tags);
     
     /* add category tags */
 
