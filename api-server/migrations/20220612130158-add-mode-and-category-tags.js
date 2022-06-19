@@ -2,6 +2,9 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    // TODO: consider restricting the effect of this to
+    // - current events and events from the very recent past
+    // - online resource (things w/ no datetimes)
     return queryInterface.sequelize.query(`
 
     /* add mode tags */
@@ -15,13 +18,6 @@ module.exports = {
     UPDATE events
     SET tags = array_append(tags, 'mode:remote')
     WHERE 'remote' = any (tags)
-    AND venue_id is null;
-
-    UPDATE events
-    SET tags = array_append(tags, 'mode:hybrid')
-    WHERE 'remote' = any (tags)
-    AND venue_id is not null;
-
     
     /* add category tags */
 
@@ -52,21 +48,11 @@ module.exports = {
     WHERE 'online-resource' = any (tags);
 
     UPDATE events
-    SET tags = array_append(tags, 'category:online-resource')
-    WHERE 'archived-online-resource' = any (tags);
-
-    UPDATE events
     SET tags = array_append(tags, 'category:call-for-entry')
-    WHERE 'artist-call' = any (tags);
-
-    UPDATE events
-    SET tags = array_append(tags, 'category:call-for-entry')
-    WHERE 'call-to-artists' = any (tags);
-
-    UPDATE events
-    SET tags = array_append(tags, 'category:call-for-entry')
-    WHERE 'call' = any (tags);
-      `)
+    WHERE 'artist-call' = any (tags)
+       OR 'call-to-artists' = any (tags)
+       OR 'call' = any (tags);
+    `)
   },
 
   down: async (queryInterface, Sequelize) => {
