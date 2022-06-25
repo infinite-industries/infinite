@@ -9,7 +9,7 @@ container_name="infinite-web-portal"
 
 echo "$script_name: building $container_name for tag $tag"
 
-docker build -t "$container_name:latest" .
+docker build -t "$container_name:$tag" .
 
 echo "$script_name: finished building $container_name for tag $tag"
 
