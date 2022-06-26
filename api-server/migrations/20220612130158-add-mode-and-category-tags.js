@@ -2,60 +2,20 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    // TODO: consider restricting the effect of this to
-    // - current events and events from the very recent past
-    // - online resource (things w/ no datetimes)
     return queryInterface.sequelize.query(`
 
-    /* add mode tags */
-
+    /* update controls tags on existing online resources */
     UPDATE events
-    SET tags = array_append(tags, 'mode:in-person')
-    WHERE (not 'remote' = any (tags)) 
-    AND (not 'online-resource' = any (tags))
-    AND (not 'archived-online-resource' = any (tags))
-    AND venue_id is not null;
-
-    UPDATE events
-    SET tags = array_append(array_append(tags, 'mode:online'), 'category:online-resource')
+    SET tags = array_remove(array_remove(
+      array_append(array_append(tags, 'mode:online'), 'category:online-resource'),
+      'remote'), 'online-resource')
     WHERE 'online-resource' = any (tags);
 
+    /* update control tags on existing remote events */
     UPDATE events
-    SET tags = array_append(tags, 'mode:online') /* TODO: can we also remove 'remote'? */
+    SET tags = array_remove(array_append(tags, 'mode:online'), 'remote')
     WHERE 'remote' = any (tags)
-    AND NOT 'mode:online' = any (tags);
-
-    /* add category tags */
-
-    UPDATE events
-    SET tags = array_append(tags, 'category:single-day-event')
-    WHERE id IN
-      (SELECT event_id FROM
-        (SELECT count(distinct date(start_time)) AS days, event_id
-        FROM datetime_venue
-        GROUP BY event_id) day_counts
-      WHERE days = 1)
-      AND (not 'gallery' = any (tags));
-
-    UPDATE events
-    SET tags = array_append(tags, 'category:multi-day-event')
-    WHERE id IN
-      (SELECT event_id FROM
-        (SELECT count(distinct date(start_time)) AS days, event_id
-        FROM datetime_venue
-        GROUP BY event_id) day_counts
-      WHERE days > 1)
-      AND (not 'gallery' = any (tags));
-
-    UPDATE events
-    SET tags = array_append(tags, 'category:gallery-show')
-    WHERE 'gallery' = any (tags);
-
-    UPDATE events
-    SET tags = array_append(tags, 'category:call-for-entry')
-    WHERE 'artist-call' = any (tags)
-       OR 'call-to-artists' = any (tags)
-       OR 'call' = any (tags);
+    AND NOT 'mode:online' = any (tags); /* avoid double-tagging an online resource also flagged as remote */
     `)
   },
 
@@ -65,9 +25,17 @@ module.exports = {
     SET tags = array_remove(tags, 'mode:in-person')
     WHERE 'mode:in-person' = any (tags);
 
+    /* replace mode:online with remote for truly remote events, but not online resources */
+    UPDATE events
+    SET tags = array_append(array_remove(tags, 'mode:online'), 'remote')
+    WHERE 'mode:online' = any (tags)
+      AND (not 'category:online-resource' = any (tags));
+
+    /* remove mode:online for online resources */
     UPDATE events
     SET tags = array_remove(tags, 'mode:online')
-    WHERE 'mode:online' = any (tags);
+    WHERE 'mode:online' = any (tags)
+      AND 'category:online-resource' = any (tags);
 
     UPDATE events
     SET tags = array_remove(tags, 'mode:hybrid')
@@ -86,7 +54,7 @@ module.exports = {
     WHERE 'category:gallery-show' = any (tags);
 
     UPDATE events
-    SET tags = array_remove(tags, 'category:online-resource')
+    SET tags = array_append(array_remove(tags, 'category:online-resource'), 'online-resource')
     WHERE 'category:online-resource' = any (tags);
 
     UPDATE events
