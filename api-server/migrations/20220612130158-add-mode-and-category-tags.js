@@ -14,11 +14,16 @@ module.exports = {
     WHERE (not 'remote' = any (tags)) 
     AND (not 'online-resource' = any (tags))
     AND venue_id is not null;
-    
+
+    UPDATE events
+    SET tags = array_append(array_append(tags, 'mode:online'), 'category:online-resource')
+    WHERE 'online-resource' = any (tags);
+
     UPDATE events
     SET tags = array_append(tags, 'mode:online') /* TODO: can we also remove 'remote'? */
-    WHERE 'remote' = any (tags);
-    
+    WHERE 'remote' = any (tags)
+    AND NOT 'mode:online' = any (tags);
+
     /* add category tags */
 
     UPDATE events
@@ -44,10 +49,6 @@ module.exports = {
     UPDATE events
     SET tags = array_append(tags, 'category:gallery-show')
     WHERE 'gallery' = any (tags);
-
-    UPDATE events
-    SET tags = array_append(array_append(tags, 'mode:online'), 'category:online-resource')
-    WHERE 'online-resource' = any (tags);
 
     UPDATE events
     SET tags = array_append(tags, 'category:call-for-entry')
