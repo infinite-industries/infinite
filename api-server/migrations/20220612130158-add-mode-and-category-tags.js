@@ -13,6 +13,7 @@ module.exports = {
     SET tags = array_append(tags, 'mode:in-person')
     WHERE (not 'remote' = any (tags)) 
     AND (not 'online-resource' = any (tags))
+    AND (not 'archived-online-resource' = any (tags))
     AND venue_id is not null;
 
     UPDATE events
