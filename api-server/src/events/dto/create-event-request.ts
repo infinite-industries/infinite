@@ -97,7 +97,7 @@ export class CreateEventRequest {
     @IsNotEmpty()
     date_times: StartEndTimePairs[];
 
-    @ApiProperty({example: ['remote']})
+    @ApiProperty({example: ['mode:onine']})
     @IsOptional()
     tags: Array<string>;
 

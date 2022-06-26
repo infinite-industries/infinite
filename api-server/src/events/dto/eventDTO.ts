@@ -73,7 +73,7 @@ export default class EventDTO {
     @ApiProperty({example: [{start_time: EXAMPLE_START_DATE, end_time: EXAMPLE_END_DATE}]})
     date_times: StartEndTimePairs[];
 
-    @ApiProperty({example: ['remote']})
+    @ApiProperty({example: ['mode:online', 'category:single-day-event']})
     tags: Array<string>;
 
     @ApiProperty({example: []})

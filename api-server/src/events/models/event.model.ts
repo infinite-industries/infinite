@@ -111,7 +111,7 @@ export class EventModel extends Model<EventModel> {
     reviewed_by_org: boolean;
 
     @Column(DataType.ARRAY(DataType.STRING))
-    @ApiProperty({example: ['remote']})
+    @ApiProperty({example: ['mode:online', 'category:single-day-event', 'music']})
     tags: Array<string>;
 
     @Column(DataType.ARRAY(DataType.STRING))
