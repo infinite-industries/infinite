@@ -562,7 +562,7 @@
       hasValidDateTimes: function () {
         if (this.calendar_event.hasOwnProperty('date_times')) {
           // online resources don't have fixed times
-          if (this.calendar_event.tags.includes('online-resource')) return this.calendar_event.date_times.length === 0
+          if (this.eventCategory === 'online-resource') return this.calendar_event.date_times.length === 0
           else return this.calendar_event.date_times.length > 0
         } else {
           return false
@@ -589,10 +589,6 @@
         return this.$store.getters.GetActiveVenues
       },
 
-      // these two are @deprecated -- migration TBD...
-      eventIsRemote: boolToTag('remote'),
-      eventIsOnline: boolToTag('online-resource'),
-
       eventIsPostponed: boolToTag('postponed'),
       eventIsCancelled: boolToTag('cancelled'),
 
@@ -614,7 +610,7 @@
       },
 
       showDateTimePicker: function () {
-        return [!this.eventIsOnline]
+        return [this.eventCategory !== 'online-resource']
       },
 
       // support for editing the tags on the event without considering the ones we
