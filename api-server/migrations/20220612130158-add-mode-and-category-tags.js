@@ -16,7 +16,7 @@ module.exports = {
     AND venue_id is not null;
     
     UPDATE events
-    SET tags = array_append(tags, 'mode:remote')
+    SET tags = array_append(tags, 'mode:online') /* TODO: can we also remove 'remote'? */
     WHERE 'remote' = any (tags);
     
     /* add category tags */
@@ -25,26 +25,28 @@ module.exports = {
     SET tags = array_append(tags, 'category:single-day-event')
     WHERE id IN
       (SELECT event_id FROM
-        (SELECT count(*) AS days, event_id, date(start_time)
+        (SELECT count(distinct date(start_time)) AS days, event_id
         FROM datetime_venue
-        GROUP BY event_id, date(start_time)) day_counts
-      WHERE days = 1);
+        GROUP BY event_id) day_counts
+      WHERE days = 1)
+      AND (not 'gallery' = any (tags));
 
     UPDATE events
     SET tags = array_append(tags, 'category:multi-day-event')
     WHERE id IN
       (SELECT event_id FROM
-        (SELECT count(*) AS days, event_id, date(start_time)
+        (SELECT count(distinct date(start_time)) AS days, event_id
         FROM datetime_venue
-        GROUP BY event_id, date(start_time)) day_counts
-      WHERE days > 1);
+        GROUP BY event_id) day_counts
+      WHERE days > 1)
+      AND (not 'gallery' = any (tags));
 
     UPDATE events
     SET tags = array_append(tags, 'category:gallery-show')
     WHERE 'gallery' = any (tags);
 
     UPDATE events
-    SET tags = array_append(tags, 'category:online-resource')
+    SET tags = array_append(array_append(tags, 'mode:online'), 'category:online-resource')
     WHERE 'online-resource' = any (tags);
 
     UPDATE events
@@ -62,8 +64,8 @@ module.exports = {
     WHERE 'mode:in-person' = any (tags);
 
     UPDATE events
-    SET tags = array_remove(tags, 'mode:remote')
-    WHERE 'mode:remote' = any (tags);
+    SET tags = array_remove(tags, 'mode:online')
+    WHERE 'mode:online' = any (tags);
 
     UPDATE events
     SET tags = array_remove(tags, 'mode:hybrid')
