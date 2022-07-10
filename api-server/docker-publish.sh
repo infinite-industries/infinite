@@ -2,7 +2,7 @@
 
 set -e
 
-tag="${1:=local}"
+tag="${1:-local}"
 container_name="infinite-api-server"
 dockerhub_org="chriswininger"
 

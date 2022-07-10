@@ -2,7 +2,7 @@
 
 set -e
 
-tag="${1:=local}"
+tag="${1:-local}"
 
 script_name="docker-build"
 container_name="infinite-web-portal"
