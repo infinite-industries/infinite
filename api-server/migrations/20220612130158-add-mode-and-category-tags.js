@@ -21,10 +21,6 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     return queryInterface.sequelize.query(`
-    UPDATE events
-    SET tags = array_remove(tags, 'mode:in-person')
-    WHERE 'mode:in-person' = any (tags);
-
     /* replace mode:online with remote for truly remote events, but not online resources */
     UPDATE events
     SET tags = array_append(array_remove(tags, 'mode:online'), 'remote')
@@ -38,28 +34,8 @@ module.exports = {
       AND 'category:online-resource' = any (tags);
 
     UPDATE events
-    SET tags = array_remove(tags, 'mode:hybrid')
-    WHERE 'mode:hybrid' = any (tags);
-
-    UPDATE events
-    SET tags = array_remove(tags, 'category:single-day-event')
-    WHERE 'category:single-day-event' = any (tags);
-
-    UPDATE events
-    SET tags = array_remove(tags, 'category:multi-day-event')
-    WHERE 'category:multi-day-event' = any (tags);
-
-    UPDATE events
-    SET tags = array_remove(tags, 'category:gallery-show')
-    WHERE 'category:gallery-show' = any (tags);
-
-    UPDATE events
     SET tags = array_append(array_remove(tags, 'category:online-resource'), 'online-resource')
     WHERE 'category:online-resource' = any (tags);
-
-    UPDATE events
-    SET tags = array_remove(tags, 'category:call-for-entry')
-    WHERE 'category:call-for-entry' = any (tags);
     `)
   }
 };
