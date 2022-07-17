@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+echo "start with API_URL: $API_URL"
+echo "start with APP_URL: $APP_URL"
 echo "run web-portal USE_PROXY: $USE_PROXY"
 
 if [ -z "$USE_PROXY" ]

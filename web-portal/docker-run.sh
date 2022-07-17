@@ -4,6 +4,7 @@
 # It assumes a local database is running
 
 container_name="infinite-web-portal"
+tag="${1:-local}"
 
 docker run -p 7779:7779 \
   --name "$container_name" \
@@ -11,4 +12,4 @@ docker run -p 7779:7779 \
   --net=host \
   --env="API_URL=http://localhost:3003/v1" \
   --env="APP_URL=http://localhost:7779" \
-  "$container_name:latest"
+  "$container_name:$tag"

@@ -59,7 +59,13 @@
         }
 
         this.$auth.loginWith('local', {
-          data: creds
+          data: creds,
+          // this is specified in the nuxt config file, but the full path gets
+          // baked in at build time, which makes it impossible to swap out the
+          // API source
+          // overriding the URL here allows us to use the runtime configuration
+          // to ensure we're targeting the correct API server
+          url: this.$config.API_URL + '/authentication/login'
         }).then(() => {
           const token = getToken(this.$auth)
 
