@@ -12,6 +12,8 @@ context('Event editing:', () => {
   const EVENT_NAME = 'Test Event'
   const EVENT_EMAIL = 'test@te.st'
   const EVENT_IMG = 'https://via.placeholder.com/1024X512.jpg'
+  const EVENT_MODE = 'in-person'
+  const EVENT_CATEGORY = 'multi-day-event'
   const EVENT_TAG = 'test'
   const ADMIN_USERNAME = Cypress.env('admin_auth_username')
   const ADMIN_PASSWORD = Cypress.env('admin_auth_password')
@@ -58,7 +60,7 @@ context('Event editing:', () => {
           fb_event_link: '',
           ticket_link: '',
           organizer_contact: EVENT_EMAIL,
-          tags: [ EVENT_TAG ]
+          tags: [ EVENT_TAG, `mode:${EVENT_MODE}`, `category:${EVENT_CATEGORY}` ]
         }
       })
     }).then((resp) => {

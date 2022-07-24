@@ -15,7 +15,7 @@
         <td>{{ calendar_event.title }}</td>
         <td>
           <div v-for="(date_time, index) in calendar_event.date_times" :key="index">{{ date_time | dateFormat }}</div>
-          <template v-if="calendar_event.tags && calendar_event.tags.includes('online-resource')">Online Resource</template>
+          <template v-if="calendar_event.tags && calendar_event.tags.includes('category:online-resource')">Online Resource</template>
         </td>
         <td><v-btn nuxt :to="{ name: 'admin-event-edit-id', params: { id: calendar_event.id } }">Edit</v-btn></td>
         <td>

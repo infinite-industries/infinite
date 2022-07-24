@@ -38,13 +38,111 @@ describe('SubmissionForm component', () => {
       propsData: {
         user_action: 'edit',
         user_role: 'regular'
+      },
+      stubs: {
+        'vue-editor': true
       }
     })
   })
 
-  // just to make the runner stop screaming
-  it('exists', function () {
-    expect(wrapper).toBeTruthy()
+  it('event mode can be selected', async function () {
+    expect(wrapper.vm.calendar_event.tags).toEqual([])
+    await wrapper.find('.event-mode input[type="radio"][value="in-person"]').setChecked(true)
+    expect(wrapper.vm.eventMode).toEqual('in-person')
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:in-person'])
+  })
+
+  it('event mode can be changed', async function () {
+    await wrapper.find('.event-mode input[type="radio"][value="in-person"]').setChecked(true)
+    expect(wrapper.vm.eventMode).toEqual('in-person')
+    await wrapper.find('.event-mode input[type="radio"][value="hybrid"]').setChecked(true)
+    expect(wrapper.vm.eventMode).toEqual('hybrid')
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:hybrid'])
+  })
+
+  it('event category can be selected', async function () {
+    await wrapper.find('.event-category input[type="radio"][value="single-day-event"]').setChecked(true)
+    expect(wrapper.vm.eventCategory).toEqual('single-day-event')
+    expect(wrapper.vm.calendar_event.tags).toEqual(['category:single-day-event'])
+  })
+
+  it('event category can be changed', async function () {
+    await wrapper.find('.event-category input[type="radio"][value="single-day-event"]').setChecked(true)
+    expect(wrapper.vm.eventCategory).toEqual('single-day-event')
+    await wrapper.find('.event-category input[type="radio"][value="multi-day-event"]').setChecked(true)
+    expect(wrapper.vm.eventCategory).toEqual('multi-day-event')
+    expect(wrapper.vm.calendar_event.tags).toEqual(['category:multi-day-event'])
+  })
+
+  it('event mode and category can be changed without affecting the other', async function () {
+    await wrapper.find('.event-mode input[type="radio"][value="in-person"]').setChecked(true)
+    await wrapper.find('.event-category input[type="radio"][value="single-day-event"]').setChecked(true)
+    expect(wrapper.vm.eventMode).toEqual('in-person')
+    expect(wrapper.vm.eventCategory).toEqual('single-day-event')
+    await wrapper.find('.event-mode input[type="radio"][value="hybrid"]').setChecked(true)
+    expect(wrapper.vm.eventMode).toEqual('hybrid')
+    expect(wrapper.vm.eventCategory).toEqual('single-day-event')
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:hybrid', 'category:single-day-event'])
+    await wrapper.find('.event-category input[type="radio"][value="multi-day-event"]').setChecked(true)
+    expect(wrapper.vm.eventMode).toEqual('hybrid')
+    expect(wrapper.vm.eventCategory).toEqual('multi-day-event')
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:hybrid', 'category:multi-day-event'])
+  })
+
+  it('event category "other" allows user-defined description', async function () {
+    // input should not exist until "other" selected
+    expect(wrapper.find('.category-other-description').exists()).toBe(false)
+    await wrapper.find('.event-category input[type="radio"][value="other"]').setChecked(true)
+    expect(wrapper.find('.category-other-description').exists()).toBe(true)
+
+    // should be editable
+    expect(wrapper.vm.eventCategory).toEqual('other')
+    expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['category:other']))
+    // ideally we'd grab the '.category-other-description input' and set its value, but Jest
+    // can't seem to find it; to work around that we're just setting the computed property
+    wrapper.vm.eventCategoryOther = 'Something fun!'
+    expect(wrapper.vm.eventCategory).toEqual('other')
+    expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['category:other:Something fun!']))
+  })
+
+  it('event category "other" can handle punctuation', async function () {
+    await wrapper.setData({
+      calendar_event: Object.assign({}, wrapper.vm.calendar_event, {
+        tags: ['mode:in-person', 'category:other:Creativity']
+      })
+    })
+    expect(wrapper.vm.eventCategoryOther).toEqual('Creativity')
+    wrapper.vm.eventCategoryOther = 'Colons:are:special.'
+    expect(wrapper.vm.eventCategory).toEqual('other')
+    expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['mode:in-person', 'category:other:Colons:are:special.']))
+  })
+
+  it('general tags are not affected by modifying control tags', async function () {
+    await wrapper.setData({
+      calendar_event: Object.assign({}, wrapper.vm.calendar_event, {
+        tags: ['festival', 'mode:in-person']
+      })
+    })
+    expect(wrapper.vm.generalTags).toEqual(['festival'])
+    await wrapper.find('.event-mode input[type="radio"][value="hybrid"]').setChecked(true)
+    await wrapper.find('.event-category input[type="radio"][value="single-day-event"]').setChecked(true)
+    expect(wrapper.vm.generalTags).toEqual(['festival'])
+    expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['festival', 'mode:hybrid', 'category:single-day-event']))
+  })
+
+  it('control tags are not affected by modifying general tags', async function () {
+    await wrapper.setData({
+      calendar_event: Object.assign({}, wrapper.vm.calendar_event, {
+        tags: ['festival', 'mode:in-person', 'category:single-day-event']
+      })
+    })
+    expect(wrapper.vm.generalTags).toEqual(['festival'])
+    expect(wrapper.vm.eventMode).toEqual('in-person')
+    expect(wrapper.vm.eventCategory).toEqual('single-day-event')
+    // another case where it can't find the input, so setting things manually
+    wrapper.vm.generalTags = ['convention']
+    expect(wrapper.vm.generalTags).toEqual(['convention'])
+    expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['convention', 'mode:in-person', 'category:single-day-event']))
   })
 
   // function getFilledOutEvent() {
