@@ -18,17 +18,62 @@
         </v-flex>
       </v-layout>
 
-      <!-- Is event online / remote? -->
-      <v-layout row wrap>
-        <v-flex xs0 sm3></v-flex>
-        <v-flex xs12 sm4 md3>
-          <v-checkbox v-model="eventIsRemote" label="Online Event" />
+      <v-layout row wrap class="event-mode">
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Is your event...<span class="required-field">*</span>:</h3>
         </v-flex>
-        <v-flex xs12 sm4 md4>
-          <v-checkbox v-model="eventIsOnline" label="Online Resource / Long-term Project" @change="onOnlineChange" />
+        <v-flex xs12 />
+        <v-flex xs12 sm4 md3 offset-sm1>
+          <label class="category-option">
+            <input type="radio" v-model="eventMode" value="in-person">
+            <strong>In-person</strong>
+          </label>
         </v-flex>
-        <v-flex xs8 offset-xs3>
-          <em>Online events occur at a particular time. Online Resources are always available (like a website or a link to a video).</em>
+        <v-flex xs12 sm3>
+          <label class="category-option">
+            <input type="radio" v-model="eventMode" value="online">
+            <strong>Online</strong>
+          </label>
+        </v-flex>
+        <v-flex xs12 sm4>
+          <label class="category-option">
+            <input type="radio" v-model="eventMode" value="hybrid">
+            <strong>Hybrid</strong> both in-person and online elements
+          </label>
+        </v-flex>
+      </v-layout>
+
+      <v-layout row wrap class="event-category">
+        <!-- <v-flex xs0 sm3 /> -->
+        <v-flex xs12 sm11 offset-sm1>
+          <h3 class="form-label" style="text-align: left">Which of these best describes your event?<span class="required-field">*</span></h3>
+        </v-flex>
+        <v-flex xs12 sm11 offset-sm1>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="single-day-event" />
+            <strong>Single-day event</strong>, like a music concert or a poetry reading.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="gallery-show" />
+            <strong>Gallery show</strong> stretching over multiple weeks, with an opening and special events.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="multi-day-event" />
+            <strong>Multi-day event</strong>, like a music festival, theater production, or a conference.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="online-resource" />
+            <strong>Online resource</strong> with no specific start/end date. Just a link to share info on a topic or an idea.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="call-for-entry" />
+            <strong>Call-for-entry</strong> with a single date/time. Invite creative peoples to submit their work.
+          </label>
+          <label class="category-option">
+            <input type="radio" v-model="eventCategory" name="eventCategory" value="other" />
+            <strong>Other</strong>. Surprise us.
+            <v-text-field class="category-other-description" label="What type of event are you putting on?" v-model="eventCategoryOther" v-if="eventCategory === 'other'" />
+          </label>
         </v-flex>
       </v-layout>
 
@@ -305,7 +350,7 @@
   import ImageUploadService from '@/services/ImageUploadService'
   import getToken from '../helpers/getToken'
 
-  const CONTROL_TAGS = ['remote', 'online-resource', 'postponed', 'cancelled']
+  const CONTROL_TAGS = /^(?:remote|online-resource|postponed|cancelled|mode:[\w-]+|category:[\w-]+(:(.+))?)$/
 
   const boolToTag = tag => ({
     get: function () {
@@ -316,6 +361,24 @@
         if (!this.calendar_event.tags.includes(tag)) this.calendar_event.tags.push(tag)
       } else {
         this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(tag), 1)
+      }
+    }
+  })
+
+  const radioToTag = (prefix, pattern) => ({
+    get: function () {
+      if (this.calendar_event && this.calendar_event.tags) {
+        const tag = this.calendar_event.tags.find(tag => pattern.test(tag))
+        return tag ? pattern.exec(tag)[1] : ''
+      } else return ''
+    },
+    set: function (newValue) {
+      const currentTag = this.calendar_event.tags.find(tag => pattern.test(tag))
+      const newTag = `${prefix}:${newValue}`
+      if (currentTag) {
+        this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(currentTag), 1, newTag)
+      } else {
+        this.calendar_event.tags.push(newTag)
       }
     }
   })
@@ -419,6 +482,7 @@
       },
       PreviewEvent: function () {
         const event = { ...this.calendar_event }
+        if (this.eventCategory === 'online-resource' && event.date_times.length > 0) event.date_times = []
         event.venue = event.venue_id ? this.venues.find(v => v.id === event.venue_id) : null
         ImageUploadService.asDataUrl(this.$refs.eventImage.files[0]).then((imageUrl) => {
           event.image = imageUrl
@@ -473,11 +537,6 @@
       sendEmails: function () {
         console.log('Allan please send emails.') // Who is Allan?
       },
-      onOnlineChange: function () {
-        if (this.eventIsOnline) {
-          this.calendar_event.date_times = []
-        }
-      },
       onFileChange: function (type) {
         // files.length will be a 0 for no image, 1 for image
         if (type === 'event') {
@@ -503,7 +562,7 @@
       hasValidDateTimes: function () {
         if (this.calendar_event.hasOwnProperty('date_times')) {
           // online resources don't have fixed times
-          if (this.calendar_event.tags.includes('online-resource')) return this.calendar_event.date_times.length === 0
+          if (this.eventCategory === 'online-resource') return this.calendar_event.date_times.length === 0
           else return this.calendar_event.date_times.length > 0
         } else {
           return false
@@ -530,14 +589,28 @@
         return this.$store.getters.GetActiveVenues
       },
 
-      eventIsRemote: boolToTag('remote'),
-      eventIsOnline: boolToTag('online-resource'),
-
       eventIsPostponed: boolToTag('postponed'),
       eventIsCancelled: boolToTag('cancelled'),
 
+      eventMode: radioToTag('mode', /^mode:([\w-]+)$/),
+      eventCategory: radioToTag('category', /^category:([\w-]+)(:(.+))?$/),
+      eventCategoryOther: {
+        get () {
+          const tag = this.calendar_event && this.calendar_event.tags.find(tag => /^category:other/.test(tag))
+          // note that the description might have a colon (or more than one) in it
+          // that's accounted for here by removing the 'category' and 'other', and
+          // then rejoining the remainder with colons
+          return tag ? tag.split(':').slice(2).join(':') : ''
+        },
+        set (newValue) {
+          const newTag = `category:other:${newValue}`
+          const oldTag = this.calendar_event.tags.find(tag => /^category:other/.test(tag))
+          this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(oldTag), 1, newTag)
+        }
+      },
+
       showDateTimePicker: function () {
-        return [!this.eventIsOnline]
+        return [this.eventCategory !== 'online-resource']
       },
 
       // support for editing the tags on the event without considering the ones we
@@ -546,14 +619,14 @@
         get: function () {
           return this.calendar_event.tags
             // filter out control tags, which have dedicated UI for adding/removing them
-            ? this.calendar_event.tags.filter(tag => !CONTROL_TAGS.includes(tag))
+            ? this.calendar_event.tags.filter(tag => !CONTROL_TAGS.test(tag))
             : []
         },
         set: function (newValue) {
           // update with any control tags applied
           if (this.calendar_event.tags.length > 0) {
-            CONTROL_TAGS.forEach((tag) => {
-              if (this.calendar_event.tags.includes(tag)) newValue.push(tag)
+            this.calendar_event.tags.forEach((tag) => {
+              if (CONTROL_TAGS.test(tag)) newValue.push(tag)
             })
           }
           this.calendar_event.tags = newValue
@@ -576,6 +649,8 @@
           // this.calendar_event.date != "" &&
           // this.calendar_event.time_start != "" &&
           // this.calendar_event.time_end != "" &&
+          this.eventMode &&
+          this.eventCategory &&
           this.hasValidDateTimes() &&
           this.calendar_event.venue_id !== '' &&
           this.calendar_event.organizer_contact !== '' &&
@@ -639,6 +714,18 @@
   color:white;
 }
 
+.event-mode {
+  margin-bottom: 1em;
+}
+
+.event-mode .form-label {
+  margin-bottom: 0.8em;
+}
+
+.event-category {
+  margin-bottom: 2em;
+}
+
 #new-venue {
     font-weight: bold;
     margin-top: 10px;
@@ -680,6 +767,17 @@
   min-height: 50px;
   width: 100%;
   outline: 1px dashed rgb(210, 210, 210)
+}
+
+.category-option {
+  display: block;
+  margin-bottom: 0.5em;
+  font-size: 16px;
+  color: rgba(0,0,0,0.54);
+}
+
+.category-option > strong {
+  color: black;
 }
 
 .preview-image img {

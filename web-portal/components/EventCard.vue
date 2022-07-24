@@ -121,7 +121,7 @@
         } else return {}
       },
       showTime: function () {
-        return !_hasTag(this.calendar_event, 'online-resource') &&
+        return !_hasTag(this.calendar_event, 'category:online-resource') &&
           (this.calendar_event && this.calendar_event.date_times.length > 0)
       },
       when_date: function () {
@@ -150,10 +150,10 @@
           !this.calendar_event.tags.includes('cancelled')
       },
       isRemote: function () {
-        return _hasTag(this.calendar_event, 'remote')
+        return _hasTag(this.calendar_event, 'mode:online')
       },
       isOnlineResource: function () {
-        return _hasTag(this.calendar_event, 'online-resource')
+        return _hasTag(this.calendar_event, 'category:online-resource')
       }
     },
     filters: {

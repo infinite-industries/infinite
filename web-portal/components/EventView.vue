@@ -177,10 +177,10 @@
         return encodeURI(this.$config.API_URL + '/events/' + this.event.id)
       },
       isRemote: function () {
-        return _hasTag(this.event, 'remote')
+        return _hasTag(this.event, 'mode:online')
       },
       isOnlineResource: function () {
-        return _hasTag(this.event, 'online-resource')
+        return _hasTag(this.event, 'category:online-resource')
       },
       // true if the event's venue is the special "remote" venue
       venueIsRemote: function () {
