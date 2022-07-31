@@ -115,7 +115,7 @@ export class EventsService {
         if (isNullOrUndefined(dateTimes))
             return;
 
-        const requests = dateTimes.map(( async ({ start_time, end_time, optional_title}) => {
+        const requests = dateTimes.map(( async ({ start_time, end_time, timezone, optional_title}) => {
             const id = uuidv4()
 
             return this.dateTimeVenueModel.create({
@@ -124,6 +124,7 @@ export class EventsService {
                 venue_id: venueId,
                 start_time,
                 end_time,
+                timezone,
                 optional_title
             }, transactionHost)
         }))

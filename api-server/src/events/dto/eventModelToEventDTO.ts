@@ -8,6 +8,7 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
             start_time: dt.start_time.toISOString(),
             end_time: dt.end_time.toISOString(),
             venue_id: dt.venue_id,
+            timezone: dt.timezone,
             optional_title: dt.optional_title
         }
     });
