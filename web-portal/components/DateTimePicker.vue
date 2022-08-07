@@ -389,6 +389,13 @@
     min-height: 50px;
   }
 
+  /* this overrides some Vuetify reset styling so that the meridiem selects */
+  /* are easier to identify as interactive form controls */
+  .time-date-entry select {
+    -moz-appearance: auto;
+    -webkit-appearance: auto;
+  }
+
   .label {
     color: rgb(154, 154, 154);
   }
