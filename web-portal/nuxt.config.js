@@ -4,6 +4,8 @@ import { json } from 'body-parser'
 
 const API_URL = process.env.API_URL || 'http://localhost:3003/v1'
 const APP_URL = process.env.APP_URL || 'http://localhost:7779'
+const TIMEZONE_DEFAULT = process.env.TIMEZONE_DEFAULT || 'US/Eastern'
+const TIMEZONE_OPTIONS = process.env.TIMEZONE_OPTIONS.split(',') || ['US/Eastern','US/Central']
 
 export default {
   mode: 'universal',
@@ -188,6 +190,8 @@ export default {
 
   publicRuntimeConfig: {
     APP_URL,
-    API_URL
+    API_URL,
+    TIMEZONE_DEFAULT,
+    TIMEZONE_OPTIONS
   }
 }

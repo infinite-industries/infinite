@@ -78,8 +78,9 @@
                 <option value="pm">PM</option>
               </select>
               <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
-                <option value="US/Eastern">US/Eastern</option>
-                <option value="US/Central">US/Central</option>
+                <option v-for="(tz) in this.$config.TIMEZONE_OPTIONS.split(',')" :key="tz">
+                  {{ tz }}
+                </option>
               </select>
             </span>
 
@@ -216,7 +217,7 @@
         end_minute: '',
         end_ampm: 'pm',
 
-        event_timezone: 'US/Eastern'
+        event_timezone: this.$config.TIMEZONE_DEFAULT
       }
     },
     mounted: function () {
