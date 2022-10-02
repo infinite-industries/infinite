@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import moment from 'moment'
+  import * as momenttz from 'moment-timezone'
 
   import Location from './vectors/Location.vue'
   import Calendar from './vectors/Calendar.vue'
@@ -128,13 +128,13 @@
         const calendar = this.calendar_event
         const dateTimes = calendar.date_times
         const firstDay = dateTimes[0]
-        return firstDay ? moment(firstDay.start_time).format('dddd, MMMM Do') : null
+        return firstDay ? momenttz(firstDay.start_time).tz(firstDay.timezone).format('dddd, MMMM Do') : null
       },
       when_time: function () {
         const calendar = this.calendar_event
         const dateTimes = calendar.date_times
         const firstDay = dateTimes[0]
-        const output_string = firstDay ? moment(firstDay.start_time).format('h:mma - ') + moment(firstDay.end_time).format('h:mma') : null
+        const output_string = firstDay ? momenttz(firstDay.start_time).tz(firstDay.timezone).format('h:mma - ') + momenttz(firstDay.end_time).tz(firstDay.timezone).format('h:mma z') : null
         return output_string
       },
       isCancelled: function () {

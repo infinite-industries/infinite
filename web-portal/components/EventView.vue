@@ -20,12 +20,10 @@
         <!-- Online Resources technically have no fixed time, so suppress date display for them -->
         <div v-if="!isOnlineResource">
           <div v-for="(date_time, index) in event.date_times" :key="index" class="date-time-container">
-            <!-- TODO: do we need to consider timezones? If so, this might be useful: -->
-            <!-- https://stackoverflow.com/a/57022505 -->
             <!-- TODO: should we consider Luxon instead of Moment? -->
-            <em>{{ date_time.start_time | moment('dddd, MMMM Do') }}</em>
+            <em>{{ adjustDatetimeForTimezone(date_time.start_time, date_time.timezone).format('dddd, MMMM Do') }}</em>
             <br>
-            <em>{{ date_time.start_time | moment('h:mma') }} - {{ date_time.end_time | moment('h:mma') }}</em>
+            <em>{{ adjustDatetimeForTimezone(date_time.start_time, date_time.timezone).format('h:mma -') }} {{ adjustDatetimeForTimezone(date_time.end_time, date_time.timezone).format('h:mma z') }}</em>
           </div>
         </div>
       </div>
@@ -149,6 +147,7 @@
   import Facebook from '@/components/vectors/Facebook.vue'
   import Link from '@/components/vectors/Link.vue'
   import Location from '@/components/vectors/Location.vue'
+  import * as momenttz from 'moment-timezone'
   import Share from '@/components/vectors/Share.vue'
   import Twitter from '@/components/vectors/Twitter.vue'
 
@@ -212,6 +211,9 @@
         console.error('Action:', e.action)
         console.error('Trigger:', e.trigger)
         window.alert('We were unable to copy URL. Here it is for reference:\n' + this.event.bitly_link)
+      },
+      adjustDatetimeForTimezone(datetime, timezone) {
+        return momenttz(datetime).tz(timezone)
       }
     },
     components: {
