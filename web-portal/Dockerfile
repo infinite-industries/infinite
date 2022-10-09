@@ -1,5 +1,8 @@
 FROM node:gallium
 
+ARG GOOGLE_ANALYTICS_ID='UA-73795062-1'
+ENV GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID}
+
 ADD ./ /web-portal
 
 RUN npm install -g npm@8.7.0
