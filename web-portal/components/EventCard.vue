@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import * as momenttz from 'moment-timezone'
+  import momenttz from 'moment-timezone'
 
   import Location from './vectors/Location.vue'
   import Calendar from './vectors/Calendar.vue'

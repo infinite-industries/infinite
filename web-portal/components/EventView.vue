@@ -147,7 +147,7 @@
   import Facebook from '@/components/vectors/Facebook.vue'
   import Link from '@/components/vectors/Link.vue'
   import Location from '@/components/vectors/Location.vue'
-  import * as momenttz from 'moment-timezone'
+  import momenttz from 'moment-timezone'
   import Share from '@/components/vectors/Share.vue'
   import Twitter from '@/components/vectors/Twitter.vue'
 
