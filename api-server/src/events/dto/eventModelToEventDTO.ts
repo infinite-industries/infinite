@@ -1,6 +1,7 @@
 import {EventModel} from "../models/event.model";
 import EventDTO from "./eventDTO";
 import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
+import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
 
 export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
     const date_times: StartEndTimePairs [] = eventModel.date_times.map((dt) => {
@@ -37,7 +38,6 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
         verified: eventModel.verified,
         website_link: eventModel.website_link,
         date_times,
-        venue: eventModel.venues[0],
-
+        venue: isNotNullOrUndefined(eventModel.venues) ? eventModel.venues[0] : null,
     }
 }

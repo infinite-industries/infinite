@@ -18,8 +18,16 @@ const getEvent = () => {
       { start_time: '2020-06-02T22:00:00', end_time: '2020-06-02T23:00:00' }
     ],
     brief_description: 'The event lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat ipsum neque.',
+    venue: getVenue(),
     venue_id: venueId,
     tags: []
+  }
+}
+
+const getVenue = () => {
+  return {
+    id: venueId,
+    name: venueName
   }
 }
 
@@ -30,7 +38,7 @@ describe('Card component', () => {
     event = getEvent()
     store = new Vuex.Store({
       state: {},
-      getters: { GetActiveVenues: () => [{ id: venueId, name: venueName }] }
+      getters: { GetActiveVenues: () => [ getVenue() ] }
     })
     wrapper = shallowMount(Card, {
       localVue,

@@ -42,7 +42,8 @@ export class EventsController {
     })
     getAllCurrentVerified(
         @Query('embed') embed: string[] | string = [],
-        @Query('tags') tags: string[] | string = []
+        @Query('tags') tags: string[] | string = [],
+        @Req() request: Request
     ): Promise<EventsResponse> {
         if (typeof embed === 'string') {
             embed = [embed, 'DATE_TIME']
@@ -68,6 +69,8 @@ export class EventsController {
         };
 
         return this.eventsService.findAll(findOptions)
+            .then(events => events.map(eventModelToEventDTO))
+            .then(events => removeSensitiveDataForNonAdmins(request, events))
             .then(events => new EventsResponse({ events }));
     }
 
@@ -80,7 +83,8 @@ export class EventsController {
     })
     getAllVerified(
         @Query('embed') embed: string[] | string = [],
-        @Query('tags') tags: string[] | string = []
+        @Query('tags') tags: string[] | string = [],
+        @Req() request: Request
     ): Promise<EventsResponse> {
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
@@ -88,9 +92,12 @@ export class EventsController {
         };
 
         return this.eventsService.findAll(findOptions)
+            .then((events) => events.map(eventModelToEventDTO))
+            .then(event => removeSensitiveDataForNonAdmins(request, event))
             .then(events => new EventsResponse({ events }));
     }
 
+    // TODO - Move to events.authenticated.controller
     @Get('non-verified')
     @UseGuards(AuthGuard)
     @ApiOperation({ summary: 'Get events that have not yet been verified (admin only)' })
@@ -106,6 +113,7 @@ export class EventsController {
         };
 
         return this.eventsService.findAll(findOptions)
+            .then((events) => events.map(eventModelToEventDTO))
             .then(events => new EventsResponse({ events }));
     }
 
@@ -135,6 +143,7 @@ export class EventsController {
             .then((event: EventDTO) => ({ event, status: 'success' }))
     }
 
+    // TODO - Move to events.authenticated.controller
     @Get()
     @UseGuards(AuthGuard)
     @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
@@ -150,6 +159,7 @@ export class EventsController {
         };
 
         return this.eventsService.findAll(findOptions)
+            .then((events) => events.map(eventModelToEventDTO))
             .then(events => new EventsResponse({ events }));
     }
 
