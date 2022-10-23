@@ -21,9 +21,9 @@
         <div v-if="!isOnlineResource">
           <div v-for="(date_time, index) in event.date_times" :key="index" class="date-time-container">
             <!-- TODO: should we consider Luxon instead of Moment? -->
-            <em>{{ adjustDatetimeForTimezone(date_time.start_time, date_time.timezone).format('dddd, MMMM Do') }}</em>
+            <em>{{ adjustDatetimeForTimezone(date_time.start_time, (date_time.timezone || $config.TIMEZONE_DEFAULT)).format('dddd, MMMM Do') }}</em>
             <br>
-            <em>{{ adjustDatetimeForTimezone(date_time.start_time, date_time.timezone).format('h:mma -') }} {{ adjustDatetimeForTimezone(date_time.end_time, date_time.timezone).format('h:mma z') }}</em>
+            <em>{{ adjustDatetimeForTimezone(date_time.start_time, (date_time.timezone || $config.TIMEZONE_DEFAULT)).format('h:mma -') }} {{ adjustDatetimeForTimezone(date_time.end_time, (date_time.timezone || $config.TIMEZONE_DEFAULT)).format('h:mma z') }}</em>
           </div>
         </div>
       </div>

@@ -38,6 +38,11 @@ describe('Card component', () => {
       stubs: {
         NuxtLink: RouterLinkStub
       },
+      mocks: {
+        $config: {
+          TIMEZONE_DEFAULT: 'US/Eastern'
+        }
+      },
       propsData: {
         calendar_event: event
       }

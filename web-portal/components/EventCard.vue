@@ -128,13 +128,13 @@
         const calendar = this.calendar_event
         const dateTimes = calendar.date_times
         const firstDay = dateTimes[0]
-        return firstDay ? momenttz(firstDay.start_time).tz(firstDay.timezone).format('dddd, MMMM Do') : null
+        return firstDay ? momenttz(firstDay.start_time).tz(firstDay.timezone || this.$config.TIMEZONE_DEFAULT).format('dddd, MMMM Do') : null
       },
       when_time: function () {
         const calendar = this.calendar_event
         const dateTimes = calendar.date_times
         const firstDay = dateTimes[0]
-        const output_string = firstDay ? momenttz(firstDay.start_time).tz(firstDay.timezone).format('h:mma - ') + momenttz(firstDay.end_time).tz(firstDay.timezone).format('h:mma z') : null
+        const output_string = firstDay ? momenttz(firstDay.start_time).tz(firstDay.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma - ') + momenttz(firstDay.end_time).tz(firstDay.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma z') : null
         return output_string
       },
       isCancelled: function () {
