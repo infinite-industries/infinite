@@ -19,11 +19,11 @@
       <div class="event-time">
         <!-- Online Resources technically have no fixed time, so suppress date display for them -->
         <div v-if="!isOnlineResource">
-          <div v-for="(date_time, index) in event.date_times" :key="index" class="date-time-container">
+          <div v-for="(date_time, index) in formatted_date_times" :key="index" class="date-time-container">
             <!-- TODO: should we consider Luxon instead of Moment? -->
-            <em>{{ adjustDatetimeForTimezone(date_time.start_time, (date_time.timezone || $config.TIMEZONE_DEFAULT)).format('dddd, MMMM Do') }}</em>
+            <em>{{ date_time.start_date }}</em>
             <br>
-            <em>{{ adjustDatetimeForTimezone(date_time.start_time, (date_time.timezone || $config.TIMEZONE_DEFAULT)).format('h:mma -') }} {{ adjustDatetimeForTimezone(date_time.end_time, (date_time.timezone || $config.TIMEZONE_DEFAULT)).format('h:mma z') }}</em>
+            <em>{{ date_time.start_time }} - {{ date_time.end_time }} {{ date_time.timezone }}</em>
           </div>
         </div>
       </div>
@@ -191,6 +191,18 @@
       },
       suppressMapLink() {
         return this.isRemote || this.isOnlineResource
+      },
+      formatted_date_times: function () {
+        const date_time_elements = []
+        for (const date_time of this.event.date_times) {
+          date_time_elements.push({
+            start_date: momenttz(date_time.start_time).tz(date_time.timezone || this.$config.TIMEZONE_DEFAULT).format('dddd, MMMM Do'),
+            start_time: momenttz(date_time.start_time).tz(date_time.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma'),
+            end_time: momenttz(date_time.end_time).tz(date_time.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma'),
+            timezone: momenttz(date_time.end_time).tz(date_time.timezone).format('z')
+          })
+        }
+        return date_time_elements
       }
     },
     methods: {
