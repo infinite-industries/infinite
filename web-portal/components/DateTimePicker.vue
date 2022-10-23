@@ -78,7 +78,7 @@
                 <option value="pm">PM</option>
               </select>
               <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
-                <option v-for="(tz) in this.$config.TIMEZONE_OPTIONS.split(',')" :key="tz">
+                <option v-for="(tz) in $config.TIMEZONE_OPTIONS.split(',')" :key="tz">
                   {{ tz }}
                 </option>
               </select>
