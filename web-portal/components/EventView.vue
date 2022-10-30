@@ -223,9 +223,6 @@
         console.error('Action:', e.action)
         console.error('Trigger:', e.trigger)
         window.alert('We were unable to copy URL. Here it is for reference:\n' + this.event.bitly_link)
-      },
-      adjustDatetimeForTimezone(datetime, timezone) {
-        return momenttz(datetime).tz(timezone)
       }
     },
     components: {
