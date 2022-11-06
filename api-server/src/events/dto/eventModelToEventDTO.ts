@@ -4,14 +4,14 @@ import {StartEndTimePairs} from "../../shared-types/start-end-time-pairs";
 import isNotNullOrUndefined from "../../utils/is-not-null-or-undefined";
 
 export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
-    const date_times: StartEndTimePairs [] = eventModel.date_times.map((dt) => {
+    const date_times: StartEndTimePairs [] = isNotNullOrUndefined(eventModel.date_times) ? eventModel.date_times.map((dt) => {
         return {
             start_time: dt.start_time.toISOString(),
             end_time: dt.end_time.toISOString(),
             venue_id: dt.venue_id,
             optional_title: dt.optional_title
         }
-    });
+    }) : [];
 
     return {
         address: eventModel.address,

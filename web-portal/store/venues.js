@@ -73,6 +73,23 @@ export const mutations = {
   VENUE_ACTIVATE_FAIL: (state, payload) => {
     setQueryStateFail(state.activateVenueQuery, payload)
   }
+
+  // VENUE_UPDATE_START: (state) => {
+  //   setQueryFetching(state.activateVenueQuery)
+  // },
+  // VENUE_ACTIVATE_SUCCESS: (state, { id, venue }) => {
+  //   setQueryStateSuccess(state.activateVenueQuery, venue)
+  //   if (state.getActiveVenuesQuery.isSuccess && !state.getActiveVenuesQuery.isFetching) {
+  //     state.getActiveVenuesQuery.data.push(venue)
+  //   }
+  //
+  //   if (state.getDeletedVenuesQuery.isSuccess && !state.getDeletedVenuesQuery.isFetching) {
+  //     state.getDeletedVenuesQuery.data = state.getDeletedVenuesQuery.data.filter(venue => venue.id !== id)
+  //   }
+  // },
+  // VENUE_ACTIVATE_FAIL: (state, payload) => {
+  //   setQueryStateFail(state.activateVenueQuery, payload)
+  // }
 }
 
 export const actions = {

@@ -4,7 +4,7 @@
   >
     <section class="admin-venue-edit-page__venue-card__fields">
       <div class="admin-venue-edit-page__venue-card__field">
-        <input type="text" :value="venue.name" placeholder="name">
+        <input type="text" :value="venue.name" placeholder="name" @change="onFieldChanged()">
 
         <div>
           <span class="admin-venue-edit-page__venue-card__slug admin-venue-edit-page__venue-card__readonly">
@@ -14,11 +14,11 @@
       </div>
 
       <div class="admin-venue-edit-page__venue-card__field">
-        <input type="text" :value="venue.address" placeholder="address">
+        <input type="text" :value="venue.address" placeholder="address" @change="onFieldChanged()">
       </div>
 
       <div class="admin-venue-edit-page__venue-card__field">
-        <input type="text" :value="venue.g_map_link" placeholder="google maps link">
+        <input type="text" :value="venue.g_map_link" placeholder="google maps link" @change="onFieldChanged()">
       </div>
 
       <div class="admin-venue-edit-page__venue-card__field">
@@ -31,23 +31,45 @@
     </section>
 
     <div class="admin-venue-edit-page__venue-card__footer">
-      <button
-        v-if="venue.is_soft_deleted === false"
-        class="admin-venue-edit-page__venue-card__button"
-        @click="onDeleteVenueClick()"
-        :disabled="isDeleting"
-      >
-        Delete Venue
-      </button>
+      <div class="admin-venue-edit-page__venue-card__update-wrapper">
+        <button
+          class="admin-venue-edit-page__venue-card__button"
+          :disabled="isActivating || isPristine"
+          title="Creates a new venue based on the entries and soft deletes the old venue, useful if a venue moves or changes names."
+        >
+          Replace Venue (Venue Moved)
+        </button>
 
-      <button
-        v-if="venue.is_soft_deleted === true"
-        class="admin-venue-edit-page__venue-card__button"
-        @click="onUndoDeleteVenueClick()"
-        :disabled="isActivating"
-      >
-        Undelete Venue
-      </button>
+        <button
+          class="admin-venue-edit-page__venue-card__button"
+          :disabled="isActivating || isPristine"
+          title="Updates the value of the venue in place, useful when you want fix a typo."
+        >
+          Correct Venue Values
+        </button>
+      </div>
+
+      <div class="admin-venue-edit-page__venue-card__delete-wrapper">
+        <button
+          v-if="venue.is_soft_deleted === false"
+          class="admin-venue-edit-page__venue-card__button"
+          @click="onDeleteVenueClick()"
+          :disabled="isDeleting"
+          title="Soft deletes this venue. It will no longer be shown to users in the ui but is still in the database and linked to past events for the historical record."
+        >
+          Delete Venue
+        </button>
+
+        <button
+          v-if="venue.is_soft_deleted === true"
+          class="admin-venue-edit-page__venue-card__button"
+          @click="onUndoDeleteVenueClick()"
+          :disabled="isActivating"
+          title="Restores a previously soft deleted venue. It will again be shown to users as an option to select when choosing a venue."
+        >
+          Undelete Venue
+        </button>
+      </div>
 
       <div class="admin-venue-edit-page__venue-card__footer-load-bar">
         <VenueSpinner :is-shown="isDeleting">Processing Delete...</VenueSpinner>
@@ -65,12 +87,20 @@
     name: 'VenueCard',
     components: { VenueSpinner },
     props: ['venue'],
+    data: function () {
+      return {
+        isChanged: false
+      }
+    },
     methods: {
       onDeleteVenueClick: function () {
         const id = this.venue.id
         const idToken = this.idToken
 
         this.$store.dispatch(DELETE_VENUE, { id, idToken })
+      },
+      onFieldChanged: function () {
+        this.isChanged = true
       },
       onUndoDeleteVenueClick: function () {
         const id = this.venue.id
@@ -88,6 +118,9 @@
       },
       idToken: function () {
         return getToken(this.$auth)
+      },
+      isPristine: function () {
+        return !this.isChanged
       }
     }
   }
@@ -113,9 +146,25 @@
     margin-bottom: 1rem;
   }
 
-  .admin-venue-edit-page__venue-card__fields,
+  .admin-venue-edit-page__venue-card__fields {
+    margin-bottom: 1rem;
+  }
+
   .admin-venue-edit-page__venue-card__footer {
     margin-bottom: 1rem;
+    display: flex;
+  }
+
+  .admin-venue-edit-page__venue-card__delete-wrapper {
+    flex: 1;
+  }
+
+  .admin-venue-edit-page__venue-card__delete-wrapper .admin-venue-edit-page__venue-card__button {
+    float: right;
+  }
+
+  .admin-venue-edit-page__venue-card__button:disabled {
+   background-color: lightgray;
   }
 
   .admin-venue-edit-page__venue-card__footer button {
