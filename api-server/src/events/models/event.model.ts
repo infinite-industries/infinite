@@ -119,7 +119,7 @@ export class EventModel extends Model<EventModel> {
     links: Array<string>;
 
     @HasMany(() => DatetimeVenueModel)
-    date_times: DatetimeVenueModel []
+    date_times?: DatetimeVenueModel []
 
     @BelongsToMany(() => VenueModel, () => DatetimeVenueModel)
     venues: VenueModel[]
