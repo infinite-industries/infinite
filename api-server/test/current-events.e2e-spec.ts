@@ -237,8 +237,6 @@ describe('CurrentEvents (e2e)', () => {
                 expect(remainingTimes.length).toEqual(2);
                 expect(new Date(remainingTimes[0].start_time)).toEqual(firstDayTime.start_time);
                 expect(new Date(remainingTimes[1].start_time)).toEqual(secondDayTime.start_time);
-                expect(new Date(event.first_day_start_time)).toEqual(firstDayTime.start_time);
-                expect(new Date(event.last_day_end_time)).toEqual(secondDayTime.end_time);
 
                 done();
             });
@@ -264,7 +262,6 @@ describe('CurrentEvents (e2e)', () => {
                 expect(event.verified).toEqual(dbEvent.verified);
                 expect(event.title).toEqual(dbEvent.title);
                 expect(event.slug).toEqual(dbEvent.slug);
-                expect(event.multi_day).toEqual(dbEvent.multi_day);
                 expect(event.image).toEqual(dbEvent.image);
                 expect(event.social_image).toEqual(dbEvent.social_image);
                 expect(event.admission_fee).toEqual(dbEvent.admission_fee);
@@ -286,8 +283,8 @@ describe('CurrentEvents (e2e)', () => {
 
                 // check datetimes
                 expect(event.date_times.length).toEqual(1)
-                expect(new Date(event.date_times[0].start_time)).toEqual(futureTime.start_time)
-                expect(new Date(event.date_times[0].end_time)).toEqual(futureTime.end_time)
+                expect(event.date_times[0].start_time).toEqual(futureTime.start_time.toISOString())
+                expect(event.date_times[0].end_time).toEqual(futureTime.end_time.toISOString())
 
                 done()
             });

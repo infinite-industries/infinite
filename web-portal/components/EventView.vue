@@ -19,13 +19,11 @@
       <div class="event-time">
         <!-- Online Resources technically have no fixed time, so suppress date display for them -->
         <div v-if="!isOnlineResource">
-          <div v-for="(date_time, index) in event.date_times" :key="index" class="date-time-container">
-            <!-- TODO: do we need to consider timezones? If so, this might be useful: -->
-            <!-- https://stackoverflow.com/a/57022505 -->
+          <div v-for="(date_time, index) in formatted_date_times" :key="index" class="date-time-container">
             <!-- TODO: should we consider Luxon instead of Moment? -->
-            <em>{{ date_time.start_time | moment('dddd, MMMM Do') }}</em>
+            <em>{{ date_time.start_date }}</em>
             <br>
-            <em>{{ date_time.start_time | moment('h:mma') }} - {{ date_time.end_time | moment('h:mma') }}</em>
+            <em>{{ date_time.start_time }} - {{ date_time.end_time }} {{ date_time.timezone }}</em>
           </div>
         </div>
       </div>
@@ -149,6 +147,7 @@
   import Facebook from '@/components/vectors/Facebook.vue'
   import Link from '@/components/vectors/Link.vue'
   import Location from '@/components/vectors/Location.vue'
+  import momenttz from 'moment-timezone'
   import Share from '@/components/vectors/Share.vue'
   import Twitter from '@/components/vectors/Twitter.vue'
 
@@ -192,6 +191,18 @@
       },
       suppressMapLink() {
         return this.isRemote || this.isOnlineResource
+      },
+      formatted_date_times: function () {
+        const date_time_elements = []
+        for (const date_time of this.event.date_times) {
+          date_time_elements.push({
+            start_date: momenttz(date_time.start_time).tz(date_time.timezone || this.$config.TIMEZONE_DEFAULT).format('dddd, MMMM Do'),
+            start_time: momenttz(date_time.start_time).tz(date_time.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma'),
+            end_time: momenttz(date_time.end_time).tz(date_time.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma'),
+            timezone: momenttz(date_time.end_time).tz(date_time.timezone).format('z')
+          })
+        }
+        return date_time_elements
       }
     },
     methods: {

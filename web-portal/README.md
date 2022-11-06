@@ -46,6 +46,29 @@ This application communicates with an [API server](https://github.com/infinite-i
  cp .env.sample .env    # main env file
  ```
 
+* The options you choose for your time zone variables should meet three criteria:
+  * They should exist in the `name` column of the `pg_timezone_names` table in your PostgreSQL database (which follows the [IANA](https://www.iana.org/time-zones) standard)
+  * They should account for daylight savings time changes (if relevant to your time zones)
+  * They should make sense to the humans using your website
+* The query below demonstrates the time zone options you can choose from that have names starting with `US/`
+
+```
+# select * from pg_timezone_names where name like 'US/%' and is_dst order by utc_offset;
+       name        | abbrev | utc_offset | is_dst
+-------------------+--------+------------+--------
+ US/Aleutian       | HDT    | -09:00:00  | t
+ US/Alaska         | AKDT   | -08:00:00  | t
+ US/Pacific-New    | PDT    | -07:00:00  | t
+ US/Pacific        | PDT    | -07:00:00  | t
+ US/Mountain       | MDT    | -06:00:00  | t
+ US/Central        | CDT    | -05:00:00  | t
+ US/Indiana-Starke | CDT    | -05:00:00  | t
+ US/Eastern        | EDT    | -04:00:00  | t
+ US/East-Indiana   | EDT    | -04:00:00  | t
+ US/Michigan       | EDT    | -04:00:00  | t
+(10 rows)
+```
+
 4. Start the server
  ```bash
  npm run dev

@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import moment from 'moment'
+  import momenttz from 'moment-timezone'
 
   import Location from './vectors/Location.vue'
   import Calendar from './vectors/Calendar.vue'
@@ -103,22 +103,7 @@
         return !!this.calendar_event.venue_id && (!!this.calendar_event.venue || (!!this.venue && !!this.venue.id))
       },
       venue: function () {
-        // venues should be included on event
-        // if not, the event may have been fetched without the proper flag set,
-        // in which case we may be able to silently recover by consulting a
-        // global list of venues
-        const event = this.calendar_event
-        if (event.venues && event.venues.length > 0) {
-          return event.venues[0]
-        } else if (event.venue_id) {
-          const all_venues = this.$store.getters.GetActiveVenues
-
-          const current_venue = all_venues.find((venue) => {
-            return venue.id === event.venue_id
-          })
-
-          return current_venue === undefined ? {} : current_venue
-        } else return {}
+        return this.calendar_event.venue || {}
       },
       showTime: function () {
         return !_hasTag(this.calendar_event, 'category:online-resource') &&
@@ -128,13 +113,13 @@
         const calendar = this.calendar_event
         const dateTimes = calendar.date_times
         const firstDay = dateTimes[0]
-        return firstDay ? moment(firstDay.start_time).format('dddd, MMMM Do') : null
+        return firstDay ? momenttz(firstDay.start_time).tz(firstDay.timezone || this.$config.TIMEZONE_DEFAULT).format('dddd, MMMM Do') : null
       },
       when_time: function () {
         const calendar = this.calendar_event
         const dateTimes = calendar.date_times
         const firstDay = dateTimes[0]
-        const output_string = firstDay ? moment(firstDay.start_time).format('h:mma - ') + moment(firstDay.end_time).format('h:mma') : null
+        const output_string = firstDay ? momenttz(firstDay.start_time).tz(firstDay.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma - ') + momenttz(firstDay.end_time).tz(firstDay.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma z') : null
         return output_string
       },
       isCancelled: function () {
@@ -158,6 +143,10 @@
     },
     filters: {
       truncate: function (text, stop, clamp) {
+        if (text === undefined || text === null) {
+          return ''
+        }
+
         return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
       }
     },

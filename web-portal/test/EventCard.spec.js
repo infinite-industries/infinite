@@ -14,12 +14,20 @@ const getEvent = () => {
     title: 'Event 1',
     image: 'https://aws.url/image.jpg',
     date_times: [
-      { start_time: '2020-06-01T10:00:00', end_time: '2020-06-01T11:00:00' },
-      { start_time: '2020-06-02T22:00:00', end_time: '2020-06-02T23:00:00' }
+      { start_time: '2020-06-01T14:00:00.000Z', end_time: '2020-06-01T15:00:00.000Z', timezone: 'US/Eastern' },
+      { start_time: '2020-06-02T22:00:00.000Z', end_time: '2020-06-02T23:00:00.000Z', timezone: 'US/Eastern' }
     ],
     brief_description: 'The event lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat ipsum neque.',
+    venue: getVenue(),
     venue_id: venueId,
     tags: []
+  }
+}
+
+const getVenue = () => {
+  return {
+    id: venueId,
+    name: venueName
   }
 }
 
@@ -30,13 +38,18 @@ describe('Card component', () => {
     event = getEvent()
     store = new Vuex.Store({
       state: {},
-      getters: { GetActiveVenues: () => [{ id: venueId, name: venueName }] }
+      getters: { GetActiveVenues: () => [ getVenue() ] }
     })
     wrapper = shallowMount(Card, {
       localVue,
       store,
       stubs: {
         NuxtLink: RouterLinkStub
+      },
+      mocks: {
+        $config: {
+          TIMEZONE_DEFAULT: 'US/Eastern'
+        }
       },
       propsData: {
         calendar_event: event
@@ -86,21 +99,9 @@ describe('Card component', () => {
     expect(wrapper.html()).not.toContain('ii-location')
   })
 
-  test('renders correct event time', () => {
+  test('renders correct event time (stored in UTC, displayed in EDT)', () => {
     expect(wrapper.html()).toContain('June 1st')
-    expect(wrapper.html()).toContain('10:00am - 11:00am')
-  })
-
-  test('renders correct time when saved in UTC', () => {
-    wrapper.setProps({
-      calendar_event: Object.assign(getEvent(), {
-        date_times: [
-          { start_time: '2020-06-01T14:00:00.000Z', end_time: '2020-06-01T15:00:00.000Z' }
-        ]
-      })
-    })
-    expect(wrapper.html()).toContain('June 1st')
-    expect(wrapper.html()).toContain('10:00am - 11:00am')
+    expect(wrapper.html()).toContain('10:00am - 11:00am EDT')
   })
 
   test('omits time for events treated as online resources', () => {

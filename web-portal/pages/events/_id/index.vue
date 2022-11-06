@@ -16,7 +16,8 @@
 
       const eventImage = this.event && this.event.image && this.event.image !== 'none' ? this.event.image : defaultImage
       const socialImage = (this.event && this.event.social_image && this.event.social_image !== 'none'
-        ? this.event.social_image : eventImage)
+        ? this.event.social_image
+        : eventImage)
 
       return {
         title,
