@@ -166,10 +166,10 @@
 
 <script>
 
-  import moment from 'moment-timezone'
+  import momenttz from 'moment-timezone'
 
   // this is how the date/time is stored in data and sent to the server
-  const dateTimeStorageFormat = moment.ISO_8601
+  const dateTimeStorageFormat = momenttz.ISO_8601
 
   // this format is used for parsing date/times extracted from the picker before storing them
   const dateTimePickerFormat = 'YYYY-MM-DD hh:mm:a zz'
@@ -227,13 +227,13 @@
       AllowedDates: function (val) {
         // in edit mode, anything goes
         // otherwise, disallow days in the past
-        return this.mode === 'edit' || moment(val).isSameOrAfter(moment().subtract(1, 'd'))
+        return this.mode === 'edit' || momenttz(val).isSameOrAfter(momenttz().subtract(1, 'd'))
       },
 
       /* Converts start and end times stored in data to formatted strings for display in the ui */
       FormattedDateTime: function (start, end, timezone) {
-        return moment.tz(start, dateTimeStorageFormat, timezone).format('dddd, MMMM Do, h:mma') + ' - ' +
-          moment.tz(end, dateTimeStorageFormat, timezone).format('h:mma') + ' ' + timezone
+        return momenttz.tz(start, dateTimeStorageFormat, timezone).format('dddd, MMMM Do, h:mma') + ' - ' +
+          momenttz.tz(end, dateTimeStorageFormat, timezone).format('h:mma') + ' ' + timezone
       },
 
       CheckForFocusOutHour: function (type) {
@@ -263,14 +263,15 @@
         this.edit_mode = true
         this.time_segment_index = which_segment
         const time_segment = this.value[which_segment]
-        this.picker = moment(time_segment.start_time).format('YYYY-MM-DD')
-        this.start_hour = moment(time_segment.start_time).format('hh')
-        this.start_minute = moment(time_segment.start_time).format('mm')
-        this.start_ampm = moment(time_segment.start_time).format('a')
+        this.picker = momenttz(time_segment.start_time).tz(time_segment.timezone).format('YYYY-MM-DD')
+        this.start_hour = momenttz(time_segment.start_time).tz(time_segment.timezone).format('hh')
+        this.start_minute = momenttz(time_segment.start_time).tz(time_segment.timezone).format('mm')
+        this.start_ampm = momenttz(time_segment.start_time).tz(time_segment.timezone).format('a')
 
-        this.end_hour = moment(time_segment.end_time).format('hh')
-        this.end_minute = moment(time_segment.end_time).format('mm')
-        this.end_ampm = moment(time_segment.end_time).format('a')
+        this.end_hour = momenttz(time_segment.end_time).tz(time_segment.timezone).format('hh')
+        this.end_minute = momenttz(time_segment.end_time).tz(time_segment.timezone).format('mm')
+        this.end_ampm = momenttz(time_segment.end_time).tz(time_segment.timezone).format('a')
+        this.event_timezone = time_segment.timezone
       },
       DeleteTimeSegment: function (which_segment) {
         const newValue = [ ...this.value ]
@@ -341,12 +342,12 @@
         return this.value
       },
       check_start_time: function () {
-        return moment.tz(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`,
-                         dateTimePickerFormat, this.event_timezone)
+        return momenttz.tz(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`,
+                           dateTimePickerFormat, this.event_timezone)
       },
       check_end_time: function () {
-        const temp_date_time = moment.tz(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`,
-                                         dateTimePickerFormat, this.event_timezone)
+        const temp_date_time = momenttz.tz(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`,
+                                           dateTimePickerFormat, this.event_timezone)
 
         // if start is PM and end is AM, event crosses into the next day
         // move end time to the next day
@@ -357,7 +358,7 @@
         //   eventDate.time_end = moment(eventDate.time_end).add(1, 'd').format('YYYY-MM-DD HH:mm:ss')
         // }
         if ((this.start_ampm === 'pm') && (this.end_ampm === 'am')) {
-          return moment(temp_date_time).add(1, 'd')
+          return momenttz(temp_date_time).add(1, 'd')
         } else {
           return temp_date_time
         }
