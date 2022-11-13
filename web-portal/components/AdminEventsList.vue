@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import moment from 'moment'
+  import momenttz from 'moment-timezone'
 
   import PartnerService from '@/services/PartnerService'
   import { UPSERT_ADMIN_EVENT_METADATA } from '../store/event-admin-metadata'
@@ -48,10 +48,11 @@
     filters: {
       dateFormat: function (date) {
         return [
-          moment(date.start_time).format('dddd, MMMM Do'),
-          moment(date.start_time).format('h:mma'),
+          momenttz(date.start_time).format('dddd, MMMM Do'),
+          momenttz(date.start_time).format('h:mma'),
           '-',
-          moment(date.end_time).format('h:mma')
+          momenttz(date.end_time).format('h:mma'),
+          momenttz(date.end_time).tz(date.timezone).format('z')
         ].join(' ')
       },
       ownerLogo: function (owner) {
