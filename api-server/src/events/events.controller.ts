@@ -86,22 +86,17 @@ export class EventsController {
         @Query('tags') tags: string[] | string = [],
         @Req() request: Request
     ): Promise<EventsResponse> {
-        console.log('!!! in the method fun times (1)')
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
             where: getCommonQueryTermsForEvents(true, tags)
         };
 
-        console.log('!!! in the method fun times (2) -- build options: ' + JSON.stringify(findOptions, null, 4))
-
         return this.eventsService.findAll(findOptions)
             .then((events) => {
-                console.log('!!! events: ' + JSON.stringify(events, null, 4))
                 return events
             })
             .then((events) => events.map(eventModelToEventDTO))
             .then((events) => {
-                console.log('!!! made it here')
                 return events
             })
             .then(event => removeSensitiveDataForNonAdmins(request, event))
