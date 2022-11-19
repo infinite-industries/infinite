@@ -92,13 +92,7 @@ export class EventsController {
         };
 
         return this.eventsService.findAll(findOptions)
-            .then((events) => {
-                return events
-            })
             .then((events) => events.map(eventModelToEventDTO))
-            .then((events) => {
-                return events
-            })
             .then(event => removeSensitiveDataForNonAdmins(request, event))
             .then(events => new EventsResponse({ events }));
     }
