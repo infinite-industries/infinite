@@ -77,6 +77,11 @@
                 <option value="am">AM</option>
                 <option value="pm">PM</option>
               </select>
+              <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
+                <option v-for="(tz) in $config.TIMEZONE_OPTIONS.split(',')" :key="tz">
+                  {{ tz }}
+                </option>
+              </select>
             </span>
 
             <div v-if="edit_mode">
@@ -137,7 +142,7 @@
           <table>
             <tr v-for="(date_and_time, index) in dates_and_times" :key="date_and_time.start_time + '/' + date_and_time.end_time">
               <td>
-                <span> {{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time) }}</span>
+                <span> {{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time, date_and_time.timezone) }}</span>
               </td>
               <td>
                 <v-btn small dark depressed color="red" @click="DeleteTimeSegment(index)">Delete</v-btn>
@@ -163,19 +168,18 @@
 
   import moment from 'moment-timezone'
 
-  const clientTimeZone = moment.tz.guess()
-
   // this is how the date/time is stored in data and sent to the server
   const dateTimeStorageFormat = moment.ISO_8601
 
   // this format is used for parsing date/times extracted from the picker before storing them
   const dateTimePickerFormat = 'YYYY-MM-DD hh:mm:a zz'
 
-  const createTimeSegment = (formatted_start_time, formatted_end_time) => {
+  const createTimeSegment = (formatted_start_time, formatted_end_time, event_timezone) => {
     return {
       optional_title: '', // add later afer consulting with users
       start_time: formatted_start_time.toISOString(),
-      end_time: formatted_end_time.toISOString()
+      end_time: formatted_end_time.toISOString(),
+      timezone: event_timezone
     }
   }
 
@@ -211,7 +215,9 @@
 
         end_hour: '',
         end_minute: '',
-        end_ampm: 'pm'
+        end_ampm: 'pm',
+
+        event_timezone: this.$config.TIMEZONE_DEFAULT
       }
     },
     mounted: function () {
@@ -225,9 +231,9 @@
       },
 
       /* Converts start and end times stored in data to formatted strings for display in the ui */
-      FormattedDateTime: function (start, end) {
-        return moment.tz(start, dateTimeStorageFormat, clientTimeZone).format('dddd, MMMM Do, h:mma') + ' - ' +
-          moment.tz(end, dateTimeStorageFormat, clientTimeZone).format('h:mma')
+      FormattedDateTime: function (start, end, timezone) {
+        return moment.tz(start, dateTimeStorageFormat, timezone).format('dddd, MMMM Do, h:mma') + ' - ' +
+          moment.tz(end, dateTimeStorageFormat, timezone).format('h:mma') + ' ' + timezone
       },
 
       CheckForFocusOutHour: function (type) {
@@ -257,7 +263,6 @@
         this.edit_mode = true
         this.time_segment_index = which_segment
         const time_segment = this.value[which_segment]
-        // console.log(time_segment);
         this.picker = moment(time_segment.start_time).format('YYYY-MM-DD')
         this.start_hour = moment(time_segment.start_time).format('hh')
         this.start_minute = moment(time_segment.start_time).format('mm')
@@ -274,7 +279,7 @@
       },
       AddTimeSegment: function () {
         const newValue = [ ...this.value ]
-        newValue.push(createTimeSegment(this.check_start_time, this.check_end_time))
+        newValue.push(createTimeSegment(this.check_start_time, this.check_end_time, this.event_timezone))
         this.time_segment_index = newValue.length
         this.$emit('change', newValue)
 
@@ -283,11 +288,12 @@
         this.edit_mode = false // if edit mode is active turn it off
       },
       UpdateTimeSegment: function (which_segment) {
-        const formated_start_time = this.check_start_time
-        const formated_end_time = this.check_end_time
+        const formatted_start_time = this.check_start_time
+        const formatted_end_time = this.check_end_time
+        const event_timezone = this.event_timezone
 
         const newValue = [ ...this.value ]
-        newValue[which_segment] = createTimeSegment(formated_start_time, formated_end_time)
+        newValue[which_segment] = createTimeSegment(formatted_start_time, formatted_end_time, event_timezone)
         this.$emit('change', newValue)
 
         this.picker = null
@@ -336,11 +342,11 @@
       },
       check_start_time: function () {
         return moment.tz(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`,
-                         dateTimePickerFormat, clientTimeZone)
+                         dateTimePickerFormat, this.event_timezone)
       },
       check_end_time: function () {
-        const temp_date_time = moment(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`,
-                                      dateTimePickerFormat, clientTimeZone)
+        const temp_date_time = moment.tz(`${this.picker} ${this.end_hour}:${this.end_minute}:${this.end_ampm}`,
+                                         dateTimePickerFormat, this.event_timezone)
 
         // if start is PM and end is AM, event crosses into the next day
         // move end time to the next day
