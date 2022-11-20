@@ -263,15 +263,16 @@
         this.edit_mode = true
         this.time_segment_index = which_segment
         const time_segment = this.value[which_segment]
-        this.picker = momenttz(time_segment.start_time).tz(time_segment.timezone).format('YYYY-MM-DD')
-        this.start_hour = momenttz(time_segment.start_time).tz(time_segment.timezone).format('hh')
-        this.start_minute = momenttz(time_segment.start_time).tz(time_segment.timezone).format('mm')
-        this.start_ampm = momenttz(time_segment.start_time).tz(time_segment.timezone).format('a')
-
-        this.end_hour = momenttz(time_segment.end_time).tz(time_segment.timezone).format('hh')
-        this.end_minute = momenttz(time_segment.end_time).tz(time_segment.timezone).format('mm')
-        this.end_ampm = momenttz(time_segment.end_time).tz(time_segment.timezone).format('a')
         this.event_timezone = time_segment.timezone
+        const start_time = momenttz(time_segment.start_time).tz(this.event_timezone)
+        this.picker = start_time.format('YYYY-MM-DD')
+        this.start_hour = start_time.format('hh')
+        this.start_minute = start_time.format('mm')
+        this.start_ampm = start_time.format('a')
+        const end_time = momenttz(time_segment.end_time).tz(this.event_timezone)
+        this.end_hour = end_time.format('hh')
+        this.end_minute = end_time.format('mm')
+        this.end_ampm = end_time.format('a')
       },
       DeleteTimeSegment: function (which_segment) {
         const newValue = [ ...this.value ]
