@@ -8,39 +8,42 @@
 
     <section class="admin-venue-edit-page__venue-card__fields" v-if="!isDeleting && !isUpdating">
       <div class="admin-venue-edit-page__venue-card__field">
-        <label>Name:</label>
-        <input
-          name="name"
-          type="text"
-          :value="venue.name"
-          placeholder="name"
-          @change="onFieldChanged($event)"
-          :disabled="!isActiveListShowing"
-        >
+        <label>Name:
+          <input
+            name="name"
+            type="text"
+            :value="venue.name"
+            placeholder="name"
+            @change="onFieldChanged($event)"
+            :disabled="!isActiveListShowing"
+          >
+        </label>
       </div>
 
       <div class="admin-venue-edit-page__venue-card__field">
-        <label>Address:</label>
-        <input
-          name="address"
-          type="text"
-          :value="venue.address"
-          placeholder="address"
-          @change="onFieldChanged($event)"
-          :disabled="!isActiveListShowing"
-        >
+        <label>Address:
+          <input
+            name="address"
+            type="text"
+            :value="venue.address"
+            placeholder="address"
+            @change="onFieldChanged($event)"
+            :disabled="!isActiveListShowing"
+          >
+        </label>
       </div>
 
       <div class="admin-venue-edit-page__venue-card__field">
-        <label>Google Maps Link:</label>
-        <input
-          name="g_map_link"
-          type="text"
-          :value="venue.g_map_link"
-          placeholder="google maps link"
-          @change="onFieldChanged($event)"
-          :disabled="!isActiveListShowing"
-        >
+        <label>Google Maps Link:
+          <input
+            name="g_map_link"
+            type="text"
+            :value="venue.g_map_link"
+            placeholder="google maps link"
+            @change="onFieldChanged($event)"
+            :disabled="!isActiveListShowing"
+          >
+        </label>
       </div>
 
       <div>
@@ -63,7 +66,7 @@
 
     <div class="admin-venue-edit-page__venue-card__footer" v-if="!isUpdating && !isDeleting">
       <div class="admin-venue-edit-page__venue-card__update-wrapper">
-        <span title="Updates the value of the venue in place, useful when you want fix a typo.">
+        <span title="Updates the value of the venue in place, useful when you want to fix a typo.">
           <button
             class="admin-venue-edit-page__venue-card__button"
             :disabled="isUpdateDisabled"
@@ -207,13 +210,15 @@
   }
   .admin-venue-edit-page__venue-card__field label {
     display: inline-block;
-    margin-bottom: 0.5rem;
     font-weight: bold;
+    width: 100%;
   }
   .admin-venue-edit-page__venue-card__field input {
-     width: 100%;
-     border: 1px solid black;
+    width: 100%;
+    border: 1px solid black;
     padding: 0.5rem;
+    font-weight: normal;
+    margin-top: 0.5rem;
   }
   .admin-venue-edit-page__venue-card__readonly {
     font-style: italic;
