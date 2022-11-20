@@ -6,7 +6,11 @@
       </div>
 
       <div>
-        <select name="venues" v-model="selectedList" @change="onFilter()">
+        <select
+          class="admin-event-edit-page__active-state-filter"
+          v-model="selectedList"
+          @change="onFilter()"
+        >
           <option value="Active Venues">Active Venues</option>
           <option value="Deleted Venues">Deleted Venues</option>
         </select>
@@ -30,13 +34,15 @@
 </template>
 
 <script>
-  import { FETCH_ACTIVE_VENUES, FETCH_DELETED_VENUES } from '../../store/venues'
+  import {
+    ACTIVE_VENUE_SELECTION,
+    COMMIT_VENUE_CHANGE_ACTIVE_FILTER_STATE,
+    FETCH_ACTIVE_VENUES,
+    FETCH_DELETED_VENUES
+  } from '../../store/venues'
   import VenueCard from '../../components/admin-venue-edit/VenueCard'
   import VenueSpinner from '../../components/admin-venue-edit/VenueSpinner'
   import Pagination from '../../components/Pagination'
-
-  const ACTIVE_VENUE_SELECTION = 'Active Venues'
-
   const sortMethod = (venueA, venueB) => venueA.name > venueB.name ? 1 : -1
 
   export default {
@@ -44,7 +50,7 @@
     layout: 'admin',
     middleware: 'auth',
     fetch: function () {
-      if (this.selectedList === ACTIVE_VENUE_SELECTION) {
+      if (this.isShowingActive) {
         return this.$store.dispatch(FETCH_ACTIVE_VENUES)
       } else {
         return this.$store.dispatch(FETCH_DELETED_VENUES)
@@ -53,6 +59,8 @@
 
     methods: {
       onFilter() {
+        this.$store.commit(COMMIT_VENUE_CHANGE_ACTIVE_FILTER_STATE, this.selectedList)
+
         this.$fetch()
       }
     },
@@ -73,7 +81,7 @@
 
         if (this.isSearchEntered) {
           return selectedList.filter(value => (
-            value.name.toLowerCase().indexOf(this.searchByNameValue.toLocaleLowerCase()) >= 0))
+            value.name.toLowerCase().includes(this.searchByNameValue.toLocaleLowerCase())))
         } else {
           return selectedList
         }
@@ -111,7 +119,7 @@
 
     data() {
       return {
-        selectedList: 'Active Venues',
+        selectedList: ACTIVE_VENUE_SELECTION,
         searchByNameValue: ''
       }
     }
@@ -133,5 +141,10 @@
   .admin-event-edit-page__list-filters, .admin-event-edit-page_venue-list {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+
+  select.admin-event-edit-page__active-state-filter {
+    -moz-appearance: auto;
+    -webkit-appearance: auto;
   }
 </style>

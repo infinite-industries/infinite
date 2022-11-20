@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { initialQueryState, setQueryFetching, setQueryStateFail, setQueryStateSuccess } from '../helpers/queryState'
+import { initialQueryState, setQueryFetching, setQueryStateFail, setQueryStateSuccess } from '../helpers/venue-store-helpers/queryState'
 
 export const UPSERT_ADMIN_EVENT_METADATA = 'event-admin-metadata/UpsertEventAdminMetadata'
 
