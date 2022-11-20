@@ -1,11 +1,29 @@
-import { initialQueryState, setQueryFetching, setQueryStateFail, setQueryStateSuccess } from '../helpers/queryState'
+import {
+  initializeVenuesEdited,
+  initialQueryState,
+  initialVenueUpdateQueries,
+  setQueryFetching,
+  setQueryStateFail,
+  setQueryStateSuccess, setQueryUpdateSuccess, setQueryUpdating
+} from '@/helpers/venue-store-helpers/queryState'
+import { doVenueUpdate, replaceVenue } from '@/helpers/venue-store-helpers/doVenueUpdate'
+import { COMMIT_SHOW_NOTIFICATIONS } from '@/store/ui'
+import {
+  moveVenueFromActiveToInactiveList,
+  moveVenueFromInactiveToActiveList
+} from '@/helpers/venue-store-helpers/moveVenueBetweenActiveInactive'
+
+export const ACTIVE_VENUE_SELECTION = 'Active Venues'
 
 export const state = () => {
   return {
     getActiveVenuesQuery: initialQueryState(),
     getDeletedVenuesQuery: initialQueryState(),
     deleteVenues: initialQueryState(),
-    activateVenueQuery: initialQueryState()
+    activateVenueQuery: initialQueryState(),
+    venueUpdateQueries: initialVenueUpdateQueries(),
+    venuesEdited: initializeVenuesEdited(),
+    activeFilterState: ACTIVE_VENUE_SELECTION
   }
 }
 
@@ -23,6 +41,7 @@ export const mutations = {
     setQueryFetching(state.getActiveVenuesQuery)
   },
   ACTIVE_VENUES_FETCH_SUCCESS: (state, payload) => {
+    state.venuesEdited = initializeVenuesEdited()
     setQueryStateSuccess(state.getActiveVenuesQuery, payload)
   },
   ACTIVE_VENUES_FETCH_FAIL: (state, payload) => {
@@ -44,14 +63,7 @@ export const mutations = {
   },
   VENUE_DELETE_SUCCESS: (state, { id, venue }) => {
     setQueryStateSuccess(state.deleteVenues, venue)
-
-    if (state.getActiveVenuesQuery.isSuccess && !state.getActiveVenuesQuery.isFetching) {
-      state.getActiveVenuesQuery.data = state.getActiveVenuesQuery.data.filter(venue => venue.id !== id)
-    }
-
-    if (state.getDeletedVenuesQuery.isSuccess && !state.getDeletedVenuesQuery.isFetching) {
-      state.getDeletedVenuesQuery.data.push(venue)
-    }
+    moveVenueFromActiveToInactiveList(state, id, venue)
   },
   VENUE_DELETE_FAIL: (state, payload) => {
     setQueryStateFail(state.deleteVenues, payload)
@@ -62,16 +74,51 @@ export const mutations = {
   },
   VENUE_ACTIVATE_SUCCESS: (state, { id, venue }) => {
     setQueryStateSuccess(state.activateVenueQuery, venue)
-    if (state.getActiveVenuesQuery.isSuccess && !state.getActiveVenuesQuery.isFetching) {
-      state.getActiveVenuesQuery.data.push(venue)
-    }
-
-    if (state.getDeletedVenuesQuery.isSuccess && !state.getDeletedVenuesQuery.isFetching) {
-      state.getDeletedVenuesQuery.data = state.getDeletedVenuesQuery.data.filter(venue => venue.id !== id)
-    }
+    moveVenueFromInactiveToActiveList(state, id, venue)
   },
   VENUE_ACTIVATE_FAIL: (state, payload) => {
     setQueryStateFail(state.activateVenueQuery, payload)
+  },
+
+  VENUE_UPDATE_START: (state, { id }) => {
+    setQueryUpdating(state.venueUpdateQueries, id)
+  },
+  VENUE_UPDATE_SUCCESS: (state, { venue }) => {
+    setQueryUpdateSuccess(state.venueUpdateQueries, venue.id, venue)
+    state.venuesEdited[venue.id] = false
+
+    doVenueUpdate(state, venue)
+  },
+  VENUE_UPDATE_FAIL: (state, { id, error }) => {
+    setQueryStateFail(state.activateVenueQuery, id, error)
+  },
+
+  VENUE_REPLACE_START: (state, { id }) => {
+    setQueryUpdating(state.venueUpdateQueries, id)
+  },
+  VENUE_REPLACE_SUCCESS: (state, { oldVenue, newVenue }) => {
+    setQueryUpdateSuccess(state.venueUpdateQueries, oldVenue.id, newVenue)
+
+    // update the active entry with the newly created venue
+    state.getActiveVenuesQuery.data = replaceVenue(state.getActiveVenuesQuery.data, oldVenue.id, newVenue)
+
+    // put the old venue on the deleted/inactive venue list
+    state.getDeletedVenuesQuery.data.push(oldVenue)
+
+    state.venuesEdited[oldVenue.id] = false
+  },
+  VENUE_REPLACE_FAIL: (state, { id, error }) => {
+    setQueryStateFail(state.activateVenueQuery, id, error)
+  },
+
+  VENUE_CHANGE_ACTIVE_FILTER_STATE: (state, newFilterState) => {
+    state.activeFilterState = newFilterState
+  },
+
+  // edits local state (not a remote update)
+  VENUE_UPDATE: (state, { venue }) => {
+    doVenueUpdate(state, venue)
+    state.venuesEdited[venue.id] = true
   }
 }
 
@@ -119,6 +166,12 @@ export const actions = {
         context.commit('VENUE_DELETE_SUCCESS', { id, venue: response.data.venue })
       })
       .catch((error) => {
+        context.commit(
+          COMMIT_SHOW_NOTIFICATIONS,
+          { open: true, message: `Failed to soft delete venue ${error}` },
+          { root: true }
+        )
+
         context.commit('VENUE_DELETE_FAIL', error)
       })
   },
@@ -131,12 +184,63 @@ export const actions = {
         context.commit('VENUE_ACTIVATE_SUCCESS', { id, venue: response.data.venue })
       })
       .catch((error) => {
+        context.commit(
+          COMMIT_SHOW_NOTIFICATIONS,
+          { open: true, message: `Failed to reactivate venue: ${error}` },
+          { root: true }
+        )
+
         context.commit('VENUE_ACTIVATE_FAIL', error)
+      })
+  },
+
+  UpdateVenue: function (context, { venue, idToken }) {
+    context.commit('VENUE_UPDATE_START', { id: venue.id })
+
+    return this.$apiService.put(`/authenticated/venues/${venue.id}`, venue, idToken)
+      .then((response) => {
+        context.commit('VENUE_UPDATE_SUCCESS', { venue: response.data.venue })
+      })
+      .catch((error) => {
+        context.commit(
+          COMMIT_SHOW_NOTIFICATIONS,
+          { open: true, message: `Failed to update venue: ${error}` },
+          { root: true }
+        )
+
+        context.commit('VENUE_UPDATE_FAIL', error)
+      })
+  },
+
+  ReplaceVenue: function (context, { oldVenue, newVenue, idToken }) {
+    const id = oldVenue.id
+
+    context.commit('VENUE_REPLACE_START', { id: oldVenue.id })
+
+    this.$apiService.delete(`/authenticated/venues/${id}`, idToken)
+      .then(() => {
+        return this.$apiService.post('/venues', newVenue, idToken)
+      }).then((response) => {
+        context.commit('VENUE_REPLACE_SUCCESS', { oldVenue, newVenue: response.data.venue })
+      })
+      .catch((error) => {
+        context.commit(
+          COMMIT_SHOW_NOTIFICATIONS,
+          { open: true, message: `Failed to replace venue ${error}` },
+          { root: true }
+        )
+
+        context.commit('VENUE_REPLACE_FAIL', oldVenue.id, error)
       })
   }
 }
 
+export const COMMIT_VENUE_UPDATE = 'venues/VENUE_UPDATE'
+export const COMMIT_VENUE_CHANGE_ACTIVE_FILTER_STATE = 'venues/VENUE_CHANGE_ACTIVE_FILTER_STATE'
+
 export const FETCH_ACTIVE_VENUES = 'venues/FetchActiveVenues'
 export const FETCH_DELETED_VENUES = 'venues/FetchDeletedVenues'
+export const UPDATE_VENUE = 'venues/UpdateVenue'
+export const REPLACE_VENUE = 'venues/ReplaceVenue'
 export const DELETE_VENUE = 'venues/DeleteVenue'
 export const ACTIVATE_VENUE = 'venues/ActivateVenue'

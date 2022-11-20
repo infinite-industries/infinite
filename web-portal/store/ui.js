@@ -59,3 +59,5 @@ export const actions = {
     context.commit('SHOW_MODAL', payload)
   }
 }
+
+export const COMMIT_SHOW_NOTIFICATIONS = 'ui/SHOW_NOTIFICATIONS'

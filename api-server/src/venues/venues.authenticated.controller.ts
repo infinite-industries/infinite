@@ -6,7 +6,6 @@ import {SingleVenueResponse} from "./dto/single-venue-response";
 import {VenuesService} from "./venues.service";
 import FindByIdParams from "../dto/find-by-id-params";
 import {UpdateVenueRequest} from "./dto/create-update-venue-request";
-import {response} from "express";
 import isNullUndefinedOrEmpty from "../utils/isNullUndefinedOrEmpty";
 
 @Controller(`${VERSION_1_URI}/authenticated/venues`)
