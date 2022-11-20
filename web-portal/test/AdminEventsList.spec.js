@@ -8,8 +8,8 @@ localVue.use(Vuetify)
 
 const getEventList = () => {
   return [
-    { title: 'Event 1', date_times: [{ start_time: '2020-06-01T10:00:00', end_time: '2020-06-01T11:00:00', timezone: 'US/Eastern' }] },
-    { title: 'Event 2', date_times: [{ start_time: '2020-06-02T22:00:00', end_time: '2020-06-02T23:00:00', timezone: 'US/Eastern' }] }
+    { title: 'Event 1', date_times: [{ start_time: '2020-06-01T14:00:00+00', end_time: '2020-06-01T15:00:00+00', timezone: 'US/Eastern' }] },
+    { title: 'Event 2', date_times: [{ start_time: '2020-06-03T02:00:00+00', end_time: '2020-06-03T03:00:00+00', timezone: 'US/Eastern' }] }
   ]
 }
 

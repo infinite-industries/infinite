@@ -48,11 +48,9 @@
     filters: {
       dateFormat: function (date) {
         return [
-          momenttz(date.start_time).format('dddd, MMMM Do'),
-          momenttz(date.start_time).format('h:mma'),
+          momenttz(date.start_time).tz(date.timezone).format('dddd, MMMM Do h:mma'),
           '-',
-          momenttz(date.end_time).format('h:mma'),
-          momenttz(date.end_time).tz(date.timezone).format('z')
+          momenttz(date.end_time).tz(date.timezone).format('h:mma z')
         ].join(' ')
       },
       ownerLogo: function (owner) {
