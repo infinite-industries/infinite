@@ -1,0 +1,65 @@
+# disalbe host root access
+
+-
+  hosts: "infinite-{{ lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV') }}"
+  tasks:
+    - name: Install packages
+      become: true
+      apt:
+        pkg:
+          - nginx
+          - vim
+          - wget
+          - git
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+    - name: Install certbot with option --classic
+      become: true
+      community.general.snap:
+        name: certbot
+        classic: yes
+    - name: Create symbolic link
+      become: true
+      file:
+        src: "/snap/bin/certbot"
+        dest: "/usr/bin/certbot"
+        state: link
+    - name: prevent root login
+      become: true
+      lineinfile:
+        regexp: '^PermitRootLogin .*'
+        line: 'PermitRootLogin no'
+        path: '/etc/ssh/sshd_config'
+    - name: add docker gpg key
+      become: true
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: add docker repo
+      become: true
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    - name: Install Docker
+      become: true
+      apt:
+        update_cache: true
+        pkg:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+    - name: Download Docker Comppose
+      become: true
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64"
+        dest: /usr/local/bin/docker-compose
+        mode: 711
+    - name: Add user to docker group
+      become: true
+      user:
+        name: 'infinite'
+        groups: 'docker'
+        append: 'yes'
