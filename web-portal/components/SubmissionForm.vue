@@ -502,7 +502,7 @@
           reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
         }
 
-        ImageUploadService.forEvent(
+        return ImageUploadService.forEvent(
           this.$refs.eventImage.files[0]
           // this.$refs.eventSocialImage.files[0]
         ).then((response) => {
