@@ -66,7 +66,10 @@ $ npm run test:cov
 
 ## Viewing swagger docs
 
-[host]/api/
+`[host]/api/`
+
+local: http://localhost:3003/api/
+prod:  https://api.infinite.industries/api/
 
 ## Deploying
 
