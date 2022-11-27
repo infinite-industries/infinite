@@ -17,18 +17,22 @@ export class CreateVenueRequest {
 
     @Column
     @ApiProperty({example: 32.7 })
+    @IsOptional()
     gps_lat?: number
 
     @Column
     @ApiProperty({example: 76.3 })
+    @IsOptional()
     gps_long?: number
 
     @Column
     @ApiProperty({example: 17.1 })
+    @IsOptional()
     gps_alt?: number
 
     @Column
     @ApiProperty({ example: false })
+    @IsOptional()
     is_soft_deleted: boolean;
 }
 
