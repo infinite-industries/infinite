@@ -1,0 +1,27 @@
+version: '3.5'
+services:
+  api-server:
+    image: chriswininger/infinite-api-server:development
+    restart: always
+    env_file:
+      - ./api.env
+    volumes:
+      - ./keys:/api-server/keys
+    expose:
+      - "3003"
+    ports:
+      - "3003:3003"
+
+  web-portal:
+    restart: always
+    image: chriswininger/infinite-web-portal:development
+    env_file:
+      - ./web-portal.env
+    environment:
+      HOST: 0.0.0.0 # Needed to make nuxt work inside docker
+    depends_on:
+      - api-server
+    expose:
+      - "7779"
+    ports:
+      - "7779:7779"
