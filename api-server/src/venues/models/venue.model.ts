@@ -27,6 +27,18 @@ export class VenueModel extends Model<VenueModel> {
     g_map_link: string;
 
     @Column
+    @ApiProperty({example: 32.7 })
+    gps_lat: number
+
+    @Column
+    @ApiProperty({example: 76.3 })
+    gps_long: number
+
+    @Column
+    @ApiProperty({example: 17.1 })
+    gps_alt: number
+
+    @Column
     @ApiProperty({ example: false })
     is_soft_deleted: boolean;
 

@@ -8,13 +8,16 @@ import FindByIdParams from "../dto/find-by-id-params";
 import {SingleVenueResponse} from "./dto/single-venue-response";
 import SlackNotificationService, { VENUE_SUBMIT } from "../notifications/slack-notification.service";
 import {ENV} from "../constants";
+import GetGPSCoordinatesRequest, {GetGPSCoordinatesResponse} from "./dto/GetGPSCoordinatesRequest";
+import {GpsService} from "./gps.services";
 
 @Controller(`${VERSION_1_URI}/venues`)
 @ApiTags('venues')
 export class VenuesController {
     constructor(
         private readonly venuesService: VenuesService,
-        private readonly slackNotificationService: SlackNotificationService
+        private readonly slackNotificationService: SlackNotificationService,
+        private readonly gpsService: GpsService
     ) {
     }
 
@@ -68,6 +71,21 @@ export class VenuesController {
                 return venue
             })
             .then(venue => new SingleVenueResponse({ venue }));
+    }
+
+    @Post('/get-gps-from-google-maps-link')
+    @ApiOperation({summary: 'get gps coordinates from a venue google maps link'})
+    @ApiResponse({
+        status: 200,
+        description: 'gps from google maps links',
+        type: GetGPSCoordinatesResponse
+    })
+    getGpsFromGoogleMapsLink(@Body() req: GetGPSCoordinatesRequest): Promise<GetGPSCoordinatesResponse> {
+        const { googleMapsLink } = req;
+
+        return this.gpsService.getCoordinatesFromGoogleMapLink(googleMapsLink).then((gpsCoordinates) => new GetGPSCoordinatesResponse({
+            gpsCoordinates
+        }))
     }
 }
 

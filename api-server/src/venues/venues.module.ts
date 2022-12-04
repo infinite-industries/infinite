@@ -5,6 +5,7 @@ import {SequelizeModule} from "@nestjs/sequelize";
 import {VenueModel} from "./models/venue.model";
 import { NotificationsModule } from "../notifications/notifications.module";
 import VenuesAuthenticatedController from "./venues.authenticated.controller";
+import {GpsService} from "./gps.services";
 
 @Module({
     imports: [
@@ -12,7 +13,7 @@ import VenuesAuthenticatedController from "./venues.authenticated.controller";
         NotificationsModule
     ],
     controllers: [VenuesController, VenuesAuthenticatedController],
-    providers: [VenuesService]
+    providers: [VenuesService, GpsService]
 })
 export class VenuesModule {
 }
