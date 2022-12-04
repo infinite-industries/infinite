@@ -17,6 +17,13 @@
   import Jumbotron from '../components/Jumbotron.vue'
 
   export default {
+    head () {
+      return {
+        link: [
+          { hid: 'canonical', rel: 'canonical', href: this.$urlFor('/') }
+        ]
+      }
+    },
     data: function () {
       return {
         // venues: []
