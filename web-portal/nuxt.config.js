@@ -55,7 +55,6 @@ export default {
       { name: 'msapplication-starturl', content: '/' }
     ],
     link: [
-      { hid: 'canonical', rel: 'canonical', href: process.env.APP_URL + '/' },
       { rel: 'me', href: 'https://twitter.com/1nfinite_1' },
 
       { rel: 'manifest', href: '/manifest.json' },
