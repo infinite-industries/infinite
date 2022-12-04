@@ -200,12 +200,12 @@
         this.$store.dispatch(DELETE_VENUE, { id, idToken })
       },
       onFindUsingMapLinksClick: function () {
-        this.$data.fetchingGpsCoordinates = true
-        this.$data.fetchingGpsCoordinatesError = null
+        this.fetchingGpsCoordinates = true
+        this.fetchingGpsCoordinatesError = null
 
         this.$store.dispatch(FETCH_GPS_COORDINATES_FROM_URL, this.venue)
           .then((resp) => {
-            this.$data.fetchingGpsCoordinates = false
+            this.fetchingGpsCoordinates = false
 
             const venue = {
               ...this.venue,
@@ -216,8 +216,8 @@
 
             this.$store.commit(COMMIT_VENUE_UPDATE, { venue })
           }).catch((error) => {
-            this.$data.fetchingGpsCoordinates = false
-            this.$data.fetchingGpsCoordinatesError = error
+            this.fetchingGpsCoordinates = false
+            this.fetchingGpsCoordinatesError = error
           })
       },
       onFieldChanged: function (event) {
@@ -251,7 +251,7 @@
         return !!queryEntry && queryEntry.isFetching
       },
       isSearchForCoordinates: function () {
-        return this.$data.fetchingGpsCoordinates ? this.$data.fetchingGpsCoordinates : false
+        return this.fetchingGpsCoordinates ? this.fetchingGpsCoordinates : false
       },
       searchForGpsCoordinatesText: function () {
         return this.isSearchForCoordinates ? '...searching' : 'Find Using Map Links'

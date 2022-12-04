@@ -29,11 +29,6 @@ export class CreateVenueRequest {
     @ApiProperty({example: 17.1 })
     @IsOptional()
     gps_alt?: number
-
-    @Column
-    @ApiProperty({ example: false })
-    @IsOptional()
-    is_soft_deleted: boolean;
 }
 
 export class UpdateVenueRequest {
