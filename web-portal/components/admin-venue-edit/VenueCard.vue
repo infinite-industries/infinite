@@ -46,6 +46,45 @@
         </label>
       </div>
 
+      <div class="admin-venue-edit-page__venue-card__field">
+        <label>Latitude / Longitude / Altitude:
+          <span class="admin-venue-edit-page__venue-card__lat_long_fields">
+            <input
+              name="gps_lat"
+              type="text"
+              :value="venue.gps_lat"
+              placeholder="latitude"
+              @change="onFieldChanged($event)"
+              :disabled="!isActiveListShowing"
+            >
+            <input
+              name="gps_long"
+              type="text"
+              :value="venue.gps_long"
+              placeholder="longitude"
+              @change="onFieldChanged($event)"
+              :disabled="!isActiveListShowing"
+            >
+            <input
+              name="gps_alt"
+              type="text"
+              :value="venue.gps_alt"
+              placeholder="altitude"
+              @change="onFieldChanged($event)"
+              :disabled="!isActiveListShowing"
+            >
+
+            <button
+              class="admin-venue-edit-page__venue-card__button admin-venue-edit-page__venue-card__find-gps"
+              :disabled="this.isActivating"
+              @click="onFindUsingMapLinksClick()"
+            >
+              {{ searchForGpsCoordinatesText }}
+            </button>
+          </span>
+        </label>
+      </div>
+
       <div>
         <label>Slug:</label>
         <span class="admin-venue-edit-page__venue-card__slug admin-venue-edit-page__venue-card__readonly">
@@ -124,11 +163,18 @@
   } from '@/store/venues'
   import VenueSpinner from './VenueSpinner'
   import getToken from '../../helpers/getToken'
+  import { FETCH_GPS_COORDINATES_FROM_URL } from '../../store/venues'
 
   export default {
     name: 'VenueCard',
     components: { VenueSpinner },
     props: ['venue'],
+    data: function () {
+      return {
+        fetchingGpsCoordinates: false,
+        fetchingGpsCoordinatesError: null
+      }
+    },
     methods: {
       onVenueUpdateClick: function () {
         const venue = {
@@ -152,6 +198,27 @@
         const idToken = this.idToken
 
         this.$store.dispatch(DELETE_VENUE, { id, idToken })
+      },
+      onFindUsingMapLinksClick: function () {
+        this.fetchingGpsCoordinates = true
+        this.fetchingGpsCoordinatesError = null
+
+        this.$store.dispatch(FETCH_GPS_COORDINATES_FROM_URL, this.venue)
+          .then((resp) => {
+            this.fetchingGpsCoordinates = false
+
+            const venue = {
+              ...this.venue,
+              gps_lat: resp.latitude,
+              gps_long: resp.longitude,
+              gps_alt: resp.altitude
+            }
+
+            this.$store.commit(COMMIT_VENUE_UPDATE, { venue })
+          }).catch((error) => {
+            this.fetchingGpsCoordinates = false
+            this.fetchingGpsCoordinatesError = error
+          })
       },
       onFieldChanged: function (event) {
         const fieldName = event.target.name
@@ -182,6 +249,12 @@
         const queryEntry = this.$store.state.venues.venueUpdateQueries.queriesByVenueId[this.venue.id]
 
         return !!queryEntry && queryEntry.isFetching
+      },
+      isSearchForCoordinates: function () {
+        return this.fetchingGpsCoordinates ? this.fetchingGpsCoordinates : false
+      },
+      searchForGpsCoordinatesText: function () {
+        return this.isSearchForCoordinates ? '...searching' : 'Find Using Map Links'
       },
       error: function () {
         const queryEntry = this.$store.state.venues.venueUpdateQueries[this.venue.id]
@@ -248,11 +321,7 @@
     float: right;
   }
 
-  .admin-venue-edit-page__venue-card__button:disabled {
-   background-color: lightgray;
-  }
-
-  .admin-venue-edit-page__venue-card__footer button {
+  .admin-venue-edit-page__venue-card__button {
     color: white;
     background-color: #000;
     border-radius: 5px;
@@ -260,7 +329,29 @@
     margin-right: 1rem;
   }
 
+  .admin-venue-edit-page__venue-card__button:disabled {
+   background-color: lightgray;
+  }
+
   .admin-venue-edit-page__venue-card__footer-load-bar {
     width: 100%;
   }
+
+  .admin-venue-edit-page__venue-card__lat_long_fields {
+    display: flex;
+  }
+
+  .admin-venue-edit-page__venue-card__lat_long_fields {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .admin-venue-edit-page__venue-card__lat_long_fields input {
+    margin-right: 1rem;
+  }
+
+  .admin-venue-edit-page__venue-card__find-gps {
+    width: 100%;
+  }
+
 </style>

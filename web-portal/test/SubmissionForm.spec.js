@@ -5,9 +5,9 @@ import { createLocalVue, shallowMount } from '@vue/test-utils'
 import SubmissionForm from '../components/SubmissionForm'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
-// import { ApiService } from '@/services/ApiService'
+import ImageUploadService from '@/services/ImageUploadService'
 
-// jest.mock('@/services/ApiService')
+jest.mock('@/services/ImageUploadService')
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
@@ -41,6 +41,9 @@ describe('SubmissionForm component', () => {
       },
       stubs: {
         'vue-editor': true
+      },
+      mocks: {
+        $apiService: { }
       }
     })
   })
@@ -143,6 +146,24 @@ describe('SubmissionForm component', () => {
     wrapper.vm.generalTags = ['convention']
     expect(wrapper.vm.generalTags).toEqual(['convention'])
     expect(wrapper.vm.calendar_event.tags).toEqual(expect.arrayContaining(['convention', 'mode:in-person', 'category:single-day-event']))
+  })
+
+  it('sets reviewed_by_org based on prop', async () => {
+    const partner = 'wrfl'
+
+    const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
+    ImageUploadService.forEvent.mockResolvedValue(Promise.resolve({ data: { hero: 'image.jpg' } }))
+
+    // unset when prop is null
+    await wrapper.vm.UploadEvent()
+    expect(apiPost.mock.calls.length).toBe(1)
+    expect(apiPost.mock.calls[0][1].reviewed_by_org).toBeNull()
+
+    // === prop when prop is set
+    await wrapper.setProps({ reviewOrg: partner })
+    await wrapper.vm.UploadEvent()
+    expect(apiPost.mock.calls.length).toBe(2)
+    expect(apiPost.mock.calls[1][1].reviewed_by_org).toBe(partner)
   })
 
   // function getFilledOutEvent() {

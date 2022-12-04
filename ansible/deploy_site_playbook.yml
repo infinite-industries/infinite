@@ -1,0 +1,38 @@
+# disalbe host root access
+
+-
+  hosts: "infinite-{{ lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV') }}"
+  tasks:
+    # Copy docker-compose and any supporting files
+    - name: Copy Docker Files
+      copy:
+        src: ./docker-files
+        dest: ~/
+    - name: Copy Docker Secrets and Env Settings 1
+      copy:
+        src: ./secrets-{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/web-portal.env
+        dest: ~/docker-files/web-portal.env
+    - name: Copy Docker Secrets and Env Settings 2
+      copy:
+        src: ./secrets-{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/api.env
+        dest: ~/docker-files/api.env
+    - name: Ensures ~/docker-files/keys/ dir exists
+      file: path=~/docker-files/keys state=directory
+    - name: Copy Docker Secrets and Env Settings 3
+      copy:
+        src: ./secrets-{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/1nfinite.pem
+        dest: ~/docker-files/keys/1nfinite.pem
+    # setup nginx
+    - name: delete default nginx site
+      become: true
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+    - name: Copy NginX Config
+      become: true
+      copy:
+        src: "./nginx/{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/sites-enabled/"
+        dest: /etc/nginx/sites-enabled/
+        owner: root
+        group: root
+        mode: '0644'

@@ -81,7 +81,7 @@
               <a
                 class="ii-social-button"
                 target="_new"
-                :href="`https://twitter.com/intent/tweet?text=Check%20out%20this%20event:&url=${event.bitly_link}`"
+                :href="`https://twitter.com/intent/tweet?text=Check%20out%20this%20event:&url=${fullEncodedLinkForShare}`"
               >
                 <ii-twitter-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
                 <span>Tweet</span>
@@ -173,7 +173,7 @@
         else return null
       },
       fullEncodedLinkForShare() {
-        return encodeURI(this.$config.API_URL + '/events/' + this.event.id)
+        return encodeURI(this.$config.APP_URL + '/events/' + this.event.id)
       },
       isRemote: function () {
         return _hasTag(this.event, 'mode:online')

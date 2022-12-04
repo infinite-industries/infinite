@@ -19,6 +19,7 @@ export const state = () => {
   return {
     getActiveVenuesQuery: initialQueryState(),
     getDeletedVenuesQuery: initialQueryState(),
+    getCoordinatesFromUrlQuery: initialQueryState(),
     deleteVenues: initialQueryState(),
     activateVenueQuery: initialQueryState(),
     venueUpdateQueries: initialVenueUpdateQueries(),
@@ -111,6 +112,17 @@ export const mutations = {
     setQueryStateFail(state.activateVenueQuery, id, error)
   },
 
+  GPS_COORDINATES_FETCH_START: (state) => {
+    setQueryFetching(state.getCoordinatesFromUrlQuery)
+  },
+  GPS_COORDINATES_FETCH_SUCCESS: (state, payload) => {
+    state.venuesEdited = initializeVenuesEdited()
+    setQueryStateSuccess(state.getCoordinatesFromUrlQuery, payload)
+  },
+  GPS_COORDINATES_FETCH_FAIL: (state, payload) => {
+    setQueryStateFail(state.getCoordinatesFromUrlQuery, payload)
+  },
+
   VENUE_CHANGE_ACTIVE_FILTER_STATE: (state, newFilterState) => {
     state.activeFilterState = newFilterState
   },
@@ -155,6 +167,27 @@ export const actions = {
       })
       .catch((error) => {
         context.commit('DELETED_VENUES_FETCH_FAIL', error)
+      })
+  },
+
+  FetchGpsCoordinatesFromUrl: function (context, { g_map_link }) {
+    context.commit('GPS_COORDINATES_FETCH_START')
+
+    return this.$apiService.post('/venues/get-gps-from-google-maps-link', { googleMapsLink: g_map_link })
+      .then((response) => {
+        context.commit('GPS_COORDINATES_FETCH_SUCCESS', response.data.gpsCoordinates)
+
+        return response.data.gpsCoordinates
+      })
+      .catch((error) => {
+        context.commit('GPS_COORDINATES_FETCH_FAIL', error)
+        context.commit(
+          'ui/SHOW_NOTIFICATIONS',
+          {
+            open: true,
+            message: 'Unable to get coordinates from url.'
+          },
+          { root: true })
       })
   },
 
@@ -240,6 +273,7 @@ export const COMMIT_VENUE_CHANGE_ACTIVE_FILTER_STATE = 'venues/VENUE_CHANGE_ACTI
 
 export const FETCH_ACTIVE_VENUES = 'venues/FetchActiveVenues'
 export const FETCH_DELETED_VENUES = 'venues/FetchDeletedVenues'
+export const FETCH_GPS_COORDINATES_FROM_URL = 'venues/FetchGpsCoordinatesFromUrl'
 export const UPDATE_VENUE = 'venues/UpdateVenue'
 export const REPLACE_VENUE = 'venues/ReplaceVenue'
 export const DELETE_VENUE = 'venues/DeleteVenue'
