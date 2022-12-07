@@ -17,6 +17,12 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@fullcalendar/core": "^5.11.3",
+    "@fullcalendar/daygrid": "^5.11.3",
+    "@fullcalendar/interaction": "^5.11.3",
+    "@fullcalendar/moment": "^5.11.3",
+    "@fullcalendar/timegrid": "^5.11.3",
+    "@fullcalendar/vue": "^5.11.3",
     "@nuxtjs/auth": "4.9.1",
     "@nuxtjs/axios": "^5.12.0",
     "@nuxtjs/google-gtag": "^1.0.4",
