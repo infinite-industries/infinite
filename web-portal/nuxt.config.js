@@ -180,6 +180,7 @@ export default {
   ** Build configuration
   */
   build: {
+    transpile: /@fullcalendar.*/,
     /*
     ** You can extend webpack config here
     */
