@@ -90,19 +90,19 @@
 </script>
 
 <style>
-.calendar-page .fc-button-primary {
-  background: #5c5c5c;
-}
-.calendar-page .fc-button-primary:hover {
-  background: #131212;
-}
-.calendar-page .fc-daygrid-event {
-  color: #5c5c5c;
-}
-.calendar-page .fc-col-header-cell-cushion {
-  color: #000;
-}
-.calendar-page .fc-daygrid-day-number {
-  color: #000;
-}
+  .calendar-page .fc-button-primary {
+    background: #5c5c5c;
+  }
+  .calendar-page .fc-button-primary:hover {
+    background: #131212;
+  }
+  .calendar-page .fc-daygrid-event {
+    color: #5c5c5c;
+  }
+  .calendar-page .fc-col-header-cell-cushion {
+    color: #000;
+  }
+  .calendar-page .fc-daygrid-day-number {
+    color: #000;
+  }
 </style>
