@@ -22,7 +22,7 @@
     data: function () {
       return {
         timeInterval: null,
-        calendarOptions: {
+        initialCalendarOptions: {
           plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
           initialView: 'dayGridMonth',
           nowIndicator: true,
@@ -45,24 +45,13 @@
       await store.dispatch('LoadAllLocalEventData')
     },
     computed: {
-      ...mapGetters({ getAllLocalEvents: 'GetAllLocalEvents' })
-    },
-    mounted() {
-      this.setUpdateCalendarEvents()
-
-      this.timeInterval = setInterval(() => {
-        this.$store.dispatch('LoadAllLocalEventData').then(() => {
-          this.setUpdateCalendarEvents()
-        })
-      }, 5 * 60 * 1000)
-    },
-    methods: {
-      setUpdateCalendarEvents() {
-        const parsedEvents = []
+      ...mapGetters({ getAllLocalEvents: 'GetAllLocalEvents' }),
+      calendarOptions: function () {
+        const events = []
 
         this.getAllLocalEvents.forEach((event) => {
           event.date_times.forEach((eventDate) => {
-            parsedEvents.push({
+            events.push({
               title: event.title,
               start: eventDate.start_time,
               end: eventDate.end_time,
@@ -72,9 +61,17 @@
             })
           })
         })
-
-        this.calendarOptions.events = parsedEvents
-      },
+        return {
+          ...this.initialCalendarOptions, events
+        }
+      }
+    },
+    mounted() {
+      this.timeInterval = setInterval(() => {
+        this.$store.dispatch('LoadAllLocalEventData')
+      }, 5 * 60 * 1000)
+    },
+    methods: {
       handleDateClick(info) {
         const calendarApi = this.$refs.fullCalendar.getApi()
         calendarApi.changeView('timeGridDay', info.dateStr)
