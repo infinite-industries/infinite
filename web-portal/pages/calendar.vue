@@ -42,16 +42,16 @@
       }
     },
     async fetch({ store }) {
-      await store.dispatch('LoadAllCalendarEventData')
+      await store.dispatch('LoadAllLocalEventData')
     },
     computed: {
-      ...mapGetters({ getAllCalendarEvents: 'GetAllCalendarEvents' })
+      ...mapGetters({ getAllLocalEvents: 'GetAllLocalEvents' })
     },
     mounted() {
       this.setUpdateCalendarEvents()
 
       this.timeInterval = setInterval(() => {
-        this.$store.dispatch('LoadAllCalendarEventData').then(() => {
+        this.$store.dispatch('LoadAllLocalEventData').then(() => {
           this.setUpdateCalendarEvents()
         })
       }, 5 * 60 * 1000)
@@ -60,7 +60,7 @@
       setUpdateCalendarEvents() {
         const parsedEvents = []
 
-        this.getAllCalendarEvents.forEach((event) => {
+        this.getAllLocalEvents.forEach((event) => {
           event.date_times.forEach((eventDate) => {
             parsedEvents.push({
               title: event.title,

@@ -15,7 +15,6 @@ export const state = () => {
     user_data: {},
     loaded_from_api: false,
 
-    all_calendar_events: [],
     all_local_events: [],
     all_streaming_events: [],
 
@@ -32,9 +31,6 @@ export const getters = {
   },
   GetLoadingStatus: (state) => {
     return state.util.loading
-  },
-  GetAllCalendarEvents: (state) => {
-    return state.all_calendar_events
   },
   GetAllLocalEvents: (state) => {
     return state.all_local_events
@@ -86,9 +82,6 @@ export const mutations = {
   CREATE_NEW_EVENT: (state) => {
     state.calendar_event = getEmptyCalendarEvent()
   },
-  UPDATE_CALENDAR_EVENTS: (state, payload) => {
-    state.all_calendar_events = payload
-  },
   UPDATE_LOCALIZED_EVENTS: (state, payload) => {
     state.all_local_events = payload
   },
@@ -117,19 +110,6 @@ export const actions = {
     return this.$apiService.get('/users/current', payload.idToken)
       .then(function (_response) {
         context.commit('UPDATE_USER_DATA', _response.data)
-      })
-  },
-  LoadAllCalendarEventData: function (context) {
-    context.commit('SET_LOADING_STATUS', true)
-
-    return this.$apiService.get(CURRENT_EVENTS_VERIFIED_PATH)
-      .then((_response) => {
-        context.commit('UPDATE_CALENDAR_EVENTS', _response.data.events)
-        context.commit('SET_LOADING_STATUS', false)
-      })
-      .catch((error) => {
-        console.error(error)
-        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.' }, { root: true })
       })
   },
   LoadAllLocalEventData: function (context) {
