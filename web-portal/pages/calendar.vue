@@ -11,7 +11,6 @@
 <script>
   import { mapGetters } from 'vuex'
   import FullCalendar from '@fullcalendar/vue'
-  import momentPlugin from '@fullcalendar/moment'
   import dayGridPlugin from '@fullcalendar/daygrid'
   import interactionPlugin from '@fullcalendar/interaction'
   import timeGridPlugin from '@fullcalendar/timegrid'
@@ -24,7 +23,7 @@
       return {
         timeInterval: null,
         calendarOptions: {
-          plugins: [momentPlugin, dayGridPlugin, timeGridPlugin, interactionPlugin],
+          plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
           initialView: 'dayGridMonth',
           nowIndicator: true,
           editable: false,
