@@ -276,7 +276,7 @@
         <v-flex xs12>
           <div class="text-xs-center">
             <v-btn
-              color="grey"
+              color="green"
               :disabled="!eventRequiredFields"
               :flat="false"
               :outline="!eventRequiredFields"
@@ -498,6 +498,7 @@
 
         const event = {
           ...this.calendar_event,
+          fb_event_link: this.calendar_event.fb_event_link.split('?')[0],
           organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
           reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
         }
