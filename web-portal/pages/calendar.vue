@@ -37,7 +37,12 @@
           eventClick: this.handleEventClick,
           eventBackgroundColor: '#b7b09c',
           eventBorderColor: '#fff',
-          eventTextColor: '#fff'
+          eventTextColor: '#fff',
+          initialDate: new Date().toISOString(),
+          validRange: {
+            start: new Date().toISOString()
+          },
+          height: 'auto'
         }
       }
     },
@@ -67,6 +72,10 @@
       }
     },
     mounted() {
+      if (window.screen.width < 640) {
+        this.initialCalendarOptions.initialView = 'timeGridDay'
+      }
+
       this.timeInterval = setInterval(() => {
         this.$store.dispatch('LoadAllLocalEventData')
       }, 5 * 60 * 1000)
@@ -101,5 +110,26 @@
   }
   .calendar-page .fc-daygrid-day-number {
     color: #000;
+  }
+
+  @media only screen and (min-width: 640px) {
+    .calendar-page .fc-daygrid-event {
+      display: block;
+      padding: 5px;
+      background: rgba(0,0,0,0.1);
+    }
+    .calendar-page .fc-daygrid-dot-event:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    .calendar-page .fc-daygrid-event .fc-event-title{
+      white-space: normal;
+      display: inline;
+    }
+    .calendar-page .fc-daygrid-event .fc-daygrid-event-dot {
+      display: none;
+    }
+    .calendar-page .fc-daygrid-event .fc-event-time {
+      display: inline;
+    }
   }
 </style>
