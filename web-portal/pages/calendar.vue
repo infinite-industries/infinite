@@ -112,6 +112,17 @@
     color: #000;
   }
 
+  @media only screen and (max-width: 639px) {
+    .calendar-page .fc-header-toolbar {
+      flex-wrap: wrap;
+    }
+    .calendar-page .fc-toolbar-chunk:nth-child(2) {
+      order: -1;
+      width: 100%;
+      text-align: center;
+    }
+  }
+
   @media only screen and (min-width: 640px) {
     .calendar-page .fc-daygrid-event {
       display: block;
