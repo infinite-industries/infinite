@@ -82,7 +82,6 @@ export const mutations = {
   CREATE_NEW_EVENT: (state) => {
     state.calendar_event = getEmptyCalendarEvent()
   },
-
   UPDATE_LOCALIZED_EVENTS: (state, payload) => {
     state.all_local_events = payload
   },
@@ -113,7 +112,6 @@ export const actions = {
         context.commit('UPDATE_USER_DATA', _response.data)
       })
   },
-
   LoadAllLocalEventData: function (context) {
     context.commit('SET_LOADING_STATUS', true)
 
