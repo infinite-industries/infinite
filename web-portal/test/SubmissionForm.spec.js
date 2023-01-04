@@ -178,6 +178,24 @@ describe('SubmissionForm component', () => {
     expect(apiPost.mock.calls[0][1].fb_event_link).toBe(link)
   })
 
+  it('shows condition controls in edit mode', async () => {
+    expect(wrapper.findComponent('.status-container').exists()).toBe(true)
+
+    // ...but not in upload mode
+    await wrapper.setProps({ user_action: 'upload' })
+    expect(wrapper.findComponent('.status-container').exists()).toBe(false)
+  })
+
+  it('conditions can be changed', async () => {
+    expect(wrapper.vm.calendar_event.tags).toEqual([])
+    await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(true)
+    expect(wrapper.vm.calendar_event.tags).toEqual(['postponed'])
+    await wrapper.findComponent('.status-container input[type="checkbox"][value="sold-out"]').setChecked(true)
+    expect(wrapper.vm.calendar_event.tags).toEqual(['postponed', 'condition:sold-out'])
+    await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(false)
+    expect(wrapper.vm.calendar_event.tags).toEqual(['condition:sold-out'])
+  })
+
   // function getFilledOutEvent() {
   //   return {
   //     'id': '',

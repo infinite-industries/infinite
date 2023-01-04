@@ -71,6 +71,36 @@ describe('Card component', () => {
     expect(wrapper.find('.description').text.length).toBeLessThan(123)
   })
 
+  test('prepends appropriate condition label to title', async () => {
+    await wrapper.setProps({
+      calendar_event: Object.assign({}, event, {
+        tags: ['postponed']
+      })
+    })
+    expect(wrapper.find('h3').text()).toContain('[Postponed]')
+  })
+
+  test('condition label has appropriate precedence', async () => {
+    // sold-out beats postponed
+    await wrapper.setProps({
+      calendar_event: Object.assign({}, event, {
+        tags: ['postponed', 'condition:sold-out']
+      })
+    })
+    expect(wrapper.find('h3').text()).toContain('[Sold Out]')
+    expect(wrapper.find('h3').text()).not.toContain('[Postponed]')
+
+    // cancelled beats both
+    await wrapper.setProps({
+      calendar_event: Object.assign({}, event, {
+        tags: ['postponed', 'condition:sold-out', 'cancelled']
+      })
+    })
+    expect(wrapper.find('h3').text()).toContain('[Cancelled]')
+    expect(wrapper.find('h3').text()).not.toContain('[Sold Out]')
+    expect(wrapper.find('h3').text()).not.toContain('[Postponed]')
+  })
+
   // TODO: not sure why this doesn't work but probably something weird with
   // Jest's DOM model; the background isn't being set but the other prop is
   xtest('renders event image', () => {

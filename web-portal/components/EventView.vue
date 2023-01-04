@@ -168,9 +168,12 @@
     },
     computed: {
       statusMessage() {
-        if (this.event.tags && this.event.tags.includes('cancelled')) return 'Cancelled'
-        else if (this.event.tags && this.event.tags.includes('postponed')) return 'Postponed'
-        else return null
+        if (this.event.tags) {
+          if (this.event.tags.includes('cancelled')) return 'Cancelled'
+          else if (this.event.tags.includes('condition:sold-out')) return 'Sold Out'
+          else if (this.event.tags.includes('postponed')) return 'Postponed'
+          else return null
+        } else return null
       },
       fullEncodedLinkForShare() {
         return encodeURI(this.$config.APP_URL + '/events/' + this.event.id)
