@@ -602,8 +602,8 @@
         return this.$store.getters.GetActiveVenues
       },
 
-      eventIsPostponed: boolToTag('postponed'),
-      eventIsCancelled: boolToTag('cancelled'),
+      eventIsPostponed: boolToTag('condition:postponed'),
+      eventIsCancelled: boolToTag('condition:cancelled'),
       eventIsSoldOut: boolToTag('condition:sold-out'),
 
       eventMode: radioToTag('mode', /^mode:([\w-]+)$/),
