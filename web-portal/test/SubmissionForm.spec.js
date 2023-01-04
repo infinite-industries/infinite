@@ -189,9 +189,9 @@ describe('SubmissionForm component', () => {
   it('conditions can be changed', async () => {
     expect(wrapper.vm.calendar_event.tags).toEqual([])
     await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(true)
-    expect(wrapper.vm.calendar_event.tags).toEqual(['postponed'])
+    expect(wrapper.vm.calendar_event.tags).toEqual(['condition:postponed'])
     await wrapper.findComponent('.status-container input[type="checkbox"][value="sold-out"]').setChecked(true)
-    expect(wrapper.vm.calendar_event.tags).toEqual(['postponed', 'condition:sold-out'])
+    expect(wrapper.vm.calendar_event.tags).toEqual(['condition:postponed', 'condition:sold-out'])
     await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(false)
     expect(wrapper.vm.calendar_event.tags).toEqual(['condition:sold-out'])
   })

@@ -169,9 +169,9 @@
     computed: {
       statusMessage() {
         if (this.event.tags) {
-          if (this.event.tags.includes('cancelled')) return 'Cancelled'
+          if (this.event.tags.includes('condition:cancelled')) return 'Cancelled'
           else if (this.event.tags.includes('condition:sold-out')) return 'Sold Out'
-          else if (this.event.tags.includes('postponed')) return 'Postponed'
+          else if (this.event.tags.includes('condition:postponed')) return 'Postponed'
           else return null
         } else return null
       },
