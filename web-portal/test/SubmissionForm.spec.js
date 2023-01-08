@@ -166,6 +166,18 @@ describe('SubmissionForm component', () => {
     expect(apiPost.mock.calls[1][1].reviewed_by_org).toBe(partner)
   })
 
+  it('strips query params off Facebook links', async () => {
+    const link = 'https://facebook.com/events/1234567890/'
+    const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
+    ImageUploadService.forEvent.mockResolvedValue(Promise.resolve({ data: { hero: 'image.png' } }))
+
+    wrapper.vm.calendar_event.fb_event_link = `${link}?context={"weird":"tracking-nonsense"}`
+
+    await wrapper.vm.UploadEvent()
+    expect(apiPost.mock.calls.length).toBe(1)
+    expect(apiPost.mock.calls[0][1].fb_event_link).toBe(link)
+  })
+
   // function getFilledOutEvent() {
   //   return {
   //     'id': '',
