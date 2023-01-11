@@ -1,5 +1,5 @@
 import {execSync, ExecSyncOptions} from "child_process";
-import {DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME} from "./start-database";
+import {DB_HOST, DB_NAME, DB_PASSWORD, DB_USER_NAME} from "./start-database";
 import sleep from "../sleep";
 import {DEBUG_MIGRATION} from "../../../src/constants";
 
@@ -36,7 +36,7 @@ function doRunMigration(dbPort: number) {
         ...process.env,
         DB_HOST,
         DB_PORT: dbPort + '',
-        DB_USER_NAME: DB_USERNAME,
+        DB_USER_NAME: DB_USER_NAME,
         DB_PASSWORD,
         DB_NAME
     };

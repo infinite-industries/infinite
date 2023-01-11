@@ -1,6 +1,6 @@
 import {Test, TestingModule} from "@nestjs/testing";
 import {SequelizeModule} from "@nestjs/sequelize";
-import {DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME} from "./start-database";
+import {DB_HOST, DB_NAME, DB_PASSWORD, DB_USER_NAME} from "./start-database";
 import {VenueModel} from "../../../src/venues/models/venue.model";
 import {EventModel} from "../../../src/events/models/event.model";
 import {EventsService} from "../../../src/events/events.service";
@@ -24,7 +24,7 @@ async function buildDbConnectionsForTests(dbPort: number): Promise<DatabaseModel
                 synchronize: true,
                 host: DB_HOST,
                 port: dbPort,
-                username: DB_USERNAME,
+                username: DB_USER_NAME,
                 password: DB_PASSWORD,
                 database: DB_NAME,
                 models: [
