@@ -4,6 +4,9 @@
       <nuxt-link to="/">Home</nuxt-link>
     </li>
     <li>
+      <nuxt-link to="/calendar">Calendar</nuxt-link>
+    </li>
+    <li>
       <nuxt-link to="/our-mission">Our Mission</nuxt-link>
     </li>
     <li>
