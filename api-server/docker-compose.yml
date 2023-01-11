@@ -1,0 +1,41 @@
+version: '3.9'
+services: 
+  api-server:
+    build: ./
+    image: infinite-industries/api-server:${IMAGE_TAG:-latest}
+    environment:
+      PORT: ${PORT:-3003}
+      DB_PORT: ${DB_PORT:-5432}
+      DB_HOST: ${DB_HOST:-db}
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-3003}:3003"
+    networks:
+      - infinite
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:9.6.2-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER_NAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?}
+      POSTGRES_DB: ${DB_NAME:-infinite-api}
+    env_file:
+      - .env
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -h db -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    networks:
+      - infinite
+
+networks:
+  infinite:
+    driver: bridge/
