@@ -1,15 +1,15 @@
-FROM node:gallium
+FROM node:19-alpine
 
-ADD ./ /api-server
 WORKDIR /api-server
 
-RUN chmod +x ./docker-scripts/start.sh
-RUN chmod +x ./docker-scripts/wait-for-it.sh
-RUN npm install -g npm@8.7.0
+RUN apk -U --no-cache add \
+  bash just
 
-RUN npm ci
-RUN npm run build
+COPY justfile package.json package-lock.json ./
+RUN just install-deps
+
+COPY . .
+RUN just build
 
 EXPOSE 3003
-
-ENTRYPOINT ./docker-scripts/start.sh
+CMD ["npm", "start"]
