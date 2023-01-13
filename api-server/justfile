@@ -1,39 +1,63 @@
+# load environment vars from .env
+set dotenv-load := true
+
 # display this help
 default:
   just --list
 
-# install nodejs dependencies locally
-install-deps:
-  npm install -g npm@8.7.0
-  npm ci
-
-# run tests locally
-#test:
-#  npm test
-
-# build locally
-build:
-  npm run build
-
 # build the api-server docker image
-build-image:
-  docker-compose build api-server
+build:
+  docker-compose build api
 
 # publish the api-server docker image to docker.io
-publish-image:
+publish:
   docker login
-  docker-compose push api-server
+  docker-compose push api
 
-# start a local docker-based environment vis docker-compose
-start: build-image
-  docker-compose start 
+# start a local docker-based environment via docker-compose
+start: build
+  docker-compose create
+  docker-compose start
 
-# stop the local docker-based environment
+# stop the docker-compose environment
 stop: 
   docker-compose stop
 
+# cleatn the docker-compose environment
+clean: clean-api clean-db
+
 # populate local db - requires host networking, different db params.  require a
 # create the initial database schema by invoking ./docker-scripts/migrate.sh conn_string 
-populate-db conn_string: 
-  echo {{conn_string}}
+#populate-db conn_string
+#  echo {{conn_string}}
 #  docker-compose run api-server ./docker-scripts/migrate.sh
+
+clean-api: stop
+  docker-compose rm api
+
+create-api:
+  docker-compose create api
+
+start-api: create-api
+  docker-compose start api
+
+# stop the environment and remove the database container
+clean-db: stop
+  docker-compose rm db
+
+# create the database container
+create-db: clean-db
+  docker-compose create db
+
+# start the database
+start-db: create-db
+  docker-compose start db
+
+# populate the database container using the pg_dump file specified
+populate-db dumpfile: start-db
+  # copy appropriate file to docker container
+  docker cp {{dumpfile}} api-server-db-1:/var/tmp/dumpfile
+  docker-compose exec db sh -c 'sleep 4; pg_isready -q'
+  # it may be possible to use -e PGHOST to other database hosts to be updated
+  docker-compose exec  db sh -c 'PGPASSWORD=$PGPASSWORD pg_restore --no-privileges --no-owner -h $PGHOST -v -d $PGDATABASE -U $PGUSER /var/tmp/dumpfile'
+

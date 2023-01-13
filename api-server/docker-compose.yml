@@ -1,8 +1,10 @@
 version: '3.9'
 services: 
-  api-server:
+
+  api:
     build: ./
-    image: infinite-industries/api-server:${IMAGE_TAG:-latest}
+    image: ${DOCKERHUB_ORG}/api-server:${IMAGE_TAG:-latest}
+    command: npm run start:dev
     environment:
       PORT: ${PORT:-3003}
       DB_PORT: ${DB_PORT:-5432}
@@ -18,18 +20,20 @@ services:
         condition: service_healthy
 
   db:
-    image: postgres:9.6.2-alpine
+    image: postgres:15-alpine
     restart: always
     environment:
-      POSTGRES_USER: ${DB_USER_NAME:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:?}
-      POSTGRES_DB: ${DB_NAME:-infinite-api}
+      PGUSER: ${DB_USER_NAME:-postgres}
+      PGPASSWORD: ${DB_PASSWORD:?}
+      PGDATABASE: ${DB_NAME:-infinite-api}
+      PGHOST: db
+      PGPORT: ${DB_PORT:-5432}
     env_file:
       - .env
     ports:
       - "${DB_PORT:-5432}:5432"
     healthcheck:
-      test: ["CMD-SHELL", "sh -c 'pg_isready -h db -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      test: ["CMD-SHELL", "sh -c 'pg_isready'"]
       interval: 1s
       timeout: 5s
       retries: 10

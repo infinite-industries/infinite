@@ -5,7 +5,8 @@ WORKDIR /api-server
 RUN apk -U --no-cache add \
   bash just
 
-COPY justfile package.json package-lock.json ./
+COPY package.json package-lock.json ./
+COPY local.justfile ./justfile
 RUN just install-deps
 
 COPY . .
