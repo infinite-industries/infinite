@@ -15,7 +15,7 @@ publish:
   docker-compose push api
 
 # start a local docker-based environment via docker-compose
-start: build
+start:
   docker-compose create
   docker-compose start
 
@@ -32,29 +32,34 @@ clean: clean-api clean-db
 #  echo {{conn_string}}
 #  docker-compose run api-server ./docker-scripts/migrate.sh
 
-clean-api: stop
+# stop and remove the api container
+clean-api:
+  docker-compose stop api
   docker-compose rm api
 
+# create the api container
 create-api:
   docker-compose create api
 
+# start the api service
 start-api: create-api
   docker-compose start api
 
 # stop the environment and remove the database container
-clean-db: stop
+clean-db: 
+  docker-compose stop db
   docker-compose rm db
 
 # create the database container
-create-db: clean-db
+create-db: 
   docker-compose create db
 
 # start the database
 start-db: create-db
   docker-compose start db
 
-# populate the database container using the pg_dump file specified
-populate-db dumpfile: start-db
+# populate a database container using the pg_dump file specified
+populate-db dumpfile: 
   # copy appropriate file to docker container
   docker cp {{dumpfile}} api-server-db-1:/var/tmp/dumpfile
   docker-compose exec db sh -c 'sleep 4; pg_isready -q'
