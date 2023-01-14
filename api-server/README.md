@@ -2,22 +2,21 @@
 
 Backend API powering [Infinite Industries](https://infinite.industries).
 
-* [Installation]()
-* [Running integration tests]()
-* [Running the app]()
-* [Test]()
-* [Viewing swagger docs]()
-* [Deploying]()
-* [Development Environment Setup using Docker &amp; docker-compose]()
-   * [Quick Start]()
-   * [Common Task: Development]()
-   * [Common Task: Create a database using a production snapshot]()
-   * [Common Task: Publish a new Docker image]()
-* [Development Environment Setup [OLD]]()
-   * [Dependencies]()
-   * [Setup]()
-* [License]()
-
+* [Installation](#installation)
+* [running integration tests](#running-integration-tests)
+* [Running the app](#running-the-app)
+* [Test](#test)
+* [Viewing swagger docs](#viewing-swagger-docs)
+* [Deploying](#deploying)
+* [Development Environment Setup using Docker &amp; docker-compose](#development-environment-setup-using-docker--docker-compose)
+  * [Quick Start](#quick-start)
+  * [Common Task: Development](#common-task-development)
+  * [Common Task: Create a database using a production snapshot](#common-task-create-a-database-using-a-production-snapshot)
+  * [Common Task: Publish a new Docker image](#common-task-publish-a-new-docker-image)
+* [Development Environment Setup [OLD]](#development-environment-setup-old)
+  * [Dependencies](#dependencies)
+  * [Setup](#setup)
+* [License](#license)
 
 ## Installation
 
