@@ -151,9 +151,11 @@
   }
 
   .ii-button {
-    background-color: #9e9e9e;
-    font-family: 'Open Sans', sans-serif;
-    color: black;
+
+    background-color: #6cba70;
+    font-family: "Open Sans",sans-serif;
+    color: #000;
+    border: 2px solid black;
     border-radius: 3px;
     margin: 8px;
     padding: 10px;
@@ -162,7 +164,8 @@
 
   .secondary-button {
     background-color: #d8d7d7;
-    border: 1px solid #9e9e9e;
+    border: 1px solid black;
+    padding: 11px;
   }
 
   .preview-message {

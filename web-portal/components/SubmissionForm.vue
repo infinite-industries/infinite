@@ -258,16 +258,28 @@
         </v-flex>
       </v-layout>
 
-      <!-- Status (postponed / cancelled) -->
+      <!-- Status (postponed / cancelled / sold out) -->
       <v-layout row wrap v-if="user_action==='edit'" class="status-container">
         <v-flex xs12 sm3>
           <h3 class="form-label">Status Flags:</h3>
         </v-flex>
         <v-flex xs12 sm3 md2>
-          <v-checkbox v-model="eventIsPostponed" label="Postponed" />
+          <label class="status-option">
+            <input type="checkbox" v-model="eventIsPostponed" value="postponed">
+            Postponed
+          </label>
         </v-flex>
         <v-flex xs12 sm3 md2>
-          <v-checkbox v-model="eventIsCancelled" label="Cancelled" />
+          <label class="status-option">
+            <input type="checkbox" v-model="eventIsCancelled" value="cancelled">
+            Cancelled
+          </label>
+        </v-flex>
+        <v-flex xs12 sm3 md2>
+          <label class="status-option">
+            <input type="checkbox" v-model="eventIsSoldOut" value="sold-out">
+            Sold Out
+          </label>
         </v-flex>
       </v-layout>
 
@@ -276,7 +288,7 @@
         <v-flex xs12>
           <div class="text-xs-center">
             <v-btn
-              color="grey"
+              color="green"
               :disabled="!eventRequiredFields"
               :flat="false"
               :outline="!eventRequiredFields"
@@ -350,7 +362,7 @@
   import ImageUploadService from '@/services/ImageUploadService'
   import getToken from '../helpers/getToken'
 
-  const CONTROL_TAGS = /^(?:remote|online-resource|postponed|cancelled|mode:[\w-]+|category:[\w-]+(:(.+))?)$/
+  const CONTROL_TAGS = /^(?:remote|online-resource|postponed|cancelled|condition:[\w-]+|mode:[\w-]+|category:[\w-]+(:(.+))?)$/
 
   const boolToTag = tag => ({
     get: function () {
@@ -498,6 +510,7 @@
 
         const event = {
           ...this.calendar_event,
+          fb_event_link: this.calendar_event.fb_event_link ? this.calendar_event.fb_event_link.split('?')[0] : null,
           organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
           reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
         }
@@ -589,8 +602,9 @@
         return this.$store.getters.GetActiveVenues
       },
 
-      eventIsPostponed: boolToTag('postponed'),
-      eventIsCancelled: boolToTag('cancelled'),
+      eventIsPostponed: boolToTag('condition:postponed'),
+      eventIsCancelled: boolToTag('condition:cancelled'),
+      eventIsSoldOut: boolToTag('condition:sold-out'),
 
       eventMode: radioToTag('mode', /^mode:([\w-]+)$/),
       eventCategory: radioToTag('category', /^category:([\w-]+)(:(.+))?$/),
@@ -769,7 +783,8 @@
   outline: 1px dashed rgb(210, 210, 210)
 }
 
-.category-option {
+.category-option,
+.status-option {
   display: block;
   margin-bottom: 0.5em;
   font-size: 16px;
@@ -791,6 +806,15 @@
 
 .status-container .v-input--checkbox {
   margin-top: 22px;
+}
+
+.status-container label {
+  margin-top: 10px;
+  padding-top: 14px;
+}
+
+.status-container label input[type="checkbox"] {
+  margin-right: 0.25em;
 }
 
 </style>
