@@ -26,11 +26,15 @@ stop:
 # cleatn the docker-compose environment
 clean: clean-api clean-db
 
+
 # populate local db - requires host networking, different db params.  require a
 # create the initial database schema by invoking ./docker-scripts/migrate.sh conn_string 
 #populate-db conn_string
 #  echo {{conn_string}}
 #  docker-compose run api-server ./docker-scripts/migrate.sh
+
+# rebuild the api-server image & start the api
+rebuild-api: build clean-api start-api
 
 # stop and remove the api container
 clean-api:
@@ -59,7 +63,7 @@ start-db: create-db
   docker-compose start db
 
 # populate a database container using the pg_dump file specified
-populate-db dumpfile: 
+populate-db dumpfile: start-db
   # copy appropriate file to docker container
   docker cp {{dumpfile}} api-server-db-1:/var/tmp/dumpfile
   docker-compose exec db sh -c 'sleep 4; pg_isready -q'

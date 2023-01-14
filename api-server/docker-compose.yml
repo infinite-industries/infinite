@@ -3,7 +3,7 @@ services:
 
   api:
     build: ./
-    image: ${DOCKERHUB_ORG}/api-server:${IMAGE_TAG:-latest}
+    image: ${IMAGE_NAME}:${IMAGE_TAG:-latest}
     command: npm run start:dev
     environment:
       PORT: ${PORT:-3003}

@@ -8,6 +8,87 @@ Backend API powering [Infinite Industries](https://infinite.industries).
 
 ## Development Environment Setup
 
+## Development Environment Setup using Docker & docker-compose
+
+Dependencies:
+- [docker](https://www.docker.com)
+- [casey/just](https://github.com/casey/just/releases/)
+
+### Quick Start
+
+These commands will build local docker images and start the environment.  The
+API can be accessed at http://localhost:3003/api
+
+```console
+$ cp .env.sample .env
+$ cp keys/1nfinite.pem 1nfinite.pem
+$ just build start
+```
+
+Notes:
+* A `.env` file is used to set values for many variables. Multiple tools in the
+  toolchain- `just`, `docker-compose`, and `npm` and `node` (via
+  [dotenv](https://www.npmjs.com/package/dotenv)) all use this file. Different
+  values are used for different enviroments.  The `.env.sample` includes variables
+  appropriate for local development.
+* The key `1nfinite.pem` is used for ??
+* `just` is used as a task runner: the *build* recipe create a docker image and
+  the *start* recipe starts it and a postgres database as docker containers.
+
+Other `just` recipes can be displayed by invoking it without arguments:
+
+```console
+$ just
+Available recipes:
+    build                # build the api-server docker image
+    clean                # cleatn the docker-compose environment
+    clean-api            # stop and remove the api container
+    clean-db             # stop the environment and remove the database container
+    create-api           # create the api container
+    create-db            # create the database container
+    default              # display this help
+    populate-db dumpfile # populate a database container using the pg_dump file specified
+    publish              # publish the api-server docker image to docker.io
+    rebuild-api          # rebuild the api-server image & start the api
+    start                # start a local docker-based environment via docker-compose
+    start-api            # start the api service
+    start-db             # start the database
+    stop                 # stop the docker-compose environment
+```
+
+### Common Task: Development
+
+To make changes visible:
+```console
+$ just rebuild-api
+```
+
+### Common Task: Create a database using a production snapshot
+
+```console
+$ just clean-db
+docker-compose stop db                                
+[+] Running 1/1                                       
+ ⠿ Container api-server-db-1  Stopped                                                                  0.3s
+docker-compose rm db                                                                                        
+? Going to remove api-server-db-1 Yes          
+[+] Running 1/0                                       
+
+$ just populate-db ../../infinite-prod-bk-folder/backups/infinite-prod-dump-1670627125
+```
+
+### Common Task: Publish a new Docker image
+
+Using image name specified in `.env`:
+```console
+$ just publish
+```
+
+Overriding the image name specified in `.env`:
+```console
+$ IMAGE_NAME=chriswininger/infinite-api-server just publish
+```
+
 ### Dependencies
 
 You will need the following tools:
