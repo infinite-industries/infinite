@@ -178,6 +178,18 @@ describe('SubmissionForm component', () => {
     expect(apiPost.mock.calls[0][1].fb_event_link).toBe(link)
   })
 
+  it('strips query params off Eventbrite links', async () => {
+    const link = 'https://www.eventbrite.com/e/some-event-012345678910'
+    const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
+    ImageUploadService.forEvent.mockResolvedValue(Promise.resolve({ data: { hero: 'image.png' } }))
+
+    wrapper.vm.calendar_event.eventbrite_link = `${link}?fbcid=gibberishgibberishandmoregibberish`
+
+    await wrapper.vm.UploadEvent()
+    expect(apiPost.mock.calls.length).toBe(1)
+    expect(apiPost.mock.calls[0][1].eventbrite_link).toBe(link)
+  })
+
   it('shows condition controls in edit mode', async () => {
     expect(wrapper.findComponent('.status-container').exists()).toBe(true)
 
