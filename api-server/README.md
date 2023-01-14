@@ -2,11 +2,73 @@
 
 Backend API powering [Infinite Industries](https://infinite.industries).
 
-## Features
+* [Installation]()
+* [Running integration tests]()
+* [Running the app]()
+* [Test]()
+* [Viewing swagger docs]()
+* [Deploying]()
+* [Development Environment Setup using Docker &amp; docker-compose]()
+   * [Quick Start]()
+   * [Common Task: Development]()
+   * [Common Task: Create a database using a production snapshot]()
+   * [Common Task: Publish a new Docker image]()
+* [Development Environment Setup [OLD]]()
+   * [Dependencies]()
+   * [Setup]()
+* [License]()
 
-- **TODO**: [refer to Project Page] (https://github.com/infinite-industries/infinite/projects/1)
 
-## Development Environment Setup
+## Installation
+
+```bash
+$ npm install
+```
+
+## running integration tests
+
+- put keys in the keys directory
+- `npm run test:e2e`
+
+## Running the app
+
+```bash
+# development
+$ npm run start
+
+# watch mode
+$ npm run start:dev
+
+# production mode
+$ npm run start:prod
+```
+
+## Test
+
+```bash
+# unit tests
+$ npm run test
+
+# e2e tests
+$ npm run test:e2e
+
+# test coverage
+$ npm run test:cov
+```
+
+## Viewing swagger docs
+
+`[host]/api/`
+
+local: http://localhost:3003/api/
+prod:  https://api.infinite.industries/api/
+
+## Deploying
+
+This requires that you have access to the target server through ssh-key authentication and that the target server is
+properly configured, with the appropriate .env file and pem file in its home directory
+
+run: `./deploy.sh <environment>`
 
 ## Development Environment Setup using Docker & docker-compose
 
@@ -89,6 +151,8 @@ Overriding the image name specified in `.env`:
 $ IMAGE_NAME=chriswininger/infinite-api-server just publish
 ```
 
+## Development Environment Setup [OLD]
+
 ### Dependencies
 
 You will need the following tools:
@@ -107,57 +171,6 @@ A core team member can send you the dev secrets via the Infinite Industries Slac
  cp .env.sample .env
  cp keys/1nfinite.pem 1nfinite.pem    
  ```
-
-## Installation
-
-```bash
-$ npm install
-```
-
-## running integration tests
-
-- put keys in the keys directory
-- `npm run test:e2e`
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Viewing swagger docs
-
-`[host]/api/`
-
-local: http://localhost:3003/api/
-prod:  https://api.infinite.industries/api/
-
-## Deploying
-
-This requires that you have access to the target server through ssh-key authentication and that the target server is
-properly configured, with the appropriate .env file and pem file in its home directory
-
-run: `./deploy.sh <environment>`
 
 ## License
 
