@@ -67,5 +67,8 @@ populate-db dumpfile: start-db
   # copy appropriate file to docker container
   docker cp {{dumpfile}} api-server-db-1:/var/tmp/dumpfile
   docker-compose exec db sh -c 'sleep 4; pg_isready -q'
-  # override PGHOST may be possible to use -e PGHOST to other database hosts to be updated
-  docker-compose exec -e PGHOST db sh -c 'PGPASSWORD=$PGPASSWORD pg_restore --no-privileges --no-owner -h $PGHOST -v -d $PGDATABASE -U $PGUSER /var/tmp/dumpfile'
+  # TODO: allow PG vars to be overriden
+  #   It is possible to use -e PGHOST,PGPASSWORD, etc to allow other database hosts to be updated - 
+  #   but these vars aren't set in this environment (only in docker-compose.yml). If they were set
+  #   in .env, this would be a non-issue
+  docker-compose exec db sh -c 'PGPASSWORD=$PGPASSWORD pg_restore --no-privileges --no-owner -h $PGHOST -v -d $PGDATABASE -U $PGUSER /var/tmp/dumpfile'
