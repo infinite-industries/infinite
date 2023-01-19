@@ -28,17 +28,23 @@
 
 <style scoped>
   .event-preview {
-    display: flex;
-    flex-direction: row;
     background-color: black;
     border-radius: 10px;
     padding: 10px;
+  }
+
+  @media only screen and (min-width: 640px) {
+    .event-preview {
+      display: flex;
+      flex-direction: row;
+    }
   }
 
   .event-preview > div {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 0 5px;
   }
 
   .event-preview > div:first-child {
@@ -51,11 +57,12 @@
 
   .event-preview > div > div:first-child {
     font-size: 1.25em;
-    margin-bottom: 1em;
+    margin-bottom: 0.75em;
     color: white;
   }
 
   .event-preview .card-container {
     max-height: 450px;
+    padding: 0;
   }
 </style>
