@@ -67,6 +67,5 @@ populate-db dumpfile: start-db
   # copy appropriate file to docker container
   docker cp {{dumpfile}} api-server-db-1:/var/tmp/dumpfile
   docker-compose exec db sh -c 'sleep 4; pg_isready -q'
-  # it may be possible to use -e PGHOST to other database hosts to be updated
-  docker-compose exec  db sh -c 'PGPASSWORD=$PGPASSWORD pg_restore --no-privileges --no-owner -h $PGHOST -v -d $PGDATABASE -U $PGUSER /var/tmp/dumpfile'
-
+  # override PGHOST may be possible to use -e PGHOST to other database hosts to be updated
+  docker-compose exec -e PGHOST db sh -c 'PGPASSWORD=$PGPASSWORD pg_restore --no-privileges --no-owner -h $PGHOST -v -d $PGDATABASE -U $PGUSER /var/tmp/dumpfile'

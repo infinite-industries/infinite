@@ -138,6 +138,19 @@ docker-compose rm db
 $ just populate-db ../../infinite-prod-bk-folder/backups/infinite-prod-dump-1670627125
 ```
 
+### Common Task: Connect to the DB using psql
+
+Using `psql` from the db container:
+
+```console
+$ docker-compose exec db psql
+```
+
+Using `psql` installed locally:
+```console
+$ psql postgres://postgres:pwd_jswank@localhost:5432/infinite-api
+```
+
 ### Common Task: Publish a new Docker image
 
 Using image name specified in `.env`:
