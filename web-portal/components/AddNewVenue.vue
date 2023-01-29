@@ -23,14 +23,26 @@
           <!-- City -->
           <v-layout row wrap>
             <v-flex xs12>
-              <v-text-field label="City*" v-model="new_venue.city" :rules="[v => !!v || 'City is required']"></v-text-field>
+              <v-combobox
+                label="City*"
+                value="Lexington"
+                v-model="new_venue.city"
+                :items="suggestedCities"
+                :rules="[v => !!v || 'City is required']"
+              />
             </v-flex>
           </v-layout>
 
           <!-- State -->
           <v-layout row wrap>
             <v-flex xs12>
-              <v-text-field label="State*" v-model="new_venue.state" :rules="[v => !!v || 'State is required']"></v-text-field>
+              <v-combobox
+                label="State*"
+                value="Kentucky"
+                v-model="new_venue.state"
+                :items="suggestedStates"
+                :rules="[v => !!v || 'State is required']"
+              />
             </v-flex>
           </v-layout>
 
@@ -96,6 +108,42 @@
           this.new_venue.city !== '' &&
           this.new_venue.state !== '' &&
           this.new_venue.zip !== ''
+      },
+      suggestedCities: function () {
+        return [
+          'Lexington',
+          'Danville',
+          'Versailles',
+          'Frankfort',
+          'Berea',
+          'Richmond',
+          'Whitesburg',
+          'Harrodsburg',
+          'Georgetown',
+          'Louisville',
+          'Midway',
+          'Winchester',
+          'Nicholasville',
+          'Cincinnati',
+          'Covington',
+          'Morehead',
+          'Pikeville',
+          'Hazard',
+          'Paris',
+          'Mount Sterling'
+        ]
+      },
+      suggestedStates: function () {
+        return [
+          'Kentucky',
+          'Illinois',
+          'Indiana',
+          'Missouri',
+          'Ohio',
+          'Tennessee',
+          'Virginia',
+          'West Virginia'
+        ]
       }
     },
     methods: {
