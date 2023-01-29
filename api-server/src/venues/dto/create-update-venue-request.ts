@@ -29,6 +29,26 @@ export class CreateVenueRequest {
     @ApiProperty({example: 17.1 })
     @IsOptional()
     gps_alt?: number
+
+    @ApiProperty({example: '232 Paper St.'})
+    @IsOptional()
+    street?: string;
+
+    @ApiProperty({example: 'Scranton'})
+    @IsOptional()
+    city?: string;
+
+    @ApiProperty({example: 'Pennsylvania'})
+    @IsOptional()
+    state?: string;
+
+    @ApiProperty({example: '18503'})
+    @IsOptional()
+    zip?: string;
+
+    @ApiProperty({example: 'Downtown'})
+    @IsOptional()
+    neighborhood?: string;
 }
 
 export class UpdateVenueRequest {
