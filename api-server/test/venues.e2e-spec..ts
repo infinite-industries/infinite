@@ -308,12 +308,12 @@ describe('Venues (e2e)', () => {
     function generateRandomCreateVenueRequest(overrides: Partial<CreateVenueRequest> = {}) {
         return {
             name: faker.company.companyName(),
-            address: faker.address.address(),
+            address: faker.address.streetAddress(),
             street: faker.address.streetAddress(),
             city: faker.address.city(),
             state: faker.address.state(),
-            zip: faker.address.zip(),
-            neighborhood: faker.address.neighborhood(),
+            zip: faker.address.zipCode(),
+            neighborhood: faker.address.county(),
             g_map_link: faker.random.uuid(),
             ...overrides
         }

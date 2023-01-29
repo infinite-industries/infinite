@@ -9,12 +9,12 @@ function generateVenue(venueModel: typeof VenueModel): VenueModel {
     id: uuidv4(),
     name: faker.company.companyName(),
     slug: faker.lorem.slug(),
-    address: faker.address.address(),
+    address: faker.address.streetAddress(),
     street: faker.address.streetAddress(),
     city: faker.address.city(),
     state: faker.address.state(),
-    zip: faker.address.zip(),
-    neighborhood: faker.address.neighborhood(),
+    zip: faker.address.zipCode(),
+    neighborhood: faker.address.county(),
     g_map_link: faker.internet.url()
   })
 }
