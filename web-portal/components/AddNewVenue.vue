@@ -13,10 +13,10 @@
             </v-flex>
           </v-layout>
 
-          <!-- Venue Address -->
+          <!-- Street Address -->
           <v-layout row wrap>
             <v-flex xs12>
-              <v-text-field label="Address*" v-model="new_venue.address" :rules="[v => !!v || 'Address is required']"></v-text-field>
+              <v-text-field label="Street Address*" v-model="new_venue.street" :rules="[v => !!v || 'Street Address is required']"></v-text-field>
             </v-flex>
           </v-layout>
 
@@ -24,6 +24,13 @@
           <v-layout row wrap>
             <v-flex xs12>
               <v-text-field label="City*" v-model="new_venue.city" :rules="[v => !!v || 'City is required']"></v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <!-- State -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field label="State*" v-model="new_venue.state" :rules="[v => !!v || 'State is required']"></v-text-field>
             </v-flex>
           </v-layout>
 
@@ -74,7 +81,7 @@
         showVenueLoadingSpinner: false, // maybe
         new_venue: {
           name: '',
-          address: '',
+          street: '',
           city: '',
           zip: '',
           neighborhood: '',
@@ -85,8 +92,9 @@
     computed: {
       venueRequiredFields: function () {
         return this.new_venue.name !== '' &&
-          this.new_venue.address !== '' &&
+          this.new_venue.street !== '' &&
           this.new_venue.city !== '' &&
+          this.new_venue.state !== '' &&
           this.new_venue.zip !== ''
       }
     },
@@ -102,11 +110,17 @@
         const payload = {
           name: newVenue.name,
           address: [
-            newVenue.address,
+            newVenue.street,
             newVenue.city,
+            newVenue.state,
             newVenue.zip,
             newVenue.neighborhood
           ].filter(a => a).join(', '),
+          street: newVenue.street,
+          city: newVenue.city,
+          state: newVenue.state,
+          zip: newVenue.zip,
+          neighborhood: newVenue.neighborhood,
           g_map_link: newVenue.g_map_link
         }
         this.showVenueLoadingSpinner = true
