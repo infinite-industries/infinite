@@ -29,6 +29,26 @@ export class CreateVenueRequest {
     @ApiProperty({example: 17.1 })
     @IsOptional()
     gps_alt?: number
+
+    @ApiProperty({example: '232 Paper St.'})
+    @IsOptional()
+    street?: string;
+
+    @ApiProperty({example: 'Scranton'})
+    @IsOptional()
+    city?: string;
+
+    @ApiProperty({example: 'Pennsylvania'})
+    @IsOptional()
+    state?: string;
+
+    @ApiProperty({example: '18503'})
+    @IsOptional()
+    zip?: string;
+
+    @ApiProperty({example: 'Downtown'})
+    @IsOptional()
+    neighborhood?: string;
 }
 
 export class UpdateVenueRequest {
@@ -36,9 +56,29 @@ export class UpdateVenueRequest {
     @IsOptional()
     name?: string;
 
-    @ApiProperty({example: '232 Paper St. Scranton, 18503'})
+    @ApiProperty({example: '232 Paper St., Scranton, Pennsylvania, 18503, Downtown'})
     @IsOptional()
     address?: string;
+
+    @ApiProperty({example: '232 Paper St.'})
+    @IsOptional()
+    street?: string;
+
+    @ApiProperty({example: 'Scranton'})
+    @IsOptional()
+    city?: string;
+
+    @ApiProperty({example: 'Pennsylvania'})
+    @IsOptional()
+    state?: string;
+
+    @ApiProperty({example: '18503'})
+    @IsOptional()
+    zip?: string;
+
+    @ApiProperty({example: 'Downtown'})
+    @IsOptional()
+    neighborhood?: string;
 
     @ApiProperty({example: 'https://maps.google.com/maps/foo/bar'})
     @IsOptional()

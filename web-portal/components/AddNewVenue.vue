@@ -13,17 +13,36 @@
             </v-flex>
           </v-layout>
 
-          <!-- Venue Address -->
+          <!-- Street Address -->
           <v-layout row wrap>
             <v-flex xs12>
-              <v-text-field label="Address*" v-model="new_venue.address" :rules="[v => !!v || 'Address is required']"></v-text-field>
+              <v-text-field label="Street Address*" v-model="new_venue.street" :rules="[v => !!v || 'Street Address is required']"></v-text-field>
             </v-flex>
           </v-layout>
 
           <!-- City -->
           <v-layout row wrap>
             <v-flex xs12>
-              <v-text-field label="City*" v-model="new_venue.city" :rules="[v => !!v || 'City is required']"></v-text-field>
+              <v-combobox
+                label="City*"
+                value="Lexington"
+                v-model="new_venue.city"
+                :items="suggestedCities"
+                :rules="[v => !!v || 'City is required']"
+              />
+            </v-flex>
+          </v-layout>
+
+          <!-- State -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-combobox
+                label="State*"
+                value="Kentucky"
+                v-model="new_venue.state"
+                :items="suggestedStates"
+                :rules="[v => !!v || 'State is required']"
+              />
             </v-flex>
           </v-layout>
 
@@ -74,7 +93,7 @@
         showVenueLoadingSpinner: false, // maybe
         new_venue: {
           name: '',
-          address: '',
+          street: '',
           city: '',
           zip: '',
           neighborhood: '',
@@ -85,9 +104,45 @@
     computed: {
       venueRequiredFields: function () {
         return this.new_venue.name !== '' &&
-          this.new_venue.address !== '' &&
+          this.new_venue.street !== '' &&
           this.new_venue.city !== '' &&
+          this.new_venue.state !== '' &&
           this.new_venue.zip !== ''
+      },
+      // We suggest cities that are represented in our data as of Feb 2022
+      suggestedCities: function () {
+        return [
+          'Lexington',
+          'Danville',
+          'Versailles',
+          'Frankfort',
+          'Berea',
+          'Richmond',
+          'Whitesburg',
+          'Harrodsburg',
+          'Georgetown',
+          'Louisville',
+          'Midway',
+          'Winchester',
+          'Nicholasville',
+          'Cincinnati',
+          'Covington',
+          'Morehead',
+          'Pikeville',
+          'Hazard',
+          'Paris',
+          'Mount Sterling'
+        ]
+      },
+      // We suggest states that border Kentucky
+      // and are represented in our data as of Feb 2022
+      suggestedStates: function () {
+        return [
+          'Kentucky',
+          'Ohio',
+          'West Virginia',
+          'Tennessee'
+        ]
       }
     },
     methods: {
@@ -102,11 +157,17 @@
         const payload = {
           name: newVenue.name,
           address: [
-            newVenue.address,
+            newVenue.street,
             newVenue.city,
+            newVenue.state,
             newVenue.zip,
             newVenue.neighborhood
           ].filter(a => a).join(', '),
+          street: newVenue.street,
+          city: newVenue.city,
+          state: newVenue.state,
+          zip: newVenue.zip,
+          neighborhood: newVenue.neighborhood,
           g_map_link: newVenue.g_map_link
         }
         this.showVenueLoadingSpinner = true

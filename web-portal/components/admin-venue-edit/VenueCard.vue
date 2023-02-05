@@ -13,7 +13,7 @@
             name="name"
             type="text"
             :value="venue.name"
-            placeholder="name"
+            placeholder="Name"
             @change="onFieldChanged($event)"
             :disabled="!isActiveListShowing"
           >
@@ -23,13 +23,47 @@
       <div class="admin-venue-edit-page__venue-card__field">
         <label>Address:
           <input
-            name="address"
+            name="street"
             type="text"
-            :value="venue.address"
-            placeholder="address"
+            :value="venue.street"
+            placeholder="Street Address"
             @change="onFieldChanged($event)"
             :disabled="!isActiveListShowing"
           >
+          <span class="admin-venue-edit-page__venue-card__flex_fields">
+            <input
+              name="city"
+              type="text"
+              :value="venue.city"
+              placeholder="City"
+              @change="onFieldChanged($event)"
+              :disabled="!isActiveListShowing"
+            >
+            <input
+              name="state"
+              type="text"
+              :value="venue.state"
+              placeholder="State"
+              @change="onFieldChanged($event)"
+              :disabled="!isActiveListShowing"
+            >
+            <input
+              name="zip"
+              type="text"
+              :value="venue.zip"
+              placeholder="Zip"
+              @change="onFieldChanged($event)"
+              :disabled="!isActiveListShowing"
+            >
+            <input
+              name="neighborhood"
+              type="text"
+              :value="venue.neighborhood"
+              placeholder="Neighborhood"
+              @change="onFieldChanged($event)"
+              :disabled="!isActiveListShowing"
+            >
+          </span>
         </label>
       </div>
 
@@ -39,7 +73,7 @@
             name="g_map_link"
             type="text"
             :value="venue.g_map_link"
-            placeholder="google maps link"
+            placeholder="Google Maps Link"
             @change="onFieldChanged($event)"
             :disabled="!isActiveListShowing"
           >
@@ -48,12 +82,12 @@
 
       <div class="admin-venue-edit-page__venue-card__field">
         <label>Latitude / Longitude / Altitude:
-          <span class="admin-venue-edit-page__venue-card__lat_long_fields">
+          <span class="admin-venue-edit-page__venue-card__flex_fields">
             <input
               name="gps_lat"
               type="text"
               :value="venue.gps_lat"
-              placeholder="latitude"
+              placeholder="Latitude"
               @change="onFieldChanged($event)"
               :disabled="!isActiveListShowing"
             >
@@ -61,7 +95,7 @@
               name="gps_long"
               type="text"
               :value="venue.gps_long"
-              placeholder="longitude"
+              placeholder="Longitude"
               @change="onFieldChanged($event)"
               :disabled="!isActiveListShowing"
             >
@@ -69,7 +103,7 @@
               name="gps_alt"
               type="text"
               :value="venue.gps_alt"
-              placeholder="altitude"
+              placeholder="Altitude"
               @change="onFieldChanged($event)"
               :disabled="!isActiveListShowing"
             >
@@ -224,9 +258,22 @@
         const fieldName = event.target.name
         const newValue = event.target.value
 
-        const venue = {
+        let venue = {
           ...this.venue,
           [fieldName]: newValue
+        }
+
+        if (['street', 'city', 'state', 'zip', 'neighborhood'].includes(fieldName)) {
+          venue = {
+            ...venue,
+            'address': [
+              venue.street,
+              venue.city,
+              venue.state,
+              venue.zip,
+              venue.neighborhood
+            ].filter(a => a).join(', ')
+          }
         }
 
         this.$store.commit(COMMIT_VENUE_UPDATE, { venue })
@@ -337,16 +384,16 @@
     width: 100%;
   }
 
-  .admin-venue-edit-page__venue-card__lat_long_fields {
+  .admin-venue-edit-page__venue-card__flex_fields {
     display: flex;
   }
 
-  .admin-venue-edit-page__venue-card__lat_long_fields {
+  .admin-venue-edit-page__venue-card__flex_fields {
     display: flex;
     justify-content: space-between;
   }
 
-  .admin-venue-edit-page__venue-card__lat_long_fields input {
+  .admin-venue-edit-page__venue-card__flex_fields input {
     margin-right: 1rem;
   }
 

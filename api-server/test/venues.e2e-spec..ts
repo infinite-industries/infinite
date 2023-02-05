@@ -12,11 +12,12 @@ import {TestingModule} from "@nestjs/testing";
 import {VenueModel} from "../src/venues/models/venue.model";
 import {CreateVenueRequest} from "../src/venues/dto/create-update-venue-request";
 import {v4 as uuidv4} from 'uuid';
-import * as faker from 'faker';
 import getSlug from "../src/utils/get-slug";
 import {CURRENT_VERSION_URI} from "../src/utils/versionts";
 import createJwtForRandomUser from "./test-helpers/creaeteJwt";
 import {PORT} from "../src/constants";
+
+const faker = require('faker')
 
 describe('Venues (e2e)', () => {
     const server = request('http://localhost:' + PORT);
@@ -308,6 +309,11 @@ describe('Venues (e2e)', () => {
         return {
             name: faker.company.companyName(),
             address: faker.address.streetAddress(),
+            street: faker.address.streetAddress(),
+            city: faker.address.city(),
+            state: faker.address.state(),
+            zip: faker.address.zipCode(),
+            neighborhood: faker.address.county(),
             g_map_link: faker.random.uuid(),
             ...overrides
         }
