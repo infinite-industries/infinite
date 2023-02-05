@@ -109,6 +109,7 @@
           this.new_venue.state !== '' &&
           this.new_venue.zip !== ''
       },
+      // We suggest cities that are represented in our data as of Feb 2022
       suggestedCities: function () {
         return [
           'Lexington',
@@ -133,16 +134,14 @@
           'Mount Sterling'
         ]
       },
+      // We suggest states that border Kentucky
+      // and are represented in our data as of Feb 2022
       suggestedStates: function () {
         return [
           'Kentucky',
-          'Illinois',
-          'Indiana',
-          'Missouri',
           'Ohio',
-          'Tennessee',
-          'Virginia',
-          'West Virginia'
+          'West Virginia',
+          'Tennessee'
         ]
       }
     },
