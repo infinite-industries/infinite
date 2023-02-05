@@ -71,13 +71,6 @@ $ npm run test:cov
 local: http://localhost:3003/api/
 prod:  https://api.infinite.industries/api/
 
-## Deploying
-
-This requires that you have access to the target server through ssh-key authentication and that the target server is
-properly configured, with the appropriate .env file and pem file in its home directory
-
-run: `./deploy.sh <environment>`
-
 ## License
 
 MIT

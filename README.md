@@ -29,6 +29,11 @@ The frontend web application served at [infinite.industries](https://infinite.in
 
 [Web Portal Documentation](https://github.com/infinite-industries/infinite/tree/master/web-portal)
 
+### Deployment
+
+[DEPLOY.MD](./DEPLOY.MD)
+
+
 ### Widget
 
 Can be embedded in partner websites and services.
