@@ -55,16 +55,8 @@ export class EventModel extends Model<EventModel> {
     admission_fee: string;
 
     @Column
-    @ApiProperty({example: '549 Gallery Dr'})
-    address: string;
-
-    @Column
     @ApiProperty({example: 'bob.vance@refridgeration.com'})
     organizer_contact: string;
-
-    @Column
-    @ApiProperty({example: 'https://www.google.com/maps/things/and/stuff'})
-    map_link: string;
 
     @Column
     @ApiProperty({example: 'The gallery is open'})

@@ -232,7 +232,6 @@ describe('SubmissionForm component', () => {
   //       'g_map_link': '',
   //       'address': ''
   //     },
-  //     'address': '05817 Green Prairie',
   //     'brief_description': 'Brief Desc',
   //     'description': '<p>Full Desc</p>',
   //     'website_link': '',
