@@ -22,6 +22,10 @@
 
       <div class="admin-venue-edit-page__venue-card__field">
         <label>Address:
+          <br/>
+          <span class="admin-venue-edit-page__venue-card__readonly">
+            {{ venue.address }}
+          </span>
           <input
             name="street"
             type="text"
