@@ -536,15 +536,10 @@
         })
       },
       selectVenue: function (venue) {
-        // console.log(venue)
         this.calendar_event.venue_id = venue.id
-        this.calendar_event.address = venue.address
-        this.calendar_event.venue_name = venue.name
       },
       newVenue: function (venue) {
         this.calendar_event.venue_id = venue.id
-        this.calendar_event.address = venue.address
-        this.calendar_event.venue_name = venue.name
         this.$refs.venuePicker.handleNewVenue(venue)
       },
 

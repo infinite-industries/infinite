@@ -28,14 +28,8 @@ export default class EventDTO {
     @ApiProperty({example: '5'})
     admission_fee: string;
 
-    @ApiProperty({example: '549 Gallery Dr'})
-    address: string;
-
     @ApiProperty({example: 'bob.vance@refridgeration.com'})
     organizer_contact: string;
-
-    @ApiProperty({example: 'https://www.google.com/maps/things/and/stuff'})
-    map_link: string;
 
     @ApiProperty({example: 'The gallery is open'})
     brief_description: string;

@@ -49,17 +49,9 @@ export class CreateEventRequest {
     @IsOptional()
     admission_fee: string;
 
-    @ApiProperty({example: '549 Gallery Dr'})
-    @IsOptional()
-    address: string;
-
     @ApiProperty({example: 'bob.vance@refridgeration.com'})
     @IsNotEmpty()
     organizer_contact: string;
-
-    @ApiProperty({example: 'https://www.google.com/maps/things/and/stuff'})
-    @IsOptional()
-    map_link: string;
 
     @ApiProperty({example: 'The gallery is open'})
     @IsNotEmpty()
