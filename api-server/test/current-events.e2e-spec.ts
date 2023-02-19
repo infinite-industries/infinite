@@ -265,8 +265,6 @@ describe('CurrentEvents (e2e)', () => {
                 expect(event.image).toEqual(dbEvent.image);
                 expect(event.social_image).toEqual(dbEvent.social_image);
                 expect(event.admission_fee).toEqual(dbEvent.admission_fee);
-                expect(event.address).toEqual(dbEvent.address);
-                expect(event.map_link).toEqual(dbEvent.map_link);
                 expect(event.brief_description).toEqual(dbEvent.brief_description);
                 expect(event.description).toEqual(dbEvent.description);
                 expect(event.links).toEqual(dbEvent.links);

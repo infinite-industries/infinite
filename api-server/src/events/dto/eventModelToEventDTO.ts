@@ -16,7 +16,6 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
         : [];
 
     return {
-        address: eventModel.address,
         admission_fee: eventModel.admission_fee,
         bitly_link: eventModel.bitly_link,
         brief_description: eventModel.brief_description,
@@ -27,7 +26,6 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
         id: eventModel.id,
         image: eventModel.image,
         links: eventModel.links,
-        map_link: eventModel.map_link,
         organizer_contact: eventModel.organizer_contact,
         reviewed_by_org: eventModel.reviewed_by_org,
         slug: eventModel.slug,

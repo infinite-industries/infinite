@@ -166,6 +166,48 @@ describe('SubmissionForm component', () => {
     expect(apiPost.mock.calls[1][1].reviewed_by_org).toBe(partner)
   })
 
+  it('strips query params off Facebook links', async () => {
+    const link = 'https://facebook.com/events/1234567890/'
+    const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
+    ImageUploadService.forEvent.mockResolvedValue(Promise.resolve({ data: { hero: 'image.png' } }))
+
+    wrapper.vm.calendar_event.fb_event_link = `${link}?context={"weird":"tracking-nonsense"}`
+
+    await wrapper.vm.UploadEvent()
+    expect(apiPost.mock.calls.length).toBe(1)
+    expect(apiPost.mock.calls[0][1].fb_event_link).toBe(link)
+  })
+
+  it('strips query params off Eventbrite links', async () => {
+    const link = 'https://www.eventbrite.com/e/some-event-012345678910'
+    const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
+    ImageUploadService.forEvent.mockResolvedValue(Promise.resolve({ data: { hero: 'image.png' } }))
+
+    wrapper.vm.calendar_event.eventbrite_link = `${link}?fbcid=gibberishgibberishandmoregibberish`
+
+    await wrapper.vm.UploadEvent()
+    expect(apiPost.mock.calls.length).toBe(1)
+    expect(apiPost.mock.calls[0][1].eventbrite_link).toBe(link)
+  })
+
+  it('shows condition controls in edit mode', async () => {
+    expect(wrapper.findComponent('.status-container').exists()).toBe(true)
+
+    // ...but not in upload mode
+    await wrapper.setProps({ user_action: 'upload' })
+    expect(wrapper.findComponent('.status-container').exists()).toBe(false)
+  })
+
+  it('conditions can be changed', async () => {
+    expect(wrapper.vm.calendar_event.tags).toEqual([])
+    await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(true)
+    expect(wrapper.vm.calendar_event.tags).toEqual(['condition:postponed'])
+    await wrapper.findComponent('.status-container input[type="checkbox"][value="sold-out"]').setChecked(true)
+    expect(wrapper.vm.calendar_event.tags).toEqual(['condition:postponed', 'condition:sold-out'])
+    await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(false)
+    expect(wrapper.vm.calendar_event.tags).toEqual(['condition:sold-out'])
+  })
+
   // function getFilledOutEvent() {
   //   return {
   //     'id': '',
@@ -190,7 +232,6 @@ describe('SubmissionForm component', () => {
   //       'g_map_link': '',
   //       'address': ''
   //     },
-  //     'address': '05817 Green Prairie',
   //     'brief_description': 'Brief Desc',
   //     'description': '<p>Full Desc</p>',
   //     'website_link': '',

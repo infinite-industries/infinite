@@ -23,9 +23,13 @@ export function getEmptyCalendarEvent() {
       createdAt: '',
       updatedAt: '',
       g_map_link: '',
-      address: ''
+      address: '',
+      street: '',
+      city: '',
+      state: '',
+      zip: '',
+      neighborhood: ''
     },
-    address: '',
     brief_description: '',
     description: '',
     website_link: '',

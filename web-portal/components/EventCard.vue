@@ -96,6 +96,7 @@
       },
       statusMessage: function () {
         if (this.isCancelled) return 'Cancelled'
+        else if (this.isSoldOut) return 'Sold Out'
         else if (this.isPostponed) return 'Postponed'
         else return null
       },
@@ -125,14 +126,19 @@
       isCancelled: function () {
         return this.calendar_event &&
           this.calendar_event.tags &&
-          this.calendar_event.tags.includes('cancelled')
+          this.calendar_event.tags.includes('condition:cancelled')
       },
       isPostponed: function () {
         // 'cancelled' supersedes 'postponed' for purposes of displaying event status
         return this.calendar_event &&
           this.calendar_event.tags &&
-          this.calendar_event.tags.includes('postponed') &&
-          !this.calendar_event.tags.includes('cancelled')
+          this.calendar_event.tags.includes('condition:postponed') &&
+          !this.calendar_event.tags.includes('condition:cancelled')
+      },
+      isSoldOut: function () {
+        return this.calendar_event &&
+          this.calendar_event.tags &&
+          this.calendar_event.tags.includes('condition:sold-out')
       },
       isRemote: function () {
         return _hasTag(this.calendar_event, 'mode:online')

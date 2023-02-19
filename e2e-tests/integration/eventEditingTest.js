@@ -1,6 +1,6 @@
 /**
 * Covers various admin-facing editing scenarios
-* 
+*
 * Unlike eventSubmissionTest (as of this writing), the tests in this file are
 * independent of each other. However, they rely on a before (all) and after (all)
 * to create an event to edit and to clean up that event at the end, respectively.
@@ -17,11 +17,11 @@ context('Event editing:', () => {
   const EVENT_TAG = 'test'
   const ADMIN_USERNAME = Cypress.env('admin_auth_username')
   const ADMIN_PASSWORD = Cypress.env('admin_auth_password')
-  
+
   const DATE = new Date()
   const YEAR = DATE.getFullYear() + (DATE.getMonth() === 11 ? 1 : 0)
   const MONTH = (DATE.getMonth() + 1) % 12
-  
+
   let EVENT_ID, VENUES
 
   // create an event before running test
@@ -69,7 +69,7 @@ context('Event editing:', () => {
       EVENT_ID = resp.body.id
     })
   })
-  
+
   // clean up event after run
   after(() => {
     // this doesn't work yet; the token handling isn't quite right
@@ -80,14 +80,14 @@ context('Event editing:', () => {
     //     url: Cypress.env('api_url') + '/authenticated/events/' + EVENT_ID,
     //     headers: {
     //       'x-access-token': cookie.value
-    //     } 
+    //     }
     //   })
     // })
 
     // for some reason it doesn't move on from the login page
     // but admin is already logged in, so it works
     // cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/admin-event-edit/' + EVENT_ID)
-   
+
     cy.visit('/admin-event-edit/' + EVENT_ID)
     // delete the event
     cy.get('.edit-container button').contains('Delete').click()
@@ -97,7 +97,7 @@ context('Event editing:', () => {
     cy.location('pathname').should('not.include', 'admin-event-edit/')
     cy.contains('.unverified-events tr td a[href$="admin-event-edit/' + EVENT_ID + '"]').should('not.exist')
   })
-  
+
   it('Title can be modified', () => {
     const NEW_EVENT_NAME = 'Test Event ' + Math.floor(Math.random() * 100)
 
@@ -115,13 +115,13 @@ context('Event editing:', () => {
     cy.visit('/events/' + EVENT_ID)
     cy.get('.event-heading-text h1').contains(NEW_EVENT_NAME)
   })
-  
+
   it('Date and Time can be modified', function () {
     // use new Intl support to test formatting
     // formatting is actually done w/ moment, but I don't want to make that
     // a dependency of the E2E tests
     const formatter = new Intl.DateTimeFormat('default', { month: 'long', weekday: 'long', day: 'numeric' })
-  
+
     // w/ Title test we know we can navigate to it from main admin page,
     // so same some time and just navigate directly to is
     cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/admin-event-edit/' + EVENT_ID)
@@ -229,5 +229,19 @@ context('Event editing:', () => {
     cy.reload()
     cy.get('.tags .v-chip').contains(NEW_TAG)
     cy.get('.tags .v-chip').contains(EVENT_TAG).should('not.exist')
+  })
+
+  it('Conditions can be modified', function () {
+    cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/admin-event-edit/' + EVENT_ID)
+
+    // flag the event as cancelled
+    cy.get('.status-container input[type="checkbox"][value="cancelled"]').check()
+
+    // save
+    cy.get('.edit-container button').contains('Save').click()
+    cy.contains('#notify', 'Content of the event updated.')
+
+    cy.visit('/events/' + EVENT_ID)
+    cy.get('.event-heading-text h1').contains('[Cancelled]')
   })
 })

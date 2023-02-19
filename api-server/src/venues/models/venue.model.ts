@@ -39,6 +39,26 @@ export class VenueModel extends Model<VenueModel> {
     gps_alt: number
 
     @Column
+    @ApiProperty({example: '232 Paper St.'})
+    street: string;
+
+    @Column
+    @ApiProperty({example: 'Scranton'})
+    city: string;
+
+    @Column
+    @ApiProperty({example: 'Pennsylvania'})
+    state: string;
+
+    @Column
+    @ApiProperty({example: '18503'})
+    zip: string;
+
+    @Column
+    @ApiProperty({example: 'Downtown'})
+    neighborhood: string;
+
+    @Column
     @ApiProperty({ example: false })
     is_soft_deleted: boolean;
 

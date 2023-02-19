@@ -55,6 +55,13 @@ sudo certbot certonly \
   -d new-sub.infinite.industries
 ```
 
+## Manually updating certs
+
+`sudo certbot renew`
+
+*This shouldn't normally be required because certbot will keep these up to date, but it may be required in staging
+occasionally because we turn the server off when not in use*
+
 **Deploy The Site**
 
 Now run `ansible-playbook  --extra-vars "ansible_sudo_pass=$INFINITE_SUDO_PW" ./deploy_site_playbook.yml`
