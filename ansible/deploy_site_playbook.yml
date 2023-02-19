@@ -2,6 +2,11 @@
 
 -
   hosts: "infinite-{{ lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV') }}"
+  vars:
+    os_environment:
+      # used to tell docker-compose what tag to use for the images master/development/etc...
+      - key: INFINITE_IMAGE_VERSION_TAG
+        value: "{{ lookup('ansible.builtin.env', 'INFINITE_IMAGE_VERSION_TAG') }}"
   tasks:
     # Copy docker-compose and any supporting files
     - name: Copy Docker Files
@@ -36,3 +41,13 @@
         owner: root
         group: root
         mode: '0644'
+
+    # set global environment variables (defined at top of script)
+    - name: customize /etc/environment
+      become: true
+      ansible.builtin.lineinfile:
+        dest: "/etc/environment"
+        state: present
+        regexp: "^{{ item.key }}="
+        line: "{{ item.key }}={{ item.value }}"
+      with_items: "{{ os_environment }}"
