@@ -16,7 +16,12 @@ export default class CalendarService {
     const title = event.title
     const desc = event.brief_description
     const location = includeEventLocation(event)
-      ? (event.venue ? `${event.venue.name}, ${event.address}` : event.address)
+      ? (
+          event.venue.street
+            ? `${event.venue.name}, ${event.venue.street}, ${event.venue.city}, ${event.venue.state}, ${event.venue.zip}`
+            // note: this is the legacy format that will go away soon
+            : `${event.venue.name}, ${event.venue.address}`
+        )
       : null
     let timeStart = event.date_times[0].start_time
     let timeEnd = event.date_times[0].end_time
