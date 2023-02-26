@@ -6,6 +6,9 @@
         <div class="image-container">
           <nuxt-link :to="eventLink">
             <div class="image-surface" :style="backGroundImage"></div>
+            <div class="image-location-city-container">
+              <div class="image-location-city">LOCATION</div>
+            </div>
           </nuxt-link>
         </div>
         <div class="info-container">
@@ -249,6 +252,17 @@
 
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+  }
+  .image-container .image-location-city-container {
+    background-color: red;
+    position:relative;
+    top: -20px;
+    text-align: right;
+  }
+
+.image-location-city-container .image-location-city {
+    background-color: green;
+    max-width: 120px;
   }
 
   .image-container:hover .image-surface {
