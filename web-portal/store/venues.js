@@ -170,10 +170,10 @@ export const actions = {
       })
   },
 
-  FetchGpsCoordinatesFromUrl: function (context, { g_map_link }) {
+  FetchGpsCoordinatesFromUrl: function (context, { street, city, state, zip }) {
     context.commit('GPS_COORDINATES_FETCH_START')
 
-    return this.$apiService.post('/venues/get-gps-from-google-maps-link', { googleMapsLink: g_map_link })
+    return this.$apiService.post('/venues/get-gps-from-address', { street, city, state, zip })
       .then((response) => {
         context.commit('GPS_COORDINATES_FETCH_SUCCESS', response.data.gpsCoordinates)
 

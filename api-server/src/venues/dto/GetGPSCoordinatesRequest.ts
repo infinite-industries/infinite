@@ -9,10 +9,28 @@ export default class GetGPSCoordinatesRequest {
     googleMapsLink: string;
 }
 
+export class GetGPSCoordinatesFromAddressRequest {
+    @ApiProperty({ example: '421 Somehorse Rd' })
+    @IsNotEmpty()
+    street: string;
+
+    @ApiProperty({ example: 'Lexington' })
+    @IsNotEmpty()
+    city: string;
+
+    @ApiProperty({ example: 'KY' })
+    @IsNotEmpty()
+    state: string;
+
+    @ApiProperty({ example: '40508' })
+    @IsNotEmpty()
+    zip: string;
+}
+
 export interface GPSCoordinates {
     latitude: number;
     longitude: number;
-    altitude: number;
+    altitude?: number;
 }
 
 export class GetGPSCoordinatesResponse extends ResponseWrapper {
