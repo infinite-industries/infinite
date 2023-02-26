@@ -8,9 +8,9 @@ import FindByIdParams from "../dto/find-by-id-params";
 import {SingleVenueResponse} from "./dto/single-venue-response";
 import SlackNotificationService, { VENUE_SUBMIT } from "../notifications/slack-notification.service";
 import {ENV} from "../constants";
-import GetGPSCoordinatesRequest, {
+import  {
     GetGPSCoordinatesFromAddressRequest,
-    GetGPSCoordinatesResponse, GPSCoordinates
+    GetGPSCoordinatesResponse
 } from "./dto/GetGPSCoordinatesRequest";
 import {GpsService} from "./gps.services";
 
