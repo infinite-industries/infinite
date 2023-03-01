@@ -1,0 +1,33 @@
+image: alpine/edge
+
+secrets:
+  - c9f8b351-ad8d-49e2-a076-9f9e0cd2d285
+
+sources:
+  - https://git.sr.ht/~jswank/alpine-cli
+
+packages:
+  - podman
+  - just
+  - runit
+
+tasks:
+  # cgroups need to be running in order to run podman
+  - prep: |
+      sudo rc-service cgroups start
+      sleep 1
+
+  # build the image using the just recipe
+  #   - sudo (-u root) is required to run podman without more setup
+  - build: |
+      cd alpine-cli
+      sudo --preserve-env just build
+
+  # publish the image using the just recipe
+  #   - set environment variables from the ~/.envdir directory. see
+  #   http://smarden.org/runit/chpst.8.html for details on chpst
+  #   - sudo (-u root) is required to run podman without more setup
+  #   - sudo --preserve-env is required to pass environment variables 
+  - publish: |
+      cd alpine-cli
+      chpst -e ~/.envdir sudo --preserve-env just publish

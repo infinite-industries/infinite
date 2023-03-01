@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+
+set -o errexit
+set -o nounset
+set -o xtrace
+
+usage(){
+  cat <<EOF
+Use pg_dump to create a backup of a postres database. 
+
+Usage: db-backup [flags]
+
+Flags:
+  -h                      display this help
+  -n                      dry run: do not perform geocoding lookup- just print url
+
+Environment:
+  BACKUP_DIR   Directory to write backups
+  NUM_BACKUPS  Number of backups to retain. Default: 10
+  PGDATABASE
+  PGHOST
+  PGPORT
+  PGUSER
+  PGPASSWORD
+
+Description: 
+
+This script is meant to be run via cron on a periodic (daily) basis.  It uses
+pg_dump to create a backup of a postgres database.  
+
+Each backup will have a name like <database>-<date>:
+  database - PGDATABASE
+  date     - date --iso-8601=seconds (2023-02-25T22:42:16-05:00)
+
+A symlink, latest, points to the latest backup.
+
+NUM_BACKUPS (default 10) will be retained.
+
+EOF
+}
+
+BACKUP_DIR=${BACKUP_DIR:=/var/tmp}
+export NUM_BACKUPS=${NUM_BACKUPS:=10}
+DRYRUN=0          
+
+PGDUMP_CMD="pg_dump -d 'sslmode=require' -Fc -v"
+
+fail() {
+  echo $1 >&2
+  exit 1
+}
+
+init() {
+
+  OPTIND=1
+
+  while getopts "hn?" opt; do
+      case "$opt" in
+      h|\?)
+        usage
+        exit 0
+        ;;
+      n)
+        DRYRUN=1
+        ;;
+      esac
+  done
+
+  shift $((OPTIND-1))
+  
+}
+
+main() {
+  # run the init code
+  init $*
+
+  # the guts of the script
+  backup_file="${PGDATABASE}-$(date --iso-8601=seconds)"
+
+  if [[ ${DRYRUN} -eq 1 ]]; then
+    echo "pg_dump -d \"sslmode=require\" -Fc -v $PGDUMP_CMD -f ${BACKUP_DIR}/${backup_file}"
+  else
+    pg_dump -d "sslmode=require" -Fc -v -f "${BACKUP_DIR}/${backup_file}"
+  fi
+
+  # remove backup files in excess of the limit
+  files_to_rm=$(find ${BACKUP_DIR} -name "{PGHOST}-${PGDATABASE}-*" -print | sort | perl -nE 'print if $. >$ENV{q/NUM_BACKUPS/}')
+
+  if [[ ${DRYRUN} -eq 1 ]]; then
+    echo "rm -f ${files_to_rm}"
+  else
+    rm -f ${files_to_rm}
+  fi
+
+  # create a symlink to the most recent file
+  most_recent_file=$(find ${BACKUP_DIR} -name "${PGDATABASE}-*" -print | sort | head -1)
+  if [[ ${DRYRUN} -eq 1 ]]; then
+    echo "ln -sf ${most_recent_file} latest"
+  else
+    ln -sf ${most_recent_file} latest
+  fi
+
+}
+
+main $*
