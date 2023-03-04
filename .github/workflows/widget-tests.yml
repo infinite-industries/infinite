@@ -7,13 +7,15 @@ on:
       - master
     paths:
       - 'widget/**'
+      - '.github/workflows/widget-tests.yml'
   push:
     branches:
       - development
       - master
     paths:
       - 'widget/**'
-  
+      - '.github/workflows/widget-tests.yml'
+
 jobs:
   build:
     runs-on: ubuntu-latest

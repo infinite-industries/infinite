@@ -9,6 +9,7 @@ on:
       - 'api-server/**'
       - 'web-portal/**'
       - 'e2e-tests/**'
+      - '.github/workflows/cypress-tests.yml'
   push:
     branches:
       - development
@@ -17,6 +18,7 @@ on:
       - 'api-server/**'
       - 'web-portal/**'
       - 'e2e-tests/**'
+      - '.github/workflows/cypress-tests.yml'
 
 jobs:
   cypress-tests:
