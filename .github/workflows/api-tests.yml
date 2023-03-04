@@ -7,12 +7,14 @@ on:
       - master
     paths:
       - 'api-server/**'
+      - '.github/workflows/api-tests.yml'
   push:
     branches:
       - development
       - master
     paths:
       - 'api-server/**'
+      - '.github/workflows/api-tests.yml'
 
 jobs:
   build:

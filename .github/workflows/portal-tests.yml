@@ -7,13 +7,15 @@ on:
       - master
     paths:
       - 'web-portal/**'
+      - '.github/workflows/portal-tests.yml'
   push:
     branches:
       - development
       - master
     paths:
       - 'web-portal/**'
-  
+      - '.github/workflows/portal-tests.yml'
+
 jobs:
   build:
     runs-on: ubuntu-latest
