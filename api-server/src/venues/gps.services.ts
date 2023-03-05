@@ -10,7 +10,7 @@ export class GpsService {
     async getCoordinatesFromAddress({ street, city, state, zip }: AddressIdentifier): Promise<Nullable<GPSCoordinates>> {
         if (isNullOrUndefined(MAP_BOX_API_KEY)) {
             console.warn("attention developer, did you forget to set MAP_BOX_API_KEY")
-            throw new HttpException("No API Token Set", 403)
+            throw new HttpException("The server does not have an API token set for gps access", 500)
         }
 
         const geocoder = NodeGeocoder({
