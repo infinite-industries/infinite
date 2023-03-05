@@ -8,11 +8,14 @@
           {{ event.title }}
         </h1>
         <!-- TODO: this should be an H2 or something other than a heading -->
-        <h3 v-if="event.venue">
-          <template v-if="isRemote && !venueIsRemote">Online Event Presented by</template>
-          <template v-if="isOnlineResource && !isRemote && !venueIsRemote">Online Resource Presented by</template>
-          {{ event.venue && event.venue.name }}
-        </h3>
+        <template v-if="event.venue">
+          <h3>
+            <template v-if="isRemote && !venueIsRemote">Online Event Presented by</template>
+            <template v-if="isOnlineResource && !isRemote && !venueIsRemote">Online Resource Presented by</template>
+            {{ event.venue && event.venue.name }}
+          </h3>
+          <h4>375 Thompson Rd, Lexington, KY</h4>
+        </template>
       </div>
     </div>
     <div class="event-time-actions">
@@ -284,11 +287,16 @@
 
   .event-heading-text h2,
   .event-heading-text h3 {
-    margin-top: 5px;
-    margin-bottom: 16px;
+    margin-top: 20px;
+    margin-bottom: 5px;
     font-size: 1.2em;
     font-weight: lighter;
     line-height: 110%;
+  }
+
+  .event-heading-text h3 {
+    font-weight: normal;
+    font-size: 0.875em;
   }
 
   .event-time-actions {
