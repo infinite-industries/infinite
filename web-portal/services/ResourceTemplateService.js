@@ -39,7 +39,7 @@ export function getEmptyCalendarEvent() {
     organizer_contact: '',
     multi_day: false,
     additional_dates: [],
-    tags: []
+    tags: ['mode:in-person']
 
   }
 }

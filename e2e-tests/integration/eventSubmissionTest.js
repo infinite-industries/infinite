@@ -56,11 +56,11 @@ context('Event Submission', () => {
     cy.get('select[name=end_ampm]').select('PM')
     cy.get('.time-confirm:not([disabled])').click()
 
-    // selectFile is a custom command; see cypress/support/commands.js
-    cy.get('#event-image').selectFile('images/event_sample_image.jpg')
-
     cy.get('.venue').focus()
     cy.get('.results-container > :first-child').click()
+
+    // selectFile is a custom command; see cypress/support/commands.js
+    cy.get('#event-image').selectFile('images/event_sample_image.jpg')
 
     cy.get('.brief-description input').type('still testing')
     cy.get('.submitter-email input').type(EVENT_EMAIL)
