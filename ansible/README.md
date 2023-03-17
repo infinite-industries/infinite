@@ -26,6 +26,12 @@ ansible-vault.  To run ansible-successfully, you will need the passphrase to
 decrypt them.  Ask a team member. Then, run:
 
 ```console
+$ echo -n "passphrase" >> .passworf
+```
+
+*Alternatively:*
+
+```console
 $ just cache-pass
 ```
 
