@@ -14,6 +14,9 @@ You will need your public key deployed to the host for ssh access
 
 You may need to connect to the host once with ssh to make sure it's in your list of known hosts
 
+If you install [casey/just](https://github.com/casey/just), then some tasks
+will be simplified.
+
 ## Before Running
 
 **Setup the Ansible Vault Passphrase**

@@ -1,4 +1,4 @@
-# disalbe host root access
+# disable host root access
 
 -
   hosts: all
