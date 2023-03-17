@@ -17,8 +17,8 @@ You may need to connect to the host once with ssh to make sure it's in your list
 ## Before Running
 
 **Setup the Ansible Vault Passphrase**
-There are passwords, secret keys, and other sensitive information that is
-required.  These secrets are included in the repo, and they are encrypted using
+There are passwords, secret keys, and other sensitive information required for everything
+to work. These secrets are included in the repo and they are encrypted using
 ansible-vault.  To run ansible-successfully, you will need the passphrase to
 decrypt them.  Ask a team member. Then, run:
 
