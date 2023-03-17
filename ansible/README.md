@@ -1,5 +1,4 @@
-Infinite Ansible Scripts
-=========================
+# Infinite Ansible Scripts
 
 This is a trimmed down version of the rats ansible meant for quick experimentation
 
