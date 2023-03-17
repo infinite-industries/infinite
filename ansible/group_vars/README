@@ -1,0 +1,7 @@
+# Reference: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
+#
+# For now:
+# - set all variables with default values in groups_vars/all
+# - non-sensitive, inventory specific variables set in group_vars/env/vars
+# - sensitive, inventory-specific varialbles are encrypted using ansible-vault in
+#   group_vars/env/secret

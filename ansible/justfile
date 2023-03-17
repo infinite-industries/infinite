@@ -1,0 +1,23 @@
+# you're looking at it!
+help:
+  @just --list 
+
+# Usage: `just init` or `just init prod`
+# initial software install & config for a host. 
+init env="staging":
+  ansible-playbook -l {{ env }} base_playbook.yml
+
+# deploy the site. Usage: `just deploy` or `just deploy prod`
+deploy env="staging":
+  ansible-playbook -l {{ env }} deploy_site_playbook.yml
+
+# cahse the passphrase used to decrypt files
+cache-pass:
+  #!/bin/sh
+  printf "Ansible Vault Passphrase: "
+  trap 'stty echo' INT EXIT
+  stty -echo
+  read PASS
+  printf "\n"
+  printf "%s" ${PASS} > .password
+  chmod 600 .password
