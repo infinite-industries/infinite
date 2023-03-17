@@ -11,7 +11,7 @@ init env="staging":
 deploy env="staging":
   ansible-playbook -l {{ env }} deploy_site_playbook.yml
 
-# cahse the passphrase used to decrypt files
+# cache the passphrase used to decrypt files
 cache-pass:
   #!/bin/sh
   printf "Ansible Vault Passphrase: "
