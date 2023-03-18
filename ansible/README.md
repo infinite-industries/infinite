@@ -2,6 +2,22 @@
 
 This is a trimmed down version of the rats ansible meant for quick experimentation
 
+Table of Contents
+=================
+
+ * [Requirements](#requirements)
+ * [Before Running](#before-running)
+ * [Running](#running)
+    * [Using just](#using-just)
+    * [Common Task: Site Status](#common-task-site-status)
+    * [Common Task: Restart Services](#common-task-restart-services)
+    * [Common Task: Site Deployment](#common-task-site-deployment)
+    * [Task: First Time Setup](#task-first-time-setup)
+    * [Task: Updating secret information](#task-updating-secret-information)
+    * [Task: Adding Domains to TLS certs](#task-adding-domains-to-tls-certs)
+    * [Task: Manually updating certs](#task-manually-updating-certs)
+
+
 ## Requirements
 
 Ansible must be installed on the machine that runs these scripts.
