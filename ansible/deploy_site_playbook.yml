@@ -45,12 +45,3 @@
       loop:
         - api.infinite.com
         - infinite.com
-
-    # set global environment variables (defined at top of script)
-    - name: customize /etc/environment
-      become: true
-      ansible.builtin.lineinfile:
-        dest: "/etc/environment"
-        state: present
-        regexp: "^INFINITE_IMAGE_VERSION_TAG="
-        line: "INFINITE_IMAGE_VERSION_TAG={{ infinite_image_version_tag }}"
