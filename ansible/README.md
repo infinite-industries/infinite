@@ -39,11 +39,11 @@ $ just cache-pass
 
 ### Using `just`
 
-The task runner [casey/just] is used to simplify common tasks.  Most of the
-"recipes" require the environment to be specified: our environments are
-*local*, *staging*, and *production*.  By default, the staging environment is
-used.  For instance, running `deploy status` is the equivalent of running
-`deploy status staging`.
+The task runner [casey/just](https://github.com/casey/just) is used to simplify
+common tasks.  Most of the "recipes" require the environment to be specified:
+our environments are *local*, *staging*, and *production*.  By default, the
+staging environment is used.  For instance, running `deploy status` is the
+equivalent of running `deploy status staging`.
 
 
 ```console
