@@ -37,19 +37,48 @@ $ just cache-pass
 
 ## Running
 
+### Using `just`
+
+The task runner [casey/just] is used to simplify common tasks.  Most of the
+"recipes" require the environment to be specified: our environments are
+*local*, *staging*, and *production*.  By default, the staging environment is
+used.  For instance, running `deploy status` is the equivalent of running
+`deploy status staging`.
+
+
+```console
+$ just help
+Available recipes:
+    cache-pass                  # cache the passphrase used to decrypt files
+    deploy env="staging"        # deploy the site. Usage: `just deploy` or `just deploy prod`
+    help                        # you're looking at it!
+    init env="staging"          # initial software install & config for a host.
+    restart env="staging"       # restart services for an environment
+    status env="staging"        # query the status of services for an environment
+    update-images env="staging" # pull the (correct) updated docker image(s)
+```
+
+### Common Task: Site Status
+
+**Check the status of the services in the staging environment.**
+```console
+$ just status staging
+```
+
+### Common Task: Restart Services
+
+**Restart services in the production environment environment.**
+```console
+$ just restart prod
+```
+
 ### Common Task: Site Deployment
 
-First, deploy our code: `ansible-playbook -l staging deploy_site_playbook.yml`
-* alternative: `just deploy staging`
+The examples below are for the **staging** environment (the default).  Substite
+*prod* to execute against the production environment.
 
-Next, restart containers.
-
-```
-$ ssh infinite@infinite.industries
-
-prod $ cd docker-files
-prod $ docker-compose up -d
-prod $ sudo systemctl restart nginx
+```console
+$ just deploy staging
 ```
 
 ### Task: Rotate ansible-vault Passphrase
