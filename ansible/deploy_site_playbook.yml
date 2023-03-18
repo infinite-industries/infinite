@@ -24,7 +24,7 @@
     - name: Create secrets file for containers
       template:
         src: docker-files/{{ item }}.j2
-        dest: ~/docker-files/{{ item }}.env
+        dest: ~/docker-files/{{ item }}
       loop:
         - web-portal.env
         - api.env
