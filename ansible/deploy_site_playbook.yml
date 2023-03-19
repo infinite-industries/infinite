@@ -31,10 +31,17 @@
         src: docker-files/{{ item }}.j2
         dest: ~/docker-files/{{ item }}
       loop:
-        - .env
         - web-portal.env
         - api.env
       notify: Restart docker containers
+    # set global environment variable so docker-compose pull uses the right image.
+    - name: customize /etc/environment
+      become: true
+      ansible.builtin.lineinfile:
+        dest: "/etc/environment"
+        state: present
+        regexp: "^INFINITE_IMAGE_VERSION_TAG="
+        line: "INFINITE_IMAGE_VERSION_TAG={{ infinite_image_version_tag }}"
     # this always executes - need to use the community.docker collection to
     # make it smarter and trigger the restart handler only if the image
     # actually updates.
@@ -87,3 +94,5 @@
       service:
         name: infinite
         state: restarted
+
+
