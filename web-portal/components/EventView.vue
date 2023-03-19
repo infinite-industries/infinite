@@ -15,7 +15,7 @@
             {{ venueName }}
           </h3>
           <template v-if="event.venue.street && event.venue.city && event.venue.state">
-            <h4>{{ event.venue.street }} {{ event.venue.city }}, {{ event.venue.state }} {{ event.venue.zip }}</h4>
+            <h4>{{ event.venue.street }}, {{ event.venue.city }}, {{ event.venue.state }} {{ event.venue.zip }}</h4>
           </template>
         </template>
       </div>
@@ -564,6 +564,14 @@
 
   .add-event-to-cal .infinite-dropdown-content {
     background-color: #c3bdac;
+  }
+  .event-heading-text h3 {
+    font-size: 1.3em;
+    font-weight: normal;
+  }
+  .event-heading-text h4 {
+    font-size: 0.875em;
+    font-weight: normal;
   }
 
   /* this menu has text-only labels, so need more space on smaller screens */

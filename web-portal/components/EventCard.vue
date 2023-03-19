@@ -6,8 +6,8 @@
         <div class="image-container">
           <nuxt-link :to="eventLink">
             <div class="image-surface" :style="backGroundImage"></div>
-            <div v-if="showVenue && venue.city" class="image-location-city-container">
-              <div class="image-location-city">{{ venue.city }}</div>
+            <div v-if="(showVenue && venue.city) || isRemote" class="image-location-city-container">
+              <div class="image-location-city">{{ isRemote ? "Online" : venue.city }}</div>
             </div>
           </nuxt-link>
         </div>
@@ -144,6 +144,7 @@
           this.calendar_event.tags.includes('condition:sold-out')
       },
       isRemote: function () {
+        console.log(this.calendar_event.title + ' - ' + JSON.stringify(this.calendar_event.tags))
         return _hasTag(this.calendar_event, 'mode:online')
       },
       isOnlineResource: function () {
