@@ -115,7 +115,5 @@ $ sudo certbot renew
 ```
 
 TODOS (Jason):
-*  Set INFINITE_IMAGE_VERSION_TAG in docker-files/*.env and remove the
-  /etc/environment mods from the deploy playbook.
 * Restart services if they have been updated by the deploy playbook
 * Add SSH key management for users.
