@@ -12,9 +12,11 @@
           <h3>
             <template v-if="isRemote && !venueIsRemote">Online Event Presented by</template>
             <template v-if="isOnlineResource && !isRemote && !venueIsRemote">Online Resource Presented by</template>
-            {{ event.venue && event.venue.name }}
+            {{ venueName }}
           </h3>
-          <h4>375 Thompson Rd, Lexington, KY</h4>
+          <template v-if="event.venue.street && event.venue.city && event.venue.state">
+            <h4>{{ event.venue.street }} {{ event.venue.city }}, {{ event.venue.state }} {{ event.venue.zip }}</h4>
+          </template>
         </template>
       </div>
     </div>
@@ -190,6 +192,26 @@
       // true if the event's venue is the special "remote" venue
       venueIsRemote: function () {
         return this.event && this.event.venue && this.event.venue.name === 'Remote Event'
+      },
+      venueName: function () {
+        return this.event && this.event.venue && this.event.venue.name
+      },
+      venueAddress: function () {
+        const venue = this.event && this.event.venue
+        let addr = null
+        // abort if street unknown, as that's be the most important part
+        if (venue && venue.street) {
+          addr = venue.street
+          // if city is known, include it too, as well as state
+          // (but don't include state w/o city)
+          if (venue.city) {
+            addr += ' ' + venue.state ? `${venue.city}, ${venue.state}` : venue.city
+            // and only include zip if city, state is known
+            if (venue.zip) addr += ' ' + venue.zip
+          }
+        }
+
+        return addr
       },
       // don't show calendar options for online resources since they don't have fixed times
       suppressCalendarOptions() {

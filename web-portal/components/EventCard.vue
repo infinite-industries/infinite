@@ -6,8 +6,8 @@
         <div class="image-container">
           <nuxt-link :to="eventLink">
             <div class="image-surface" :style="backGroundImage"></div>
-            <div class="image-location-city-container">
-              <div class="image-location-city">Nicholasville</div>
+            <div v-if="showVenue && venue.city" class="image-location-city-container">
+              <div class="image-location-city">{{ venue.city }}</div>
             </div>
           </nuxt-link>
         </div>
