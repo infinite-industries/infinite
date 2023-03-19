@@ -1,0 +1,6 @@
+---
+env: staging
+infinite_image_version_tag: development
+app_url: https://staging.infinite.industries
+api_url: https://staging-api.infinite.industries/v1
+google_analytics_id: UA-73795062-1

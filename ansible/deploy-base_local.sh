@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 
-INFINITE_DEPLOY_ENV='local' \
-ansible-playbook --extra-vars "ansible_sudo_pass=xxx" ./base_playbook.yml
+ansible-playbook --extra-vars "ansible_sudo_pass=xxx" -l local base_playbook.yml

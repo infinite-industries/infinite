@@ -1,5 +1,4 @@
-Infinite Ansible Scripts
-===========================
+# Infinite Ansible Scripts
 
 This is a trimmed down version of the rats ansible meant for quick experimentation
 
@@ -15,36 +14,87 @@ You will need your public key deployed to the host for ssh access
 
 You may need to connect to the host once with ssh to make sure it's in your list of known hosts
 
+If you install [casey/just](https://github.com/casey/just), then some tasks
+will be simplified.
+
 ## Before Running
 
-Create secret files under secrets-[env]:
+**Setup the Ansible Vault Passphrase**
+There are passwords, secret keys, and other sensitive information required for everything
+to work. These secrets are included in the repo and they are encrypted using
+ansible-vault.  To run ansible-successfully, you will need the passphrase to
+decrypt them.  Ask a team member. Then, run:
 
-* 1nfinite.pem (The pem obtained from auth0)
-* web-portal.env (env file with the required environment values for the web-portal service)
-* api.env (env file with the required environment values for the api service)
+```console
+$ echo -n "passphrase" >> .password
+```
+
+*Alternatively:*
+
+```console
+$ just cache-pass
+```
 
 ## Running
 
-`ansible-playbook ./base_playbook.yml`
+### Common Task: Site Deployment
 
-## First Time Setup
+First, deploy our code: `ansible-playbook -l staging deploy_site_playbook.yml`
+* alternative: `just deploy staging`
+
+Next, restart containers.
+
+```
+$ ssh infinite@infinite.industries
+
+prod $ cd docker-files
+prod $ docker-compose up -d
+prod $ sudo systemctl restart nginx
+```
+
+### Task: First Time Setup
 
 **These steps only needs to happen once**
 
-After running ansible you will need to ssh into the machine and run:
+1. Add the IP address and other info the appropriate section of the `hosts`
+   file.  These instructions assume a new host is being added to the staging
+   environment.
 
-* `sudo certbot certonly --nginx` [from: https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal]
-    * enter: infinite.industries,api.infinite.industries (or staging.infinite.industries,staging-api.infinite.industries if this is for staging)
+2. Do the initial install: `ansible-playbook -l staging base_playbook.yml`
+* alternative: `just init staging`
 
-## Run Next Playbook
+3. Setup certbot (per these [instructions](https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal).
 
-`ansible-playbook ./deploy_site_playbook.yml`
+```
+$ sudo certbot certonly --nginx
+```
 
-* ssh into the machine (`ssh infinite@infinite.industries`)
-* cd to `./docker-files` and run `docker-compose up -d`
-* run `sudo systemctl restart nginx`
+enter: `staging.infinite.industries,staging-api.infinite.industries` (or `infinite.industries,api.infinite.industries` if this is for prod)
 
-## Adding Domains to SSH certs
+4. Deploy our code: `ansible-playbook -l staging deploy_site_playbook.yml`.
+* alternative: `just deploy staging`
+
+5. Start the service.
+
+```
+$ ssh infinite@infinite.industries
+
+staging $ cd docker-files
+staging $ docker-compose up -d
+staging $ sudo systemctl restart nginx
+```
+
+### Task: Updating secret information
+
+There are some files- generally yaml files with variables-  which are
+encrypted. To update these files, use the `ansible-vault` command.  For
+instance:
+
+```console
+$ ansible-vault edit group_vars/staging/secrets
+```
+
+### Task: Adding Domains to TLS certs
 
 If you later want to direct additional sub-domains you can run:
 
@@ -55,20 +105,18 @@ sudo certbot certonly \
   -d new-sub.infinite.industries
 ```
 
-## Manually updating certs
+### Task: Manually updating certs
 
-`sudo certbot renew`
+*This shouldn't normally be required because certbot will keep these up to
+date, but it may be required in staging occasionally because we turn the server
+off when not in use*
 
-*This shouldn't normally be required because certbot will keep these up to date, but it may be required in staging
-occasionally because we turn the server off when not in use*
+```console
+$ sudo certbot renew
+```
 
-**Deploy The Site**
-
-Now run `ansible-playbook  --extra-vars "ansible_sudo_pass=$INFINITE_SUDO_PW" ./deploy_site_playbook.yml`
-
-*You can run this again in the future after updates to nginix config or docker-compose*
-
-
-### TODO
-
-image tag docker-compose.yml is hard coded to development, that should be master if deploying prod
+TODOS (Jason):
+*  Set INFINITE_IMAGE_VERSION_TAG in docker-files/*.env and remove the
+  /etc/environment mods from the deploy playbook.
+* Restart services if they have been updated by the deploy playbook
+* Add SSH key management for users.

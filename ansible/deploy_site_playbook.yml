@@ -1,32 +1,33 @@
-# disalbe host root access
+# disable host root access
 
 -
-  hosts: "infinite-{{ lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV') }}"
-  vars:
-    os_environment:
-      # used to tell docker-compose what tag to use for the images master/development/etc...
-      - key: INFINITE_IMAGE_VERSION_TAG
-        value: "{{ lookup('ansible.builtin.env', 'INFINITE_IMAGE_VERSION_TAG') }}"
+  hosts: all
   tasks:
     # Copy docker-compose and any supporting files
-    - name: Copy Docker Files
+    - name: Ensures ~/docker-files/keys/ dirs exist
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - ~/docker-files
+        - ~/docker-files/keys
+    - name: Copy ~/docker-files/ Files
       copy:
-        src: ./docker-files
-        dest: ~/
-    - name: Copy Docker Secrets and Env Settings 1
+        src: ./docker-files/{{ item }}
+        dest: ~/docker-files/{{ item }}
+      loop:
+        - docker-compose.yml
+    - name: Copy PEM key
       copy:
-        src: ./secrets-{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/web-portal.env
-        dest: ~/docker-files/web-portal.env
-    - name: Copy Docker Secrets and Env Settings 2
-      copy:
-        src: ./secrets-{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/api.env
-        dest: ~/docker-files/api.env
-    - name: Ensures ~/docker-files/keys/ dir exists
-      file: path=~/docker-files/keys state=directory
-    - name: Copy Docker Secrets and Env Settings 3
-      copy:
-        src: ./secrets-{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/1nfinite.pem
+        src: ./docker-files/keys/{{ env }}-1nfinite.pem
         dest: ~/docker-files/keys/1nfinite.pem
+    - name: Create secrets file for containers
+      template:
+        src: docker-files/{{ item }}.j2
+        dest: ~/docker-files/{{ item }}
+      loop:
+        - web-portal.env
+        - api.env
     # setup nginx
     - name: delete default nginx site
       become: true
@@ -36,11 +37,14 @@
     - name: Copy NginX Config
       become: true
       copy:
-        src: "./nginx/{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/sites-enabled/"
+        src: nginx/{{env}}/sites-enabled/{{item}}
         dest: /etc/nginx/sites-enabled/
         owner: root
         group: root
         mode: '0644'
+      loop:
+        - api.infinite.com
+        - infinite.com
 
     # set global environment variables (defined at top of script)
     - name: customize /etc/environment
@@ -48,6 +52,5 @@
       ansible.builtin.lineinfile:
         dest: "/etc/environment"
         state: present
-        regexp: "^{{ item.key }}="
-        line: "{{ item.key }}={{ item.value }}"
-      with_items: "{{ os_environment }}"
+        regexp: "^INFINITE_IMAGE_VERSION_TAG="
+        line: "INFINITE_IMAGE_VERSION_TAG={{ infinite_image_version_tag }}"

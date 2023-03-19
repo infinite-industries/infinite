@@ -1,0 +1,6 @@
+---
+env: prod
+infinite_image_version_tag: master
+app_url: https://infinite.industries
+api_url: https://api.infinite.industries/v1
+google_analytics_id: UA-73795062-1
