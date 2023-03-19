@@ -17,7 +17,7 @@ cache-pass:
   printf "Ansible Vault Passphrase: "
   trap 'stty echo' INT EXIT
   stty -echo
-  read PASS
-  printf "\n"
-  printf "%s" ${PASS} > .password
+  read pass
+  printf '\n'
+  printf '%s\n' "${pass}" > .password
   chmod 600 .password

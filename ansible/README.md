@@ -52,6 +52,22 @@ prod $ docker-compose up -d
 prod $ sudo systemctl restart nginx
 ```
 
+### Task: Rotate ansible-vault Passphrase
+
+```console
+$ echo -n "new passphrase" > .new_password
+$ ansible-vault rekey --new-vault-password-file .new_password \ 
+  group_vars/staging/secrets group_vars/prod/secrets \
+  docker-files/keys/staging-1nfinite.pem  docker-files/keys/prod-1nfinite.pem 
+```
+
+To validate the new passphrase:
+
+```console
+$ cd group_vars/staging
+$ ansible-vault view secrets
+```
+
 ### Task: First Time Setup
 
 **These steps only needs to happen once**
