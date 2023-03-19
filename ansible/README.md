@@ -42,7 +42,7 @@ ansible-vault.  To run ansible-successfully, you will need the passphrase to
 decrypt them.  Ask a team member. Then, run:
 
 ```console
-$ echo -n "passphrase" >> .passworf
+$ echo -n "passphrase" >> .password
 ```
 
 *Alternatively:*
@@ -90,9 +90,6 @@ $ just restart prod
 
 ### Common Task: Site Deployment
 
-The examples below are for the **staging** environment (the default).  Substite
-*prod* to execute against the production environment.
-
 ```console
 $ just deploy staging
 ```
@@ -102,7 +99,7 @@ $ just deploy staging
 **These steps only needs to happen once**
 
 1. Add the IP address and other info the appropriate section of the `hosts`
-   file.  These instructions assume a new host is being added to the staging
+   file.  These instructions assume a new host is being added to the *staging*
    environment.
 
 2. Do the initial install: `ansible-playbook -l staging base_playbook.yml`
@@ -115,17 +112,9 @@ $ sudo certbot certonly --nginx
 ```
 * enter: *staging.infinite.industries,staging-api.infinite.industries* (or *infinite.industries,api.infinite.industries* if this is for prod)>
 
-4. Deploy our code: `ansible-playbook -l staging deploy_site_playbook.yml`.
-* alternative: `just deploy staging`
-
-5. Start the service.
-
-```
-$ ssh infinite@infinite.industries
-
-staging $ cd docker-files
-staging $ docker-compose up -d
-staging $ sudo systemctl restart nginx
+4. Deploy our code: 
+```console
+$ just deploy staging
 ```
 
 ### Task: Updating secret information
