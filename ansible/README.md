@@ -68,7 +68,8 @@ prod $ sudo systemctl restart nginx
 ```
 $ sudo certbot certonly --nginx
 ```
-* enter: *staging.infinite.industries,staging-api.infinite.industries* (or *infinite.industries,api.infinite.industries* if this is for prod)>
+
+enter: `staging.infinite.industries,staging-api.infinite.industries` (or `infinite.industries,api.infinite.industries` if this is for prod)
 
 4. Deploy our code: `ansible-playbook -l staging deploy_site_playbook.yml`.
 * alternative: `just deploy staging`
