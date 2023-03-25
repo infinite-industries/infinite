@@ -16,6 +16,7 @@ images_aws_region: us-west-2
 images_aws_s3_bucket: infinite-industries-backups
 images_aws_access_key_id: akia
 images_aws_secret_access_key: secret
+images_aws_server_url: 
 
 sql_is_using_ssl: true
 
