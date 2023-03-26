@@ -14,8 +14,8 @@
             <template v-if="isOnlineResource && !isRemote && !venueIsRemote">Online Resource Presented by</template>
             {{ venueName }}
           </h3>
-          <template v-if="event.venue.street && event.venue.city && event.venue.state">
-            <h4>{{ event.venue.street }}, {{ event.venue.city }}, {{ event.venue.state }} {{ event.venue.zip }}</h4>
+          <template v-if="venueAddress">
+            <h4>{{ venueAddress }}</h4>
           </template>
         </template>
       </div>
@@ -205,7 +205,7 @@
           // if city is known, include it too, as well as state
           // (but don't include state w/o city)
           if (venue.city) {
-            addr += ' ' + venue.state ? `${venue.city}, ${venue.state}` : venue.city
+            addr += ' ' + venue.state ? `, ${venue.city}, ${venue.state}` : `, ${venue.city}`
             // and only include zip if city, state is known
             if (venue.zip) addr += ' ' + venue.zip
           }
