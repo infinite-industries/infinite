@@ -32,7 +32,7 @@
         <v-flex xs12 sm3>
           <label class="category-option">
             <input type="radio" v-model="eventMode" value="online">
-            <strong>Online</strong>
+            <strong>Online/On-air</strong>
           </label>
         </v-flex>
         <v-flex xs12 sm4>
