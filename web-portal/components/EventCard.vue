@@ -144,7 +144,6 @@
           this.calendar_event.tags.includes('condition:sold-out')
       },
       isRemote: function () {
-        console.log(this.calendar_event.title + ' - ' + JSON.stringify(this.calendar_event.tags))
         return _hasTag(this.calendar_event, 'mode:online')
       },
       isOnlineResource: function () {
