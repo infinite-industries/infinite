@@ -3,7 +3,9 @@
 -
   hosts: all
   tasks:
-    # Copy docker-compose and any supporting files
+    ####
+    # Setup the docker containers & docker-compose based environment
+    ####
     - name: Ensures ~/docker-files/keys/ dirs exist
       file:
         path: "{{ item }}"
@@ -11,16 +13,19 @@
       loop:
         - ~/docker-files
         - ~/docker-files/keys
+      notify: Restart docker containers
     - name: Copy ~/docker-files/ Files
       copy:
         src: ./docker-files/{{ item }}
         dest: ~/docker-files/{{ item }}
       loop:
         - docker-compose.yml
+      notify: Restart docker containers
     - name: Copy PEM key
       copy:
         src: ./docker-files/keys/{{ env }}-1nfinite.pem
         dest: ~/docker-files/keys/1nfinite.pem
+      notify: Restart docker containers
     - name: Create secrets file for containers
       template:
         src: docker-files/{{ item }}.j2
@@ -28,13 +33,44 @@
       loop:
         - web-portal.env
         - api.env
+      notify: Restart docker containers
+    # set global environment variable so docker-compose pull uses the right image.
+    - name: customize /etc/environment
+      become: true
+      ansible.builtin.lineinfile:
+        dest: "/etc/environment"
+        state: present
+        regexp: "^INFINITE_IMAGE_VERSION_TAG="
+        line: "INFINITE_IMAGE_VERSION_TAG={{ infinite_image_version_tag }}"
+    # this always executes - need to use the community.docker collection to
+    # make it smarter and trigger the restart handler only if the image
+    # actually updates.
+    - name: pull docker images
+      command:
+        cmd: docker-compose pull
+        chdir: ~/docker-files
+    - name: setup systemd init for docker-compose
+      become: true
+      copy:
+        src: systemd/infinite.service
+        dest: /etc/systemd/system
+    - name: enable systemd init for docker-compose
+      become: true
+      systemd:
+        name: infinite
+        enabled: true
+        daemon_reload: true
+    ####
     # setup nginx
+    ####
     - name: delete default nginx site
       become: true
       file:
         path: /etc/nginx/sites-enabled/default
         state: absent
-    - name: Copy NginX Config
+      notify:
+        - Restart nginx
+    - name: Copy nginx Config
       become: true
       copy:
         src: nginx/{{env}}/sites-enabled/{{item}}
@@ -45,12 +81,18 @@
       loop:
         - api.infinite.com
         - infinite.com
-
-    # set global environment variables (defined at top of script)
-    - name: customize /etc/environment
+      notify:
+        - Restart nginx
+  handlers:
+    - name: Restart nginx
       become: true
-      ansible.builtin.lineinfile:
-        dest: "/etc/environment"
-        state: present
-        regexp: "^INFINITE_IMAGE_VERSION_TAG="
-        line: "INFINITE_IMAGE_VERSION_TAG={{ infinite_image_version_tag }}"
+      service:
+        name: nginx
+        state: restarted
+    - name: Restart docker containers
+      become: true
+      service:
+        name: infinite
+        state: restarted
+
+

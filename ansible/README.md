@@ -2,6 +2,22 @@
 
 This is a trimmed down version of the rats ansible meant for quick experimentation
 
+Table of Contents
+=================
+
+ * [Requirements](#requirements)
+ * [Before Running](#before-running)
+ * [Running](#running)
+    * [Using just](#using-just)
+    * [Common Task: Site Status](#common-task-site-status)
+    * [Common Task: Restart Services](#common-task-restart-services)
+    * [Common Task: Site Deployment](#common-task-site-deployment)
+    * [Task: First Time Setup](#task-first-time-setup)
+    * [Task: Updating secret information](#task-updating-secret-information)
+    * [Task: Adding Domains to TLS certs](#task-adding-domains-to-tls-certs)
+    * [Task: Manually updating certs](#task-manually-updating-certs)
+
+
 ## Requirements
 
 Ansible must be installed on the machine that runs these scripts.
@@ -37,19 +53,45 @@ $ just cache-pass
 
 ## Running
 
+### Using `just`
+
+The task runner [casey/just](https://github.com/casey/just) is used to simplify
+common tasks.  Most of the "recipes" require the environment to be specified:
+our environments are *local*, *staging*, and *production*.  By default, the
+staging environment is used.  For instance, running `deploy status` is the
+equivalent of running `deploy status staging`.
+
+
+```console
+$ just help
+Available recipes:
+    cache-pass                  # cache the passphrase used to decrypt files
+    deploy env="staging"        # deploy the site. Usage: `just deploy` or `just deploy prod`
+    help                        # you're looking at it!
+    init env="staging"          # initial software install & config for a host.
+    restart env="staging"       # restart services for an environment
+    status env="staging"        # query the status of services for an environment
+    update-images env="staging" # pull the (correct) updated docker image(s)
+```
+
+### Common Task: Site Status
+
+**Check the status of the services in the staging environment.**
+```console
+$ just status staging
+```
+
+### Common Task: Restart Services
+
+**Restart services in the production environment environment.**
+```console
+$ just restart prod
+```
+
 ### Common Task: Site Deployment
 
-First, deploy our code: `ansible-playbook -l staging deploy_site_playbook.yml`
-* alternative: `just deploy staging`
-
-Next, restart containers.
-
-```
-$ ssh infinite@infinite.industries
-
-prod $ cd docker-files
-prod $ docker-compose up -d
-prod $ sudo systemctl restart nginx
+```console
+$ just deploy staging
 ```
 
 ### Task: Rotate ansible-vault Passphrase
@@ -73,7 +115,7 @@ $ ansible-vault view secrets
 **These steps only needs to happen once**
 
 1. Add the IP address and other info the appropriate section of the `hosts`
-   file.  These instructions assume a new host is being added to the staging
+   file.  These instructions assume a new host is being added to the *staging*
    environment.
 
 2. Do the initial install: `ansible-playbook -l staging base_playbook.yml`
@@ -87,17 +129,9 @@ $ sudo certbot certonly --nginx
 
 enter: `staging.infinite.industries,staging-api.infinite.industries` (or `infinite.industries,api.infinite.industries` if this is for prod)
 
-4. Deploy our code: `ansible-playbook -l staging deploy_site_playbook.yml`.
-* alternative: `just deploy staging`
-
-5. Start the service.
-
-```
-$ ssh infinite@infinite.industries
-
-staging $ cd docker-files
-staging $ docker-compose up -d
-staging $ sudo systemctl restart nginx
+4. Deploy our code: 
+```console
+$ just deploy staging
 ```
 
 ### Task: Updating secret information
@@ -134,5 +168,4 @@ $ sudo certbot renew
 TODOS (Jason):
 *  Set INFINITE_IMAGE_VERSION_TAG in docker-files/*.env and remove the
   /etc/environment mods from the deploy playbook.
-* Restart services if they have been updated by the deploy playbook
 * Add SSH key management for users.
