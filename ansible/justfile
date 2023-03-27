@@ -1,15 +1,24 @@
+flags := ""
+
 # you're looking at it!
 help:
   @just --list 
 
 # Usage: `just init` or `just init prod`
-# initial software install & config for a host. 
+# Do the initial software install & config for a host. 
 init env="staging":
-  ansible-playbook -l {{ env }} base_playbook.yml
+  ansible-playbook -l {{ env }} {{ flags }} base_playbook.yml 
 
-# deploy the site. Usage: `just deploy` or `just deploy prod`
+
+# Usage: `just deploy` or `just deploy prod`
+# 
+# The flags variable can be used to pass arguments to ansible-playbook.  For
+# instance, to override the inventory variable image_version, one might run:
+#   just deploy prod flags='-e image_version=development'
+#
+# Deploy the site.
 deploy env="staging":
-  ansible-playbook -l {{ env }} deploy_site_playbook.yml
+  ansible-playbook -l {{ env }} {{ flags }} deploy_site_playbook.yml
 
 # query the status of services for an environment
 status env="staging":

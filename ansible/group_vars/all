@@ -1,5 +1,5 @@
 ---
-infinite_image_version_tag: latest
+image_version: latest
 
 pgdatabase: db_name
 pghost: db_host
