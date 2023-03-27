@@ -22,7 +22,7 @@
 
       <div class="admin-venue-edit-page__venue-card__field">
         <label>Address:
-          <br/>
+          <br />
           <span class="admin-venue-edit-page__venue-card__readonly">
             {{ venue.address }}
           </span>
@@ -114,7 +114,7 @@
 
             <button
               class="admin-venue-edit-page__venue-card__button admin-venue-edit-page__venue-card__find-gps"
-              :disabled="this.isActivating"
+              :disabled="isActivating"
               @click="onFindUsingMapLinksClick()"
             >
               {{ searchForGpsCoordinatesText }}
@@ -305,7 +305,7 @@
         return this.fetchingGpsCoordinates ? this.fetchingGpsCoordinates : false
       },
       searchForGpsCoordinatesText: function () {
-        return this.isSearchForCoordinates ? '...searching' : 'Find Using Map Links'
+        return this.isSearchForCoordinates ? '...searching' : 'Find GPS Coordinates'
       },
       error: function () {
         const queryEntry = this.$store.state.venues.venueUpdateQueries[this.venue.id]

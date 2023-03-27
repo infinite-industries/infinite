@@ -1,0 +1,15 @@
+[Unit]
+Description=Infinite Industries Docker containers
+After=docker.service
+Requires=docker.service
+
+[Service]
+User=infinite
+Group=infinite
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/bash -c "docker-compose --project-directory /home/infinite/docker-files up --detach"
+ExecStop=/bin/bash -c "docker-compose --project-directory /home/infinite/docker-files stop"
+
+[Install]
+WantedBy=multi-user.target
