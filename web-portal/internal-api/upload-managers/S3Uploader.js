@@ -4,8 +4,8 @@ module.exports = class S3Uploader {
   constructor(bucket) {
     const region = process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || 'us-east-1'
     this.bucket = bucket
-    this.s3 = new S3()
     this.public_url = `https://${bucket}.s3.${region}.amazonaws.com/`
+    this.s3 = new S3()
   }
 
   upload(path, data) {
