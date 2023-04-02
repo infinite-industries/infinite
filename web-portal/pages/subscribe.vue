@@ -11,28 +11,9 @@
         </p>
 
         <h4>Curated list of arts and culture events delivered to your mailbox every Wednesday afternoon.</h4>
-
       </div>
-
-      <div id="mc_embed_signup">
-        <form
-          action="https://industries.us13.list-manage.com/subscribe/post?u=55944da642302ef43bc8c0f27&amp;id=f571a7e653"
-          method="post"
-          id="mc-embedded-subscribe-form"
-          name="mc-embedded-subscribe-form"
-          class="validate"
-          target="_blank"
-          novalidate
-        >
-          <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-          <div style="position: absolute; left: -5000px;" aria-hidden="true">
-            <input type="text" name="b_55944da642302ef43bc8c0f27_f571a7e653" tabindex="-1" value="">
-          </div>
-
-          <div class="submit-container">
-            <button type="submit" class="subscribe-button">SUBSCRIBE</button>
-          </div>
-        </form>
+      <div class="submit-container">
+        <a class="subscribe-button" href="http://eepurl.com/dmq_Ln" target="_blank">SUBSCRIBE</a>
       </div>
       <div class="copy-container" style="padding-top:0px;">
         <p>
@@ -45,23 +26,7 @@
 
 <script>
   export default {
-    layout: 'no-subscribe',
-    methods: {
-      isIos: function () {
-        const userAgent = window.navigator.userAgent.toLowerCase()
-        return /iphone|ipad|ipod/.test(userAgent)
-      }
-    },
-    mounted: function () {
-      const self = this
-      document.getElementById('mc-embedded-subscribe-form').onsubmit = function (e) {
-        if (!self.isIos()) {
-          window.setTimeout(function () {
-            window.location = window.location.origin + '/'
-          }, 10)
-        }
-      }
-    }
+    layout: 'no-subscribe'
   }
 </script>
 
@@ -77,6 +42,7 @@
     font-weight: bold;
     letter-spacing: 3px;
     background-color:#B7B09C;
+    text-decoration: none;
   }
 
   .form-container {
@@ -133,19 +99,10 @@
     margin-left: auto;
 
   }
-
-  form {
-    font-family: "Open Sans", sans-serif;
-  }
-
-  form .layout .form-label {
-    display: block;
-    padding-right: 15px;
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-top: 22px;
-    letter-spacing: normal;
-    line-height: normal;
+  .submit-container {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 20px;
   }
 
   @media only screen and (min-width: 600px) {
@@ -165,10 +122,5 @@
           padding-left: 0px;
           padding-right: 0px;
       }
-  }
-  form .submit-container {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
   }
 </style>
