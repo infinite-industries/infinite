@@ -1,0 +1,55 @@
+---
+image_version: latest
+
+pgdatabase: db_name
+pghost: db_host
+pgport: db_port
+pguser: db_user
+pgpassword: db_pass
+
+backup_aws_default_region: us-west-2
+backup_aws_s3_bucket: infinite-industries-backups
+backup_aws_access_key_id: akia
+backup_aws_secret_access_key: secret
+
+images_aws_region: us-west-2
+images_aws_s3_bucket: infinite-industries-backups
+images_aws_access_key_id: akia
+images_aws_secret_access_key: secret
+images_aws_server_url: https://s3-us-west-2.amazonaws.com/
+
+sql_is_using_ssl: true
+
+# Test users can be enabled to allow login in local dev environments. This will bypass auth0
+auth_use_test_users: false
+
+# The environment {dev|staging|prod}
+env: dev
+
+# The public location of the frontend service (for example https://infinite.industries)
+app_url: fe_url
+
+# The URL of the API
+api_url: api_url
+
+# Timezone handling
+timezone_default: US/Eastern
+timezone_options: US/Eastern,US/Central,US/Mountain,US/Pacific
+
+# The port to run the api application on
+api_port: 3003
+
+google_analytics_id: UA-00000
+
+# slack webhooks are used to send messages about events on the website to a
+# slack channel (they are not required)
+slack_webhook_event_submission: https://hooks.slack.com/services/id
+slack_webhook_venue_submission: https://hooks.slack.com/services/id
+# Slack Contact Form
+slack_webhook_contact: https://hooks.slack.com/services/id
+
+# Auth0 is used for authentication in production environments
+auth0_client_id: clientid
+auth0_client_domain: clientdomain
+auth0_audience: audience
+auth0_client_secret: clientsecret

@@ -48,25 +48,22 @@ describe('SubmissionForm component', () => {
     })
   })
 
-  it('event mode can be selected', async function () {
-    expect(wrapper.vm.calendar_event.tags).toEqual([])
-    await wrapper.find('.event-mode input[type="radio"][value="in-person"]').setChecked(true)
-    expect(wrapper.vm.eventMode).toEqual('in-person')
+  it('event mode defaults to in-person', function () {
+    expect(wrapper.find('.event-mode input[type="radio"][value="in-person"]').element.checked).toBe(true)
     expect(wrapper.vm.calendar_event.tags).toEqual(['mode:in-person'])
   })
 
-  it('event mode can be changed', async function () {
-    await wrapper.find('.event-mode input[type="radio"][value="in-person"]').setChecked(true)
-    expect(wrapper.vm.eventMode).toEqual('in-person')
-    await wrapper.find('.event-mode input[type="radio"][value="hybrid"]').setChecked(true)
-    expect(wrapper.vm.eventMode).toEqual('hybrid')
-    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:hybrid'])
+  it('event mode can be selected', async function () {
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:in-person'])
+    await wrapper.find('.event-mode input[type="radio"][value="online"]').setChecked(true)
+    expect(wrapper.vm.eventMode).toEqual('online')
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:online'])
   })
 
   it('event category can be selected', async function () {
     await wrapper.find('.event-category input[type="radio"][value="single-day-event"]').setChecked(true)
     expect(wrapper.vm.eventCategory).toEqual('single-day-event')
-    expect(wrapper.vm.calendar_event.tags).toEqual(['category:single-day-event'])
+    expect(wrapper.vm.calendar_event.tags).toContain('category:single-day-event')
   })
 
   it('event category can be changed', async function () {
@@ -74,7 +71,8 @@ describe('SubmissionForm component', () => {
     expect(wrapper.vm.eventCategory).toEqual('single-day-event')
     await wrapper.find('.event-category input[type="radio"][value="multi-day-event"]').setChecked(true)
     expect(wrapper.vm.eventCategory).toEqual('multi-day-event')
-    expect(wrapper.vm.calendar_event.tags).toEqual(['category:multi-day-event'])
+    expect(wrapper.vm.calendar_event.tags).toContain('category:multi-day-event')
+    expect(wrapper.vm.calendar_event.tags).not.toContain('category:single-day-event')
   })
 
   it('event mode and category can be changed without affecting the other', async function () {
@@ -199,13 +197,13 @@ describe('SubmissionForm component', () => {
   })
 
   it('conditions can be changed', async () => {
-    expect(wrapper.vm.calendar_event.tags).toEqual([])
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:in-person'])
     await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(true)
-    expect(wrapper.vm.calendar_event.tags).toEqual(['condition:postponed'])
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:in-person', 'condition:postponed'])
     await wrapper.findComponent('.status-container input[type="checkbox"][value="sold-out"]').setChecked(true)
-    expect(wrapper.vm.calendar_event.tags).toEqual(['condition:postponed', 'condition:sold-out'])
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:in-person', 'condition:postponed', 'condition:sold-out'])
     await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(false)
-    expect(wrapper.vm.calendar_event.tags).toEqual(['condition:sold-out'])
+    expect(wrapper.vm.calendar_event.tags).toEqual(['mode:in-person', 'condition:sold-out'])
   })
 
   // function getFilledOutEvent() {

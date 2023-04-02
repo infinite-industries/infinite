@@ -1,3 +1,5 @@
+name: Publish to Dockerhub
+
 on:
   workflow_dispatch:
     environment: docker-publication

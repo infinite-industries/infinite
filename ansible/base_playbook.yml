@@ -1,7 +1,7 @@
-# disalbe host root access
+# disable host root access
 
 -
-  hosts: "infinite-{{ lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV') }}"
+  hosts: all
   tasks:
     - name: Install packages
       become: true

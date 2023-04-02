@@ -1,7 +1,22 @@
-Infinite Ansible Scripts
-===========================
+# Infinite Ansible Scripts
 
 This is a trimmed down version of the rats ansible meant for quick experimentation
+
+Table of Contents
+=================
+
+ * [Requirements](#requirements)
+ * [Before Running](#before-running)
+ * [Running](#running)
+    * [Using just](#using-just)
+    * [Common Task: Site Status](#common-task-site-status)
+    * [Common Task: Restart Services](#common-task-restart-services)
+    * [Common Task: Site Deployment](#common-task-site-deployment)
+    * [Task: First Time Setup](#task-first-time-setup)
+    * [Task: Updating secret information](#task-updating-secret-information)
+    * [Task: Adding Domains to TLS certs](#task-adding-domains-to-tls-certs)
+    * [Task: Manually updating certs](#task-manually-updating-certs)
+
 
 ## Requirements
 
@@ -15,36 +30,121 @@ You will need your public key deployed to the host for ssh access
 
 You may need to connect to the host once with ssh to make sure it's in your list of known hosts
 
+If you install [casey/just](https://github.com/casey/just), then some tasks
+will be simplified.
+
 ## Before Running
 
-Create secret files under secrets-[env]:
+**Setup the Ansible Vault Passphrase**
+There are passwords, secret keys, and other sensitive information required for everything
+to work. These secrets are included in the repo and they are encrypted using
+ansible-vault.  To run ansible-successfully, you will need the passphrase to
+decrypt them.  Ask a team member. Then, run:
 
-* 1nfinite.pem (The pem obtained from auth0)
-* web-portal.env (env file with the required environment values for the web-portal service)
-* api.env (env file with the required environment values for the api service)
+```console
+$ echo -n "passphrase" >> .password
+```
+
+*Alternatively:*
+
+```console
+$ just cache-pass
+```
 
 ## Running
 
-`ansible-playbook ./base_playbook.yml`
+### Using `just`
 
-## First Time Setup
+The task runner [casey/just](https://github.com/casey/just) is used to simplify
+common tasks.  Most of the "recipes" require the environment to be specified:
+our environments are *local*, *staging*, and *production*.  By default, the
+staging environment is used.  For instance, running `deploy status` is the
+equivalent of running `deploy status staging`.
+
+
+```console
+$ just help
+Available recipes:
+    cache-pass                  # cache the passphrase used to decrypt files
+    deploy env="staging"        # deploy the site. Usage: `just deploy` or `just deploy prod`
+    help                        # you're looking at it!
+    init env="staging"          # initial software install & config for a host.
+    restart env="staging"       # restart services for an environment
+    status env="staging"        # query the status of services for an environment
+    update-images env="staging" # pull the (correct) updated docker image(s)
+```
+
+### Common Task: Site Status
+
+**Check the status of the services in the staging environment.**
+```console
+$ just status staging
+```
+
+### Common Task: Restart Services
+
+**Restart services in the production environment environment.**
+```console
+$ just restart prod
+```
+
+### Common Task: Site Deployment
+
+```console
+$ just deploy staging
+```
+
+### Task: Rotate ansible-vault Passphrase
+
+```console
+$ echo -n "new passphrase" > .new_password
+$ ansible-vault rekey --new-vault-password-file .new_password \ 
+  group_vars/staging/secrets group_vars/prod/secrets \
+  docker-files/keys/staging-1nfinite.pem  docker-files/keys/prod-1nfinite.pem 
+```
+
+To validate the new passphrase:
+
+```console
+$ cd group_vars/staging
+$ ansible-vault view secrets
+```
+
+### Task: First Time Setup
 
 **These steps only needs to happen once**
 
-After running ansible you will need to ssh into the machine and run:
+1. Add the IP address and other info the appropriate section of the `hosts`
+   file.  These instructions assume a new host is being added to the *staging*
+   environment.
 
-* `sudo certbot certonly --nginx` [from: https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal]
-    * enter: infinite.industries,api.infinite.industries (or staging.infinite.industries,staging-api.infinite.industries if this is for staging)
+2. Do the initial install: `ansible-playbook -l staging base_playbook.yml`
+* alternative: `just init staging`
 
-## Run Next Playbook
+3. Setup certbot (per these [instructions](https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal).
 
-`ansible-playbook ./deploy_site_playbook.yml`
+```
+$ sudo certbot certonly --nginx
+```
 
-* ssh into the machine (`ssh infinite@infinite.industries`)
-* cd to `./docker-files` and run `docker-compose up -d`
-* run `sudo systemctl restart nginx`
+enter: `staging.infinite.industries,staging-api.infinite.industries` (or `infinite.industries,api.infinite.industries` if this is for prod)
 
-## Adding Domains to SSH certs
+4. Deploy our code: 
+```console
+$ just deploy staging
+```
+
+### Task: Updating secret information
+
+There are some files- generally yaml files with variables-  which are
+encrypted. To update these files, use the `ansible-vault` command.  For
+instance:
+
+```console
+$ ansible-vault edit group_vars/staging/secrets
+```
+
+### Task: Adding Domains to TLS certs
 
 If you later want to direct additional sub-domains you can run:
 
@@ -55,20 +155,14 @@ sudo certbot certonly \
   -d new-sub.infinite.industries
 ```
 
-## Manually updating certs
+### Task: Manually updating certs
 
-`sudo certbot renew`
+*This shouldn't normally be required because certbot will keep these up to
+date, but it may be required in staging occasionally because we turn the server
+off when not in use*
 
-*This shouldn't normally be required because certbot will keep these up to date, but it may be required in staging
-occasionally because we turn the server off when not in use*
-
-**Deploy The Site**
-
-Now run `ansible-playbook  --extra-vars "ansible_sudo_pass=$INFINITE_SUDO_PW" ./deploy_site_playbook.yml`
-
-*You can run this again in the future after updates to nginix config or docker-compose*
-
-
-### TODO
-
-image tag docker-compose.yml is hard coded to development, that should be master if deploying prod
+```console
+$ sudo certbot renew
+```
+TODOS (Jason):
+* Add SSH key management for users.

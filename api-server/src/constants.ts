@@ -62,6 +62,8 @@ export const SLACK_WEBHOOK_CONTACT = process.env.SLACK_WEBHOOK_CONTACT;
 export const SLACK_WEBHOOK_EVENT_SUBMISSION = process.env.SLACK_WEBHOOK_EVENT_SUBMISSION;
 export const SLACK_WEBHOOK_VENUE_SUBMISSION = process.env.SLACK_WEBHOOK_VENUE_SUBMISSION;
 
+export const MAP_BOX_API_KEY = process.env.MAP_BOX_API_KEY
+
 // === Helper Functions ===
 function getPemPathDefault(authTestUsers) {
     return authTestUsers ?

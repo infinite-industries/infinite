@@ -8,7 +8,10 @@ import FindByIdParams from "../dto/find-by-id-params";
 import {SingleVenueResponse} from "./dto/single-venue-response";
 import SlackNotificationService, { VENUE_SUBMIT } from "../notifications/slack-notification.service";
 import {ENV} from "../constants";
-import GetGPSCoordinatesRequest, {GetGPSCoordinatesResponse} from "./dto/GetGPSCoordinatesRequest";
+import  {
+    GetGPSCoordinatesFromAddressRequest,
+    GetGPSCoordinatesResponse
+} from "./dto/GetGPSCoordinatesRequest";
 import {GpsService} from "./gps.services";
 
 @Controller(`${VERSION_1_URI}/venues`)
@@ -73,19 +76,19 @@ export class VenuesController {
             .then(venue => new SingleVenueResponse({ venue }));
     }
 
-    @Post('/get-gps-from-google-maps-link')
-    @ApiOperation({summary: 'get gps coordinates from a venue google maps link'})
+    @Post('/get-gps-from-address')
+    @ApiOperation({summary: 'get gps coordinates for a from an address'})
     @ApiResponse({
         status: 200,
         description: 'gps from google maps links',
-        type: GetGPSCoordinatesResponse
     })
-    getGpsFromGoogleMapsLink(@Body() req: GetGPSCoordinatesRequest): Promise<GetGPSCoordinatesResponse> {
-        const { googleMapsLink } = req;
+    getGpsFromAddress(@Body() req: GetGPSCoordinatesFromAddressRequest): Promise<GetGPSCoordinatesResponse> {
+        const { street, city, zip, state } = req;
 
-        return this.gpsService.getCoordinatesFromGoogleMapLink(googleMapsLink).then((gpsCoordinates) => new GetGPSCoordinatesResponse({
-            gpsCoordinates
-        }))
+        return this.gpsService.getCoordinatesFromAddress({street, city, state, zip})
+            .then((gpsCoordinates) => new GetGPSCoordinatesResponse({
+                gpsCoordinates
+            }))
     }
 }
 

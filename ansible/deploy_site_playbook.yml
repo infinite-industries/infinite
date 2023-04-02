@@ -1,38 +1,89 @@
-# disalbe host root access
+# disable host root access
 
 -
-  hosts: "infinite-{{ lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV') }}"
+  hosts: all
   tasks:
-    # Copy docker-compose and any supporting files
-    - name: Copy Docker Files
+    ####
+    # Setup the docker containers & docker-compose based environment
+    ####
+    - name: Ensures ~/docker-files/keys/ dirs exist
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - ~/docker-files
+        - ~/docker-files/keys
+      notify: Restart docker containers
+    - name: Copy ~/docker-files/ Files
       copy:
-        src: ./docker-files
-        dest: ~/
-    - name: Copy Docker Secrets and Env Settings 1
+        src: ./docker-files/{{ item }}
+        dest: ~/docker-files/{{ item }}
+      loop:
+        - docker-compose.yml
+      notify: Restart docker containers
+    - name: Copy PEM key
       copy:
-        src: ./secrets-{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/web-portal.env
-        dest: ~/docker-files/web-portal.env
-    - name: Copy Docker Secrets and Env Settings 2
-      copy:
-        src: ./secrets-{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/api.env
-        dest: ~/docker-files/api.env
-    - name: Ensures ~/docker-files/keys/ dir exists
-      file: path=~/docker-files/keys state=directory
-    - name: Copy Docker Secrets and Env Settings 3
-      copy:
-        src: ./secrets-{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/1nfinite.pem
+        src: ./docker-files/keys/{{ env }}-1nfinite.pem
         dest: ~/docker-files/keys/1nfinite.pem
+      notify: Restart docker containers
+    - name: Create secrets file for containers
+      template:
+        src: docker-files/{{ item }}.j2
+        dest: ~/docker-files/{{ item }}
+      loop:
+        - .env
+        - web-portal.env
+        - api.env
+      notify: Restart docker containers
+    # this always executes - need to use the community.docker collection to
+    # make it smarter and trigger the restart handler only if the image
+    # actually updates.
+    - name: pull docker images
+      command:
+        cmd: docker-compose pull
+        chdir: ~/docker-files
+    - name: setup systemd init for docker-compose
+      become: true
+      copy:
+        src: systemd/infinite.service
+        dest: /etc/systemd/system
+    - name: enable systemd init for docker-compose
+      become: true
+      systemd:
+        name: infinite
+        enabled: true
+        daemon_reload: true
+    ####
     # setup nginx
+    ####
     - name: delete default nginx site
       become: true
       file:
         path: /etc/nginx/sites-enabled/default
         state: absent
-    - name: Copy NginX Config
+      notify:
+        - Restart nginx
+    - name: Copy nginx Config
       become: true
       copy:
-        src: "./nginx/{{lookup('ansible.builtin.env', 'INFINITE_DEPLOY_ENV')}}/sites-enabled/"
+        src: nginx/{{env}}/sites-enabled/{{item}}
         dest: /etc/nginx/sites-enabled/
         owner: root
         group: root
         mode: '0644'
+      loop:
+        - api.infinite.com
+        - infinite.com
+      notify:
+        - Restart nginx
+  handlers:
+    - name: Restart nginx
+      become: true
+      service:
+        name: nginx
+        state: restarted
+    - name: Restart docker containers
+      become: true
+      service:
+        name: infinite
+        state: restarted

@@ -6,6 +6,9 @@
         <div class="image-container">
           <nuxt-link :to="eventLink">
             <div class="image-surface" :style="backGroundImage"></div>
+            <div v-if="(showVenue && venue.city) || isRemote" class="image-location-city-container">
+              <div class="image-location-city">{{ isRemote ? "Online" : venue.city }}</div>
+            </div>
           </nuxt-link>
         </div>
         <div class="info-container">
@@ -251,10 +254,39 @@
     border-top-right-radius: 10px;
   }
 
+  .image-container a {
+    text-decoration: none;
+  }
+
   .image-container:hover .image-surface {
     -moz-transform: scale(1.1);
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
+  }
+
+  .image-container .image-location-city-container {
+    position:relative;
+    top: -1em;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+.image-location-city-container .image-location-city {
+    /* background-color: #B7B09C; */
+    background-image: linear-gradient(to left, #fff, #B7B09C);
+    max-width: 220px;
+    min-width: 120px;
+    padding: 6px 2em;
+
+    font-family: 'Open Sans', sans-serif;
+    /* font-weight: 600; */
+    font-style: italic;
+    text-decoration: none;
+
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+
+    /* linear-gradient(to right, rgba(255,0,0,0), rgba(255,0,0,1)); */
   }
 
   .info-container{
@@ -319,7 +351,7 @@
     color: white;
 
     text-align: center;
-    max-height: 30px;
+    max-height: 50px;
     padding-left: 15px;
     padding-right: 15px;
     margin-bottom: 20px;
@@ -502,10 +534,14 @@
   }
 
   .ii-calendar {
-    position: relative;
-    top: 1px;
+    /* position: relative;
+    top: 1px; */
     margin-right: 6px;
     margin-left: 2px;
+  }
+
+  .image-container .image-location-city-container {
+    font-size: 1.2em;
   }
 
 }
