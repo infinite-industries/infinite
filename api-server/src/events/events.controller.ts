@@ -1,6 +1,6 @@
 import * as moment from 'moment';
 import { Op, literal } from "sequelize";
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from "@nestjs/common";
+import {Body, Controller, Get, HttpException, Param, Post, Query, Req, UseGuards} from "@nestjs/common";
 import { EventsService } from "./events.service";
 import { EventModel } from "./models/event.model";
 import { AuthGuard } from "../authentication/auth.guard";
@@ -21,6 +21,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
 import { eventModelToEventDTO } from "./dto/eventModelToEventDTO";
 import EventDTO from "./dto/eventDTO";
 import { ENV } from "../constants";
+import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
 
 require('dotenv').config()
 
@@ -55,7 +56,7 @@ export class EventsController {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
             where: {
                 [Op.and]: [
-                    getCommonQueryTermsForEvents(true, tags),
+                    getCommonQueryTermsForEvents({ verified: true, tags }),
                     {
                         "$date_times.end_time$": {
                             [Op.gte]: moment().subtract(2, 'hours').toDate()
@@ -84,17 +85,48 @@ export class EventsController {
     getAllVerified(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = [],
+        @Query('pageSize') pageSize = 20,
+        @Query('requestedPage') requestedPage = 1,
+        @Query("disablePagination") disablePagination: 'true' | 'false' = 'false',
         @Req() request: Request
     ): Promise<EventsResponse> {
+        const paginated = disablePagination === 'false'
+
+        console.log(`!!! disablePagination:  ${disablePagination} ${!disablePagination} ${typeof disablePagination}`)
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-            where: getCommonQueryTermsForEvents(true, tags)
+            where: getCommonQueryTermsForEvents({ verified: true, tags: tags })
         };
 
-        return this.eventsService.findAll(findOptions)
-            .then((events) => events.map(eventModelToEventDTO))
-            .then(event => removeSensitiveDataForNonAdmins(request, event))
-            .then(events => new EventsResponse({ events }));
+        console.log(`!!! fuck: ${!disablePagination} && ${isNotNullOrUndefined(pageSize)} && ${isNotNullOrUndefined(requestedPage)}`)
+        if (paginated && isNotNullOrUndefined(pageSize) && isNotNullOrUndefined(requestedPage)) {
+            return this.eventsService.findAllPaginated({
+                findOptions,
+                pageSize,
+                requestedPage
+            }).then((paginatedEventResp) => {
+                const totalPages = paginatedEventResp.count
+                const nextPage = requestedPage * pageSize  > totalPages ? undefined : pageSize + 1
+
+                return new EventsResponse({
+                    events: paginatedEventResp.rows.map(eventModelToEventDTO),
+                    paginated,
+                    totalPages,
+                    nextPage,
+                    page: requestedPage,
+                })
+            })
+        } else if (!disablePagination) {
+            throw new HttpException("Paginated results requested without providing pageSize and requestedPage", 400)
+        } else {
+            console.log('!!! no paginagtion')
+            return this.eventsService.findAll(findOptions)
+                .then((events) => events.map(eventModelToEventDTO))
+                .then(event => removeSensitiveDataForNonAdmins(request, event))
+                .then(events => new EventsResponse({ events }));
+        }
+
+
     }
 
     // TODO - Move to events.authenticated.controller
@@ -155,7 +187,7 @@ export class EventsController {
     ): Promise<EventsResponse> {
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-            where: getCommonQueryTermsForEvents(null, tags)
+            where: getCommonQueryTermsForEvents({ tags })
         };
 
         return this.eventsService.findAll(findOptions)

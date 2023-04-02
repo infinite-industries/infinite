@@ -1,4 +1,11 @@
-export default function cloneAttributes<T>(from: Partial<T>, to: T): void {
+import {Undefinable} from "./NullableOrUndefinable";
+import {isNullOrUndefined} from "./is-null-or-undefined";
+
+export default function cloneAttributes<T>(from: Undefinable<Partial<T>>, to: T): void {
+    if (isNullOrUndefined(from)) {
+        return;
+    }
+
     Object.keys(from).forEach((key: string) => {
         const value = from[key]
 

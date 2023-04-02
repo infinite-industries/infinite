@@ -1,6 +1,6 @@
 import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
-import { FindOptions, Sequelize, Transaction, UpdateOptions } from 'sequelize';
+import { FindOptions, Sequelize, Transaction, UpdateOptions, fn, col } from 'sequelize';
 import {EventModel} from "./models/event.model";
 import DbUpdateResponse, {toDbUpdateResponse} from "../shared-types/db-update-response";
 import DbDeleteResponse, {toDbDeleteResponse} from "../shared-types/db-delete-response";
@@ -47,6 +47,22 @@ export class EventsService {
 
     findAll(findOptions?: FindOptions): Promise<EventModel []> {
         return this.eventModel.findAll(findOptions)
+    }
+
+    findAllPaginated(
+        { findOptions = {}, pageSize, requestedPage }: {findOptions?: FindOptions, pageSize: number, requestedPage: number }
+    ): Promise<{ count: number, rows: EventModel [] }> {
+        return this.eventModel.findAndCountAll({
+            ...findOptions,
+            limit: pageSize,
+            offset: requestedPage,
+            include: [DatetimeVenueModel],
+            // order: [fn('min', col('start_time'))],
+            order: [
+                [DatetimeVenueModel, fn('min', col('start_time'))],
+                // [{model: DatetimeVenueModel, as: 'DatetimeVenueModel'}, 'start_time']
+            ],
+        })
     }
 
     async update(id: string, values: Partial<UpdateEventRequest>): Promise<DbUpdateResponse<EventModel>> {
