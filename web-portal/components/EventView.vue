@@ -8,11 +8,16 @@
           {{ event.title }}
         </h1>
         <!-- TODO: this should be an H2 or something other than a heading -->
-        <h3 v-if="event.venue">
-          <template v-if="isRemote && !venueIsRemote">Online Event Presented by</template>
-          <template v-if="isOnlineResource && !isRemote && !venueIsRemote">Online Resource Presented by</template>
-          {{ event.venue && event.venue.name }}
-        </h3>
+        <template v-if="event.venue">
+          <h3>
+            <template v-if="isRemote && !venueIsRemote">Online Event Presented by</template>
+            <template v-if="isOnlineResource && !isRemote && !venueIsRemote">Online Resource Presented by</template>
+            {{ venueName }}
+          </h3>
+          <template v-if="venueAddress">
+            <h4>{{ venueAddress }}</h4>
+          </template>
+        </template>
       </div>
     </div>
     <div class="event-time-actions">
@@ -188,6 +193,26 @@
       venueIsRemote: function () {
         return this.event && this.event.venue && this.event.venue.name === 'Remote Event'
       },
+      venueName: function () {
+        return this.event && this.event.venue && this.event.venue.name
+      },
+      venueAddress: function () {
+        const venue = this.event && this.event.venue
+        let addr = null
+        // abort if street unknown, as that's be the most important part
+        if (venue && venue.street) {
+          addr = venue.street
+          // if city is known, include it too, as well as state
+          // (but don't include state w/o city)
+          if (venue.city) {
+            addr += ' ' + venue.state ? `, ${venue.city}, ${venue.state}` : `, ${venue.city}`
+            // and only include zip if city, state is known
+            if (venue.zip) addr += ' ' + venue.zip
+          }
+        }
+
+        return addr
+      },
       // don't show calendar options for online resources since they don't have fixed times
       suppressCalendarOptions() {
         return this.isOnlineResource
@@ -284,11 +309,16 @@
 
   .event-heading-text h2,
   .event-heading-text h3 {
-    margin-top: 5px;
-    margin-bottom: 16px;
+    margin-top: 20px;
+    margin-bottom: 5px;
     font-size: 1.2em;
     font-weight: lighter;
     line-height: 110%;
+  }
+
+  .event-heading-text h3 {
+    font-weight: normal;
+    font-size: 0.875em;
   }
 
   .event-time-actions {
@@ -534,6 +564,14 @@
 
   .add-event-to-cal .infinite-dropdown-content {
     background-color: #c3bdac;
+  }
+  .event-heading-text h3 {
+    font-size: 1.3em;
+    font-weight: normal;
+  }
+  .event-heading-text h4 {
+    font-size: 0.875em;
+    font-weight: normal;
   }
 
   /* this menu has text-only labels, so need more space on smaller screens */
