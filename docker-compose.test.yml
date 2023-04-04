@@ -49,10 +49,6 @@ services:
       AUTH0_CLIENT_ID: PYKhof4U0jKE3v4h8xKSgihHz9atBE5O
       AUTH0_CLIENT_DOMAIN: 1nfinite.auth0.com
       AUTH0_AUDIENCE: https://1nfinite.auth0.com/api/v2/
-      AWS_REGION: us-east-2
-      AWS_S3_UPLOADS_BUCKET: test-downloader
-      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
-      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
       SLACK_WEBHOOK_CONTACT: "${SLACK_WEBHOOK_CONTACT}"
     ports:
     - "7779:7779"
