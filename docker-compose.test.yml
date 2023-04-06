@@ -50,5 +50,6 @@ services:
       AUTH0_CLIENT_DOMAIN: 1nfinite.auth0.com
       AUTH0_AUDIENCE: https://1nfinite.auth0.com/api/v2/
       SLACK_WEBHOOK_CONTACT: "${SLACK_WEBHOOK_CONTACT}"
+      AWS_S3_UPLOADS_BUCKET:
     ports:
     - "7779:7779"
