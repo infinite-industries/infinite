@@ -18,6 +18,7 @@ export function getOptionsForEventsServiceFromEmbedsQueryParam(embedsFromQuerySt
     } else {
         const include = getModelsForEmbedding(modelNames);
 
+        console.log('!!! modelName: ' + modelNames)
         return {include};
     }
 }
@@ -26,7 +27,7 @@ function ensureEmbedQueryStringIsArray(embedsFromQueryString: string[] | string)
     return typeof embedsFromQueryString === 'string' ? [embedsFromQueryString] : embedsFromQueryString;
 }
 
-function getModelsForEmbedding(modelNames: string[]): EmbedableModels [] {
+export function getModelsForEmbedding(modelNames: string[]): EmbedableModels [] {
     return modelNames.map(modelName => {
         if (modelName === VENUE) {
             return VenueModel;

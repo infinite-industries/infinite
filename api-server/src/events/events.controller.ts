@@ -22,6 +22,7 @@ import { eventModelToEventDTO } from "./dto/eventModelToEventDTO";
 import EventDTO from "./dto/eventDTO";
 import { ENV } from "../constants";
 import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
+import {DatetimeVenueModel} from "./models/datetime-venue.model";
 
 require('dotenv').config()
 
@@ -51,6 +52,10 @@ export class EventsController {
         } else {
             embed.push('DATE_TIME')
         }
+
+
+        console.log('!!! current event')
+        console.log(embed)
 
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
@@ -100,6 +105,7 @@ export class EventsController {
 
         console.log(`!!! fuck: ${!disablePagination} && ${isNotNullOrUndefined(pageSize)} && ${isNotNullOrUndefined(requestedPage)}`)
         if (paginated && isNotNullOrUndefined(pageSize) && isNotNullOrUndefined(requestedPage)) {
+            console.log('!!! use damn paginatied')
             return this.eventsService.findAllPaginated({
                 findOptions,
                 pageSize,
@@ -108,9 +114,10 @@ export class EventsController {
                 const totalPages = paginatedEventResp.count
                 const nextPage = requestedPage * pageSize  > totalPages ? undefined : pageSize + 1
 
+                console.log('!!! total page: ' + totalPages)
                 return new EventsResponse({
                     events: paginatedEventResp.rows.map(eventModelToEventDTO),
-                    paginated,
+                    paginated: true,
                     totalPages,
                     nextPage,
                     page: requestedPage,
@@ -125,8 +132,22 @@ export class EventsController {
                 .then(event => removeSensitiveDataForNonAdmins(request, event))
                 .then(events => new EventsResponse({ events }));
         }
+    }
 
-
+    @Get('test')
+    @ApiOperation({ summary: 'Get all events that have been verified (for public consumptions)' })
+    @ApiResponse({
+        status: 200,
+        description: 'verified events',
+        type: EventsResponse
+    })
+    test(
+        @Req() request: Request
+    ): Promise<EventsResponse> {
+        return this.eventsService.test()
+            .then(events => events.map(eventModelToEventDTO))
+            .then(events => removeSensitiveDataForNonAdmins(request, events))
+            .then(events => new EventsResponse({ events }));
     }
 
     // TODO - Move to events.authenticated.controller

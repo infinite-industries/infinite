@@ -37,7 +37,7 @@ export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
   @Column
   timezone: string;
 
-  @BelongsTo(() => EventModel)
+  // @BelongsTo(() => EventModel)
   event: EventModel
 
   @BelongsTo(() => VenueModel)

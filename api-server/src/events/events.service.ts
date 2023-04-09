@@ -1,6 +1,6 @@
 import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
-import { FindOptions, Sequelize, Transaction, UpdateOptions, fn, col } from 'sequelize';
+import sequelize, {FindOptions, Sequelize, Transaction, UpdateOptions, fn, col, literal} from 'sequelize';
 import {EventModel} from "./models/event.model";
 import DbUpdateResponse, {toDbUpdateResponse} from "../shared-types/db-update-response";
 import DbDeleteResponse, {toDbDeleteResponse} from "../shared-types/db-delete-response";
@@ -17,6 +17,8 @@ import {VenueModel} from "../venues/models/venue.model";
 import {INFINITE_WEB_PORTAL_BASE_URL} from "../constants";
 import {EventAdminMetadataModel} from "./models/event-admin-metadata.model";
 import UpsertEventAdminMetadataRequest from "./dto/upsert-event-admin-metadata-request";
+import {getModelsForEmbedding} from "../utils/get-options-for-events-service-from-embeds-query-param";
+import {Order, OrderItem} from "sequelize/types/lib/model";
 
 @Injectable()
 export class EventsService {
@@ -46,22 +48,53 @@ export class EventsService {
     }
 
     findAll(findOptions?: FindOptions): Promise<EventModel []> {
+        console.log('!!! much options')
+        console.log(findOptions)
         return this.eventModel.findAll(findOptions)
+    }
+
+    test(): Promise<EventModel []> {
+        console.log('!!! test')
+        // const orderItem: OrderItem = [DatetimeVenueModel, '' , '']
+        // const order: Order = [orderItem]
+        const findOptions = {
+            include: [DatetimeVenueModel],
+            order: [ [ {model: DatetimeVenueModel, as: 'date_times' }, 'start_time' ] ],
+            limit: 10
+        };
+
+
+        console.log(findOptions)
+
+        // @ts-ignore
+        return this.eventModel.findAll(findOptions)
+    }
+
+    test2(findOptions?: FindOptions): Promise<EventModel []> {
+        console.log('!!! much options')
+        console.log(findOptions)
+        return this.eventModel.findAll({...findOptions })
     }
 
     findAllPaginated(
         { findOptions = {}, pageSize, requestedPage }: {findOptions?: FindOptions, pageSize: number, requestedPage: number }
     ): Promise<{ count: number, rows: EventModel [] }> {
+
+        //EventModel.hasMany(DatetimeVenueModel, { foreignKey: 'event_id'})
         return this.eventModel.findAndCountAll({
             ...findOptions,
             limit: pageSize,
             offset: requestedPage,
-            include: [DatetimeVenueModel],
-            // order: [fn('min', col('start_time'))],
-            order: [
-                [DatetimeVenueModel, fn('min', col('start_time'))],
-                // [{model: DatetimeVenueModel, as: 'DatetimeVenueModel'}, 'start_time']
-            ],
+            include: [ DatetimeVenueModel ],
+            order: [ [ {model: DatetimeVenueModel, as: 'date_times' }, 'start_time' ] ],
+            logging:(sql) => {
+                console.log('!!! FUCKING QEURY: ', sql);
+            }
+            // order: [
+            //     [DatetimeVenueModel, 'start_time'],
+            //     // [{ model: DatetimeVenueModel, as: 'datetimeVenues' }, fn('min', col('start_time'))],
+            //     // [DatetimeVenueModel, 'start_time', 'asc'],
+            // ],
         })
     }
 
