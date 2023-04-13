@@ -1,2 +1,11 @@
 ---
 # defaults file for db-backup
+pgdatabase: db_name
+pghost: db_host
+pgport: db_port
+pguser: db_user
+pgpassword: db_pass
+backup_aws_region: us-west-2
+backup_aws_s3_bucket: infinite-industries-backups                                                                            
+backup_aws_access_key_id: akia
+backup_aws_secret_access_key: secret

@@ -94,6 +94,22 @@ $ just restart prod
 $ just deploy staging
 ```
 
+### Common Task: Make a DB Backup
+
+Backups are stored on the remote host in ~/backups. A small number of backups
+are retained on the host: backups are also copied to an S3 bucket
+(infinite-industries-backups
+
+**Backup the database in the production environment.**
+```console
+$ just backup prod
+```
+
+**Copy the latest backup from production.**
+```console
+$ scp prod-host:backups/infinite-prod.latest .
+```
+
 ### Task: Rotate ansible-vault Passphrase
 
 ```console

@@ -1,2 +1,26 @@
 ---
-# tasks file for db-backup
+- name: populate .env file for the ops container
+  template:
+    src: templates/ops.env.j2
+    dest: ~/docker-files/ops.env
+- name: create the directory to store backups
+  file:
+    path: ~/backups
+    state: directory
+- name: fetch (or update) the container
+  command: docker pull ghcr.io/jswank/ops:latest
+- name: create systemd files for db-backup
+  become: true
+  copy:
+    src: "{{ item }}"
+    dest: /etc/systemd/system/{{ item }}
+  loop:
+    - infinite-db-backup.service
+    - infinite-db-backup.timer
+- name: enable the timer
+  become: true
+  systemd:
+    name: infinite-db-backup.timer
+    enabled: true
+    state: started
+    daemon_reload: true
