@@ -71,6 +71,14 @@ $ npm run test:cov
 local: http://localhost:3003/api/
 prod:  https://api.infinite.industries/api/
 
+## Debugging Sequelize
+
+If you want to see logs of the queries sequelize is executing you can set SEQUELIZE_LOGGING to true, for example
+
+`SEQUELIZE_LOGGING=true npm run start:dev`
+
+This is not something you should do in production but can be useful locally when updating or adding database queries.
+
 ## License
 
 MIT

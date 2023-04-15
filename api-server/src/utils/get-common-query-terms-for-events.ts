@@ -11,9 +11,6 @@ import { Op, WhereOptions } from "sequelize";
 type GetCommonQueryTermsForEventsArgs = {
     verified?: boolean;
     tags: string[] | string;
-    disablePagination?: boolean;
-    pageSize?: number;
-    requestedPage?: number;
 }
 export default function getCommonQueryTermsForEvents({
     verified,

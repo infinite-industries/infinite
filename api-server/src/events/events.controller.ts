@@ -22,6 +22,10 @@ import { eventModelToEventDTO } from "./dto/eventModelToEventDTO";
 import EventDTO from "./dto/eventDTO";
 import { ENV } from "../constants";
 import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
+import {IsNumber, isNumberString, IsOptional} from "class-validator";
+import {Transform} from "class-transformer";
+import {PaginationDto} from "./dto/pagination-dto";
+import {ApiImplicitQuery} from "@nestjs/swagger/dist/decorators/api-implicit-query.decorator";
 
 require('dotenv').config()
 
@@ -82,62 +86,58 @@ export class EventsController {
         description: 'verified events',
         type: EventsResponse
     })
+    @ApiImplicitQuery({
+        name: "tags",
+        description: "filter by associated tags",
+        example: ["category:online-resource"],
+        required: false,
+        isArray: true,
+        type: String,
+    })
+    @ApiImplicitQuery({
+        name: "page",
+        description: "the requested page",
+        example: 1,
+        required: false,
+        type: Number
+    })
+    @ApiImplicitQuery({
+        name: "pageSize",
+        description: "the number of events to user per page",
+        example: 20,
+        required: false,
+        type: Number
+    })
     getAllVerified(
         @Query('embed') embed: string[] | string = [],
         @Query('tags') tags: string[] | string = [],
-        @Query('pageSize') pageSize = 20,
-        @Query('requestedPage') requestedPage = 1,
-        @Query("disablePagination") disablePagination: 'true' | 'false' = 'false',
-        @Req() request: Request
+        @Query() pagination: PaginationDto
     ): Promise<EventsResponse> {
-        const paginated = disablePagination === 'false'
-
+        const { page, pageSize } = pagination
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
             where: getCommonQueryTermsForEvents({ verified: true, tags: tags })
         };
 
-        if (paginated && isNotNullOrUndefined(pageSize) && isNotNullOrUndefined(requestedPage)) {
-            return this.eventsService.findAllPaginated({
-                findOptions,
-                pageSize,
-                requestedPage
-            }).then((paginatedEventResp) => {
-                const totalPages = paginatedEventResp.count
-                const nextPage = requestedPage * pageSize  > totalPages ? undefined : pageSize + 1
+        return this.eventsService.findAllPaginated({
+            findOptions,
+            pageSize,
+            requestedPage: page
+        }).then((paginatedEventResp) => {
+            const totalEntries = paginatedEventResp.count
+            const totalPages = Math.floor(totalEntries/pageSize)
+            const nextPage = page + 1 <= totalPages ? page + 1 : undefined
 
-                return new EventsResponse({
-                    events: paginatedEventResp.rows.map(eventModelToEventDTO),
-                    paginated: true,
-                    totalPages,
-                    nextPage,
-                    page: requestedPage,
-                })
+            console.log(`totalEntries: ${totalEntries}`)
+            console.log(`offset: ${page * pageSize}`)
+            return new EventsResponse({
+                events: paginatedEventResp.rows.map(eventModelToEventDTO),
+                paginated: true,
+                totalPages: Math.floor(totalEntries/pageSize),
+                nextPage,
+                page,
             })
-        } else if (!disablePagination) {
-            throw new HttpException("Paginated results requested without providing pageSize and requestedPage", 400)
-        } else {
-            return this.eventsService.findAll(findOptions)
-                .then((events) => events.map(eventModelToEventDTO))
-                .then(event => removeSensitiveDataForNonAdmins(request, event))
-                .then(events => new EventsResponse({ events }));
-        }
-    }
-
-    @Get('test')
-    @ApiOperation({ summary: 'Get all events that have been verified (for public consumptions)' })
-    @ApiResponse({
-        status: 200,
-        description: 'verified events',
-        type: EventsResponse
-    })
-    test(
-        @Req() request: Request
-    ): Promise<EventsResponse> {
-        return this.eventsService.test()
-            .then(events => events.map(eventModelToEventDTO))
-            .then(events => removeSensitiveDataForNonAdmins(request, events))
-            .then(events => new EventsResponse({ events }));
+        })
     }
 
     // TODO - Move to events.authenticated.controller

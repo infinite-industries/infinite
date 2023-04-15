@@ -48,53 +48,18 @@ export class EventsService {
     }
 
     findAll(findOptions?: FindOptions): Promise<EventModel []> {
-        console.log('!!! much options')
-        console.log(findOptions)
         return this.eventModel.findAll(findOptions)
-    }
-
-    test(): Promise<EventModel []> {
-        console.log('!!! test')
-        // const orderItem: OrderItem = [DatetimeVenueModel, '' , '']
-        // const order: Order = [orderItem]
-        const findOptions = {
-            include: [DatetimeVenueModel],
-            order: [ [ {model: DatetimeVenueModel, as: 'date_times' }, 'start_time' ] ],
-            limit: 10
-        };
-
-
-        console.log(findOptions)
-
-        // @ts-ignore
-        return this.eventModel.findAll(findOptions)
-    }
-
-    test2(findOptions?: FindOptions): Promise<EventModel []> {
-        console.log('!!! much options')
-        console.log(findOptions)
-        return this.eventModel.findAll({...findOptions })
     }
 
     findAllPaginated(
         { findOptions = {}, pageSize, requestedPage }: {findOptions?: FindOptions, pageSize: number, requestedPage: number }
     ): Promise<{ count: number, rows: EventModel [] }> {
-
-        //EventModel.hasMany(DatetimeVenueModel, { foreignKey: 'event_id'})
         return this.eventModel.findAndCountAll({
             ...findOptions,
             limit: pageSize,
-            offset: requestedPage,
+            offset: requestedPage * pageSize,
             include: [ DatetimeVenueModel ],
             order: [ [ {model: DatetimeVenueModel, as: 'date_times' }, 'start_time' ] ],
-            logging:(sql) => {
-                console.log('!!! FUCKING QEURY: ', sql);
-            }
-            // order: [
-            //     [DatetimeVenueModel, 'start_time'],
-            //     // [{ model: DatetimeVenueModel, as: 'datetimeVenues' }, fn('min', col('start_time'))],
-            //     // [DatetimeVenueModel, 'start_time', 'asc'],
-            // ],
         })
     }
 
