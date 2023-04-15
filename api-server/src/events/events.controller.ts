@@ -22,7 +22,6 @@ import { eventModelToEventDTO } from "./dto/eventModelToEventDTO";
 import EventDTO from "./dto/eventDTO";
 import { ENV } from "../constants";
 import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
-import {DatetimeVenueModel} from "./models/datetime-venue.model";
 
 require('dotenv').config()
 
@@ -52,10 +51,6 @@ export class EventsController {
         } else {
             embed.push('DATE_TIME')
         }
-
-
-        console.log('!!! current event')
-        console.log(embed)
 
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
@@ -97,15 +92,12 @@ export class EventsController {
     ): Promise<EventsResponse> {
         const paginated = disablePagination === 'false'
 
-        console.log(`!!! disablePagination:  ${disablePagination} ${!disablePagination} ${typeof disablePagination}`)
         const findOptions = {
             ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
             where: getCommonQueryTermsForEvents({ verified: true, tags: tags })
         };
 
-        console.log(`!!! fuck: ${!disablePagination} && ${isNotNullOrUndefined(pageSize)} && ${isNotNullOrUndefined(requestedPage)}`)
         if (paginated && isNotNullOrUndefined(pageSize) && isNotNullOrUndefined(requestedPage)) {
-            console.log('!!! use damn paginatied')
             return this.eventsService.findAllPaginated({
                 findOptions,
                 pageSize,
@@ -114,7 +106,6 @@ export class EventsController {
                 const totalPages = paginatedEventResp.count
                 const nextPage = requestedPage * pageSize  > totalPages ? undefined : pageSize + 1
 
-                console.log('!!! total page: ' + totalPages)
                 return new EventsResponse({
                     events: paginatedEventResp.rows.map(eventModelToEventDTO),
                     paginated: true,
@@ -126,7 +117,6 @@ export class EventsController {
         } else if (!disablePagination) {
             throw new HttpException("Paginated results requested without providing pageSize and requestedPage", 400)
         } else {
-            console.log('!!! no paginagtion')
             return this.eventsService.findAll(findOptions)
                 .then((events) => events.map(eventModelToEventDTO))
                 .then(event => removeSensitiveDataForNonAdmins(request, event))

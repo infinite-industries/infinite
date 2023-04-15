@@ -1,7 +1,4 @@
 import { Op, WhereOptions } from "sequelize";
-import {HttpException, Query} from "@nestjs/common";
-import isNotNullOrUndefined from "./is-not-null-or-undefined";
-// import {HttpException, HttpStatus} from "@nestjs/common";
 
 // TODO: it would be nice to be able to say tags=-tag to filter on events _without_ tag
 /**
