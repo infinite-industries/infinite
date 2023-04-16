@@ -12,6 +12,7 @@ Table of Contents
     * [Common Task: Site Status](#common-task-site-status)
     * [Common Task: Restart Services](#common-task-restart-services)
     * [Common Task: Site Deployment](#common-task-site-deployment)
+    * [Common Task: Make a DB Backup](#common-task-make-a-db-backup)
     * [Task: First Time Setup](#task-first-time-setup)
     * [Task: Updating secret information](#task-updating-secret-information)
     * [Task: Adding Domains to TLS certs](#task-adding-domains-to-tls-certs)
