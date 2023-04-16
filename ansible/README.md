@@ -99,7 +99,7 @@ $ just deploy staging
 
 Backups are stored on the remote host in ~/backups. A small number of backups
 are retained on the host: backups are also copied to an S3 bucket
-(infinite-industries-backups
+(infinite-industries-backups), where they are retained for 90 days. 
 
 **Backup the database in the production environment.**
 ```console
