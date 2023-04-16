@@ -19,26 +19,20 @@ const IMAGE_DESTINATIONS = {
 
 const TYPES = Object.keys(IMAGE_DESTINATIONS)
 
-// Send images to AWS S3 only if all environment vars necessary to configure
+// Send images to AWS S3 only if the AWS_S3_UPLOADS_BUCKET is set.
+// Other aspects of the S3 connection are set using standard AWS_ environment variables
+// per https://docs.aws.amazon.com/sdkref/latest/guide/settings-reference.html#EVarSettings
 // are present, falling back on local upload if not
 // TODO: this check might be better refactored into a factory
 // (especially if/when we introduce support for Azure Blob Storage)
-const uploader = process.env.AWS_REGION &&
-  process.env.AWS_ACCESS_KEY_ID &&
-  process.env.AWS_SECRET_ACCESS_KEY &&
-  process.env.AWS_SERVER_URL &&
-  process.env.AWS_S3_UPLOADS_BUCKET
+const uploader = process.env.AWS_S3_UPLOADS_BUCKET
   ? new S3Uploader(
-    process.env.AWS_SERVER_URL,
-    process.env.AWS_REGION,
-    process.env.AWS_ACCESS_KEY_ID,
-    process.env.AWS_SECRET_ACCESS_KEY,
     process.env.AWS_S3_UPLOADS_BUCKET
   )
   : new LocalUploader(process.env.APP_URL)
 
 if (process.env.NODE_ENV === 'production' && uploader instanceof LocalUploader) {
-  logger.error('AWS credentials are not configured; uploads will be stored locally')
+  logger.error('S3 bucket is not specified: uploads will be stored locally')
 } else {
   logger.info(`Image uploads will save to ${uploader instanceof S3Uploader ? 'S3' : 'web server'}`)
 }
