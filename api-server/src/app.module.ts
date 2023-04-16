@@ -1,9 +1,7 @@
 import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import {VenuesModule} from "./venues/venues.module";
-import {SequelizeModule} from "@nestjs/sequelize";
 import {AppController} from "./app.controller";
 import {EventsModule} from "./events/events.module";
-import { ConfigModule } from '@nestjs/config';
 import {AnnouncementsModule} from "./announcements/announcements.module";
 import {UsersModules} from "./users/users.modules";
 import { NotificationsModule } from './notifications/notifications.module';
@@ -13,6 +11,8 @@ import { format, transports } from 'winston'
 import {CalendaringModule} from "./calendaring/calendaring.module";
 import {AuthenticationModule} from "./authentication/authentication.module";
 import {DB_HOST, DB_NAME, DB_PASSWORD, DB_PORT, DB_USER_NAME, SEQUELIZE_LOGGING, SQL_IS_USING_SSL} from './constants';
+import {SequelizeModule} from "@nestjs/sequelize";
+import {ConfigModule} from "@nestjs/config";
 
 const dialectOptions = SQL_IS_USING_SSL
     ?
