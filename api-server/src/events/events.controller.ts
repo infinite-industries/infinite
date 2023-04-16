@@ -114,13 +114,13 @@ export class EventsController {
         @Query() pagination: PaginationDto
     ): Promise<EventsResponse> {
         const { page, pageSize } = pagination
-        const findOptions = {
-            ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-            where: getCommonQueryTermsForEvents({ verified: true, tags: tags })
-        };
+        // const findOptions = {
+        //     ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+        //     where: getCommonQueryTermsForEvents({ verified: true, tags: tags })
+        // };
 
         return this.eventsService.findAllPaginated({
-            findOptions,
+            tags,
             pageSize,
             requestedPage: page
         }).then((paginatedEventResp) => {

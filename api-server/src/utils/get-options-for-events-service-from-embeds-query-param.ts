@@ -18,12 +18,11 @@ export function getOptionsForEventsServiceFromEmbedsQueryParam(embedsFromQuerySt
     } else {
         const include = getModelsForEmbedding(modelNames);
 
-        console.log('!!! modelName: ' + modelNames)
         return {include};
     }
 }
 
-function ensureEmbedQueryStringIsArray(embedsFromQueryString: string[] | string): string [] {
+export function ensureEmbedQueryStringIsArray(embedsFromQueryString: string[] | string): string [] {
     return typeof embedsFromQueryString === 'string' ? [embedsFromQueryString] : embedsFromQueryString;
 }
 

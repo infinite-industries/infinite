@@ -1,6 +1,6 @@
 import {Inject, Injectable, LoggerService} from "@nestjs/common";
 import {InjectModel} from "@nestjs/sequelize";
-import sequelize, {FindOptions, Sequelize, Transaction, UpdateOptions, fn, col, literal} from 'sequelize';
+import {FindOptions, QueryTypes, Sequelize, Transaction, UpdateOptions} from 'sequelize';
 import {EventModel} from "./models/event.model";
 import DbUpdateResponse, {toDbUpdateResponse} from "../shared-types/db-update-response";
 import DbDeleteResponse, {toDbDeleteResponse} from "../shared-types/db-delete-response";
@@ -9,16 +9,16 @@ import {CreateEventRequest} from "./dto/create-event-request";
 import {UpdateEventRequest} from "./dto/update-event-request";
 import BitlyService from "./bitly.service";
 import getSlug from "../utils/get-slug";
-import { WINSTON_MODULE_NEST_PROVIDER } from "nest-winston";
-import { DatetimeVenueModel } from './models/datetime-venue.model';
-import { isNullOrUndefined } from '../utils';
-import { StartEndTimePairs } from '../shared-types/start-end-time-pairs';
+import {WINSTON_MODULE_NEST_PROVIDER} from "nest-winston";
+import {DatetimeVenueModel} from './models/datetime-venue.model';
+import {isNullOrUndefined} from '../utils';
+import {StartEndTimePairs} from '../shared-types/start-end-time-pairs';
 import {VenueModel} from "../venues/models/venue.model";
 import {INFINITE_WEB_PORTAL_BASE_URL} from "../constants";
 import {EventAdminMetadataModel} from "./models/event-admin-metadata.model";
 import UpsertEventAdminMetadataRequest from "./dto/upsert-event-admin-metadata-request";
-import {getModelsForEmbedding} from "../utils/get-options-for-events-service-from-embeds-query-param";
-import {Order, OrderItem} from "sequelize/types/lib/model";
+import isNotNullOrUndefined from "../utils/is-not-null-or-undefined";
+import {ensureEmbedQueryStringIsArray} from "../utils/get-options-for-events-service-from-embeds-query-param";
 
 @Injectable()
 export class EventsService {
@@ -51,16 +51,70 @@ export class EventsService {
         return this.eventModel.findAll(findOptions)
     }
 
-    findAllPaginated(
-        { findOptions = {}, pageSize, requestedPage }: {findOptions?: FindOptions, pageSize: number, requestedPage: number }
+    // findAllPaginated(
+    //     { findOptions = {}, pageSize, requestedPage }: {findOptions?: FindOptions, pageSize: number, requestedPage: number }
+    // ): Promise<{ count: number, rows: EventModel [] }> {
+    //     return this.eventModel.findAndCountAll({
+    //         ...findOptions,
+    //         limit: pageSize,
+    //         offset: requestedPage * pageSize,
+    //         include: [ DatetimeVenueModel ],
+    //         order: [ [ {model: DatetimeVenueModel, as: 'date_times' }, 'start_time' ] ],
+    //     })
+    // }
+
+    async findAllPaginated(
+        { tags = [], pageSize, requestedPage }: {tags: string[] | string, pageSize: number, requestedPage: number }
     ): Promise<{ count: number, rows: EventModel [] }> {
-        return this.eventModel.findAndCountAll({
-            ...findOptions,
-            limit: pageSize,
-            offset: requestedPage * pageSize,
-            include: [ DatetimeVenueModel ],
-            order: [ [ {model: DatetimeVenueModel, as: 'date_times' }, 'start_time' ] ],
-        })
+        const tagClause = this.getTagsClause(tags);
+
+        const paginatedRows: EventModel [] = await this.sequelize.query(`
+            with compressed_event as (
+                SELECT events.*, min(dv.start_time) as first_start_time
+                FROM events
+                JOIN datetime_venue dv on events.id = dv.event_id
+                GROUP BY (events.id)
+                ORDER BY first_start_time DESC
+                OFFSET ${ (requestedPage - 1) * pageSize }
+                LIMIT ${pageSize}
+            )
+            SELECT
+                   events.*,
+                   date_times.id AS "date_times.id",
+                   date_times.event_id AS "date_times.event_id",
+                   date_times.venue_id AS "date_times.venue_id",
+                   date_times.start_time AS "date_times.start_time",
+                   date_times.end_time AS "date_times.end_time",
+                   date_times.optional_title AS "date_times.optional_title",
+                   date_times.timezone AS "date_times.timezone",
+                   date_times."createdAt"      AS "date_times.createdAt",
+                   date_times."updatedAt" AS "date_times.updatedAt",
+                   venues.id AS "venue.id",
+                   venues.name AS "venue.name",
+                   venues.slug AS "venue.slug",
+                   venues.address AS "venue.address",
+                   venues.g_map_link AS "venue.g_map_link",
+                   venues."createdAt" AS "venue.createdAt",
+                   venues."updatedAt" AS "venue.updatedAt",
+                   venues.is_soft_deleted AS "venue.is_soft_deleted",
+                   venues.gps_lat AS "venue.gps_lat",
+                   venues.gps_long AS "venue.gps_long",
+                   venues.gps_alt AS "venue.gps_alt",
+                   venues.street AS "venue.street",
+                   venues.city AS "venue.city",
+                   venues.state AS "venue.state",
+                   venues.zip AS "venue.zip",
+                   venues.neighborhood AS "venue.neighborhood"
+            FROM compressed_event
+            JOIN events ON events.id = compressed_event.id
+            JOIN datetime_venue date_times on events.id = date_times.event_id
+            JOIN venues ON venues.id = date_times.venue_id;
+        `, { type: QueryTypes.SELECT, model: EventModel, mapToModel: true, nest: true })
+
+
+        const totalCount: number = await EventModel.count()
+
+        return { count: totalCount, rows: paginatedRows }
     }
 
     async update(id: string, values: Partial<UpdateEventRequest>): Promise<DbUpdateResponse<EventModel>> {
@@ -200,5 +254,25 @@ export class EventsService {
 
             return submittedEvent
         }
+    }
+
+    private getTagsClause(tags: string [] | string): string {
+        const tagList = ensureEmbedQueryStringIsArray(tags)
+
+        if (tags.length === 0) {
+            return ''
+        }
+
+        const lastTag = tagList.pop()
+
+        if (tags.length === 0) {
+            return `'{"${lastTag}"}' && event.tags`
+        }
+
+        const sqlArray = tagList.reduce((result, tag) => {
+            return `"${tag}", `
+        }, "'{")
+
+        return sqlArray + `, "${lastTag}"}' && event.tags`;
     }
 }
