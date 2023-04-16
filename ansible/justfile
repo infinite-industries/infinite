@@ -14,7 +14,7 @@ init env="staging":
 # 
 # The flags variable can be used to pass arguments to ansible-playbook.  For
 # instance, to override the inventory variable image_version, one might run:
-#   just deploy prod flags='-e image_version=development'
+#   just flags='-e image_version=development' deploy prod
 #
 # deploy the site.
 deploy env="staging":
