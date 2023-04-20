@@ -24,3 +24,11 @@
     enabled: true
     state: started
     daemon_reload: true
+- name: include backup execution
+  include_tasks:
+    file: backup.yml
+    apply:
+      tags:
+        - backup
+  tags:
+    - always
