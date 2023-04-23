@@ -8,7 +8,6 @@ import {
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 
-const SAMPLE_GUID = '166ab8f0-a067-11ea-aa51-cdc3fe7afefa';
 const SAMPLE_DATE = new Date();
 
 @Table({ tableName: 'users' })

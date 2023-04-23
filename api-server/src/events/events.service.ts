@@ -1,6 +1,7 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { FindOptions, Sequelize, Transaction, UpdateOptions } from 'sequelize';
+import { FindOptions, Transaction, UpdateOptions } from 'sequelize';
+import { Sequelize } from 'sequelize-typescript';
 import { EventModel } from './models/event.model';
 import DbUpdateResponse, {
   toDbUpdateResponse,
@@ -69,7 +70,7 @@ export class EventsService {
         };
 
         const updatedEvent = await this.eventModel.update(
-          values,
+          values as Partial<EventModel>,
           updateQueryOptions,
         );
 
@@ -82,7 +83,9 @@ export class EventsService {
 
         return updatedEvent;
       })
-      .then(toDbUpdateResponse);
+      .then((resp) =>
+        toDbUpdateResponse(resp as unknown as [number, EventModel[]]),
+      );
   }
 
   private async updateDatetimeVenueEntries(
@@ -114,7 +117,7 @@ export class EventsService {
         await this.fillInServerSideGeneratedAttributes(newEvent);
 
       const event = await this.eventModel.create(
-        eventWithServerSideGeneratedAttributes,
+        eventWithServerSideGeneratedAttributes as Partial<EventModel>,
         transactionHost,
       );
 
@@ -139,6 +142,11 @@ export class EventsService {
 
     const requests = dateTimes.map(
       async ({ start_time, end_time, timezone, optional_title }) => {
+        const startTimeDt =
+          typeof start_time === 'string' ? new Date(start_time) : start_time;
+        const endTimeDt =
+          typeof end_time === 'string' ? new Date(end_time) : end_time;
+
         const id = uuidv4();
 
         return this.dateTimeVenueModel.create(
@@ -146,8 +154,8 @@ export class EventsService {
             id,
             event_id: eventId,
             venue_id: venueId,
-            start_time,
-            end_time,
+            start_time: startTimeDt,
+            end_time: endTimeDt,
             timezone,
             optional_title,
           },
@@ -161,10 +169,6 @@ export class EventsService {
 
   async delete(id: string): Promise<DbDeleteResponse> {
     return this.eventModel.destroy({ where: { id } }).then(toDbDeleteResponse);
-  }
-
-  async getEventMetadata(id: string): Promise<EventAdminMetadataModel> {
-    return this.eventAdminMetadataModel.findOne({ where: { id } });
   }
 
   async getAllEventMetaData(): Promise<EventAdminMetadataModel[]> {

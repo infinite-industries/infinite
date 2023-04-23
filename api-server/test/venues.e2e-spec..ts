@@ -17,7 +17,7 @@ import { CURRENT_VERSION_URI } from '../src/utils/versionts';
 import createJwtForRandomUser from './test-helpers/creaeteJwt';
 import { PORT } from '../src/constants';
 
-const faker = require('faker');
+import * as faker from 'faker';
 
 describe('Venues (e2e)', () => {
   const server = request('http://localhost:' + PORT);
@@ -136,10 +136,8 @@ describe('Venues (e2e)', () => {
         const statusResp: string = response.body.status;
         const venueResp: Record<string, unknown> = response.body.venue;
 
-        const originalModelAsJson = givenActiveExistingVenue.toJSON() as Record<
-          string,
-          unknown
-        >;
+        const originalModelAsJson = givenActiveExistingVenue.toJSON();
+
         const expectedModel: Record<string, unknown> = {
           ...givenActiveExistingVenue.toJSON(),
           is_soft_deleted: true,
@@ -192,10 +190,7 @@ describe('Venues (e2e)', () => {
         const statusResp: string = response.body.status;
         const venueResp: Record<string, unknown> = response.body.venue;
 
-        const originalModelAsJson = givenActiveExistingVenue.toJSON() as Record<
-          string,
-          unknown
-        >;
+        const originalModelAsJson = givenActiveExistingVenue.toJSON();
 
         const expectedSlug = getSlug(givenNameToUpdate);
         const expectedModelResp = {
@@ -358,7 +353,7 @@ describe('Venues (e2e)', () => {
       state: faker.address.state(),
       zip: faker.address.zipCode(),
       neighborhood: faker.address.county(),
-      g_map_link: faker.random.uuid(),
+      g_map_link: faker.datatype.uuid(),
       ...overrides,
     };
   }

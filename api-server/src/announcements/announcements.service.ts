@@ -57,7 +57,14 @@ export class AnnouncementsService {
 
     return this.announcementModel
       .update(updatedAnnouncement, updateQueryOptions)
-      .then(toDbUpdateResponse)
+      .then((resp) =>
+        toDbUpdateResponse(
+          resp as unknown as [
+            affectedCount: number,
+            models: AnnouncementModel[],
+          ],
+        ),
+      )
       .then(
         (dbUpdateResponse: DbUpdateResponse<AnnouncementModel>) =>
           dbUpdateResponse[1],

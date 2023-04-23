@@ -107,7 +107,7 @@ export default class EventsAuthenticatedController {
 
     return this.eventsService
       .delete(id)
-      .then((response) => ({ id, status: 'success' }));
+      .then(() => ({ id, status: 'success' }));
   }
 
   @Put(':id/admin-metadata')

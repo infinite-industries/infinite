@@ -26,6 +26,7 @@ export const {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
 } = require(__dirname + '/db_constants.js');
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
 // === Top Level Service (name, ports env, etc..) ===

@@ -54,6 +54,7 @@
     "sequelize-cli": "^6.2.0",
     "sequelize-typescript": "^2.1.5",
     "slack-notify": "^0.1.7",
+    "swagger-ui-express": "^4.6.2",
     "uuid": "^8.3.0",
     "winston": "^3.3.3"
   },
@@ -66,7 +67,7 @@
     "@types/jest": "27.5.0",
     "@types/node": "^16.0.0",
     "@types/node-geocoder": "^4.2.0",
-    "@types/sequelize": "^4.28.9",
+    "@types/sequelize": "^4.28.14",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
     "@typescript-eslint/parser": "^5.58.0",

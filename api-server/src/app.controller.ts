@@ -6,8 +6,6 @@ import { CURRENT_VERSION_URI, SUPPORTED_VERSIONS } from './utils/versionts';
 @Controller()
 @ApiTags('API Root')
 export class AppController {
-  constructor() {}
-
   @Get('version')
   @ApiOperation({ summary: 'get version information about this api' })
   getVersion(): VersionResponse {
