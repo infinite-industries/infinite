@@ -86,6 +86,18 @@ module.exports = {
         SET tags = mode_removed.tags
         FROM mode_removed
         WHERE events.id = mode_removed.id;
+
+        /* remove remaining category, condition, and mode labels that were */
+        /* missed by above updates because they leave behind an empty array */
+
+        WITH old_tags_removed AS(
+          SELECT * FROM (SELECT id, UNNEST(tags) AS tag FROM events) unnested
+          WHERE (tag LIKE 'mode:%' OR tag LIKE 'category:%' OR tag LIKE 'condition:%')
+        )
+        UPDATE events
+        SET tags = ARRAY[]::character varying[]::character varying(255)[]
+        FROM old_tags_removed
+        WHERE events.id = old_tags_removed.id;
     `)
     ]
   },
