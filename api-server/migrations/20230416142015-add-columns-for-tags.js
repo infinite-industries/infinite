@@ -5,7 +5,7 @@ module.exports = {
     return [
       queryInterface.addColumn(
         'datetime_venue',
-        'type',
+        'category',
         {
           type: Sequelize.STRING,
           allowNull: true
@@ -92,7 +92,7 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     return [
-      queryInterface.removeColumn('datetime_venue', 'type'),
+      queryInterface.removeColumn('datetime_venue', 'category'),
       queryInterface.sequelize.query(`
         UPDATE events
         SET tags = tags || CONCAT('category:', category)::VARCHAR(255)
