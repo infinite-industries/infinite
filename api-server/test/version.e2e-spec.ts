@@ -1,15 +1,14 @@
-import startDatabase from "./test-helpers/e2e-stack/start-database";
-import runMigrations from "./test-helpers/e2e-stack/run-migrations";
-import startApplication from "./test-helpers/e2e-stack/start-application";
-import * as request from "supertest";
-import {ChildProcessWithoutNullStreams} from "child_process";
-import {StartedTestContainer} from "testcontainers";
-import {TestingModule} from "@nestjs/testing";
-import killApp from "./test-helpers/e2e-stack/kill-app";
-import stopDatabase from "./test-helpers/e2e-stack/stop-database";
-import isNotNullOrUndefined from "../src/utils/is-not-null-or-undefined";
-import buildDbConnectionsForTests from "./test-helpers/e2e-stack/build-db-connection-for-tests";
-
+import startDatabase from './test-helpers/e2e-stack/start-database';
+import runMigrations from './test-helpers/e2e-stack/run-migrations';
+import startApplication from './test-helpers/e2e-stack/start-application';
+import * as request from 'supertest';
+import { ChildProcessWithoutNullStreams } from 'child_process';
+import { StartedTestContainer } from 'testcontainers';
+import { TestingModule } from '@nestjs/testing';
+import killApp from './test-helpers/e2e-stack/kill-app';
+import stopDatabase from './test-helpers/e2e-stack/stop-database';
+import isNotNullOrUndefined from '../src/utils/is-not-null-or-undefined';
+import buildDbConnectionsForTests from './test-helpers/e2e-stack/build-db-connection-for-tests';
 
 const APP_PORT = process.env.PORT || 3003;
 const server = request('http://localhost:' + APP_PORT);
@@ -17,62 +16,59 @@ const server = request('http://localhost:' + APP_PORT);
 let appUnderTest: ChildProcessWithoutNullStreams;
 let dbContainer: StartedTestContainer;
 
-let testingModule: TestingModule
+let testingModule: TestingModule;
 
 let dbHostPort: number;
 
-describe("Version (e2e)", () => {
-    beforeAll(async (done) => {
-        console.info('preparing for test suite -- Versions');
+describe('Version (e2e)', () => {
+  beforeAll(async (done) => {
+    console.info('preparing for test suite -- Versions');
 
-        const dbInfo = await startDatabase();
+    const dbInfo = await startDatabase();
 
-        dbContainer = dbInfo.dbContainer;
-        dbHostPort = dbInfo.dbHostPort;
+    dbContainer = dbInfo.dbContainer;
+    dbHostPort = dbInfo.dbHostPort;
 
-        await runMigrations(dbHostPort);
+    await runMigrations(dbHostPort);
 
-        appUnderTest = await startApplication(dbHostPort);
+    appUnderTest = await startApplication(dbHostPort);
 
-        // TODO (CAW) -- This should not be needed for this test but for some reason not invoking this leads to failures when tests are ran on github
-        const databaseModels = await buildDbConnectionsForTests(dbHostPort);
-        testingModule = databaseModels.testingModule
+    // TODO (CAW) -- This should not be needed for this test but for some reason not invoking this leads to failures when tests are ran on github
+    const databaseModels = await buildDbConnectionsForTests(dbHostPort);
+    testingModule = databaseModels.testingModule;
 
-        console.info('test suite ready');
+    console.info('test suite ready');
+
+    done();
+  }, 30000);
+
+  afterAll(async (done) => {
+    console.info('begin cleanup for versions');
+
+    await killApp(appUnderTest);
+
+    appUnderTest.removeAllListeners();
+
+    await stopDatabase(dbContainer);
+
+    if (isNotNullOrUndefined(testingModule)) await testingModule.close();
+
+    console.info('done cleaning up for versions');
+    done();
+  });
+
+  it('can query version information', async function (done) {
+    return server
+      .get(`/version`)
+      .expect(200)
+      .then(async (response) => {
+        // should only get back 2 of the three events
+        expect(response.body).toEqual({
+          version: 'v1',
+          supportedVersions: ['v1'],
+        });
 
         done();
-    }, 30000);
-
-    afterAll(async (done) => {
-        console.info('begin cleanup for versions')
-
-        await killApp(appUnderTest);
-
-        appUnderTest.removeAllListeners()
-
-        await stopDatabase(dbContainer);
-
-        if (isNotNullOrUndefined(testingModule))
-            await testingModule.close();
-
-        console.info('done cleaning up for versions')
-        done();
-    })
-
-    it('can query version information', async function (done) {
-
-        return server.get(`/version`)
-            .expect(200)
-            .then(async (response) => {
-                // should only get back 2 of the three events
-                expect(response.body).toEqual({
-                   version: 'v1',
-                   supportedVersions: ['v1']
-                });
-
-                done();
-            })
-    })
-
-})
-
+      });
+  });
+});
