@@ -23,7 +23,7 @@ module.exports = {
         'events',
         'condition',
         {
-          type: Sequelize.STRING,
+          type: Sequelize.ARRAY(Sequelize.STRING),
           allowNull: true
         }
       ),
@@ -56,7 +56,7 @@ module.exports = {
         /* move condition labels from events.tags to events.condition */
 
         UPDATE events
-        SET condition = replace(tag, 'condition:', '')
+        SET condition = ARRAY[replace(tag, 'condition:', '')]
         FROM (SELECT id, unnest(tags) AS tag FROM events) AS unnested
         WHERE tag LIKE 'condition:%' AND events.id = unnested.id;
 
@@ -111,8 +111,13 @@ module.exports = {
         WHERE category IS NOT NULL;
 
         UPDATE events
-        SET tags = tags || CONCAT('condition:', condition)::VARCHAR(255)
-        WHERE condition IS NOT NULL;
+        SET tags = tags || agg FROM
+        (SELECT id, ARRAY_AGG(conditions) AS agg FROM
+        (SELECT id, CONCAT('condition:', UNNEST(condition))::VARCHAR(255) AS conditions
+        FROM events
+        ) AS unnested GROUP BY id) AS renested
+        WHERE condition IS NOT NULL
+        AND events.id = renested.id;
 
         UPDATE events
         SET tags = tags || CONCAT('mode:', mode)::VARCHAR(255)
