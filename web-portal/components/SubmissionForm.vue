@@ -638,9 +638,12 @@
           'gallery',
           'music',
           'theater',
+          'dance',
           'film',
+          'literary arts',
           'talk',
-          'festival'
+          'festival',
+          'comedy'
         ]
       },
 
