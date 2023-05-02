@@ -13,9 +13,9 @@ init env="staging":
 # 
 # The flags variable can be used to pass arguments to ansible-playbook.  For
 # instance, to override the inventory variable image_version, one might run:
-#   just deploy prod flags='-e image_version=development'
+#   just flags='-e image_version=development' deploy prod
 #
-# Deploy the site.
+# deploy the site.
 deploy env="staging":
   ansible-playbook -l {{ env }} {{ flags }} deploy_site_playbook.yml
 
@@ -38,6 +38,10 @@ status env="staging":
 # pull the (correct) updated docker image(s)
 update-images env="staging":
   ansible -m command -a 'chdir=~/docker-files docker-compose pull' {{ env }}
+
+# perform a (database) backup
+backup env="staging":
+  ansible-playbook -l {{ env }} -t backup {{ flags }} deploy_site_playbook.yml
 
 # cache the passphrase used to decrypt files
 cache-pass:
