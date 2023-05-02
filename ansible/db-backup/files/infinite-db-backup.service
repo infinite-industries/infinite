@@ -6,7 +6,7 @@ User=infinite
 Group=infinite
 Type=oneshot
 WorkingDirectory=/home/infinite
-ExecStart=docker run --env-file docker-files/ops.env -v /home/infinite/backups:/var/tmp/backups --rm ghcr.io/jswank/ops:latest bin/db-backup 
+ExecStart=docker run --env-file docker-files/ops.env -v /home/infinite/backups:/var/tmp/backups --rm ghcr.io/infinite-industries/ops:latest bin/db-backup 
 
 [Install]
 WantedBy= multi-user.target
