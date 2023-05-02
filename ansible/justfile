@@ -9,7 +9,6 @@ help:
 init env="staging":
   ansible-playbook -l {{ env }} {{ flags }} base_playbook.yml 
 
-
 # Usage: `just deploy` or `just deploy prod`
 # 
 # The flags variable can be used to pass arguments to ansible-playbook.  For
@@ -34,7 +33,7 @@ status env="staging":
   ansible -b -m service -a 'name=infinite state=restarted' {{ env }} >/dev/null 2>&1 
   printf "done\n"
 
-  just status
+  just status {{env}}
 
 # pull the (correct) updated docker image(s)
 update-images env="staging":
@@ -52,5 +51,5 @@ cache-pass:
   stty -echo
   read pass
   printf '\n'
-  printf '%s\n' "${pass}" > .password
+  printf '%s\n' "${pass}" > {{justfile_directory()}}/.password
   chmod 600 .password
