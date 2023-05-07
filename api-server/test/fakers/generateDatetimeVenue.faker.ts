@@ -1,10 +1,15 @@
-import { DateTimeVenueFields, DatetimeVenueModel } from '../../src/events/models/datetime-venue.model';
+import {
+  DateTimeVenueFields,
+  DatetimeVenueModel,
+} from '../../src/events/models/datetime-venue.model';
 import { v4 as uuidv4 } from 'uuid';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const faker = require('faker')
+const faker = require('faker');
 
-export function generateDatetimeVenueFaker(overrides: DateTimeVenueFields = {}): DatetimeVenueModel {
+export function generateDatetimeVenueFaker(
+  overrides: DateTimeVenueFields = {},
+): DatetimeVenueModel {
   return new DatetimeVenueModel({
     id: uuidv4(),
     event_id: uuidv4(),
@@ -12,6 +17,6 @@ export function generateDatetimeVenueFaker(overrides: DateTimeVenueFields = {}):
     start_time: faker.datatype.datetime(),
     end_time: faker.datatype.datetime(),
     optional_title: faker.lorem.words(3),
-    ...overrides
+    ...overrides,
   } as DateTimeVenueFields);
 }

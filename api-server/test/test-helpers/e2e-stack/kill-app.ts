@@ -1,27 +1,29 @@
-import {ChildProcessWithoutNullStreams} from "child_process";
-import isNotNullOrUndefined from "../../../src/utils/is-not-null-or-undefined";
+import { ChildProcessWithoutNullStreams } from 'child_process';
+import isNotNullOrUndefined from '../../../src/utils/is-not-null-or-undefined';
 
 function killApp(appUnderTest: ChildProcessWithoutNullStreams): Promise<void> {
-    console.info('stopping the test app')
+  console.info('stopping the test app');
 
-    if (isNotNullOrUndefined(appUnderTest)) {
-        return new Promise(resolve => {
-            appUnderTest.on('exit', (code) => {
-                appUnderTest.stdout.removeAllListeners()
-                appUnderTest.stderr.removeAllListeners()
-                appUnderTest.removeAllListeners()
+  if (isNotNullOrUndefined(appUnderTest)) {
+    return new Promise((resolve) => {
+      appUnderTest.on('exit', (code) => {
+        appUnderTest.stdout.removeAllListeners();
+        appUnderTest.stderr.removeAllListeners();
+        appUnderTest.removeAllListeners();
 
-                console.log(`child process ${appUnderTest.pid} exited with code ${code}`);
+        console.log(
+          `child process ${appUnderTest.pid} exited with code ${code}`,
+        );
 
-                resolve()
-            })
+        resolve();
+      });
 
-            appUnderTest.kill('SIGINT')
-        })
-    } else {
-        console.warn('null passed to killApp')
-        return Promise.resolve()
-    }
+      appUnderTest.kill('SIGINT');
+    });
+  } else {
+    console.warn('null passed to killApp');
+    return Promise.resolve();
+  }
 }
 
 export default killApp;
