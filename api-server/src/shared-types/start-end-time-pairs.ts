@@ -1,6 +1,6 @@
 export interface StartEndTimePairs {
-  start_time: Date | string;
-  end_time: Date | string;
+  start_time: Date;
+  end_time: Date;
   venue_id: string;
   timezone: string;
   optional_title?: string;

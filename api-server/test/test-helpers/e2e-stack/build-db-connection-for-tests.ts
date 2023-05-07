@@ -18,6 +18,8 @@ const NUXT_INTERNAL_POSTFIX = 'Repository';
 async function buildDbConnectionsForTests(
   dbPort: number,
 ): Promise<DatabaseModels> {
+  console.log('!!! buildDbConnectionsForTests');
+
   const testingModule: TestingModule = await Test.createTestingModule({
     imports: [
       SequelizeModule.forRoot({

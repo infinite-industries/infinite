@@ -1,20 +1,21 @@
 import { EventModel } from '../models/event.model';
 import EventDTO from './eventDTO';
-import { StartEndTimePairs } from '../../shared-types/start-end-time-pairs';
 import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';
+import { DatetimeVenueModel } from '../models/datetime-venue.model';
 
 export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
-  const date_times: StartEndTimePairs[] = isNotNullOrUndefined(
+  console.log('!!! here: ' + eventModelToEventDTO);
+  const date_times: DatetimeVenueModel[] = isNotNullOrUndefined(
     eventModel.date_times,
   )
     ? eventModel.date_times.map((dt) => {
-        return {
-          start_time: dt.start_time.toISOString(),
-          end_time: dt.end_time.toISOString(),
+        return new DatetimeVenueModel({
+          start_time: dt.start_time,
+          end_time: dt.end_time,
           venue_id: dt.venue_id,
           timezone: dt.timezone,
           optional_title: dt.optional_title,
-        };
+        });
       })
     : [];
 

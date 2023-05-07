@@ -27,7 +27,8 @@ let testingModule: TestingModule;
 let dbHostPort: number;
 
 describe('Announcements (e2e)', () => {
-  beforeAll(async (done) => {
+  beforeAll(async () => {
+    console.log('!!! AAHHH COME ON')
     console.info('preparing for test suite -- Announcements');
 
     const dbInfo = await startDatabase();
@@ -46,10 +47,10 @@ describe('Announcements (e2e)', () => {
 
     console.info('test suite ready');
 
-    done();
+    return Promise.resolve();
   }, 30000);
 
-  afterAll(async (done) => {
+  afterAll(async () => {
     console.info('begin cleanup for announcements');
 
     await killApp(appUnderTest);
@@ -61,14 +62,14 @@ describe('Announcements (e2e)', () => {
     if (isNotNullOrUndefined(testingModule)) await testingModule.close();
 
     console.info('done cleaning up for announcements');
-    done();
+    return Promise.resolve();
   });
 
   beforeEach(async () => {
     await deleteAllAnnouncements();
   });
 
-  it('can query all announcements', async function (done) {
+  it('can query all announcements', async function () {
     const announcement1 = await createAnnouncement(
       generateAnnouncementRequest(),
     );
@@ -89,8 +90,6 @@ describe('Announcements (e2e)', () => {
         expect(response.body.announcements[1].message).toEqual(
           announcement2.message,
         );
-
-        done();
       });
   });
 

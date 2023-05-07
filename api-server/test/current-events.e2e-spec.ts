@@ -34,7 +34,7 @@ let testingModule: TestingModule;
 let dbHostPort: number;
 
 describe('CurrentEvents (e2e)', () => {
-  beforeAll(async (done) => {
+  beforeAll(async () => {
     console.info('preparing for test suite');
 
     const dbInfo = await startDatabase();
@@ -56,10 +56,10 @@ describe('CurrentEvents (e2e)', () => {
 
     console.log('test suite ready');
 
-    done();
+    return Promise.resolve();
   }, 30000);
 
-  afterAll(async (done) => {
+  afterAll(async () => {
     console.info('begin cleanup for events');
 
     await killApp(appUnderTest);
@@ -73,10 +73,11 @@ describe('CurrentEvents (e2e)', () => {
     }
 
     console.info('done cleaning up for events');
-    done();
+
+    return Promise.resolve();
   }, 30000);
 
-  beforeEach(async (done) => {
+  beforeEach(async () => {
     console.info('preparing for test');
 
     if (datetimeVenueModel) await deleteAllDatetimeVenues();
@@ -85,10 +86,10 @@ describe('CurrentEvents (e2e)', () => {
 
     if (venueModel) await deleteAllVenues();
 
-    done();
+    return Promise.resolve();
   });
 
-  it('can query events/current-verified', async (done) => {
+  it('can query events/current-verified', async () => {
     console.info(
       'running first test: ' +
         `http://localhost:${PORT}/${CURRENT_VERSION_URI}/events/current-verified`,
@@ -96,11 +97,10 @@ describe('CurrentEvents (e2e)', () => {
 
     return server
       .get(`/${CURRENT_VERSION_URI}/events/current-verified`)
-      .expect(200)
-      .then(() => done());
+      .expect(200);
   });
 
-  it('returns only verified events', async function (done) {
+  it('returns only verified events', async function () {
     const dateTimesForEventInFuture1 = getDateTimesInFuture();
     const dateTimesForEventInFuture2 = getDateTimesInFuture();
 
@@ -128,12 +128,10 @@ describe('CurrentEvents (e2e)', () => {
         expect(response.body.events.map((event) => event.id)).toEqual([
           eventVerified.id,
         ]);
-
-        done();
       });
   });
 
-  it('returns only events in the future or recent past', async function (done) {
+  it('returns only events in the future or recent past', async function () {
     const dateTimesForEventTooFarInPast = getDateTimesInPastBeyondWindow();
     const dateTimesForEventInFuture = getDateTimesInFuture();
     const dateTimesForEvenInPast = getDateTimesInPastButInsideWindow();
@@ -170,12 +168,10 @@ describe('CurrentEvents (e2e)', () => {
         const returnedIds = response.body.events.map((event) => event.id);
 
         expect(returnedIds).toEqual(expectedEventIdsReturned);
-
-        done();
       });
   });
 
-  it('sorts multi-date events by most recent non-expired start-time', async (done) => {
+  it('sorts multi-date events by most recent non-expired start-time', async () => {
     // order in this list shouldn't matter
     const multiDayDateTimes = [
       getDateTimePair(getTimePlusX(today, 11)),
@@ -216,12 +212,10 @@ describe('CurrentEvents (e2e)', () => {
           multiDayEvent.id,
           singleDayEvent2.id,
         ]);
-
-        done();
       });
   });
 
-  it('filters expired events from multi-day events and finds correct first day/last day times', async (done) => {
+  it('filters expired events from multi-day events and finds correct first day/last day times', async () => {
     const firstDayTime = getDateTimePair(getTimePlusX(today, -eventWindow + 1));
     const secondDayTime = getDateTimePair(
       getTimePlusX(today, -eventWindow + 2),
@@ -258,12 +252,10 @@ describe('CurrentEvents (e2e)', () => {
         expect(new Date(remainingTimes[1].start_time)).toEqual(
           secondDayTime.start_time,
         );
-
-        done();
       });
   });
 
-  it('returns events with all expected field values', async (done) => {
+  it('returns events with all expected field values', async () => {
     const futureTime = getDateTimePair(getTimePlusX(today, 1));
     const venue = await createVenue(generateVenue(venueModel));
 
@@ -311,8 +303,6 @@ describe('CurrentEvents (e2e)', () => {
         expect(event.date_times[0].end_time).toEqual(
           futureTime.end_time.toISOString(),
         );
-
-        done();
       });
   });
 

@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { EventModel } from '../../src/events/models/event.model';
-import { StartEndTimePairs } from '../../src/shared-types/start-end-time-pairs';
+import { DatetimeVenueModel } from "../../src/events/models/datetime-venue.model";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const faker = require('faker');
@@ -9,8 +9,13 @@ function generateEvent(
   eventModelConstructor: typeof EventModel,
   venue_id: string,
   verified: boolean,
-  date_times: StartEndTimePairs[] = [],
+  startEndTimeValues: Partial<DatetimeVenueModel>[] = [],
 ): EventModel {
+  console.log('!!! here generateEvent');
+  const dateTimes: DatetimeVenueModel[] = startEndTimeValues.map(
+    (values) => new DatetimeVenueModel(values),
+  );
+
   return new eventModelConstructor({
     id: uuidv4(),
     venue_id,
@@ -18,11 +23,7 @@ function generateEvent(
     title: faker.company.companyName(),
     slug: faker.lorem.slug(),
     multi_day: false,
-    date_times: date_times.map((dt: StartEndTimePairs) => ({
-      ...dt,
-      start_time: new Date(dt.start_time),
-      end_time: new Date(dt.end_time),
-    })),
+    date_times: dateTimes,
     image: faker.internet.url(),
     social_image: faker.internet.url(),
     admission_fee: faker.commerce.price(),

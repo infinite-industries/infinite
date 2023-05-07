@@ -21,7 +21,7 @@ let testingModule: TestingModule;
 let dbHostPort: number;
 
 describe('Version (e2e)', () => {
-  beforeAll(async (done) => {
+  beforeAll(async () => {
     console.info('preparing for test suite -- Versions');
 
     const dbInfo = await startDatabase();
@@ -39,10 +39,10 @@ describe('Version (e2e)', () => {
 
     console.info('test suite ready');
 
-    done();
+    return Promise.resolve();
   }, 30000);
 
-  afterAll(async (done) => {
+  afterAll(async () => {
     console.info('begin cleanup for versions');
 
     await killApp(appUnderTest);
@@ -54,10 +54,11 @@ describe('Version (e2e)', () => {
     if (isNotNullOrUndefined(testingModule)) await testingModule.close();
 
     console.info('done cleaning up for versions');
-    done();
+
+    return Promise.resolve();
   });
 
-  it('can query version information', async function (done) {
+  it('can query version information', async function () {
     return server
       .get(`/version`)
       .expect(200)
@@ -67,8 +68,6 @@ describe('Version (e2e)', () => {
           version: 'v1',
           supportedVersions: ['v1'],
         });
-
-        done();
       });
   });
 });
