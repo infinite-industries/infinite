@@ -12,6 +12,7 @@ Table of Contents
     * [Common Task: Site Status](#common-task-site-status)
     * [Common Task: Restart Services](#common-task-restart-services)
     * [Common Task: Site Deployment](#common-task-site-deployment)
+    * [Common Task: Make a DB Backup](#common-task-make-a-db-backup)
     * [Task: First Time Setup](#task-first-time-setup)
     * [Task: Updating secret information](#task-updating-secret-information)
     * [Task: Adding Domains to TLS certs](#task-adding-domains-to-tls-certs)
@@ -92,6 +93,22 @@ $ just restart prod
 
 ```console
 $ just deploy staging
+```
+
+### Common Task: Make a DB Backup
+
+Backups are stored on the remote host in ~/backups. A small number of backups
+are retained on the host: backups are also copied to an S3 bucket
+(infinite-industries-backups), where they are retained for 90 days. 
+
+**Backup the database in the production environment.**
+```console
+$ just backup prod
+```
+
+**Copy the latest backup from production.**
+```console
+$ scp prod-host:backups/infinite-prod.latest .
 ```
 
 ### Task: Rotate ansible-vault Passphrase

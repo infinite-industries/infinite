@@ -1,0 +1,10 @@
+---
+# Do a backup
+- name: create a backup
+  become: true
+  systemd:
+    name: infinite-db-backup
+    state: started
+- name: echo backup info
+  debug:
+    msg: The database backup is available at ~/backups/{{ pgdatabase }}.latest
