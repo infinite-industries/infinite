@@ -11,7 +11,6 @@ function generateEvent(
   verified: boolean,
   startEndTimeValues: Partial<DatetimeVenueModel>[] = [],
 ): EventModel {
-  console.log('!!! here generateEvent');
   const dateTimes: DatetimeVenueModel[] = startEndTimeValues.map(
     (values) => new DatetimeVenueModel(values),
   );

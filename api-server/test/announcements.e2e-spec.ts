@@ -28,7 +28,6 @@ let dbHostPort: number;
 
 describe('Announcements (e2e)', () => {
   beforeAll(async () => {
-    console.log('!!! AAHHH COME ON')
     console.info('preparing for test suite -- Announcements');
 
     const dbInfo = await startDatabase();
