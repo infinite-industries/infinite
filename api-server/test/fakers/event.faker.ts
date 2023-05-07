@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { EventModel } from '../../src/events/models/event.model';
-import { DatetimeVenueModel } from "../../src/events/models/datetime-venue.model";
+import { DatetimeVenueModel } from '../../src/events/models/datetime-venue.model';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const faker = require('faker');
