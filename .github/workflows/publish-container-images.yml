@@ -24,8 +24,6 @@ jobs:
     steps:
       - name: checkout branch
         uses: actions/checkout@v3
-        with:
-          ref: $REPO_REF
       - name: install casey/just
         uses: extractions/setup-just@v1
         with:
