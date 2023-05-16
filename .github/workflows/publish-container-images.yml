@@ -6,7 +6,6 @@ name: Publish container images
 # build & tag the container image
 on:
   workflow_dispatch:
-    environment: container-image-publication
     inputs:
       ref_name:
         description: 'A branch or to use'
@@ -28,7 +27,6 @@ on:
 
 jobs:
   publish-ops-server:
-    environment: container-image-publication
     runs-on: ubuntu-latest
     steps:
       - name: checkout branch
