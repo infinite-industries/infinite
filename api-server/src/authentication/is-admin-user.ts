@@ -1,14 +1,14 @@
-import {Request} from "express";
-import {parseJwt, UserInformation} from "./parse-jwt";
+import { Request } from 'express';
+import { parseJwt, UserInformation } from './parse-jwt';
 
 async function isAdminUser(req: Request): Promise<boolean> {
-    try {
-        const userInformation: UserInformation = await parseJwt(req);
+  try {
+    const userInformation: UserInformation = await parseJwt(req);
 
-        return userInformation.isInfiniteAdmin;
-    } catch (ex) {
-        return false;
-    }
+    return userInformation.isInfiniteAdmin;
+  } catch (ex) {
+    return false;
+  }
 }
 
-export default isAdminUser
+export default isAdminUser;

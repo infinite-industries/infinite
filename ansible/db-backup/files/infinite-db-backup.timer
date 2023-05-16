@@ -1,0 +1,10 @@
+[Unit]
+Description=Backup the database daily
+
+[Timer]
+OnCalendar=*-*-* 4:00:00
+Persistent=true
+Unit=infinite-db-backup.service
+
+[Install]
+WantedBy=timers.target

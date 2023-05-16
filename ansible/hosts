@@ -1,20 +1,8 @@
-[infinite-staging]
-staging.infinite.industries
+[staging]
+staging.infinite.industries ansible_user=infinite
 
-[infinite-staging:vars]
-ansible_port=22
-ansible_user=infinite
+[prod]
+23.100.45.102 ansible_user=infinite
 
-[infinite-prod]
-23.100.45.102
-
-[infinite-prod:vars]
-ansible_port=22
-ansible_user=infinite
-
-[infinite-local]
-192.168.1.43
-
-[infinite-local:vars]
-ansible_port=22
-ansible_user=chris
+[local]
+192.168.1.43 ansible_user=chris

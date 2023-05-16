@@ -32,7 +32,7 @@
         <v-flex xs12 sm3>
           <label class="category-option">
             <input type="radio" v-model="eventMode" value="online">
-            <strong>Online</strong>
+            <strong>Online/On-air</strong>
           </label>
         </v-flex>
         <v-flex xs12 sm4>
@@ -82,6 +82,23 @@
           <date-time-picker v-model="calendar_event.date_times" :mode="user_action" />
         </v-expansion-panel-content>
       </v-expansion-panel>
+
+      <!-- Venue -->
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="calendar_event.venue_id" @selectVenue="selectVenue"></venue-picker>
+        </v-flex>
+        <v-flex xs0 sm3></v-flex>
+        <v-flex xs12 sm8>
+          <p style="margin: 10px 0px 10px 0px; text-align: center;">OR</p>
+        </v-flex>
+      </v-layout>
+
+      <!-- Add a Venue (collapsible content)-->
+      <add-new-venue @newVenue="newVenue" />
 
       <!-- Event Image -->
       <v-layout row wrap>
@@ -141,22 +158,15 @@
 
       <p><br></p> -->
 
-      <!-- Venue -->
+      <!-- Admission Fee -->
       <v-layout row wrap>
         <v-flex xs12 sm3>
-          <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
+          <h3 class="form-label">Admission Fee:</h3>
         </v-flex>
         <v-flex xs12 sm8>
-          <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="calendar_event.venue_id" @selectVenue="selectVenue"></venue-picker>
-        </v-flex>
-        <v-flex xs0 sm3></v-flex>
-        <v-flex xs12 sm8>
-          <p style="margin: 10px 0px 10px 0px; text-align: center;">OR</p>
+          <v-text-field label="Make sure to include multiple admission fees if relevant (adult, child, senior,...)" v-model="calendar_event.admission_fee"></v-text-field>
         </v-flex>
       </v-layout>
-
-      <!-- Add a Venue (collapsible content)-->
-      <add-new-venue @newVenue="newVenue" />
 
       <!-- Brief Description -->
       <v-layout row wrap>
@@ -167,28 +177,6 @@
           <v-text-field class="brief-description" label="A brief description for short-attention-span humans and webcrawlers" v-model="calendar_event.brief_description"></v-text-field>
         </v-flex>
       </v-layout>
-
-      <!-- Admission Fee -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
-          <h3 class="form-label">Admission Fee:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
-          <v-text-field v-model="calendar_event.admission_fee"></v-text-field>
-        </v-flex>
-      </v-layout>
-
-      <!-- Organizer Contact -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
-          <h3 class="form-label">Your Contact Email<span class="required-field">*</span>:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
-          <v-text-field class="submitter-email" label="We will send you a confirmation when your event is added" v-model="calendar_event.organizer_contact" :rules="[v => !!v || 'Organizer Contact is required', v => isEmail(v) || 'Must be a valid email address']"></v-text-field>
-        </v-flex>
-      </v-layout>
-
-      <br />
 
       <!-- Full Event Description -->
       <h3>Full Event Description:</h3>
@@ -210,14 +198,6 @@
         </v-flex>
       </v-layout>
 
-      <v-layout row>
-        <v-flex xs12>
-          <p class="spacer">...</p>
-        </v-flex>
-      </v-layout>
-
-      <!-- OPTIONAL FORM ELEMENTS -->
-      <h2>Optional:</h2>
       <!-- Event Website link: -->
       <v-layout row wrap>
         <v-flex xs12 sm3>
@@ -255,6 +235,16 @@
         </v-flex>
         <v-flex xs12 sm8>
           <v-text-field v-model="calendar_event.eventbrite_link"></v-text-field>
+        </v-flex>
+      </v-layout>
+
+      <!-- Organizer Contact -->
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+          <h3 class="form-label">Your Contact Email<span class="required-field">*</span>:</h3>
+        </v-flex>
+        <v-flex xs12 sm8>
+          <v-text-field class="submitter-email" label="We will send you a confirmation when your event is added" v-model="calendar_event.organizer_contact" :rules="[v => !!v || 'Organizer Contact is required', v => isEmail(v) || 'Must be a valid email address']"></v-text-field>
         </v-flex>
       </v-layout>
 
@@ -648,9 +638,12 @@
           'gallery',
           'music',
           'theater',
+          'dance',
           'film',
+          'literary arts',
           'talk',
-          'festival'
+          'festival',
+          'comedy'
         ]
       },
 
@@ -704,11 +697,6 @@
   margin-top: 10px;
   letter-spacing: normal;
   line-height: normal;
-}
-.spacer {
-  font-size: 2em;
-  text-align: center;
-  margin: 20px 0px 20px 0px;
 }
 .text-xs-center {
   margin: 0 auto;
@@ -770,13 +758,6 @@
   .form-label {
     text-align: left;
   }
-}
-
-#dotted-placeholder {
-  height: 100%;
-  min-height: 50px;
-  width: 100%;
-  outline: 1px dashed rgb(210, 210, 210)
 }
 
 .category-option,
