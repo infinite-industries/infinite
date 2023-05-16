@@ -2,17 +2,10 @@ name: Publish container images
 
 # initially: limit execution to manual execution
 #
-# ${{ inputs.ref_name }} is set to the branch / ref specified, and is used to
-# build & tag the container image
+# ${{ github.ref_name }} is set to the branch specified, and is used to build &
+# tag the container image
 on:
-  workflow_dispatch:
-    inputs:
-      ref_name:
-        description: 'A branch or to use'
-        required: true
-        default: development
-        type: string
-
+  workflow_dispatch
 
 # in the future, execute anytime the development or master branch is updated
 #
@@ -40,6 +33,6 @@ jobs:
       - name: build the image
         run: just build
       - name: publish the image
-        run: just image=infinite-industries/ops registry_user=${{ github.actor }} registry_pass_var=GITHUB_TOKEN publish ${{ inputs.ref_name }}
+        run: just image=infinite-industries/ops registry_user=${{ github.actor }} registry_pass_var=GITHUB_TOKEN publish ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
