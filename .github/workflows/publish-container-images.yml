@@ -40,7 +40,7 @@ jobs:
         with:
           just-version: 1.13.0
       - name: build the image
-        run: just build
+        run: just ctx=ctx build
       - name: publish the image
         run: just registry_user=${{ github.actor }} publish
   publish-api-server:
