@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 
+# NOTE: using just is an alternative to this script:
+# just tag=local name=infinite-industries/api-server publish
+
 set -e
 
 tag="${1:-local}"
-container_name="infinite-api-server"
-dockerhub_org="chriswininger"
+container_name="infinite-industries/api-server"
+registry="ghcr.io"
 
-push_to="$dockerhub_org/$container_name:$tag"
+push_to="$registry/$container_name:$tag"
 
 echo "publishing $push_to"
 

@@ -5,7 +5,7 @@ set -e
 tag="${1:-local}"
 
 script_name="docker-build"
-container_name="infinite-web-portal"
+container_name="infinite-industries/web-portal"
 
 echo "$script_name: building $container_name for tag $tag"
 
