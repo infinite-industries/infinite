@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-# NOTE: using just is an alternative to this script:
-# just tag=local name=infinite-industries/api-server build
+# An alternative to using this script is to use a just recipe:
+#
+# $ just name=infinite-industries/api-server tag=local build
+#
+# An alternative alternative is to make use of a .env file and just:
+#
+# $ printf "IMAGE_NAME=infinite-industries/api-server\nIMAGE_TAG=local" > .env
+# $ just build
 
 set -e
 

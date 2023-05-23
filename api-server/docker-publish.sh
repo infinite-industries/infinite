@@ -1,7 +1,22 @@
 #!/usr/bin/env bash
 
-# NOTE: using just is an alternative to this script:
-# just tag=local name=infinite-industries/api-server publish
+FORCE=${FORCE:=""}
+
+if [ -z "$FORCE" ]; then
+cat << 'EOF'
+It should not be neccesary to run this script: there is a Github workflow to
+publish our containers:
+
+  https://github.com/infinite-industries/infinite/actions/workflows/publish-container-images.yml
+
+If you *really* want to run this script:
+
+  FORCE=true ./docker-publish.sh
+
+EOF
+exit 1
+
+fi
 
 set -e
 
