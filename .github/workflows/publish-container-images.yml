@@ -13,6 +13,7 @@ on:
 # tag the container image
 #
 #on:
+#  workflow_dispatch:
 #  push:
 #    branches:
 #      - master
@@ -35,6 +36,50 @@ jobs:
       - name: build the image
         run: just build
       - name: publish the image
-        run: just image=infinite-industries/ops registry_user=${{ github.actor }} registry_pass_var=GITHUB_TOKEN publish ${{ github.ref_name }}
+        run: just registry_user=${{ github.actor }} publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE_TAG: ${{ github.ref_name }}
+          IMAGE_NAME: infinite-industries/ops
+          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+  publish-api-server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api-server
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@v3
+      - name: install casey/just
+        uses: extractions/setup-just@v1
+        with:
+          just-version: 1.13.0
+      - name: build the image
+        run: just build
+      - name: publish the image
+        run: just registry_user=${{ github.actor }} publish
+        env:
+          IMAGE_TAG: ${{ github.ref_name }}
+          IMAGE_NAME: infinite-industries/api-server
+          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+  publish-web-portal:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: web-portal
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@v3
+      - name: install casey/just
+        uses: extractions/setup-just@v1
+        with:
+          just-version: 1.13.0
+      - name: build the image
+        run: just build
+      - name: publish the image
+        run: just registry_user=${{ github.actor }} publish
+        env:
+          IMAGE_TAG: ${{ github.ref_name }}
+          IMAGE_NAME: infinite-industries/web-portal
+          REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
