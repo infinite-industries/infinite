@@ -50,7 +50,7 @@ jobs:
         shell: bash
         working-directory: api-server
     env:
-      IMAGE_NAME: infinite-industries/ops-server
+      IMAGE_NAME: infinite-industries/api-server
     steps:
       - name: checkout branch
         uses: actions/checkout@v3
@@ -69,7 +69,7 @@ jobs:
         shell: bash
         working-directory: web-portal
     env:
-      IMAGE_NAME: infinite-industries/ops-server
+      IMAGE_NAME: infinite-industries/web-portal
     steps:
       - name: checkout branch
         uses: actions/checkout@v3
