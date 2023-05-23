@@ -5,7 +5,7 @@ A minimal image for running Linux CLI utilities - shell scripts and similar.
 ## Quickstart
 
 ```console
-$ docker run -ti --rm ghcr.io/infinite-industries/ops bin/db-backup
+$ docker run -ti --rm ghcr.io/infinite-industries/ops-server bin/db-backup
 ```
 
 ## Utilities
