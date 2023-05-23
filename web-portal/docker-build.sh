@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# An alternative to using this script is to use a just recipe:
+#
+# $ just name=infinite-industries/web-portal tag=local build
+#
+# An alternative alternative is to make use of a .env file and just:
+#
+# $ printf "IMAGE_NAME=infinite-industries/web-portal\nIMAGE_TAG=local" > .env
+# $ just build
+
 set -e
 
 tag="${1:-local}"
