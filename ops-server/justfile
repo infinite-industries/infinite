@@ -10,8 +10,8 @@ registry_user := "jswank"
 registry_pass_var := "REGISTRY_PASSWORD"  
 
 # build a new image
-build:
-  docker build -t {{image}}:{{tag}} -f Dockerfile ctx
+build flags="":
+  docker build -t {{image}}:{{tag}} {{flags}} -f Dockerfile ctx
 
 _login:
   @ echo "${{ registry_pass_var }}" | docker login {{registry}} -u {{registry_user}} --password-stdin
