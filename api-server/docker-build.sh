@@ -8,7 +8,6 @@
 #
 # $ printf "IMAGE_NAME=infinite-industries/api-server\nIMAGE_TAG=local" > .env
 # $ just build
-
 set -e
 
 tag="${1:-local}"
