@@ -1,27 +1,39 @@
-#!/usr/bin/env bash
-
+#!/usr/bin/env sh
+#
+# Backup a Postgres database and optionally copy it to an S3 bucket.
+#
+# Requirements: pg_dump aws
+#
+# Copyright Jason Swank <jswank@scalene.net>
+#
+######
 set -o errexit
 set -o nounset
-set -o xtrace
 
 usage(){
   cat <<EOF
-Use pg_dump to create a backup of a postres database. 
+Backup a Postgres database and optionally copy it to an S3 bucket.
 
-Usage: db-backup [flags]
+Usage: db-backup [flags] [<database>]
+
+Parameters:
+  <database>              name of the database.  
 
 Flags:
   -h                      display this help
-  -n                      dry run: do not perform geocoding lookup- just print url
+  -n                      dry run: just print actions that would happen
 
 Environment:
-  BACKUP_DIR   Directory to write backups
-  NUM_BACKUPS  Number of backups to retain. Default: 10
+  BACKUP_DIR   Local directory to write backups
+  NUM_BACKUPS  Number of backups to retain locally. Default: 4
+  S3_BUCKET    Name of the S3 bucket. If unset, an S3 copy will not occur
+  S3_PATH      S3 path to write backups. The path requires a trailing slash. Default: /.
   PGDATABASE
   PGHOST
   PGPORT
   PGUSER
   PGPASSWORD
+  AWS*
 
 Description: 
 
@@ -30,7 +42,7 @@ pg_dump to create a backup of a postgres database.
 
 Each backup will have a name like <database>-<date>:
   database - PGDATABASE
-  date     - date --iso-8601=seconds (2023-02-25T22:42:16-05:00)
+  date     - date -u +%Y-%m-%dT%H:%M:%S (2023-02-25T22:42:16Z)
 
 A symlink, latest, points to the latest backup.
 
@@ -39,14 +51,18 @@ NUM_BACKUPS (default 10) will be retained.
 EOF
 }
 
-BACKUP_DIR=${BACKUP_DIR:=/var/tmp}
-export NUM_BACKUPS=${NUM_BACKUPS:=10}
+
+# set defaults for vars that are required
+PGDATABASE=${PGDATABASE:=""}
+BACKUP_DIR=${BACKUP_DIR:=/var/tmp/backups}
+S3_BUCKET=${S3_BUCKET:=""}
+S3_PATH=${S3_PATH:=""}
+# needs to be exported for perl subshell
+export NUM_BACKUPS="${NUM_BACKUPS:=4}"
 DRYRUN=0          
 
-PGDUMP_CMD="pg_dump -d 'sslmode=require' -Fc -v"
-
 fail() {
-  echo $1 >&2
+  printf '%s\n' "$1" >&2
   exit 1
 }
 
@@ -67,39 +83,77 @@ init() {
   done
 
   shift $((OPTIND-1))
+
+  if [ $# -gt 0 ]; then
+    PGDATABASE="$1"
+  fi
+
+  if [ -z "${PGDATABASE}" ]; then
+    fail "A database was not specified via environment or as a parameter"
+  fi
+
   
 }
 
 main() {
   # run the init code
-  init $*
+  init "$@"
 
   # the guts of the script
-  backup_file="${PGDATABASE}-$(date --iso-8601=seconds)"
+ 
+  # create the backup directory if required
+  if [ ! -d "${BACKUP_DIR}" ]; then
+    if [ $DRYRUN -eq 0 ]; then 
+      mkdir "${BACKUP_DIR}" || fail "unable to create directory ${BACKUP_DIR}"
+    fi
+  elif [ ! -w "${BACKUP_DIR}" ]; then
+    fail "${BACKUP_DIR} is not writable"
+  fi
+ 
+  backup_file="${PGDATABASE}.$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-  if [[ ${DRYRUN} -eq 1 ]]; then
-    echo "pg_dump -d \"sslmode=require\" -Fc -v $PGDUMP_CMD -f ${BACKUP_DIR}/${backup_file}"
+  if [ ${DRYRUN} -eq 1 ]; then
+    printf 'pg_dump -d "sslmode=require" -Fc -f %s\n' "${BACKUP_DIR}/${backup_file}"
+    printf 'ln -sf %s %s\n' "${backup_file}" "${BACKUP_DIR}/${PGDATABASE}.latest"
   else
-    pg_dump -d "sslmode=require" -Fc -v -f "${BACKUP_DIR}/${backup_file}"
+    pg_dump -d "sslmode=require" -Fc -f "${BACKUP_DIR}/${backup_file}"
+    ln -sf "${backup_file}" "${BACKUP_DIR}/${PGDATABASE}.latest"
   fi
 
   # remove backup files in excess of the limit
-  files_to_rm=$(find ${BACKUP_DIR} -name "{PGHOST}-${PGDATABASE}-*" -print | sort | perl -nE 'print if $. >$ENV{q/NUM_BACKUPS/}')
-
-  if [[ ${DRYRUN} -eq 1 ]]; then
-    echo "rm -f ${files_to_rm}"
-  else
-    rm -f ${files_to_rm}
+  #  sort -r => sorts list newest to oldest
+  #  perl '' => print line if line number greater than NUM_BACKUPS 
+  if [ ${DRYRUN} -eq 1 ]; then                           
+    find "${BACKUP_DIR}" -name "${PGDATABASE}.*" -print \
+      | sort -r \
+      | perl -nE 'print if $. >$ENV{q/NUM_BACKUPS/}' \
+      | xargs
+  else                                                                 
+    find "${BACKUP_DIR}" -name "${PGDATABASE}.*" -print \
+      | sort -r \
+      | perl -nE 'print if $. >$ENV{q/NUM_BACKUPS/}' \
+      | xargs rm -f
   fi
 
   # create a symlink to the most recent file
-  most_recent_file=$(find ${BACKUP_DIR} -name "${PGDATABASE}-*" -print | sort | head -1)
+  most_recent_file=$(find ${BACKUP_DIR} -name "${PGDATABASE}*" -print | sort | head -1)
   if [[ ${DRYRUN} -eq 1 ]]; then
     echo "ln -sf ${most_recent_file} latest"
   else
     ln -sf ${most_recent_file} latest
   fi
 
+  if [ -z "${S3_BUCKET}" ]; then
+    exit
+  fi
+
+  # copy files to S3
+  if [ ${DRYRUN} -eq 1 ]; then
+    printf 'aws s3 cp %s %s\n' "${BACKUP_DIR}/${backup_file}" "backups:${S3_BUCKET}/${S3_PATH}/${backup_file}"
+  else
+    aws s3 cp "${BACKUP_DIR}/${backup_file}" "s3://${S3_BUCKET}/${S3_PATH}/${backup_file}" >/dev/null
+  fi
+
 }
 
-main $*
+main "$@"
