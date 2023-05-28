@@ -7,11 +7,20 @@ import {
   SLACK_WEBHOOK_VENUE_SUBMISSION,
 } from '../constants';
 
-import SlackNotify, { SlackNotifier } from 'slack-notify';
-
+import * as SlackNotify from 'slack-notify';
+import { SlackNotifier } from 'slack-notify';
+console.log('!!! grr: ' + SlackNotify);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const SLACK_SENDER_TEST = SlackNotify(SLACK_WEBHOOK_TEST);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const SLACK_SENDER_CONTACT = SlackNotify(SLACK_WEBHOOK_CONTACT);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const SLACK_SENDER_SUBMIT = SlackNotify(SLACK_WEBHOOK_EVENT_SUBMISSION);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const SLACK_SENDER_VENUE = SlackNotify(SLACK_WEBHOOK_VENUE_SUBMISSION);
 
 @Injectable()
