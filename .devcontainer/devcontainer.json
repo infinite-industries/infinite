@@ -1,15 +1,20 @@
 {
-    "name": "Infinite Industries",
-    "image": "mcr.microsoft.com/devcontainers/javascript-node:0-16",
-    "dockerComposeFile": "docker-compose.yml",
-    "description": "Includes a linked Includes Node.js, eslint, and yarn in a container linked to a Postgres DB container",
-    "service": "infinite",
-    "workspaceFolder": "/workspaces/${localWorkSpaceFolderBasename}",
+    "dockerComposeFile": "./docker-compose.yml",
+    "service": "app",
 
-    "postCreateCommand": {
-      "api-server": "cd api-server && npm install",
-      "web-portal": "cd web-portal && npm install"
-    },
+     "features": {
+      "ghcr.io/devcontainers/features/sshd:1": {}
+     },
 
-    "forwardPorts":  [3003,7779,"db:5432"]
+    "workspaceFolder": "/workspaces/infinite",
+
+    "postCreateCommand": "/workspaces/infinite/.devcontainer/post-create",
+
+    "forwardPorts":  [3003,7779,"db:5432"],
+
+    "portsAttributes": {
+      "3003": {"label": "api-server"},
+      "7779": {"label": "web-portal"}
+    }
+
 }
