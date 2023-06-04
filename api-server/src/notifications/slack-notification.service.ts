@@ -6,22 +6,35 @@ import {
   SLACK_WEBHOOK_TEST,
   SLACK_WEBHOOK_VENUE_SUBMISSION,
 } from '../constants';
-
 import * as SlackNotify from 'slack-notify';
 import { SlackNotifier } from 'slack-notify';
-console.log('!!! grr: ' + SlackNotify);
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const SLACK_SENDER_TEST = SlackNotify(SLACK_WEBHOOK_TEST);
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const SLACK_SENDER_CONTACT = SlackNotify(SLACK_WEBHOOK_CONTACT);
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const SLACK_SENDER_SUBMIT = SlackNotify(SLACK_WEBHOOK_EVENT_SUBMISSION);
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const SLACK_SENDER_VENUE = SlackNotify(SLACK_WEBHOOK_VENUE_SUBMISSION);
+import { isNotEmptyString } from '../utils/is-not-empty-string';
+import { Nullable } from '../utils/NullableOrUndefinable';
+import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
+
+const SLACK_SENDER_TEST = isNotEmptyString(SLACK_WEBHOOK_TEST)
+  ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    SlackNotify(SLACK_WEBHOOK_TEST)
+  : null;
+
+const SLACK_SENDER_CONTACT = isNotEmptyString(SLACK_WEBHOOK_CONTACT)
+  ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    SlackNotify(SLACK_WEBHOOK_CONTACT)
+  : null;
+
+const SLACK_SENDER_SUBMIT = isNotEmptyString(SLACK_WEBHOOK_EVENT_SUBMISSION)
+  ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    SlackNotify(SLACK_WEBHOOK_EVENT_SUBMISSION)
+  : null;
+
+const SLACK_SENDER_VENUE = isNotEmptyString(SLACK_WEBHOOK_VENUE_SUBMISSION)
+  ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    SlackNotify(SLACK_WEBHOOK_VENUE_SUBMISSION)
+  : null;
 
 @Injectable()
 export default class SlackNotificationService {
@@ -35,9 +48,14 @@ export default class SlackNotificationService {
 
     const channel = SlackNotificationService.getChannel(channelKey);
 
-    this.logger.debug(
-      `Sending Slack notification to ${channelName}: ${payload}`,
-    );
+    if (isNotNullOrUndefined(channel)) {
+      this.logger.debug(
+        `Sending Slack notification to ${channelName}: ${payload}`,
+      );
+    } else {
+      this.logger.warn('no slack hook set for notification');
+      return;
+    }
 
     try {
       await channel.send({
@@ -57,7 +75,7 @@ export default class SlackNotificationService {
     }
   }
 
-  private static getChannel(channelKey: ChannelKey): SlackNotifier {
+  private static getChannel(channelKey: ChannelKey): Nullable<SlackNotifier> {
     switch (channelKey) {
       case TEST:
         return SLACK_SENDER_TEST;
