@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { Nullable } from '../utils/NullableOrUndefinable';
 import { GPSCoordinates } from './dto/GetGPSCoordinatesRequest';
 import { isNullOrUndefined } from '../utils';
-import * as NodeGeocoder from 'node-geocoder';
+import NodeGeocoder from 'node-geocoder';
 import { MAP_BOX_API_KEY } from '../constants';
 
 @Injectable()

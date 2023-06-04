@@ -6,34 +6,25 @@ import {
   SLACK_WEBHOOK_TEST,
   SLACK_WEBHOOK_VENUE_SUBMISSION,
 } from '../constants';
-import * as SlackNotify from 'slack-notify';
+import SlackNotify from 'slack-notify';
 import { SlackNotifier } from 'slack-notify';
 import { isNotEmptyString } from '../utils/is-not-empty-string';
 import { Nullable } from '../utils/NullableOrUndefinable';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
-
 const SLACK_SENDER_TEST = isNotEmptyString(SLACK_WEBHOOK_TEST)
-  ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    SlackNotify(SLACK_WEBHOOK_TEST)
+  ? SlackNotify(SLACK_WEBHOOK_TEST)
   : null;
 
 const SLACK_SENDER_CONTACT = isNotEmptyString(SLACK_WEBHOOK_CONTACT)
-  ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    SlackNotify(SLACK_WEBHOOK_CONTACT)
+  ? SlackNotify(SLACK_WEBHOOK_CONTACT)
   : null;
 
 const SLACK_SENDER_SUBMIT = isNotEmptyString(SLACK_WEBHOOK_EVENT_SUBMISSION)
-  ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    SlackNotify(SLACK_WEBHOOK_EVENT_SUBMISSION)
+  ? SlackNotify(SLACK_WEBHOOK_EVENT_SUBMISSION)
   : null;
 
 const SLACK_SENDER_VENUE = isNotEmptyString(SLACK_WEBHOOK_VENUE_SUBMISSION)
-  ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    SlackNotify(SLACK_WEBHOOK_VENUE_SUBMISSION)
+  ? SlackNotify(SLACK_WEBHOOK_VENUE_SUBMISSION)
   : null;
 
 @Injectable()

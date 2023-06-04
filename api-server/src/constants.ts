@@ -5,8 +5,8 @@
  * production and staging deployments most of these values will need to be explicitly set.
  *
  */
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
 import { NullableOrUndefinable } from './utils/NullableOrUndefinable';
 import { isNullOrUndefined } from './utils';
 

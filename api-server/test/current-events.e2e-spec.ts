@@ -2,7 +2,7 @@ import { TestingModule } from '@nestjs/testing';
 import isNotNullOrUndefined from '../src/utils/is-not-null-or-undefined';
 import { StartedTestContainer } from 'testcontainers';
 import { VenueModel } from '../src/venues/models/venue.model';
-import * as request from 'supertest';
+import request from 'supertest';
 import { CURRENT_VERSION_URI } from '../src/utils/versionts';
 import { EventModel } from '../src/events/models/event.model';
 import generateEvent from './fakers/event.faker';

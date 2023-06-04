@@ -2,7 +2,7 @@ import startDatabase from './test-helpers/e2e-stack/start-database';
 import runMigrations from './test-helpers/e2e-stack/run-migrations';
 import startApplication from './test-helpers/e2e-stack/start-application';
 import buildDbConnectionsForTests from './test-helpers/e2e-stack/build-db-connection-for-tests';
-import * as request from 'supertest';
+import request from 'supertest';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { StartedTestContainer } from 'testcontainers';
 import { TestingModule } from '@nestjs/testing';

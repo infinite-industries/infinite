@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 import { Op, literal } from 'sequelize';
 import {
   Body,

@@ -1,6 +1,6 @@
 import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 import { DB_HOST, DB_NAME, DB_PASSWORD, DB_USERNAME } from './start-database';
-import * as fs from 'fs';
+import fs from 'fs';
 
 async function startApplication(
   dbPort: number,
