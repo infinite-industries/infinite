@@ -16,10 +16,10 @@ Typically, for a staging release you will use the `development` branch. For prod
 *Usually the "Use workflow from" will be the same as the "commit or tag to use" field. The only reason this might very is
 if you are testing changes to the github actions its self.*
 
-Run the action. When complete a new versions of the images tagged with the hash/git tag should be available on docker hub:
+Run the action.  When complete a new versions of the images tagged with the hash/git tag should be available on ghcr.io
 
-* [front end image](https://hub.docker.com/repository/docker/chriswininger/infinite-web-portal/general)
-* [backend image](https://hub.docker.com/repository/docker/chriswininger/infinite-api-server/general)
+* [infinite-industries/web-portal](https://ghcr.io/infinite-industries/web-portal) - the frontend image
+* [infinite-industries/api-server](https://ghcr.io/infinite-industries/api-server) - the backend image
 
 ## Step 2 -- Update The Servers to Use the New Images
 
