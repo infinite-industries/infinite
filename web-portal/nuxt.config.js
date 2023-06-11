@@ -6,6 +6,7 @@ const API_URL = process.env.API_URL || 'http://localhost:3003/v1'
 const APP_URL = process.env.APP_URL || 'http://localhost:7779'
 const TIMEZONE_DEFAULT = process.env.TIMEZONE_DEFAULT || 'US/Eastern'
 const TIMEZONE_OPTIONS = process.env.TIMEZONE_OPTIONS || 'US/Eastern,US/Central'
+const FATHOM_SITE_ID = process.env.FATHOM_SITE_ID
 
 export default {
   mode: 'universal',
@@ -100,6 +101,7 @@ export default {
     '~/plugins/close-sidebar-on-nav.client.js', // client-only
     '~/plugins/api-service-plugin.js',
     '~/plugins/page-meta-plugin.js',
+    '~/plugins/analytics.client.js'
   ],
   /*
   ** Nuxt.js modules
@@ -191,6 +193,7 @@ export default {
   publicRuntimeConfig: {
     APP_URL,
     API_URL,
+    FATHOM_SITE_ID,
     TIMEZONE_DEFAULT,
     TIMEZONE_OPTIONS
   }
