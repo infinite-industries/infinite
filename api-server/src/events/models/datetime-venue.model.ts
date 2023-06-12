@@ -5,12 +5,12 @@ import {
   IsUUID,
   Model,
   PrimaryKey,
-  Table
+  Table,
 } from 'sequelize-typescript';
 import { VenueModel } from '../../venues/models/venue.model';
 import { EventModel } from './event.model';
 
-@Table({tableName: 'datetime_venue'})
+@Table({ tableName: 'datetime_venue' })
 export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
   @IsUUID(4)
   @PrimaryKey
@@ -26,7 +26,7 @@ export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
   venue_id: string;
 
   @Column
-  start_time: Date
+  start_time: Date;
 
   @Column
   end_time: Date;
@@ -38,18 +38,18 @@ export class DatetimeVenueModel extends Model<DatetimeVenueModel> {
   timezone: string;
 
   @BelongsTo(() => EventModel)
-  event: EventModel
+  event: EventModel;
 
   @BelongsTo(() => VenueModel)
-  venue: VenueModel
+  venue: VenueModel;
 }
 
-export interface DateTimeVenueFields  {
-  id?: string
-  event_id?: string
-  venue_id?: string
-  start_time?: Date
-  end_time?: Date
-  optional_title?: string
-  timezone?: string
+export interface DateTimeVenueFields {
+  id?: string;
+  event_id?: string;
+  venue_id?: string;
+  start_time?: Date;
+  end_time?: Date;
+  optional_title?: string;
+  timezone?: string;
 }

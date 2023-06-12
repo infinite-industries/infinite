@@ -1,4 +1,4 @@
 export interface VersionResponse {
-    version: string
-    supportedVersions: string []
+  version: string;
+  supportedVersions: string[];
 }
