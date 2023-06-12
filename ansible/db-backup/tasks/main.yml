@@ -9,14 +9,16 @@
     state: directory
 - name: fetch (or update) the container
   command: docker pull ghcr.io/infinite-industries/ops-server:{{ image_version }}
-- name: create systemd files for db-backup
+- name: create systemd timer file infinite-db-backup.timer
   become: true
   copy:
-    src: "{{ item }}"
-    dest: /etc/systemd/system/{{ item }}
-  loop:
-    - infinite-db-backup.service
-    - infinite-db-backup.timer
+    src: infinite-db-backup.timer
+    dest: /etc/systemd/system/infinite-db-backup.timer
+- name: create systemd service file infinite-db-backup.service
+  become: true
+  template:
+    src: infinite-db-backup.service.j2
+    dest: /etc/systemd/system/infinite-db-backup.service
 - name: enable the timer
   become: true
   systemd:
