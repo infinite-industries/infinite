@@ -1,0 +1,13 @@
+[Unit]
+Description=Backup the database
+
+[Service]
+User=infinite
+Group=infinite
+Type=oneshot
+WorkingDirectory=/home/infinite
+ExecStart=docker run --env-file docker-files/ops.env -v /home/infinite/backups:/var/tmp/backups --rm ghcr.io/infinite-industries/ops-server:{{ image_version }} bin/db-backup 
+
+[Install]
+WantedBy= multi-user.target
+
