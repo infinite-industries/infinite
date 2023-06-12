@@ -5,7 +5,7 @@ USER root
 RUN apk --no-cache add \
   postgresql-client aws-cli  
 
-COPY home/bin/* /home/cli/bin
+COPY home/bin/* /home/cli/bin/
 
 RUN chown -R cli:cli /home/cli
 
