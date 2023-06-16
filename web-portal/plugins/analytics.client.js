@@ -19,7 +19,16 @@ class Analytics {
     this.siteId = fathomSiteId
     if (fathomSiteId) {
       load(fathomSiteId, {
-        spa: 'auto'
+        // Fathom can hook into the History API directly to track navigation
+        // without us having to hook it into Vue Router directly
+        spa: 'auto',
+        // BUT, this seems to be necessary to ensure Fathom gets the right
+        // route on such navigations
+        // (specifically, this disables checking the head for a
+        // link[rel=canonical], in favor of just using the raw URL -- may be
+        // an issue later but for now it's probably avoiding a timing issue
+        // with updating the head)
+        canonical: false
       })
     }
   }
