@@ -29,6 +29,7 @@
     "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/vuetify": "0.5.5",
     "body-parser": "^1.19.1",
+    "fathom-client": "3.5.0",
     "gsap": "^3.6.0",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.24.0",
