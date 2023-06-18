@@ -1,8 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import { VenueModel } from '../../src/venues/models/venue.model';
+import { VenueModel } from "../../src/venues/models/venue.model";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const faker = require('faker');
+const faker = require('faker')
 
 function generateVenue(venueModel: typeof VenueModel): VenueModel {
   return new venueModel({
@@ -15,8 +15,8 @@ function generateVenue(venueModel: typeof VenueModel): VenueModel {
     state: faker.address.state(),
     zip: faker.address.zipCode(),
     neighborhood: faker.address.county(),
-    g_map_link: faker.internet.url(),
-  });
+    g_map_link: faker.internet.url()
+  })
 }
 
-export default generateVenue;
+export default generateVenue

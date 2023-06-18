@@ -1,20 +1,16 @@
 import { v4 as uuidv4 } from 'uuid';
-import { EventModel } from '../../src/events/models/event.model';
-import { DatetimeVenueModel } from '../../src/events/models/datetime-venue.model';
+import { EventModel } from '../../src/events/models/event.model'
+import {StartEndTimePairs} from "../../src/shared-types/start-end-time-pairs";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const faker = require('faker');
+const faker = require('faker')
 
 function generateEvent(
-  eventModelConstructor: typeof EventModel,
-  venue_id: string,
-  verified: boolean,
-  startEndTimeValues: Partial<DatetimeVenueModel>[] = [],
+    eventModelConstructor: typeof EventModel,
+    venue_id: string,
+    verified: boolean,
+    date_times: StartEndTimePairs[] = []
 ): EventModel {
-  const dateTimes: DatetimeVenueModel[] = startEndTimeValues.map(
-    (values) => new DatetimeVenueModel(values),
-  );
-
   return new eventModelConstructor({
     id: uuidv4(),
     venue_id,
@@ -22,7 +18,11 @@ function generateEvent(
     title: faker.company.companyName(),
     slug: faker.lorem.slug(),
     multi_day: false,
-    date_times: dateTimes,
+    date_times: date_times.map((dt: StartEndTimePairs) => ({
+      ...dt,
+      start_time: new Date(dt.start_time),
+      end_time: new Date(dt.end_time)
+    })),
     image: faker.internet.url(),
     social_image: faker.internet.url(),
     admission_fee: faker.commerce.price(),
@@ -36,8 +36,8 @@ function generateEvent(
     eventbrite_link: faker.internet.url(),
     bitly_link: faker.internet.url(),
     tags: [],
-    reviewed_by_org: faker.company.companyName(),
-  });
+    reviewed_by_org: faker.company.companyName()
+  })
 }
 
-export default generateEvent;
+export default generateEvent

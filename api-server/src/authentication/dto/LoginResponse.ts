@@ -1,3 +1,3 @@
-export default class LoginResponse {
-  token: string;
-}
+ export default class LoginResponse {
+    token: string
+ }

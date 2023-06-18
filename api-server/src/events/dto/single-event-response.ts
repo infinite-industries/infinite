@@ -1,6 +1,6 @@
-import EventDTO from './eventDTO';
+import EventDTO from './eventDTO'
 
 export interface SingleEventResponse {
-  event: EventDTO;
-  status: 'success' | 'failure';
+    event: EventDTO,
+    status: 'success' | 'failure'
 }

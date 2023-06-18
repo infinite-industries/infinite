@@ -10,26 +10,22 @@ services:
       - "5432"
     ports:
       - "5436:5432"
-    # uncomment if you want to populate the db with a recent backup you have
-    # in /var/tmp/infinite-prod.sql
-    # volumes:
-      #      - /var/tmp/infinite-prod.sql:/docker-entrypoint-initdb.d/init.sql
 
   api-server:
-    image: infinite-industries/api-server:latest
+    image: infinite-api-server:latest
     depends_on:
       - postgres
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
-      AUTH_USE_TEST_USERS: true
+      INFINITE_PEM_FILE_CONTENTS: "${INFINITE_PEM_FILE_CONTENTS}"
     expose:
       - "3003"
     ports:
       - "3003:3003"
 
   web-portal:
-    image: infinite-industries/web-portal:latest
+    image: infinite-web-portal:latest
     environment:
       HOST: 0.0.0.0 # Needed to make nuxt work inside docker
       USE_PROXY: "true" # starts a proxy service in the container to allow server side requests against localhost to work inside the compose stack

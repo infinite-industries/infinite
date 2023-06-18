@@ -1,7 +1,7 @@
 version: '3.5'
 services:
   api-server:
-    image: "ghcr.io/infinite-industries/api-server:${INFINITE_IMAGE_VERSION_TAG:-master}"
+    image: "chriswininger/infinite-api-server:${INFINITE_IMAGE_VERSION_TAG:-master}"
     restart: always
     env_file:
       - ./api.env
@@ -14,7 +14,7 @@ services:
 
   web-portal:
     restart: always
-    image: "ghcr.io/infinite-industries/web-portal:${INFINITE_IMAGE_VERSION_TAG:-master}"
+    image: "chriswininger/infinite-web-portal:${INFINITE_IMAGE_VERSION_TAG:-master}"
     env_file:
       - ./web-portal.env
     environment:

@@ -1,9 +1,7 @@
 export default interface DbDeleteResponse {
-  numberOfAffectedEntities: number;
+    numberOfAffectedEntities: number
 }
 
-export function toDbDeleteResponse(
-  response: number,
-): Promise<DbDeleteResponse> {
-  return Promise.resolve({ numberOfAffectedEntities: response });
+export function toDbDeleteResponse(response: number): Promise<DbDeleteResponse> {
+    return Promise.resolve({ numberOfAffectedEntities: response })
 }
