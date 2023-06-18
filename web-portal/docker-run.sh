@@ -3,7 +3,7 @@
 # This is a convenience script for developers
 # It assumes a local database is running
 
-container_name="infinite-industries/web-portal"
+container_name="infinite-web-portal"
 tag="${1:-local}"
 
 docker run -p 7779:7779 \

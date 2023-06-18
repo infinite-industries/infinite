@@ -32,7 +32,6 @@
       template:
         src: docker-files/{{ item }}.j2
         dest: ~/docker-files/{{ item }}
-        backup: true
       loop:
         - .env
         - web-portal.env
