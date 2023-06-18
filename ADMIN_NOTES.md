@@ -1,4 +1,15 @@
-### Copying the production data
+## Copying the production data
+
+---
+There is a scheduled, nightly backup of the database.  The most recent copy 
+is available to team members.
+
+```console
+$ scp infinite-industries:backups/infinite-prod.latest .
+```
+---
+
+**Making a DB dump via an SSH tunnel:**
 
 First establish a tunnel to allow access to the database locally
 
@@ -20,7 +31,7 @@ PGPASSWORD=[pw] pg_dump \
     -f ./infinite-staging-dump
 ```
 
-To Restore to another database
+**To Restore to another database**
 
 ```
 PGPASSWORD=[pw_for_new_db] pg_restore \
@@ -28,7 +39,7 @@ PGPASSWORD=[pw_for_new_db] pg_restore \
     --port=5436 \
     --username=[new_db_name] \
     --dbname=infinite-api \
-    ./infinite-staging-dump
+    ./infinite-prod.latest
 ```
 
 If you wanted to restore this to a local db it may be convenient to run one in docker like this:

@@ -87,8 +87,8 @@ jobs:
       - name: Dump the container logs for troubleshooting
         if: ${{ failure() }}
         run: |
-          docker logs $(docker ps --filter name=infinite_web-portal --format "{{.ID}}") &> ./web-portal.log
-          docker logs $(docker ps --filter name=infinite_api-server --format "{{.ID}}") &> ./api-server.log
+          docker logs $(docker ps -a --filter name=infinite_web-portal --format "{{.ID}}") &> ./web-portal.log
+          docker logs $(docker ps -a --filter name=infinite_api-server --format "{{.ID}}") &> ./api-server.log
       - name: Save log artifacts
         uses: actions/upload-artifact@v3
         if: ${{ failure() }}

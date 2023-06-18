@@ -13,7 +13,7 @@
         <h4>Curated list of arts and culture events delivered to your mailbox every Wednesday afternoon.</h4>
       </div>
       <div class="submit-container">
-        <a class="subscribe-button" href="http://eepurl.com/dmq_Ln" target="_blank">SUBSCRIBE</a>
+        <a class="subscribe-button" href="http://eepurl.com/dmq_Ln" target="_blank" @click="$analytics.trackEvent('XVIKLZXT')">SUBSCRIBE</a>
       </div>
       <div class="copy-container" style="padding-top:0px;">
         <p>

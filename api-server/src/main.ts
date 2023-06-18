@@ -1,46 +1,56 @@
-import {NestFactory} from '@nestjs/core';
-import {AppModule} from './app.module';
-import registerSwaggerDocsModule from "./registerSwaggerDocsModule";
-import {ValidationPipe} from "@nestjs/common";
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import registerSwaggerDocsModule from './registerSwaggerDocsModule';
+import { ValidationPipe } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
-import {AUTH_USE_TEST_USERS, AUTH_USE_TEST_USERS_WARNING, PORT, ENV} from "./constants";
+import {
+  AUTH_USE_TEST_USERS,
+  AUTH_USE_TEST_USERS_WARNING,
+  PORT,
+  ENV,
+} from './constants';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule);
 
-    app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER))
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
-    app.useGlobalPipes(new ValidationPipe({
-        whitelist: true,
-        transform: true,
-        forbidNonWhitelisted: false
-    }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: false,
+    }),
+  );
 
-    app.enableCors({
-        origin: '*',
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        allowedHeaders: 'x-access-token, content-type',
-        credentials: true,
-        optionsSuccessStatus: 204
-    })
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'x-access-token, content-type',
+    credentials: true,
+    optionsSuccessStatus: 204,
+  });
 
-    registerSwaggerDocsModule(app);
+  registerSwaggerDocsModule(app);
 
-    await app.listen(PORT);
+  await app.listen(PORT);
 
-    console.info('application listening on port ', PORT);
+  console.info('application listening on port ', PORT);
 
-    if (AUTH_USE_TEST_USERS) {
-        if (ENV === 'prod' || ENV === 'production') {
-            console.error('You should not start this service in production with AUTH_USE_TEST_USERS set')
-            process.exit(1)
-        }
-
-        console.warn(AUTH_USE_TEST_USERS_WARNING)
+  if (AUTH_USE_TEST_USERS) {
+    if (ENV === 'prod' || ENV === 'production') {
+      console.error(
+        'You should not start this service in production with AUTH_USE_TEST_USERS set',
+      );
+      process.exit(1);
     }
+
+    console.warn(AUTH_USE_TEST_USERS_WARNING);
+  }
 }
 
 bootstrap();

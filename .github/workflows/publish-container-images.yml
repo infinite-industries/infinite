@@ -1,0 +1,83 @@
+name: Publish container images
+
+# initially: limit execution to manual execution
+#
+# ${{ github.ref_name }} is set to the branch specified, and is used to build &
+# tag the container image
+on:
+  workflow_dispatch
+
+# in the future, execute anytime the development or master branch is updated
+#
+# ${{ github.ref_name }} is set to the branch name, and is used to build &
+# tag the container image
+#
+#on:
+#  workflow_dispatch:
+#  push:
+#    branches:
+#      - master
+#      - development
+
+env:
+  IMAGE_TAG: ${{ github.ref_name }}
+  REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  publish-ops-server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ops-server
+    env:
+      IMAGE_NAME: infinite-industries/ops-server
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@v3
+      - name: install casey/just
+        uses: extractions/setup-just@v1
+        with:
+          just-version: 1.13.0
+      - name: build the image
+        run: just ctx=ctx build
+      - name: publish the image
+        run: just registry_user=${{ github.actor }} publish
+  publish-api-server:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: api-server
+    env:
+      IMAGE_NAME: infinite-industries/api-server
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@v3
+      - name: install casey/just
+        uses: extractions/setup-just@v1
+        with:
+          just-version: 1.13.0
+      - name: build the image
+        run: just build
+      - name: publish the image
+        run: just registry_user=${{ github.actor }} publish
+  publish-web-portal:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: web-portal
+    env:
+      IMAGE_NAME: infinite-industries/web-portal
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@v3
+      - name: install casey/just
+        uses: extractions/setup-just@v1
+        with:
+          just-version: 1.13.0
+      - name: build the image
+        run: just build
+      - name: publish the image
+        run: just registry_user=${{ github.actor }} publish
