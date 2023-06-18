@@ -4,7 +4,7 @@ const contactChannel = require('slack-notify')(SLACK_WEBHOOK_CONTACT)
 const logger = require('./utils').logger
 
 if (!SLACK_WEBHOOK_CONTACT) {
-  logger.error('Slack webhook is not configured; will not be able to send messages')
+  logger.warn('Slack webhook is not configured; will not be able to send messages')
 }
 
 export default async function slackAlertHandler(req, res) {

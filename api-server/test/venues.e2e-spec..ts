@@ -5,7 +5,7 @@ import buildDbConnectionsForTests from './test-helpers/e2e-stack/build-db-connec
 import killApp from './test-helpers/e2e-stack/kill-app';
 import stopDatabase from './test-helpers/e2e-stack/stop-database';
 import isNotNullOrUndefined from '../src/utils/is-not-null-or-undefined';
-import * as request from 'supertest';
+import request from 'supertest';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { StartedTestContainer } from 'testcontainers';
 import { TestingModule } from '@nestjs/testing';
@@ -17,7 +17,7 @@ import { CURRENT_VERSION_URI } from '../src/utils/versionts';
 import createJwtForRandomUser from './test-helpers/creaeteJwt';
 import { PORT } from '../src/constants';
 
-import * as faker from 'faker';
+import faker from 'faker';
 
 describe('Venues (e2e)', () => {
   const server = request('http://localhost:' + PORT);

@@ -1,5 +1,5 @@
-import * as jwt from 'jsonwebtoken';
-import * as faker from 'faker';
+import jwt from 'jsonwebtoken';
+import faker from 'faker';
 import { promises as fs } from 'fs';
 
 const SECRET_PATH = `${__dirname}/../../test-keys/1nfinite_testing_rsa256.rsa`;

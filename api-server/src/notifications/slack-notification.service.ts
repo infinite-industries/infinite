@@ -6,22 +6,26 @@ import {
   SLACK_WEBHOOK_TEST,
   SLACK_WEBHOOK_VENUE_SUBMISSION,
 } from '../constants';
+import SlackNotify from 'slack-notify';
+import { SlackNotifier } from 'slack-notify';
+import { isNotEmptyString } from '../utils/is-not-empty-string';
+import { Nullable } from '../utils/NullableOrUndefinable';
+import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
+const SLACK_SENDER_TEST = isNotEmptyString(SLACK_WEBHOOK_TEST)
+  ? SlackNotify(SLACK_WEBHOOK_TEST)
+  : null;
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const SlackNotify = require('slack-notify');
+const SLACK_SENDER_CONTACT = isNotEmptyString(SLACK_WEBHOOK_CONTACT)
+  ? SlackNotify(SLACK_WEBHOOK_CONTACT)
+  : null;
 
-const SLACK_SENDER_TEST: SlackChannelSender = SlackNotify(
-  SLACK_WEBHOOK_TEST,
-) as SlackChannelSender;
-const SLACK_SENDER_CONTACT: SlackChannelSender = SlackNotify(
-  SLACK_WEBHOOK_CONTACT,
-) as SlackChannelSender;
-const SLACK_SENDER_SUBMIT: SlackChannelSender = SlackNotify(
-  SLACK_WEBHOOK_EVENT_SUBMISSION,
-) as SlackChannelSender;
-const SLACK_SENDER_VENUE: SlackChannelSender = SlackNotify(
-  SLACK_WEBHOOK_VENUE_SUBMISSION,
-) as SlackChannelSender;
+const SLACK_SENDER_SUBMIT = isNotEmptyString(SLACK_WEBHOOK_EVENT_SUBMISSION)
+  ? SlackNotify(SLACK_WEBHOOK_EVENT_SUBMISSION)
+  : null;
+
+const SLACK_SENDER_VENUE = isNotEmptyString(SLACK_WEBHOOK_VENUE_SUBMISSION)
+  ? SlackNotify(SLACK_WEBHOOK_VENUE_SUBMISSION)
+  : null;
 
 @Injectable()
 export default class SlackNotificationService {
@@ -30,37 +34,39 @@ export default class SlackNotificationService {
     private readonly logger: LoggerService,
   ) {}
 
-  public sendNotification(channelKey: ChannelKey, payload) {
+  public async sendNotification(channelKey: ChannelKey, payload) {
     const channelName = '#' + channelKey;
 
-    const channel = this.getChannel(channelKey);
+    const channel = SlackNotificationService.getChannel(channelKey);
 
-    this.logger.debug(
-      `Sending Slack notification to ${channelName}: ${payload}`,
-    );
+    if (isNotNullOrUndefined(channel)) {
+      this.logger.debug(
+        `Sending Slack notification to ${channelName}: ${payload}`,
+      );
+    } else {
+      this.logger.warn('no slack hook set for notification');
+      return;
+    }
 
-    channel.send(
-      {
+    try {
+      await channel.send({
         channel: channelName,
         icon_emoji: ':computer:',
         text: payload,
-      },
-      (err) => {
-        if (err) {
-          this.logger.warn(`Slack notification failed: ${err}`);
-          // TODO: do we even want this service to rethrow an error?
-          // does calling code need to know, or can we just log it here
-          throw err;
-        } else {
-          this.logger.debug(
-            `Slack notification successfully sent to ${channelName}`,
-          );
-        }
-      },
-    );
+      });
+
+      this.logger.debug(
+        `Slack notification successfully sent to ${channelName}`,
+      );
+    } catch (err) {
+      this.logger.warn(`Slack notification failed: ${err}`);
+      // TODO: do we even want this service to rethrow an error?
+      // does calling code need to know, or can we just log it here
+      throw err;
+    }
   }
 
-  private getChannel(channelKey: ChannelKey): SlackChannelSender {
+  private static getChannel(channelKey: ChannelKey): Nullable<SlackNotifier> {
     switch (channelKey) {
       case TEST:
         return SLACK_SENDER_TEST;
@@ -84,13 +90,3 @@ export type ChannelKey =
   | typeof CONTACT
   | typeof EVENT_SUBMIT
   | typeof VENUE_SUBMIT;
-
-export type SlackChannelGrouper = {
-  test: unknown;
-  contact: unknown;
-  'event-sumbit': unknown;
-};
-
-export type SlackChannelSender = {
-  send: (any: any, callback: (err?) => void) => any;
-};
