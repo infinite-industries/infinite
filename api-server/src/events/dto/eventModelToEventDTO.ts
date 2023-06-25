@@ -4,6 +4,9 @@ import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';
 import { DatetimeVenueModel } from '../models/datetime-venue.model';
 
 export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
+  console.log(
+    '!!! the fuck: ' + JSON.stringify(eventModel.date_times, null, 4),
+  );
   const date_times: DatetimeVenueModel[] = isNotNullOrUndefined(
     eventModel.date_times,
   )

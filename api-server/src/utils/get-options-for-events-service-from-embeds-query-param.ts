@@ -27,7 +27,7 @@ export function getOptionsForEventsServiceFromEmbedsQueryParam(
   }
 }
 
-function ensureEmbedQueryStringIsArray(
+export function ensureEmbedQueryStringIsArray(
   embedsFromQueryString: string[] | string,
 ): string[] {
   return typeof embedsFromQueryString === 'string'

@@ -1,6 +1,6 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { FindOptions, Transaction, UpdateOptions } from 'sequelize';
+import { FindOptions, QueryTypes, Transaction, UpdateOptions } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { EventModel } from './models/event.model';
 import DbUpdateResponse, {
@@ -22,6 +22,7 @@ import { VenueModel } from '../venues/models/venue.model';
 import { INFINITE_WEB_PORTAL_BASE_URL } from '../constants';
 import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
 import UpsertEventAdminMetadataRequest from './dto/upsert-event-admin-metadata-request';
+import { ensureEmbedQueryStringIsArray } from '../utils/get-options-for-events-service-from-embeds-query-param';
 
 @Injectable()
 export class EventsService {
@@ -54,6 +55,72 @@ export class EventsService {
 
   findAll(findOptions?: FindOptions): Promise<EventModel[]> {
     return this.eventModel.findAll(findOptions);
+  }
+
+  async findAllPaginated({
+    tags = [],
+    pageSize,
+    requestedPage,
+  }: {
+    tags: string[] | string;
+    pageSize: number;
+    requestedPage: number;
+  }): Promise<{ count: number; rows: EventModel[] }> {
+    const tagClause = this.getTagsClause(tags);
+
+    const paginatedRows: EventModel[] = await this.sequelize.query(
+      `
+            with compressed_event as (
+                SELECT events.*, min(dv.start_time) as first_start_time
+                FROM events
+                JOIN datetime_venue dv on events.id = dv.event_id
+                GROUP BY (events.id)
+                ORDER BY first_start_time DESC
+                OFFSET ${(requestedPage - 1) * pageSize}
+                LIMIT ${pageSize}
+            )
+            SELECT
+                   events.*,
+                   date_times.id AS "date_times.id",
+                   date_times.event_id AS "date_times.event_id",
+                   date_times.venue_id AS "date_times.venue_id",
+                   date_times.start_time AS "date_times.start_time",
+                   date_times.end_time AS "date_times.end_time",
+                   date_times.optional_title AS "date_times.optional_title",
+                   date_times.timezone AS "date_times.timezone",
+                   date_times."createdAt"      AS "date_times.createdAt",
+                   date_times."updatedAt" AS "date_times.updatedAt",
+                   venues.id AS "venue.id",
+                   venues.name AS "venue.name",
+                   venues.slug AS "venue.slug",
+                   venues.address AS "venue.address",
+                   venues.g_map_link AS "venue.g_map_link",
+                   venues."createdAt" AS "venue.createdAt",
+                   venues."updatedAt" AS "venue.updatedAt",
+                   venues.is_soft_deleted AS "venue.is_soft_deleted",
+                   venues.gps_lat AS "venue.gps_lat",
+                   venues.gps_long AS "venue.gps_long",
+                   venues.gps_alt AS "venue.gps_alt",
+                   venues.street AS "venue.street",
+                   venues.city AS "venue.city",
+                   venues.state AS "venue.state",
+                   venues.zip AS "venue.zip",
+                   venues.neighborhood AS "venue.neighborhood"
+            FROM compressed_event
+            JOIN events ON events.id = compressed_event.id
+            JOIN datetime_venue date_times on events.id = date_times.event_id
+            JOIN venues ON venues.id = date_times.venue_id;
+        `,
+      {
+        type: QueryTypes.SELECT,
+        model: EventModel,
+        nest: true,
+      },
+    );
+
+    const totalCount: number = await EventModel.count();
+
+    return { count: totalCount, rows: paginatedRows };
   }
 
   async update(
@@ -225,5 +292,25 @@ export class EventsService {
 
       return submittedEvent;
     }
+  }
+
+  private getTagsClause(tags: string[] | string): string {
+    const tagList = ensureEmbedQueryStringIsArray(tags);
+
+    if (tags.length === 0) {
+      return '';
+    }
+
+    const lastTag = tagList.pop();
+
+    if (tags.length === 0) {
+      return `'{"${lastTag}"}' && event.tags`;
+    }
+
+    const sqlArray = tagList.reduce((result, tag) => {
+      return `"${tag}", `;
+    }, "'{");
+
+    return sqlArray + `, "${lastTag}"}' && event.tags`;
   }
 }
