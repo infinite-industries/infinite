@@ -11,6 +11,9 @@ export class ResponseWrapper {
   @ApiProperty({ example: 2 })
   page?: number;
 
+  @ApiProperty({ example: 20 })
+  pageSize?: number;
+
   @ApiProperty({ example: 100 })
   totalPages?: number;
 

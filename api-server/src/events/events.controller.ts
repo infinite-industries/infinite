@@ -96,7 +96,7 @@ export class EventsController {
       .then((events) => new EventsResponse({ events }));
   }
 
-  @Get('verified-paginated')
+  @Get('verified')
   @ApiOperation({
     summary: 'Get all events that have been verified (for public consumptions)',
   })
@@ -127,8 +127,7 @@ export class EventsController {
     required: false,
     type: Number,
   })
-  getAllVerifiedPaginated(
-    @Query('embed') embed: string[] | string = [],
+  getAllVerified(
     @Query('tags') tags: string[] | string = [],
     @Query() pagination: PaginationDto,
   ): Promise<EventsResponse> {
@@ -142,45 +141,18 @@ export class EventsController {
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
-        const totalPages = Math.floor(totalEntries / pageSize);
+        const totalPages = Math.ceil(totalEntries / pageSize);
         const nextPage = page + 1 <= totalPages ? page + 1 : undefined;
 
-        console.log(`totalEntries: ${totalEntries}`);
-        console.log(`offset: ${page * pageSize}`);
         return new EventsResponse({
-          events: paginatedEventResp.rows.map(eventModelToEventDTO),
           paginated: true,
-          totalPages: Math.floor(totalEntries / pageSize),
+          totalPages,
           nextPage,
+          pageSize,
           page,
+          events: paginatedEventResp.rows.map(eventModelToEventDTO),
         });
       });
-  }
-
-  @Get('verified')
-  @ApiOperation({
-    summary: 'Get all events that have been verified (for public consumptions)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'verified events',
-    type: EventsResponse,
-  })
-  getAllVerified(
-    @Query('embed') embed: string[] | string = [],
-    @Query('tags') tags: string[] | string = [],
-    @Req() request: Request,
-  ): Promise<EventsResponse> {
-    const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: getCommonQueryTermsForEvents(true, tags),
-    };
-
-    return this.eventsService
-      .findAll(findOptions)
-      .then((events) => events.map(eventModelToEventDTO))
-      .then((event) => removeSensitiveDataForNonAdmins(request, event))
-      .then((events) => new EventsResponse({ events }));
   }
 
   // TODO - Move to events.authenticated.controller

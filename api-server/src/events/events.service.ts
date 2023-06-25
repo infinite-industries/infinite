@@ -1,6 +1,12 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { FindOptions, QueryTypes, Transaction, UpdateOptions } from 'sequelize';
+import {
+  FindOptions,
+  Op,
+  QueryTypes,
+  Transaction,
+  UpdateOptions,
+} from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { EventModel } from './models/event.model';
 import DbUpdateResponse, {
@@ -23,6 +29,8 @@ import { INFINITE_WEB_PORTAL_BASE_URL } from '../constants';
 import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
 import UpsertEventAdminMetadataRequest from './dto/upsert-event-admin-metadata-request';
 import { ensureEmbedQueryStringIsArray } from '../utils/get-options-for-events-service-from-embeds-query-param';
+import { Nullable } from '../utils/NullableOrUndefinable';
+import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 
 @Injectable()
 export class EventsService {
@@ -32,6 +40,8 @@ export class EventsService {
     private eventAdminMetadataModel: typeof EventAdminMetadataModel,
     @InjectModel(DatetimeVenueModel)
     private dateTimeVenueModel: typeof DatetimeVenueModel,
+    @InjectModel(VenueModel)
+    private venueModel: typeof VenueModel,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
     private readonly bitlyService: BitlyService,
@@ -66,59 +76,67 @@ export class EventsService {
     pageSize: number;
     requestedPage: number;
   }): Promise<{ count: number; rows: EventModel[] }> {
-    const tagClause = this.getTagsClause(tags);
+    // TODO (DO THIS INSIDE TRANSACTION)
+    const tagClauseParams = this.getTagsClauseParams(tags);
+    const tagClause = isNotNullOrUndefined(tagClauseParams)
+      ? `WHERE :tagFilter && events.tags`
+      : '';
 
+    // Sort events by the first start_time and apply pagination
     const paginatedRows: EventModel[] = await this.sequelize.query(
       `
             with compressed_event as (
                 SELECT events.*, min(dv.start_time) as first_start_time
                 FROM events
-                JOIN datetime_venue dv on events.id = dv.event_id
+                LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
+                ${tagClause}
                 GROUP BY (events.id)
                 ORDER BY first_start_time DESC
                 OFFSET ${(requestedPage - 1) * pageSize}
                 LIMIT ${pageSize}
             )
             SELECT
-                   events.*,
-                   date_times.id AS "date_times.id",
-                   date_times.event_id AS "date_times.event_id",
-                   date_times.venue_id AS "date_times.venue_id",
-                   date_times.start_time AS "date_times.start_time",
-                   date_times.end_time AS "date_times.end_time",
-                   date_times.optional_title AS "date_times.optional_title",
-                   date_times.timezone AS "date_times.timezone",
-                   date_times."createdAt"      AS "date_times.createdAt",
-                   date_times."updatedAt" AS "date_times.updatedAt",
-                   venues.id AS "venue.id",
-                   venues.name AS "venue.name",
-                   venues.slug AS "venue.slug",
-                   venues.address AS "venue.address",
-                   venues.g_map_link AS "venue.g_map_link",
-                   venues."createdAt" AS "venue.createdAt",
-                   venues."updatedAt" AS "venue.updatedAt",
-                   venues.is_soft_deleted AS "venue.is_soft_deleted",
-                   venues.gps_lat AS "venue.gps_lat",
-                   venues.gps_long AS "venue.gps_long",
-                   venues.gps_alt AS "venue.gps_alt",
-                   venues.street AS "venue.street",
-                   venues.city AS "venue.city",
-                   venues.state AS "venue.state",
-                   venues.zip AS "venue.zip",
-                   venues.neighborhood AS "venue.neighborhood"
+                   events.*
             FROM compressed_event
             JOIN events ON events.id = compressed_event.id
-            JOIN datetime_venue date_times on events.id = date_times.event_id
-            JOIN venues ON venues.id = date_times.venue_id;
         `,
       {
         type: QueryTypes.SELECT,
         model: EventModel,
-        nest: true,
+        replacements: {
+          tagFilter: tagClauseParams,
+        },
       },
     );
 
-    const totalCount: number = await EventModel.count();
+    // Fill back in nested models date_times and venues
+    const dateTimes = await this.dateTimeVenueModel.findAll({
+      where: {
+        event_id: {
+          [Op.or]: paginatedRows.map(({ id }) => id),
+        },
+      },
+      include: VenueModel,
+    });
+
+    paginatedRows.forEach((event) => {
+      const dateTimesForEvent = dateTimes.filter(
+        ({ event_id }) => event_id === event.id,
+      );
+
+      event.date_times = dateTimesForEvent;
+    });
+
+    /*
+        you have to join on datetime_venue so that you filter out any events with no datetime_venue entry (though maybe this is wrong because we want offline events)
+     */
+    // const totalCount: number = await this.sequelize.query(
+    //   `
+    //         SELECT count(DISTINCT(e.id)) AS "count" FROM "events" as e JOIN datetime_venue dv on e.id = dv.event_id;
+    //     `,
+    //   { type: QueryTypes.SELECT, raw: true },
+    // )[0];
+    const totalCount = await this.eventModel.count();
 
     return { count: totalCount, rows: paginatedRows };
   }
@@ -294,23 +312,23 @@ export class EventsService {
     }
   }
 
-  private getTagsClause(tags: string[] | string): string {
+  private getTagsClauseParams(tags: string[] | string): Nullable<string> {
     const tagList = ensureEmbedQueryStringIsArray(tags);
 
-    if (tags.length === 0) {
-      return '';
+    if (tagList.length === 0) {
+      return null;
     }
 
-    const lastTag = tagList.pop();
+    const firstTag = tagList.pop();
 
-    if (tags.length === 0) {
-      return `'{"${lastTag}"}' && event.tags`;
+    if (tagList.length === 0) {
+      return `{"${firstTag}"}`;
     }
 
     const sqlArray = tagList.reduce((result, tag) => {
-      return `"${tag}", `;
-    }, "'{");
+      return `${result}, "${tag}" `;
+    }, `{"${firstTag}"`);
 
-    return sqlArray + `, "${lastTag}"}' && event.tags`;
+    return sqlArray + '}';
   }
 }
