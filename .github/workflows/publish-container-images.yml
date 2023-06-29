@@ -1,23 +1,14 @@
 name: Publish container images
 
-# initially: limit execution to manual execution
-#
-# ${{ github.ref_name }} is set to the branch specified, and is used to build &
-# tag the container image
-on:
-  workflow_dispatch
-
-# in the future, execute anytime the development or master branch is updated
-#
 # ${{ github.ref_name }} is set to the branch name, and is used to build &
 # tag the container image
 #
-#on:
-#  workflow_dispatch:
-#  push:
-#    branches:
-#      - master
-#      - development
+on:
+  workflow_dispatch:  # execute on manual execution
+  push:               # execute on pushes to development or master branches
+    branches:
+      - master
+      - development
 
 env:
   IMAGE_TAG: ${{ github.ref_name }}
