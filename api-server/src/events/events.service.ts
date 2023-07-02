@@ -127,15 +127,6 @@ export class EventsService {
       event.date_times = dateTimesForEvent;
     });
 
-    /*
-        you have to join on datetime_venue so that you filter out any events with no datetime_venue entry (though maybe this is wrong because we want offline events)
-     */
-    // const totalCount: number = await this.sequelize.query(
-    //   `
-    //         SELECT count(DISTINCT(e.id)) AS "count" FROM "events" as e JOIN datetime_venue dv on e.id = dv.event_id;
-    //     `,
-    //   { type: QueryTypes.SELECT, raw: true },
-    // )[0];
     const totalCount = await this.eventModel.count();
 
     return { count: totalCount, rows: paginatedRows };

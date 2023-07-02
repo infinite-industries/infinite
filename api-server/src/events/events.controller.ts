@@ -38,7 +38,11 @@ import { eventModelToEventDTO } from './dto/eventModelToEventDTO';
 import EventDTO from './dto/eventDTO';
 import { ENV } from '../constants';
 import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
-import { PaginationDto } from './dto/pagination-dto';
+import {
+  EVENT_PAGINATION_DEFAULT_PAGE,
+  EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
+  PaginationDto,
+} from './dto/pagination-dto';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -115,14 +119,14 @@ export class EventsController {
   })
   @ApiImplicitQuery({
     name: 'page',
-    description: 'the requested page',
+    description: `the requested page (default ${EVENT_PAGINATION_DEFAULT_PAGE})`,
     example: 1,
     required: false,
     type: Number,
   })
   @ApiImplicitQuery({
     name: 'pageSize',
-    description: 'the number of events to user per page',
+    description: `the number of events to user per page (default ${EVENT_PAGINATION_DEFAULT_PAGE_SIZE})`,
     example: 20,
     required: false,
     type: Number,
