@@ -18,6 +18,13 @@ export default class JsonLdService {
       ? 'Cancelled'
       : (tags.includes('condition:postponed') ? 'Postponed' : null)
 
+    const eventMode = tags.find(t => t.startsWith('mode:'))?.split(':')[1]
+
+    // if something doesn't have times, it's not an Event for purposes
+    // of Schema.org's schemas; for now just bail but maybe there's a
+    // type we could use later
+    if (!firstStartTime) return null
+
     return {
       '@context': 'http://schema.org',
       '@type': 'Event',
@@ -26,7 +33,7 @@ export default class JsonLdService {
       'startDate': firstStartTime,
       'endDate': lastEndTime,
       'image': image,
-      ...(venue ? { 'location': this.forVenue(venue) } : null),
+      ...(venue ? { 'location': this.forVenue(venue, eventMode) } : null),
       ...(eventStatus ? { eventStatus: `https://schema.org/Event${eventStatus}` } : null),
       ...(event.ticket_link || event.eventbrite_link
         ? {
@@ -39,23 +46,28 @@ export default class JsonLdService {
     }
   }
 
-  static forVenue(venue) {
+  static forVenue(venue, mode) {
     if (!venue) return
 
+    // TODO: how to handle hybrid -- two locations, physical + virtual?
+    const type = mode === 'online' ? 'VirtualLocation' : 'Place'
+
+    const address = {
+      // TODO: probably need to consider edge-cases with e.g.
+      // WRFL / WUKY pseudo-venues
+      '@type': 'PostalAddress',
+      'addressLocality': venue.city,
+      'addressRegion': venue.state,
+      'postalCode': venue.zip,
+      'streetAddress': venue.street
+    }
+
     return {
-      '@type': 'Place',
+      '@type': type,
       'name': venue.name,
-      // TODO: how to figure out URL
+      // TODO: how to figure out URL -- may need to add to data model
       // 'sameAs': '????',
-      'address': {
-        // TODO: probably need to consider edge-cases with e.g.
-        // WRFL / WUKY pseudo-venues
-        '@type': 'PostalAddress',
-        'addressLocality': venue.city,
-        'addressRegion': venue.state,
-        'postalCode': venue.zip,
-        'streetAddress': venue.street
-      }
+      ...(type === 'Place' ? { 'address': address } : null)
     }
   }
 }

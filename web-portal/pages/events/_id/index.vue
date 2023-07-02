@@ -46,9 +46,13 @@
         link: [
           { hid: 'canonical', rel: 'canonical', href: url }
         ],
-        script: [
-          { hid: 'json-ld', type: 'application/ld+json', json: jsonLdData }
-        ]
+        ...(jsonLdData
+          ? {
+            script: [
+              { hid: 'json-ld', type: 'application/ld+json', json: jsonLdData }
+            ]
+          }
+          : null)
       }
     },
     validate({ params }) {
