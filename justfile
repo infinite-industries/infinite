@@ -1,7 +1,7 @@
 set dotenv-load
 
-tag := env_var_or_default("IMAGE_TAG","latest")
-name := env_var("IMAGE_NAME")
+image_tag := env_var_or_default("IMAGE_TAG","latest")
+image_name := env_var_or_default("IMAGE_NAME","")
 registry := env_var_or_default('IMAGE_REGISTRY',"ghcr.io")
 
 # this is the user used to authenticate with the registry
@@ -16,7 +16,7 @@ ctx := "."
 # build a new image
 build flags="":
   cd {{ invocation_directory() }} \
-    && docker build -t {{name}}:{{tag}} {{flags}} -f Dockerfile {{ ctx }}
+    && docker build -t {{image_name}}:{{image_tag}} {{flags}} -f Dockerfile {{ ctx }}
 
 _login:
   @ echo "${{ registry_pass_var }}" | docker login {{registry}} -u {{registry_user}} --password-stdin
@@ -25,7 +25,15 @@ _logout:
   @ docker logout {{registry}}
 
 # publish the image
-publish alt_tag=tag: _login
-  docker tag {{name}}:{{tag}} {{registry}}/{{name}}:{{alt_tag}}
-  docker push {{registry}}/{{name}}:{{alt_tag}}
+publish alt_tag=image_tag: _login
+  docker tag {{image_name}}:{{image_tag}} {{registry}}/{{image_name}}:{{alt_tag}}
+  docker push {{registry}}/{{image_name}}:{{alt_tag}}
   docker logout {{registry}}
+
+# retrieve latest database backup
+fetchdb file="sanitized-infinite-prod.latest":
+  aws s3 cp s3://infinite-industries-backups/db/{{ file }} .
+
+# populate database
+populatedb file="sanitized-infinite-prod.latest": fetchdb 
+  PGPASSWORD=$PGPASSWORD pg_restore --clean --no-privileges --no-owner -v -d $PGDATABASE {{ file }}  
