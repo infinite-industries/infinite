@@ -66,7 +66,7 @@
         <div>
           <h3>Zoe Triantafilou</h3>
           <p class="bio">
-            Zoe is a recent graduate from the University of Kentucky.
+            Zoe is a recent graduate from the University of Kentucky. worms in her brain.
           </p>
         </div>
       </li>
