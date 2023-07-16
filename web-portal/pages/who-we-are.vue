@@ -59,6 +59,20 @@
           </p>
         </div>
       </li>
+      <li>
+        <div>
+          <img class="member-portrait" src="~/assets/images/who_we_are/jason.jpg" width="150px" height="150px">
+        </div>
+        <div>
+          <h3>Jason Swank</h3>
+          <p class="bio">
+            Jason is a technologist, dad, and occasional musician. He enjoys the performing arts scene in Lexington, KY and contributes his product management and devops expertise to the project.
+          </p>
+          <p class="link-block">
+            <a href="https://scalene.net/~jswank" target="_new">Website</a>
+          </p>
+        </div>
+      </li>
     </ul>
 
     <p class="join-us">

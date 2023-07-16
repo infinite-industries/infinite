@@ -42,9 +42,11 @@ Can be embedded in partner websites and services.
 ## Current Project Team Members
 
 + [Matthew Gidcomb](https://github.com/MatthewGidcomb)
-+ [Chris Wininger](https://github.com/chriswininger)
 + [Becky Mead](https://github.com/rlmead)
 + [Dima Strakovsky](https://github.com/Digi-D)
++ [Jason Swank](https://scalene.net/~jswank)
++ [Zoe Triantafilou](https://github.com/zoe-triantafilou)
++ [Chris Wininger](https://github.com/chriswininger)
 
 #### Past Contributors
 
