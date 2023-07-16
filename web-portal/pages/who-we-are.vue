@@ -50,12 +50,23 @@
           <img class="member-portrait" src="~/assets/images/who_we_are/becky.jpg" width="150px" height="150px">
         </div>
         <div>
-          <h3>Becky Mead</h3>
+          <h3>B Mead</h3>
           <p class="bio">
-            Becky is a linguist who spent years working in speech technology, which led her to discover her interest in software development. She lives in a bright orange house that she's slowly transforming into a little urban farm. She loves making stuff, especially <a href="https://www.ravelry.com/designers/becky-lee" target="_new">knitwear and patterns that come with automatic sizing calculators</a>, and she lives for creative collaboration.
+            B is a linguist who spent years working in speech technology, which led her to discover her interest in software development. She lives in a bright orange house that she's slowly transforming into a little urban farm. She loves making stuff, especially <a href="https://www.ravelry.com/designers/becky-lee" target="_new">knitwear and patterns that come with automatic sizing calculators</a>, and she lives for creative collaboration.
           </p>
           <p class="link-block">
             <a href="https://github.com/rlmead" target="_new">Github</a>
+          </p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <img class="member-portrait" src="~/assets/images/who_we_are/zoe.jpg" width="150px" height="150px">
+        </div>
+        <div>
+          <h3>Zoe Triantafilou</h3>
+          <p class="bio">
+            Zoe is a recent graduate from the University of Kentucky.
           </p>
         </div>
       </li>
