@@ -4,6 +4,7 @@
 
 <script>
   import EventView from '@/components/EventView.vue'
+  import JsonLdService from '@/services/JsonLdService'
 
   export default {
     head() {
@@ -18,6 +19,8 @@
       const socialImage = (this.event && this.event.social_image && this.event.social_image !== 'none'
         ? this.event.social_image
         : eventImage)
+
+      const jsonLdData = JsonLdService.forEvent(this.event)
 
       return {
         title,
@@ -42,7 +45,14 @@
         ],
         link: [
           { hid: 'canonical', rel: 'canonical', href: url }
-        ]
+        ],
+        ...(jsonLdData
+          ? {
+            script: [
+              { hid: 'json-ld', type: 'application/ld+json', json: jsonLdData }
+            ]
+          }
+          : null)
       }
     },
     validate({ params }) {
