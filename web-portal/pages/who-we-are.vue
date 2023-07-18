@@ -66,7 +66,7 @@
         <div>
           <h3>Zoe Triantafilou</h3>
           <p class="bio">
-            Zoe is a recent graduate from the University of Kentucky. worms in her brain.
+            Zoe is a recent graduate of the University of Kentucky with a degree in Digital Media Design. She works as a freelance Webflow developer, building websites for local businesses. Her hobbies include goofing, gabbing, scheming, and plotting. She enjoys teaching herself new skills like frontend development, unicycling, and a funny third thing.
           </p>
         </div>
       </li>
