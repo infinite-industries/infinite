@@ -4,6 +4,9 @@ set -o nounset
 set -o errexit
 set -o xtrace
 
+cd /workspaces/infinite
+cp .env.codespaces .env
+
 cd /workspaces/infinite/api-server
 cp .env.codespaces .env
 npm ci

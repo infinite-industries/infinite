@@ -50,12 +50,37 @@
           <img class="member-portrait" src="~/assets/images/who_we_are/becky.jpg" width="150px" height="150px">
         </div>
         <div>
-          <h3>Becky Mead</h3>
+          <h3>B Mead</h3>
           <p class="bio">
-            Becky is a linguist who spent years working in speech technology, which led her to discover her interest in software development. She lives in a bright orange house that she's slowly transforming into a little urban farm. She loves making stuff, especially <a href="https://www.ravelry.com/designers/becky-lee" target="_new">knitwear and patterns that come with automatic sizing calculators</a>, and she lives for creative collaboration.
+            B is a linguist who spent years working in speech technology, which led her to discover her interest in software development. She lives in a bright orange house that she's slowly transforming into a little urban farm. She loves making stuff, especially <a href="https://www.ravelry.com/designers/becky-lee" target="_new">knitwear and patterns that come with automatic sizing calculators</a>, and she lives for creative collaboration.
           </p>
           <p class="link-block">
             <a href="https://github.com/rlmead" target="_new">Github</a>
+          </p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <img class="member-portrait" src="~/assets/images/who_we_are/zoe.jpg" width="150px" height="150px">
+        </div>
+        <div>
+          <h3>Zoe Triantafilou</h3>
+          <p class="bio">
+            Zoe is a recent graduate of the University of Kentucky with a degree in Digital Media Design. She works as a freelance Webflow developer, building websites for local businesses. Her hobbies include goofing, gabbing, scheming, and plotting. She enjoys teaching herself new skills like frontend development, unicycling, and a funny third thing.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <img class="member-portrait" src="~/assets/images/who_we_are/jason.jpg" width="150px" height="150px">
+        </div>
+        <div>
+          <h3>Jason Swank</h3>
+          <p class="bio">
+            Jason is a technologist, dad, and occasional musician. He enjoys the performing arts scene in Lexington, KY and contributes his product management and devops expertise to the project.
+          </p>
+          <p class="link-block">
+            <a href="https://scalene.net/~jswank" target="_new">Website</a>
           </p>
         </div>
       </li>
