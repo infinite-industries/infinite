@@ -45,6 +45,7 @@
       command:
         cmd: docker-compose pull
         chdir: ~/docker-files
+      notify: Restart docker containers
     - name: setup systemd init for docker-compose
       become: true
       copy:
