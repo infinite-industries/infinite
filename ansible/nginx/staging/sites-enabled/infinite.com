@@ -1,6 +1,6 @@
 server {
-  listen 80;
   server_name staging.infinite.industries;
+  listen 80;
 
   if ($host = staging.infinite.industries) {
     return 301 https://$host$request_uri;
@@ -13,9 +13,7 @@ server {
 
 server {
     server_name staging.infinite.industries;
-
     listen 443 ssl;
-    server_name staging.infinite.industries;
 
     ssl_certificate /etc/letsencrypt/live/staging.infinite.industries/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/staging.infinite.industries/privkey.pem;
