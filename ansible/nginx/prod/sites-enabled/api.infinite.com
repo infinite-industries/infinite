@@ -1,6 +1,6 @@
 server {
-  listen 80;
   server_name api.infinite.industries;
+  listen 80;
 
   if ($host = api.infinite.industries) {
     return 301 https://$host$request_uri;
@@ -13,9 +13,7 @@ server {
 
 server {
     server_name api.infinite.industries;
-
     listen 443 ssl;
-    server_name api.infinite.industries;
 
     ssl_certificate /etc/letsencrypt/live/infinite.industries/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/infinite.industries/privkey.pem;
