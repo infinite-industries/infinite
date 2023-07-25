@@ -14,7 +14,7 @@
     <!-- PopUps and Modals -->
     <!-- Regular Old Modal -->
     <ii-modal />
-    <ii-subscribe />
+    <ii-submit />
     <!-- iPhone-specific save button to desktop -->
     <!-- <ii-iphone-save-button /> -->
   </div>
@@ -23,7 +23,7 @@
 <script>
   import Toolbar from '../components/Toolbar.vue'
   import Notifications from '../components/Notifications.vue'
-  import Subscribe from '../components/Subscribe.vue'
+  import Submit from '../components/Submit.vue'
   import Modal from '../components/Modal.vue'
   import SiteNavigation from '../components/SiteNavigation.vue'
   import getToken from '../helpers/getToken'
@@ -34,7 +34,7 @@
       'ii-site-navigation': SiteNavigation,
       'ii-notifications': Notifications,
       'ii-modal': Modal,
-      'ii-subscribe': Subscribe
+      'ii-submit': Submit
     },
 
     mounted: async function () {
