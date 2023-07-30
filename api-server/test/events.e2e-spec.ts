@@ -6,19 +6,22 @@ import request from 'supertest';
 import { PORT } from '../src/constants';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { StartedTestContainer } from 'testcontainers';
-import { EventModel } from '../src/events/models/event.model';
+import {
+  EventModel,
+  EventModelConstructorProps,
+} from '../src/events/models/event.model';
 import { VenueModel } from '../src/venues/models/venue.model';
 import { DatetimeVenueModel } from '../src/events/models/datetime-venue.model';
 import { TestingModule } from '@nestjs/testing';
 import { afterAllStackShutdown } from './test-helpers/after-all-stack-shutdown';
-import { createRandomEvent } from './fakers/event.faker';
+import {
+  createRandomEventWithDateTime,
+  createRandomEventWithVenue,
+} from './fakers/event.faker';
 import { CURRENT_VERSION_URI } from '../src/utils/versionts';
 import EventDTO from '../src/events/dto/eventDTO';
 import { Nullable } from '../src/utils/NullableOrUndefinable';
-
-// !!! TODO CHECK BOTH SORT ORDERS
-// !!! CHECK WITH TAGS
-// !!! CHECK WITH ONLINE RESOURCES
+import faker from 'faker';
 
 describe('Events API', () => {
   const server = request('http://localhost:' + PORT);
@@ -75,8 +78,9 @@ describe('Events API', () => {
     const givenTotalNumEvents = 40;
     const expectedDefaultPageSize = 20;
 
-    const allEvents = await createListOfFutureEventsInChronologicalOrder(
+    const [allEvents] = await createListOfFutureEventsInChronologicalOrder(
       givenTotalNumEvents,
+      { verified: true },
     );
 
     return server
@@ -99,7 +103,7 @@ describe('Events API', () => {
         expect(nextPage).toEqual(2);
         expect(page).toEqual(1);
         expect(pageSize).toEqual(expectedDefaultPageSize);
-        expect(events.length).toEqual(20);
+        expect(events.length).toEqual(expectedDefaultPageSize);
 
         assertOrderedByFirstStartTimeDescending(events);
 
@@ -116,8 +120,9 @@ describe('Events API', () => {
     const givenTotalNumEvents = 40;
     const expectedDefaultPageSize = 20;
 
-    const allEvents = await createListOfFutureEventsInChronologicalOrder(
+    const [allEvents] = await createListOfFutureEventsInChronologicalOrder(
       givenTotalNumEvents,
+      { verified: true },
     );
 
     return server
@@ -151,71 +156,387 @@ describe('Events API', () => {
           assertEventsEqual(paginatedEventReturned, expectedEvent);
         }
       });
-
-    it('/verified exclude unverified events', async () => {
-      const givenTotalNumEvents = 40;
-      const expectedDefaultPageSize = 20;
-
-      await createListOfFutureEventsInChronologicalOrder(givenTotalNumEvents);
-
-      const allUnverifiedEvent = await createRandomEvent({ ve})
-
-      return server
-          .get(`/${CURRENT_VERSION_URI}/events/verified?page=2`)
-          .expect(200)
-          .then(async ({ body }) => {
-            const {
-              status,
-              paginated,
-              totalPages,
-              nextPage,
-              pageSize,
-              page,
-              events,
-            } = body;
-
-            expect(status).toEqual('success');
-            expect(paginated).toEqual(true);
-            expect(totalPages).toEqual(2);
-            expect(nextPage).toBeUndefined();
-            expect(page).toEqual(2);
-            expect(pageSize).toEqual(expectedDefaultPageSize);
-            expect(events.length).toEqual(20);
-
-            assertOrderedByFirstStartTimeDescending(events);
-
-            for (let i = 0; i < events.length; i++) {
-              const paginatedEventReturned = events[i];
-              const expectedEvent = allEvents[i + 20];
-
-              assertEventsEqual(paginatedEventReturned, expectedEvent);
-            }
-          });
   });
 
-  async function createListOfFutureEventsInChronologicalOrder(numEvents = 30) {
+  it('/verified exclude unverified events', async () => {
+    const givenTotalNumEvents = 40;
+    const expectedPageSize = 40;
+
+    const [allVerifiedEvents] =
+      await createListOfFutureEventsInChronologicalOrder(20, {
+        verified: true,
+      });
+
+    await createListOfFutureEventsInChronologicalOrder(20, { verified: false });
+
+    return server
+      .get(
+        `/${CURRENT_VERSION_URI}/events/verified?page=1&pageSize=${givenTotalNumEvents}`,
+      )
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+        expect(totalPages).toEqual(1);
+        expect(nextPage).toBeUndefined();
+        expect(page).toEqual(1);
+        expect(pageSize).toEqual(expectedPageSize);
+        expect(events.length).toEqual(20);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = allVerifiedEvents[i];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+  });
+
+  it('should include events such as online resources that have no date time entries', async () => {
+    const numEventsWithDateTimes = 3;
+
+    const [someVerifiedEventsWithDateTimes] =
+      await createListOfFutureEventsInChronologicalOrder(
+        numEventsWithDateTimes,
+        {
+          verified: true,
+        },
+      );
+
+    const [eventWithoutDateTime1] = await createRandomEventWithVenue(
+      eventModel,
+      venueModel,
+      { verified: true },
+    );
+    const [eventWithoutDateTime2] = await createRandomEventWithVenue(
+      eventModel,
+      venueModel,
+      { verified: true },
+    );
+
+    const allVerifiedEvents = [
+      ...someVerifiedEventsWithDateTimes,
+      eventWithoutDateTime1,
+      eventWithoutDateTime2,
+    ];
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/verified?page=1`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+        expect(totalPages).toEqual(1);
+        expect(nextPage).toBeUndefined();
+        expect(page).toEqual(1);
+        expect(pageSize).toEqual(20);
+        expect(events.length).toEqual(allVerifiedEvents.length);
+
+        for (let i = 0; i < numEventsWithDateTimes; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = allVerifiedEvents[i];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+
+        // last 2 entries should have no date_times
+        expect(events[3].date_times).toEqual([]);
+        expect(events[4].date_times).toEqual([]);
+      });
+  });
+
+  it('should filter by single tag', async () => {
+    const numEventsWithTag1 = 30;
+    const numEventsWithTag2 = 45;
+
+    await createListOfFutureEventsInChronologicalOrder(numEventsWithTag1, {
+      verified: true,
+      tags: ['tag1'],
+    });
+
+    const [eventsWithTag2] = await createListOfFutureEventsInChronologicalOrder(
+      numEventsWithTag2,
+      { verified: true, tags: ['tag2'] },
+    );
+
+    // check first page
+    await server
+      .get(`/${CURRENT_VERSION_URI}/events/verified?page=1&tags=tag2`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+
+        // should reflect the fact we only include tag2
+        expect(totalPages).toEqual(3);
+
+        expect(nextPage).toEqual(2);
+        expect(page).toEqual(1);
+        expect(pageSize).toEqual(20);
+        expect(events.length).toEqual(20);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = eventsWithTag2[i];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+
+    // check second page
+    await server
+      .get(`/${CURRENT_VERSION_URI}/events/verified?page=2&tags=tag2`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+
+        // should reflect the fact we only include tag2
+        expect(totalPages).toEqual(3);
+
+        expect(nextPage).toEqual(3);
+        expect(page).toEqual(2);
+        expect(pageSize).toEqual(20);
+        expect(events.length).toEqual(20);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = eventsWithTag2[i + 20];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+
+    // check third page
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/verified?page=3&tags=tag2`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+
+        // should reflect the fact we only include tag2
+        expect(totalPages).toEqual(3);
+
+        expect(nextPage).toBeUndefined();
+        expect(page).toEqual(3);
+        expect(pageSize).toEqual(20);
+        expect(events.length).toEqual(5);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = eventsWithTag2[i + 40];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+  });
+
+  it('should filter by multiple tag', async () => {
+    const numEventsWithTag1 = 12;
+    const numEventsWithTag2 = 10;
+    const numEventsWithTag3 = 13;
+
+    await createListOfFutureEventsInChronologicalOrder(numEventsWithTag1, {
+      verified: true,
+      tags: ['tag1'],
+    });
+
+    const [eventsWithTag2, baseTime] =
+      await createListOfFutureEventsInChronologicalOrder(numEventsWithTag2, {
+        verified: true,
+        tags: ['tag2'],
+      });
+
+    const [eventsWithTag3] = await createListOfFutureEventsInChronologicalOrder(
+      numEventsWithTag3,
+      { verified: true, tags: ['tag3'] },
+      baseTime,
+    );
+
+    // unverified events that have the right tag should not show in results (ensure we are applying both tag and verified filters)
+    await createListOfFutureEventsInChronologicalOrder(
+      faker.datatype.number({ min: 1, max: 10 }),
+      { verified: false, tags: ['tag2'] },
+      baseTime,
+    );
+    await createListOfFutureEventsInChronologicalOrder(
+      faker.datatype.number({ min: 1, max: 10 }),
+      { verified: false, tags: ['tag3'] },
+      baseTime,
+    );
+
+    const allEventsExpectedToBeInResults = [
+      ...eventsWithTag2,
+      ...eventsWithTag3,
+    ];
+
+    // check first page
+    await server
+      .get(`/${CURRENT_VERSION_URI}/events/verified?page=1&tags=tag2&tags=tag3`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+
+        // should reflect the fact we only include tag2 and tag3
+        expect(totalPages).toEqual(2);
+
+        expect(nextPage).toEqual(2);
+        expect(page).toEqual(1);
+        expect(pageSize).toEqual(20);
+        expect(events.length).toEqual(20);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        // check all tag2 events
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = allEventsExpectedToBeInResults[i];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+
+    // check second page
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/verified?page=2&tags=tag2&tags=tag3`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+
+        // should reflect the fact we only include tag2 and tag3
+        expect(totalPages).toEqual(2);
+
+        expect(nextPage).toBeUndefined();
+        expect(page).toEqual(2);
+        expect(pageSize).toEqual(20);
+        expect(events.length).toEqual(3);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        // check all tag2 events
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = allEventsExpectedToBeInResults[i + 20];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+  });
+
+  async function createListOfFutureEventsInChronologicalOrder(
+    numEvents = 30,
+    overrides: EventModelConstructorProps = {},
+    baseTime = new Date(),
+  ): Promise<[EventModel[], Date]> {
     const events: EventModel[] = [];
 
-    let baseTime = new Date();
     for (let i = 0; i < numEvents; i++) {
-      const [newEvent, newBaseTime] = await createEventInPast(baseTime);
+      const [newEvent, newBaseTime] = await createEventInPast(
+        baseTime,
+        overrides,
+      );
 
       events.push(newEvent);
       baseTime = newBaseTime;
     }
 
-    return events;
+    return [events, baseTime];
   }
 
-  async function createEventInPast(baseTime): Promise<[EventModel, Date]> {
-    const event = await createRandomEvent(
+  async function createEventInPast(
+    baseTime,
+    overrides: EventModelConstructorProps = {},
+  ): Promise<[EventModel, Date]> {
+    const event = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
       datetimeVenueModel,
+      overrides,
     );
 
     let offset = 0;
-    let lastStartTime = baseTime;
+    let lastStartTime;
 
     for (const dt of event.date_times) {
       const newStartTime = new Date(baseTime);

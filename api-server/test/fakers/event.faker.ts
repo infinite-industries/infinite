@@ -51,7 +51,28 @@ export function generateEvent(
 
   return new eventModelConstructor(eventProps);
 }
-export async function createRandomEvent(
+
+export async function createRandomEventWithVenue(
+  eventModelConstructor: typeof EventModel,
+  venueModelConstructor: typeof VenueModel,
+  eventOverrides: EventModelConstructorProps = {},
+  venueOverrides?: VenueModelConstructorProps,
+): Promise<[EventModel, VenueModel]> {
+  const venue: Nullable<VenueModel> = await (isNotNullOrUndefined(
+    venueOverrides,
+  )
+    ? generateVenue(venueModelConstructor, venueOverrides).save()
+    : Promise.resolve(null));
+
+  const event: EventModel = await generateEvent(
+    eventModelConstructor,
+    eventOverrides,
+  ).save();
+
+  return [event, venue];
+}
+
+export async function createRandomEventWithDateTime(
   eventModelConstructor: typeof EventModel,
   venueModelConstructor: typeof VenueModel,
   dateTimeVenueModelConstructor: typeof DatetimeVenueModel,
@@ -63,16 +84,12 @@ export async function createRandomEvent(
   ),
   venueOverrides?: VenueModelConstructorProps,
 ): Promise<EventModel> {
-  const venue: Nullable<VenueModel> = await (isNotNullOrUndefined(
-    venueOverrides,
-  )
-    ? generateVenue(venueModelConstructor, venueOverrides).save()
-    : Promise.resolve(null));
-
-  const event: EventModel = await generateEvent(
+  const [event, venue] = await createRandomEventWithVenue(
     eventModelConstructor,
+    venueModelConstructor,
     eventOverrides,
-  ).save();
+    venueOverrides,
+  );
 
   for (const dtv of dateTimeVenueOverrides) {
     const venueForDateTime: VenueModel = await (isNotNullOrUndefined(venue)

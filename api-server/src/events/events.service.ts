@@ -69,18 +69,18 @@ export class EventsService {
 
   async findAllPaginated({
     tags = [],
+    verifiedOnly = true,
     pageSize,
     requestedPage,
   }: {
     tags: string[] | string;
+    verifiedOnly?: boolean;
     pageSize: number;
     requestedPage: number;
   }): Promise<{ count: number; rows: EventModel[] }> {
     // TODO (DO THIS INSIDE TRANSACTION)
     const tagClauseParams = this.getTagsClauseParams(tags);
-    const tagClause = isNotNullOrUndefined(tagClauseParams)
-      ? `WHERE :tagFilter && events.tags`
-      : '';
+    const whereClause = this.getWhereClause(tagClauseParams, verifiedOnly);
 
     // Sort events by the first start_time and apply pagination
     const paginatedRows: EventModel[] = await this.sequelize.query(
@@ -89,7 +89,7 @@ export class EventsService {
                 SELECT events.*, min(dv.start_time) as first_start_time
                 FROM events
                 LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
-                ${tagClause}
+                ${whereClause}
                 GROUP BY (events.id)
                 ORDER BY first_start_time DESC
                 OFFSET ${(requestedPage - 1) * pageSize}
@@ -127,7 +127,10 @@ export class EventsService {
       event.date_times = dateTimesForEvent;
     });
 
-    const totalCount = await this.eventModel.count();
+    const totalCount = await this.getEventCountWithFilters(
+      tagClauseParams,
+      whereClause,
+    );
 
     return { count: totalCount, rows: paginatedRows };
   }
@@ -321,5 +324,44 @@ export class EventsService {
     }, `{"${firstTag}"`);
 
     return sqlArray + '}';
+  }
+
+  private getWhereClause(
+    tagClauseParams: Nullable<string>,
+    verifiedOnly: boolean,
+  ): string {
+    const tagClause = isNotNullOrUndefined(tagClauseParams)
+      ? `:tagFilter && events.tags`
+      : null;
+
+    const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
+
+    const clauses = [tagClause, verifiedOnlyClause].filter((clause) =>
+      isNotNullOrUndefined(clause),
+    );
+
+    if (clauses.length === 0) {
+      return '';
+    } else {
+      return `WHERE ${clauses.join(' AND ')}`;
+    }
+  }
+
+  private async getEventCountWithFilters(
+    tagClauseParams: string,
+    whereClause: string,
+  ): Promise<number> {
+    const results: { count: string }[] = await this.sequelize.query(
+      `SELECT COUNT(id)
+       FROM events ${whereClause}`,
+      {
+        type: QueryTypes.SELECT,
+        replacements: {
+          tagFilter: tagClauseParams,
+        },
+      },
+    );
+
+    return Number(results[0].count);
   }
 }

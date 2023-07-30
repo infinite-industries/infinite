@@ -142,6 +142,7 @@ export class EventsController {
         tags,
         pageSize,
         requestedPage: page,
+        verifiedOnly: true,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
