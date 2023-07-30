@@ -504,6 +504,22 @@ describe('Events API', () => {
       });
   });
 
+  it('should fail appropriately given too high of page size is requested', async () => {
+    await createListOfFutureEventsInChronologicalOrder(
+      faker.datatype.number({ min: 1, max: 40 }),
+      {
+        verified: true,
+      },
+    );
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/verified?page=1&pageSize=301`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.message).toEqual(['pageSize must not be greater than 300']);
+      });
+  });
+
   async function createListOfFutureEventsInChronologicalOrder(
     numEvents = 30,
     overrides: EventModelConstructorProps = {},

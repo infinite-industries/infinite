@@ -1,8 +1,10 @@
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, Max, MAX, Validate } from 'class-validator';
 
 export const EVENT_PAGINATION_DEFAULT_PAGE = 1;
 export const EVENT_PAGINATION_DEFAULT_PAGE_SIZE = 20;
+
+export const EVENT_PAGINATION_MAX_PAGE_SIZE = 300;
 
 export class PaginationDto {
   @Transform((value) => toNumber(value))
@@ -13,6 +15,7 @@ export class PaginationDto {
   @Transform((value) => toNumber(value))
   @IsNumber({ allowNaN: false })
   @IsOptional()
+  @Max(EVENT_PAGINATION_MAX_PAGE_SIZE)
   public pageSize: number = EVENT_PAGINATION_DEFAULT_PAGE_SIZE;
 }
 
