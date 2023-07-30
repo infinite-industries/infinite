@@ -78,61 +78,58 @@ export class EventsService {
     pageSize: number;
     requestedPage: number;
   }): Promise<{ count: number; rows: EventModel[] }> {
-    // TODO (DO THIS INSIDE TRANSACTION)
-    const tagClauseParams = this.getTagsClauseParams(tags);
-    const whereClause = this.getWhereClause(tagClauseParams, verifiedOnly);
+    return this.sequelize.transaction(async (_) => {
+      const tagClauseParams = this.getTagsClauseParams(tags);
+      const whereClause = this.getWhereClause(tagClauseParams, verifiedOnly);
 
-    // Sort events by the first start_time and apply pagination
-    const paginatedRows: EventModel[] = await this.sequelize.query(
-      `
-            with compressed_event as (
-                SELECT events.*, min(dv.start_time) as first_start_time
-                FROM events
-                LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
-                ${whereClause}
-                GROUP BY (events.id)
-                ORDER BY first_start_time DESC
-                OFFSET ${(requestedPage - 1) * pageSize}
-                LIMIT ${pageSize}
-            )
-            SELECT
-                   events.*
-            FROM compressed_event
-            JOIN events ON events.id = compressed_event.id
-        `,
-      {
-        type: QueryTypes.SELECT,
-        model: EventModel,
-        replacements: {
-          tagFilter: tagClauseParams,
+      // Sort events by the first start_time and apply pagination
+      const paginatedRows: EventModel[] = await this.sequelize.query(
+        `
+              with compressed_event as (SELECT events.*, min(dv.start_time) as first_start_time
+                                        FROM events
+                                                 LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
+                  ${whereClause}
+              GROUP BY (events.id)
+              ORDER BY first_start_time DESC
+              OFFSET ${(requestedPage - 1) * pageSize} LIMIT ${pageSize} )
+              SELECT events.*
+              FROM compressed_event
+                       JOIN events ON events.id = compressed_event.id
+          `,
+        {
+          type: QueryTypes.SELECT,
+          model: EventModel,
+          replacements: {
+            tagFilter: tagClauseParams,
+          },
         },
-      },
-    );
-
-    // Fill back in nested models date_times and venues
-    const dateTimes = await this.dateTimeVenueModel.findAll({
-      where: {
-        event_id: {
-          [Op.or]: paginatedRows.map(({ id }) => id),
-        },
-      },
-      include: VenueModel,
-    });
-
-    paginatedRows.forEach((event) => {
-      const dateTimesForEvent = dateTimes.filter(
-        ({ event_id }) => event_id === event.id,
       );
 
-      event.date_times = dateTimesForEvent;
+      // Fill back in nested models date_times and venues
+      const dateTimes = await this.dateTimeVenueModel.findAll({
+        where: {
+          event_id: {
+            [Op.or]: paginatedRows.map(({ id }) => id),
+          },
+        },
+        include: VenueModel,
+      });
+
+      paginatedRows.forEach((event) => {
+        const dateTimesForEvent = dateTimes.filter(
+          ({ event_id }) => event_id === event.id,
+        );
+
+        event.date_times = dateTimesForEvent;
+      });
+
+      const totalCount = await this.getEventCountWithFilters(
+        tagClauseParams,
+        whereClause,
+      );
+
+      return { count: totalCount, rows: paginatedRows };
     });
-
-    const totalCount = await this.getEventCountWithFilters(
-      tagClauseParams,
-      whereClause,
-    );
-
-    return { count: totalCount, rows: paginatedRows };
   }
 
   async update(
