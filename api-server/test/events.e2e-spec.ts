@@ -13,6 +13,8 @@ import { TestingModule } from '@nestjs/testing';
 import { afterAllStackShutdown } from './test-helpers/after-all-stack-shutdown';
 import { createRandomEvent } from './fakers/event.faker';
 import { CURRENT_VERSION_URI } from '../src/utils/versionts';
+import EventDTO from '../src/events/dto/eventDTO';
+import { Nullable } from '../src/utils/NullableOrUndefinable';
 
 // !!! TODO CHECK BOTH SORT ORDERS
 // !!! CHECK WITH TAGS
@@ -56,6 +58,14 @@ describe('Events API', () => {
     return Promise.resolve();
   }, 30000);
 
+  afterEach(async () => {
+    await datetimeVenueModel.destroy({ where: {} });
+    await eventModel.destroy({ where: {} });
+    await venueModel.destroy({ where: {} });
+
+    return Promise.resolve();
+  });
+
   afterAll(
     async () => afterAllStackShutdown(appUnderTest, dbContainer, testingModule),
     30000,
@@ -88,8 +98,10 @@ describe('Events API', () => {
         expect(totalPages).toEqual(2);
         expect(nextPage).toEqual(2);
         expect(page).toEqual(1);
-        expect(pageSize).toEqual(20);
+        expect(pageSize).toEqual(expectedDefaultPageSize);
         expect(events.length).toEqual(20);
+
+        assertOrderedByFirstStartTimeDescending(events);
 
         for (let i = 0; i < events.length; i++) {
           const paginatedEventReturned = events[i];
@@ -98,6 +110,87 @@ describe('Events API', () => {
           assertEventsEqual(paginatedEventReturned, expectedEvent);
         }
       });
+  });
+
+  it('/verified should be able to return the second page using default page size', async () => {
+    const givenTotalNumEvents = 40;
+    const expectedDefaultPageSize = 20;
+
+    const allEvents = await createListOfFutureEventsInChronologicalOrder(
+      givenTotalNumEvents,
+    );
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/verified?page=2`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+        expect(totalPages).toEqual(2);
+        expect(nextPage).toBeUndefined();
+        expect(page).toEqual(2);
+        expect(pageSize).toEqual(expectedDefaultPageSize);
+        expect(events.length).toEqual(20);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = allEvents[i + 20];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+
+    it('/verified exclude unverified events', async () => {
+      const givenTotalNumEvents = 40;
+      const expectedDefaultPageSize = 20;
+
+      await createListOfFutureEventsInChronologicalOrder(givenTotalNumEvents);
+
+      const allUnverifiedEvent = await createRandomEvent({ ve})
+
+      return server
+          .get(`/${CURRENT_VERSION_URI}/events/verified?page=2`)
+          .expect(200)
+          .then(async ({ body }) => {
+            const {
+              status,
+              paginated,
+              totalPages,
+              nextPage,
+              pageSize,
+              page,
+              events,
+            } = body;
+
+            expect(status).toEqual('success');
+            expect(paginated).toEqual(true);
+            expect(totalPages).toEqual(2);
+            expect(nextPage).toBeUndefined();
+            expect(page).toEqual(2);
+            expect(pageSize).toEqual(expectedDefaultPageSize);
+            expect(events.length).toEqual(20);
+
+            assertOrderedByFirstStartTimeDescending(events);
+
+            for (let i = 0; i < events.length; i++) {
+              const paginatedEventReturned = events[i];
+              const expectedEvent = allEvents[i + 20];
+
+              assertEventsEqual(paginatedEventReturned, expectedEvent);
+            }
+          });
   });
 
   async function createListOfFutureEventsInChronologicalOrder(numEvents = 30) {
@@ -135,6 +228,10 @@ describe('Events API', () => {
 
     await event.reload();
 
+    const newStartTime = new Date(baseTime);
+    newStartTime.setHours(baseTime.getHours() - offset);
+    lastStartTime = newStartTime;
+
     return [event, lastStartTime];
   }
 
@@ -165,5 +262,31 @@ describe('Events API', () => {
     expect(actualReturned.reviewed_by_org).toEqual(
       expectedEvent.reviewed_by_org,
     );
+  }
+
+  // This type should be very close EventDTO but is a serialized/deserialized representation
+  // Objects that don't translate direct to json will be off, Dates will be strings for example
+  function assertOrderedByFirstStartTimeDescending(events: EventDTO[]) {
+    let lastFirstStartTime: Nullable<string> = null;
+
+    events.forEach((event, ndx: number) => {
+      // find first start time
+      const firstStartTime = event.date_times.sort(
+        (a, b) =>
+          new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
+      )[0].start_time as unknown as string;
+
+      expect(firstStartTime).not.toBeNull();
+      expect(firstStartTime).not.toBeUndefined();
+
+      if (ndx > 0) {
+        // check that first start time is greater than the last first start time
+        expect(new Date(lastFirstStartTime).getTime()).toBeGreaterThan(
+          new Date(firstStartTime).getTime(),
+        );
+      }
+
+      lastFirstStartTime = firstStartTime;
+    });
   }
 });
