@@ -5,7 +5,7 @@ import { VenueModel } from '../src/venues/models/venue.model';
 import request from 'supertest';
 import { CURRENT_VERSION_URI } from '../src/utils/versionts';
 import { EventModel } from '../src/events/models/event.model';
-import generateEvent from './fakers/event.faker';
+import generateEvent, { createEvent } from './fakers/event.faker';
 import generateVenue from './fakers/venue.faker';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import runMigrations from './test-helpers/e2e-stack/run-migrations';
@@ -14,7 +14,6 @@ import buildDbConnectionsForTests from './test-helpers/e2e-stack/build-db-connec
 import killApp from './test-helpers/e2e-stack/kill-app';
 import stopDatabase from './test-helpers/e2e-stack/stop-database';
 import startDatabase from './test-helpers/e2e-stack/start-database';
-import { generateDatetimeVenueFaker } from './fakers/generateDatetimeVenue.faker';
 import { DatetimeVenueModel } from '../src/events/models/datetime-venue.model';
 import { PORT } from '../src/constants';
 
@@ -107,12 +106,12 @@ describe('CurrentEvents (e2e)', () => {
     const venue = await createVenue(generateVenue(venueModel));
 
     const eventVerified = await createEvent(
-      generateEvent(EventModel, venue.id, true),
+      generateEvent(EventModel, { venue_id: venue.id, verified: true }),
       dateTimesForEventInFuture1,
     );
 
     await createEvent(
-      generateEvent(EventModel, venue.id, false),
+      generateEvent(EventModel, { venue_id: venue.id, verified: false }),
       dateTimesForEventInFuture2,
     );
 
@@ -140,18 +139,18 @@ describe('CurrentEvents (e2e)', () => {
     const venue = await createVenue(generateVenue(VenueModel));
 
     const eventInFuture = await createEvent(
-      generateEvent(EventModel, venue.id, true),
+      generateEvent(EventModel, { venue_id: venue.id, verified: true }),
       dateTimesForEventInFuture,
     );
 
     const eventInRecentPast = await createEvent(
-      generateEvent(EventModel, venue.id, true),
+      generateEvent(EventModel, { venue_id: venue.id, verified: true }),
       dateTimesForEvenInPast,
     );
 
     // event in distant past
     await createEvent(
-      generateEvent(EventModel, venue.id, true),
+      generateEvent(EventModel, { venue_id: venue.id, verified: true }),
       dateTimesForEventTooFarInPast,
     );
 
@@ -187,15 +186,15 @@ describe('CurrentEvents (e2e)', () => {
     const venue = await createVenue(generateVenue(venueModel));
 
     const multiDayEvent = await createEvent(
-      generateEvent(eventModel, venue.id, true),
+      generateEvent(eventModel, { venue_id: venue.id, verified: true }),
       multiDayDateTimes,
     );
     const singleDayEvent1 = await createEvent(
-      generateEvent(eventModel, venue.id, true),
+      generateEvent(eventModel, { venue_id: venue.id, verified: true }),
       singleDayEventTimes1,
     );
     const singleDayEvent2 = await createEvent(
-      generateEvent(eventModel, venue.id, true),
+      generateEvent(eventModel, { venue_id: venue.id, verified: true }),
       singleDayEventTimes2,
     );
 
@@ -231,7 +230,7 @@ describe('CurrentEvents (e2e)', () => {
     const venue = await createVenue(generateVenue(venueModel));
 
     await createEvent(
-      generateEvent(eventModel, venue.id, true),
+      generateEvent(eventModel, { venue_id: venue.id, verified: true }),
       multiDayDateTimes,
     );
 
@@ -260,7 +259,7 @@ describe('CurrentEvents (e2e)', () => {
     const venue = await createVenue(generateVenue(venueModel));
 
     const dbEvent = await createEvent(
-      generateEvent(eventModel, venue.id, true),
+      generateEvent(eventModel, { venue_id: venue.id, verified: true }),
       [futureTime],
     );
 
@@ -364,28 +363,6 @@ describe('CurrentEvents (e2e)', () => {
     ];
   }
 
-  async function createEvent(
-    event: EventModel,
-    startEndTimes: { start_time: Date; end_time: Date }[],
-  ) {
-    const eventCreated = await event.save();
-
-    const requests = startEndTimes.map(async (startEndTimePair) => {
-      const datetimeVenueEntry = generateDatetimeVenueFaker({
-        event_id: event.id,
-        venue_id: event.venue_id,
-        start_time: startEndTimePair.start_time,
-        end_time: startEndTimePair.end_time,
-      });
-
-      return datetimeVenueEntry.save();
-    });
-
-    await Promise.all(requests);
-
-    return eventCreated;
-  }
-
   async function createVenue(venue: VenueModel) {
     return venueModel.create(venue.get({ plain: true }));
   }
@@ -395,10 +372,10 @@ describe('CurrentEvents (e2e)', () => {
   }
 
   async function deleteAllVenues() {
-    venueModel.destroy({ where: {} });
+    await venueModel.destroy({ where: {} });
   }
 
   async function deleteAllDatetimeVenues() {
-    datetimeVenueModel.destroy({ where: {} });
+    await datetimeVenueModel.destroy({ where: {} });
   }
 });

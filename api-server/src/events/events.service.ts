@@ -1,6 +1,12 @@
 import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { FindOptions, Transaction, UpdateOptions } from 'sequelize';
+import {
+  FindOptions,
+  Op,
+  QueryTypes,
+  Transaction,
+  UpdateOptions,
+} from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { EventModel } from './models/event.model';
 import DbUpdateResponse, {
@@ -22,6 +28,9 @@ import { VenueModel } from '../venues/models/venue.model';
 import { INFINITE_WEB_PORTAL_BASE_URL } from '../constants';
 import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
 import UpsertEventAdminMetadataRequest from './dto/upsert-event-admin-metadata-request';
+import { ensureEmbedQueryStringIsArray } from '../utils/get-options-for-events-service-from-embeds-query-param';
+import { Nullable } from '../utils/NullableOrUndefinable';
+import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 
 @Injectable()
 export class EventsService {
@@ -31,6 +40,8 @@ export class EventsService {
     private eventAdminMetadataModel: typeof EventAdminMetadataModel,
     @InjectModel(DatetimeVenueModel)
     private dateTimeVenueModel: typeof DatetimeVenueModel,
+    @InjectModel(VenueModel)
+    private venueModel: typeof VenueModel,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
     private readonly bitlyService: BitlyService,
@@ -54,6 +65,71 @@ export class EventsService {
 
   findAll(findOptions?: FindOptions): Promise<EventModel[]> {
     return this.eventModel.findAll(findOptions);
+  }
+
+  async findAllPaginated({
+    tags = [],
+    verifiedOnly = true,
+    pageSize,
+    requestedPage,
+  }: {
+    tags: string[] | string;
+    verifiedOnly?: boolean;
+    pageSize: number;
+    requestedPage: number;
+  }): Promise<{ count: number; rows: EventModel[] }> {
+    return this.sequelize.transaction(async (_) => {
+      const tagClauseParams = this.getTagsClauseParams(tags);
+      const whereClause = this.getWhereClause(tagClauseParams, verifiedOnly);
+
+      // Sort events by the first start_time and apply pagination
+      const paginatedRows: EventModel[] = await this.sequelize.query(
+        `
+              with compressed_event as (SELECT events.*, min(dv.start_time) as first_start_time
+                                        FROM events
+                                                 LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
+                  ${whereClause}
+              GROUP BY (events.id)
+              ORDER BY first_start_time DESC
+              OFFSET ${(requestedPage - 1) * pageSize} LIMIT ${pageSize} )
+              SELECT events.*
+              FROM compressed_event
+                       JOIN events ON events.id = compressed_event.id
+          `,
+        {
+          type: QueryTypes.SELECT,
+          model: EventModel,
+          replacements: {
+            tagFilter: tagClauseParams,
+          },
+        },
+      );
+
+      // Fill back in nested models date_times and venues
+      const dateTimes = await this.dateTimeVenueModel.findAll({
+        where: {
+          event_id: {
+            [Op.or]: paginatedRows.map(({ id }) => id),
+          },
+        },
+        include: VenueModel,
+      });
+
+      paginatedRows.forEach((event) => {
+        const dateTimesForEvent = dateTimes.filter(
+          ({ event_id }) => event_id === event.id,
+        );
+
+        event.date_times = dateTimesForEvent;
+      });
+
+      const totalCount = await this.getEventCountWithFilters(
+        tagClauseParams,
+        whereClause,
+      );
+
+      return { count: totalCount, rows: paginatedRows };
+    });
   }
 
   async update(
@@ -225,5 +301,64 @@ export class EventsService {
 
       return submittedEvent;
     }
+  }
+
+  private getTagsClauseParams(tags: string[] | string): Nullable<string> {
+    const tagList = ensureEmbedQueryStringIsArray(tags);
+
+    if (tagList.length === 0) {
+      return null;
+    }
+
+    const firstTag = tagList.pop();
+
+    if (tagList.length === 0) {
+      return `{"${firstTag}"}`;
+    }
+
+    const sqlArray = tagList.reduce((result, tag) => {
+      return `${result}, "${tag}" `;
+    }, `{"${firstTag}"`);
+
+    return sqlArray + '}';
+  }
+
+  private getWhereClause(
+    tagClauseParams: Nullable<string>,
+    verifiedOnly: boolean,
+  ): string {
+    const tagClause = isNotNullOrUndefined(tagClauseParams)
+      ? `:tagFilter && events.tags`
+      : null;
+
+    const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
+
+    const clauses = [tagClause, verifiedOnlyClause].filter((clause) =>
+      isNotNullOrUndefined(clause),
+    );
+
+    if (clauses.length === 0) {
+      return '';
+    } else {
+      return `WHERE ${clauses.join(' AND ')}`;
+    }
+  }
+
+  private async getEventCountWithFilters(
+    tagClauseParams: string,
+    whereClause: string,
+  ): Promise<number> {
+    const results: { count: string }[] = await this.sequelize.query(
+      `SELECT COUNT(id)
+       FROM events ${whereClause}`,
+      {
+        type: QueryTypes.SELECT,
+        replacements: {
+          tagFilter: tagClauseParams,
+        },
+      },
+    );
+
+    return Number(results[0].count);
   }
 }

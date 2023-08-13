@@ -37,6 +37,12 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { eventModelToEventDTO } from './dto/eventModelToEventDTO';
 import EventDTO from './dto/eventDTO';
 import { ENV } from '../constants';
+import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
+import {
+  EVENT_PAGINATION_DEFAULT_PAGE,
+  EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
+  PaginationDto,
+} from './dto/pagination-dto';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -103,21 +109,55 @@ export class EventsController {
     description: 'verified events',
     type: EventsResponse,
   })
+  @ApiImplicitQuery({
+    name: 'tags',
+    description: 'filter by associated tags',
+    example: ['category:online-resource'],
+    required: false,
+    isArray: true,
+    type: String,
+  })
+  @ApiImplicitQuery({
+    name: 'page',
+    description: `the requested page (default ${EVENT_PAGINATION_DEFAULT_PAGE})`,
+    example: 1,
+    required: false,
+    type: Number,
+  })
+  @ApiImplicitQuery({
+    name: 'pageSize',
+    description: `the number of events included per page (default ${EVENT_PAGINATION_DEFAULT_PAGE_SIZE})`,
+    example: 20,
+    required: false,
+    type: Number,
+  })
   getAllVerified(
-    @Query('embed') embed: string[] | string = [],
     @Query('tags') tags: string[] | string = [],
-    @Req() request: Request,
+    @Query() pagination: PaginationDto,
   ): Promise<EventsResponse> {
-    const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: getCommonQueryTermsForEvents(true, tags),
-    };
+    const { page, pageSize } = pagination;
 
     return this.eventsService
-      .findAll(findOptions)
-      .then((events) => events.map(eventModelToEventDTO))
-      .then((event) => removeSensitiveDataForNonAdmins(request, event))
-      .then((events) => new EventsResponse({ events }));
+      .findAllPaginated({
+        tags,
+        pageSize,
+        requestedPage: page,
+        verifiedOnly: true,
+      })
+      .then((paginatedEventResp) => {
+        const totalEntries = paginatedEventResp.count;
+        const totalPages = Math.ceil(totalEntries / pageSize);
+        const nextPage = page + 1 <= totalPages ? page + 1 : undefined;
+
+        return new EventsResponse({
+          paginated: true,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events: paginatedEventResp.rows.map(eventModelToEventDTO),
+        });
+      });
   }
 
   // TODO - Move to events.authenticated.controller

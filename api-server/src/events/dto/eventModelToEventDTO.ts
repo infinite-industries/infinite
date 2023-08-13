@@ -40,6 +40,7 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
     venue_id: eventModel.venue_id,
     verified: eventModel.verified,
     website_link: eventModel.website_link,
+    multi_day: eventModel.multi_day,
     date_times,
     venue: isNotNullOrUndefined(eventModel.venues)
       ? eventModel.venues[0]
