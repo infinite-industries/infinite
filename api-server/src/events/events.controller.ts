@@ -126,7 +126,7 @@ export class EventsController {
   })
   @ApiImplicitQuery({
     name: 'pageSize',
-    description: `the number of events to user per page (default ${EVENT_PAGINATION_DEFAULT_PAGE_SIZE})`,
+    description: `the number of events included per page (default ${EVENT_PAGINATION_DEFAULT_PAGE_SIZE})`,
     example: 20,
     required: false,
     type: Number,
