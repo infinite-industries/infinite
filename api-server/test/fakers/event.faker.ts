@@ -132,4 +132,65 @@ export async function createEvent(
   return eventCreated;
 }
 
+export async function createListOfFutureEventsInChronologicalOrder(
+  eventModel: typeof EventModel,
+  venueModel: typeof VenueModel,
+  datetimeVenueModel: typeof DatetimeVenueModel,
+  numEvents = 30,
+  overrides: EventModelConstructorProps = {},
+  baseTime = new Date(),
+): Promise<[EventModel[], Date]> {
+  const events: EventModel[] = [];
+
+  for (let i = 0; i < numEvents; i++) {
+    const [newEvent, newBaseTime] = await createEventInPast(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      baseTime,
+      overrides,
+    );
+
+    events.push(newEvent);
+    baseTime = newBaseTime;
+  }
+
+  return [events, baseTime];
+}
+
+export async function createEventInPast(
+  eventModel: typeof EventModel,
+  venueModel: typeof VenueModel,
+  datetimeVenueModel: typeof DatetimeVenueModel,
+  baseTime,
+  overrides: EventModelConstructorProps = {},
+): Promise<[EventModel, Date]> {
+  const event = await createRandomEventWithDateTime(
+    eventModel,
+    venueModel,
+    datetimeVenueModel,
+    overrides,
+  );
+
+  let offset = 0;
+  let lastStartTime;
+
+  for (const dt of event.date_times) {
+    const newStartTime = new Date(baseTime);
+    newStartTime.setHours(baseTime.getHours() - offset);
+    offset++;
+    lastStartTime = newStartTime;
+
+    await dt.update({ start_time: newStartTime });
+  }
+
+  await event.reload();
+
+  const newStartTime = new Date(baseTime);
+  newStartTime.setHours(baseTime.getHours() - offset);
+  lastStartTime = newStartTime;
+
+  return [event, lastStartTime];
+}
+
 export default generateEvent;

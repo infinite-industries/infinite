@@ -12,14 +12,8 @@ import {
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventModel } from './models/event.model';
-import { AuthGuard } from '../authentication/auth.guard';
 import { Inject, LoggerService } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { VERSION_1_URI } from '../utils/versionts';
 import { getOptionsForEventsServiceFromEmbedsQueryParam } from '../utils/get-options-for-events-service-from-embeds-query-param';
 import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
