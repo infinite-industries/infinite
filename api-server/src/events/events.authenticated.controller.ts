@@ -42,6 +42,25 @@ import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-ev
 export default class EventsAuthenticatedController {
   constructor(private readonly eventsService: EventsService) {}
 
+  @Get()
+  @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiBearerAuth()
+  getAll(
+    @Query('embed') embed: string[] | string = [],
+    @Query('tags') tags: string[] | string = [],
+  ): Promise<EventsResponse> {
+    const findOptions = {
+      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+      where: getCommonQueryTermsForEvents(null, tags),
+    };
+
+    return this.eventsService
+      .findAll(findOptions)
+      .then((events) => events.map(eventModelToEventDTO))
+      .then((events) => new EventsResponse({ events }));
+  }
+
   // this probably shouldn't be needed long term, we should just fetch this with the event
   @Get('/admin-metadata')
   @ApiOperation({ summary: 'Get all admin metadata for all events' })
@@ -147,24 +166,5 @@ export default class EventsAuthenticatedController {
         (eventAdminMetadata) =>
           new EventAdminMetadataSingleResponse({ eventAdminMetadata }),
       );
-  }
-
-  @Get()
-  @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
-  @ApiResponse({ status: 403, description: 'Forbidden' })
-  @ApiBearerAuth()
-  getAll(
-    @Query('embed') embed: string[] | string = [],
-    @Query('tags') tags: string[] | string = [],
-  ): Promise<EventsResponse> {
-    const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: getCommonQueryTermsForEvents(null, tags),
-    };
-
-    return this.eventsService
-      .findAll(findOptions)
-      .then((events) => events.map(eventModelToEventDTO))
-      .then((events) => new EventsResponse({ events }));
   }
 }

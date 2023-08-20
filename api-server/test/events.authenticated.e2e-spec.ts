@@ -79,7 +79,7 @@ describe('Authenticated Events API', () => {
       .expect(403);
   });
 
-  it('/authenticated/events/non-verified should return events if the user is authenticated', async () => {
+  it('/authenticated/events/non-verified should return non-verified events if the user is authenticated', async () => {
     const numEventsToCreate = 10;
 
     const [expectedEvents] = await createListOfFutureEventsInChronologicalOrder(
@@ -128,6 +128,65 @@ describe('Authenticated Events API', () => {
 
         expect(status).toEqual('success');
         expect(events.length).toEqual(0);
+      });
+  });
+
+  it('/authenticated/events should return forbidden if the user is not authenticated', async () => {
+    await createListOfFutureEventsInChronologicalOrder(3);
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/authenticated/events`)
+      .expect(403);
+  });
+
+  it('/authenticated/events should return verified and non-verified events if the user is authenticated', async () => {
+    const numEventsNonVerifiedToCreate = 10;
+    const numEventsVerifiedToCreate = 10;
+
+    const [expectedEventsNonVerified, offset] =
+      await createListOfFutureEventsInChronologicalOrder(
+        numEventsNonVerifiedToCreate,
+        {
+          verified: false,
+        },
+      );
+
+    const [expectedEventsVerified] =
+      await createListOfFutureEventsInChronologicalOrder(
+        numEventsNonVerifiedToCreate,
+        {
+          verified: true,
+        },
+        offset,
+      );
+
+    const token = await login();
+
+    const expectedEvents = [
+      ...expectedEventsNonVerified,
+      ...expectedEventsVerified,
+    ];
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/authenticated/events`)
+      .set('x-access-token', token)
+      .expect(200)
+      .then(({ body }) => {
+        const { status, events } = body;
+
+        expect(status).toEqual('success');
+        expect(events.length).toEqual(
+          numEventsNonVerifiedToCreate + numEventsVerifiedToCreate,
+        );
+
+        for (let i = 0; i < events.length; i++) {
+          const returnedEvent = events[i];
+          const expectedEvent: Nullable<EventModel> = expectedEvents.find(
+            (e) => e.id === returnedEvent.id,
+          );
+
+          assertEventsEqual(returnedEvent, expectedEvent);
+        }
       });
   });
   async function createListOfFutureEventsInChronologicalOrder(
