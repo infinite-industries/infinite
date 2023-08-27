@@ -58,7 +58,7 @@
     validate({ params }) {
       return !!params.id
     },
-    layout: 'no-subscribe',
+    layout: 'no-mobile-cta',
     data() {
       return {
         event: null

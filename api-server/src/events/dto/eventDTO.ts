@@ -65,6 +65,9 @@ export default class EventDTO {
   @ApiProperty({ example: EXAMPLE_DATE })
   createdAt: Date;
 
+  @ApiProperty({ example: false })
+  multi_day: boolean;
+
   @ApiProperty({ example: EXAMPLE_DATE })
   updatedAt: Date;
 

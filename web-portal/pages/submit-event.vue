@@ -91,6 +91,7 @@
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
   export default {
+    layout: 'no-mobile-cta',
     data: function () {
       return {
         mode: 'edit',

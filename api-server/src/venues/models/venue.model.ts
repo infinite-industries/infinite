@@ -1,7 +1,13 @@
 import { Column, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
+import { Optional, Utils } from 'sequelize';
 
 const EXAMPLE_STATE = new Date();
+
+export type VenueModelConstructorProps = Optional<
+  VenueModel,
+  Utils.NullishPropertiesOf<VenueModel>
+>;
 
 @Table({ tableName: 'venues' })
 export class VenueModel extends Model<VenueModel> {

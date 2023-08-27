@@ -8,6 +8,7 @@ import EventsAuthenticatedController from './events.authenticated.controller';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { DatetimeVenueModel } from './models/datetime-venue.model';
 import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
+import { VenueModel } from '../venues/models/venue.model';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
       EventModel,
       DatetimeVenueModel,
       EventAdminMetadataModel,
+      VenueModel,
     ]),
     NotificationsModule,
   ],

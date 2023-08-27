@@ -14,8 +14,14 @@ import { VenueModel } from '../../venues/models/venue.model';
 import { ApiProperty } from '@nestjs/swagger';
 import { DatetimeVenueModel } from './datetime-venue.model';
 import { EventAdminMetadataModel } from './event-admin-metadata.model';
+import { Optional, Utils } from 'sequelize';
 
 const EXAMPLE_DATE = new Date();
+
+export type EventModelConstructorProps = Optional<
+  EventModel,
+  Utils.NullishPropertiesOf<EventModel>
+>;
 
 @Table({ tableName: 'events' })
 export class EventModel extends Model<EventModel> {
