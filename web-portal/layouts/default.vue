@@ -14,6 +14,7 @@
     <!-- PopUps and Modals -->
     <!-- Regular Old Modal -->
     <ii-modal />
+    <!-- Phone-specific call-to-action ("submit your event") -->
     <ii-submit />
     <!-- iPhone-specific save button to desktop -->
     <!-- <ii-iphone-save-button /> -->
