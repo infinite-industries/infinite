@@ -95,9 +95,21 @@ export class CreateEventRequest {
   @IsNotEmpty()
   date_times: StartEndTimePairs[];
 
-  @ApiProperty({ example: ['mode:onine'] })
+  @ApiProperty({ example: ['music', 'dance'] })
   @IsOptional()
   tags: Array<string>;
+
+  @ApiProperty({ example: 'multi-day-event' })
+  @IsOptional()
+  category: string;
+
+  @ApiProperty({ example: ['postponed', 'sold-out'] })
+  @IsOptional()
+  condition: Array<string>;
+
+  @ApiProperty({ example: 'in-person' })
+  @IsOptional()
+  mode: string;
 
   @ApiProperty({ example: [] })
   @IsOptional()

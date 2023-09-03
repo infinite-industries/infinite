@@ -79,8 +79,17 @@ export default class EventDTO {
   })
   date_times: StartEndTimePairs[];
 
-  @ApiProperty({ example: ['mode:online', 'category:single-day-event'] })
+  @ApiProperty({ example: ['music', 'dance'] })
   tags: Array<string>;
+
+  @ApiProperty({ example: 'multi-day-event' })
+  category: string;
+
+  @ApiProperty({ example: ['postponed', 'sold-out'] })
+  condition: Array<string>;
+
+  @ApiProperty({ example: 'in-person' })
+  mode: string;
 
   @ApiProperty({ example: [] })
   links: Array<string>;
