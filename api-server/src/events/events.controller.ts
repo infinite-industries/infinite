@@ -112,7 +112,7 @@ export class EventsController {
   @ApiImplicitQuery({
     name: 'tags',
     description: 'filter by associated tags',
-    example: ['category:online-resource'],
+    example: ['music'],
     required: false,
     isArray: true,
     type: String,
