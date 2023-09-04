@@ -143,7 +143,7 @@ describe('Card component', () => {
       },
       propsData: {
         calendar_event: Object.assign(getEvent(), {
-          tags: ['category:online-resource']
+          category: 'online-resource'
         })
       }
     })

@@ -97,7 +97,7 @@ export const actions = {
   },
   LoadResourceEvents: function (context, payload) {
     const idToken = payload.idToken
-    this.$apiService.get('/events/verified?tags=category:online-resource&embed=ADMIN_META_DATA', idToken)
+    this.$apiService.get('/events/verified?category=online-resource&embed=ADMIN_META_DATA', idToken)
       .then(function (_response) {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_RESOURCE_LIST', _response.data.events)
