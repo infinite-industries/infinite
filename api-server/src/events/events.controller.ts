@@ -70,6 +70,7 @@ export class EventsController {
   getAllCurrentVerified(
     @Query('embed') embed: string[] | string = [],
     @Query('tags') tags: string[] | string = [],
+    @Query('category') category: string | '',
     @Req() request: Request,
   ): Promise<EventsResponse> {
     if (typeof embed === 'string') {
@@ -82,7 +83,7 @@ export class EventsController {
       ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
       where: {
         [Op.and]: [
-          getCommonQueryTermsForEvents(true, tags),
+          getCommonQueryTermsForEvents(true, tags, category),
           {
             '$date_times.end_time$': {
               [Op.gte]: moment().subtract(2, 'hours').toDate(),
@@ -133,6 +134,7 @@ export class EventsController {
   })
   getAllVerified(
     @Query('tags') tags: string[] | string = [],
+    @Query('category') category: string = '',
     @Query() pagination: PaginationDto,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
@@ -140,6 +142,7 @@ export class EventsController {
     return this.eventsService
       .findAllPaginated({
         tags,
+        category,
         pageSize,
         requestedPage: page,
         verifiedOnly: true,
@@ -171,6 +174,7 @@ export class EventsController {
   getAllNonVerified(
     @Query('embed') embed: string[] | string = [],
     @Query('tags') tags: string[] | string = [],
+    @Query('category') category: string | '',
   ): Promise<EventsResponse> {
     const findOptions = {
       ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
@@ -217,10 +221,11 @@ export class EventsController {
   getAll(
     @Query('embed') embed: string[] | string = [],
     @Query('tags') tags: string[] | string = [],
+    @Query('category') category: string | string = '',
   ): Promise<EventsResponse> {
     const findOptions = {
       ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: getCommonQueryTermsForEvents(null, tags),
+      where: getCommonQueryTermsForEvents(null, tags, category),
     };
 
     return this.eventsService
