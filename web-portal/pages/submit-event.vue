@@ -107,6 +107,28 @@
       store.dispatch('CreateNewEvent')
       return store.dispatch(FETCH_ACTIVE_VENUES)
     },
+    // sometimes users navigate away without submitting
+    // if the form is partially filled, we can try to warn them and give them
+    // a chance to abort the nav
+    // mounted/beforeDestroy handle the "close tab / window" case...
+    mounted: function () {
+      if (window) {
+        window.addEventListener('beforeunload', this.promptIfInProgress)
+      }
+    },
+    beforeDestroy: function () {
+      if (window) {
+        window.removeEventListener('beforeunload', this.promptIfInProgress)
+      }
+    },
+    // ...and beforeRouteLeave handles the SPA routing case
+    beforeRouteLeave: function (from, to, next) {
+      if (this.isDirtyOrPending()) {
+        console.log('warning user that incomplete is not submitted')
+        const sure = window.confirm('You have unsaved changes. Sure?')
+        next(sure ? undefined : false)
+      } else next()
+    },
     methods: {
       onPreview: function (event) {
         this.previewEvent = event
@@ -124,6 +146,26 @@
       },
       newSubmission: function () {
         window.location.reload()
+      },
+      isDirtyOrPending: function () {
+        return (
+          this.$refs?.form?.isDirty() &&
+          // after submission, form will still be dirty, but we no longer care
+          this.mode !== 'success' &&
+          this.mode !== 'error'
+        ) || this.mode === 'pending'
+      },
+      promptIfInProgress: function (event) {
+        if (this.isDirtyOrPending()) {
+          console.log('warning user that incomplete event is not submitted')
+          // preventing default is the primary trigger for stopping unload
+          event.preventDefault()
+          // but some browsers are looking for a string value either returned
+          // or assigned to returnValue, (of course they don't use it for
+          // anything, though)
+          // eslint-disable-next-line no-return-assign
+          return event.returnValue = 'You have unsaved changes. Sure?'
+        }
       }
     },
     components: {

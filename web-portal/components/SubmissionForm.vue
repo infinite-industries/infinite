@@ -415,6 +415,10 @@
       })
     },
     methods: {
+      /** @public */
+      isDirty: function () {
+        return !isEqual(this.calendar_event, this.$store.getters.GetCurrentEvent)
+      },
       UpdateEvent: function () {
         console.log(this.calendar_event)
         this.showEventLoadingSpinner = true
