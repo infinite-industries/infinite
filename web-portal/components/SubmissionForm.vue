@@ -25,19 +25,19 @@
         <v-flex xs12 />
         <v-flex xs12 sm4 md3 offset-sm1>
           <label class="category-option">
-            <input type="radio" v-model="eventMode" value="in-person">
+            <input type="radio" v-model="calendar_event.mode" value="in-person">
             <strong>In-person</strong>
           </label>
         </v-flex>
         <v-flex xs12 sm3>
           <label class="category-option">
-            <input type="radio" v-model="eventMode" value="online">
+            <input type="radio" v-model="calendar_event.mode" value="online">
             <strong>Online/On-air</strong>
           </label>
         </v-flex>
         <v-flex xs12 sm4>
           <label class="category-option">
-            <input type="radio" v-model="eventMode" value="hybrid">
+            <input type="radio" v-model="calendar_event.mode" value="hybrid">
             <strong>Hybrid</strong> both in-person and online elements
           </label>
         </v-flex>
@@ -189,7 +189,7 @@
         <v-flex xs12 sm8>
           <v-combobox
             class="tags"
-            v-model="generalTags"
+            v-model="calendar_event.tags"
             multiple
             chips
             deletable-chips
@@ -352,35 +352,15 @@
   import ImageUploadService from '@/services/ImageUploadService'
   import getToken from '../helpers/getToken'
 
-  const CONTROL_TAGS = /^(?:remote|online-resource|postponed|cancelled|condition:[\w-]+|mode:[\w-]+|category:[\w-]+(:(.+))?)$/
-
-  const boolToTag = tag => ({
+  const boolToCondition = condition_tag => ({
     get: function () {
-      return this.calendar_event.tags && this.calendar_event.tags.includes(tag)
+      return this.calendar_event.condition && this.calendar_event.condition.includes(condition_tag)
     },
     set: function (newValue) {
       if (newValue) {
-        if (!this.calendar_event.tags.includes(tag)) this.calendar_event.tags.push(tag)
+        if (!this.calendar_event.condition.includes(condition_tag)) this.calendar_event.condition.push(condition_tag)
       } else {
-        this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(tag), 1)
-      }
-    }
-  })
-
-  const radioToTag = (prefix, pattern) => ({
-    get: function () {
-      if (this.calendar_event && this.calendar_event.tags) {
-        const tag = this.calendar_event.tags.find(tag => pattern.test(tag))
-        return tag ? pattern.exec(tag)[1] : ''
-      } else return ''
-    },
-    set: function (newValue) {
-      const currentTag = this.calendar_event.tags.find(tag => pattern.test(tag))
-      const newTag = `${prefix}:${newValue}`
-      if (currentTag) {
-        this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(currentTag), 1, newTag)
-      } else {
-        this.calendar_event.tags.push(newTag)
+        this.calendar_event.condition.splice(this.calendar_event.condition.indexOf(condition_tag), 1)
       }
     }
   })
@@ -410,13 +390,13 @@
     created: function () {
       const new_event = this.$store.getters.GetCurrentEvent
       this.calendar_event = Object.assign({}, new_event, {
+        condition: new_event.condition ? new_event.condition.map(t => t) : [],
         date_times: new_event.date_times.map(dt => ({ ...dt })),
         tags: new_event.tags ? new_event.tags.map(t => t) : []
       })
     },
     methods: {
       UpdateEvent: function () {
-        console.log(this.calendar_event)
         this.showEventLoadingSpinner = true
 
         new Promise((resolve, reject) => {
@@ -484,7 +464,7 @@
       },
       PreviewEvent: function () {
         const event = { ...this.calendar_event }
-        if (this.eventCategory === 'online-resource' && event.date_times.length > 0) event.date_times = []
+        if (this.calendar_event.category === 'online-resource' && event.date_times.length > 0) event.date_times = []
         event.venue = event.venue_id ? this.venues.find(v => v.id === event.venue_id) : null
         ImageUploadService.asDataUrl(this.$refs.eventImage.files[0]).then((imageUrl) => {
           event.image = imageUrl
@@ -492,8 +472,6 @@
         })
       },
       UploadEvent: function () {
-        console.log('Uploading: -------- :\n' + JSON.stringify(this.calendar_event))
-
         this.showEventLoadingSpinner = true
         this.eventSubmitted = true // to disable button and prevent multiple submissions
         this.showSubmitError = false
@@ -516,7 +494,6 @@
           return this.$apiService.post('/events', event)
         }).then((response) => {
           this.showEventLoadingSpinner = false
-          console.log('GOT BACK - ' + JSON.stringify(response.data))
           this.$emit('submitted')
         }).catch((error) => {
           console.log(error)
@@ -561,7 +538,7 @@
       hasValidDateTimes: function () {
         if (this.calendar_event.hasOwnProperty('date_times')) {
           // online resources don't have fixed times
-          if (this.eventCategory === 'online-resource') return this.calendar_event.date_times.length === 0
+          if (this.calendar_event.category === 'online-resource') return this.calendar_event.date_times.length === 0
           else return this.calendar_event.date_times.length > 0
         } else {
           return false
@@ -588,49 +565,33 @@
         return this.$store.getters.GetActiveVenues
       },
 
-      eventIsPostponed: boolToTag('condition:postponed'),
-      eventIsCancelled: boolToTag('condition:cancelled'),
-      eventIsSoldOut: boolToTag('condition:sold-out'),
+      eventIsPostponed: boolToCondition('postponed'),
+      eventIsCancelled: boolToCondition('cancelled'),
+      eventIsSoldOut: boolToCondition('sold-out'),
 
-      eventMode: radioToTag('mode', /^mode:([\w-]+)$/),
-      eventCategory: radioToTag('category', /^category:([\w-]+)(:(.+))?$/),
+      eventCategory: {
+        get () {
+          return (this.calendar_event && this.calendar_event.category) ? this.calendar_event.category.split(':')[0] : ''
+        },
+        set (newValue) {
+          this.calendar_event.category = newValue
+        }
+      },
       eventCategoryOther: {
         get () {
-          const tag = this.calendar_event && this.calendar_event.tags.find(tag => /^category:other/.test(tag))
+          const tag = (this.calendar_event && /^other/.test(this.calendar_event.category)) ? this.calendar_event.category : false
           // note that the description might have a colon (or more than one) in it
           // that's accounted for here by removing the 'category' and 'other', and
           // then rejoining the remainder with colons
-          return tag ? tag.split(':').slice(2).join(':') : ''
+          return tag ? tag.split(':').slice(1).join(':') : false
         },
         set (newValue) {
-          const newTag = `category:other:${newValue}`
-          const oldTag = this.calendar_event.tags.find(tag => /^category:other/.test(tag))
-          this.calendar_event.tags.splice(this.calendar_event.tags.indexOf(oldTag), 1, newTag)
+          this.calendar_event.category = `other:${newValue}`
         }
       },
 
       showDateTimePicker: function () {
-        return [this.eventCategory !== 'online-resource']
-      },
-
-      // support for editing the tags on the event without considering the ones we
-      // use for specific functionality, which have their own dedicated UI controls
-      generalTags: {
-        get: function () {
-          return this.calendar_event.tags
-            // filter out control tags, which have dedicated UI for adding/removing them
-            ? this.calendar_event.tags.filter(tag => !CONTROL_TAGS.test(tag))
-            : []
-        },
-        set: function (newValue) {
-          // update with any control tags applied
-          if (this.calendar_event.tags.length > 0) {
-            this.calendar_event.tags.forEach((tag) => {
-              if (CONTROL_TAGS.test(tag)) newValue.push(tag)
-            })
-          }
-          this.calendar_event.tags = newValue
-        }
+        return [this.calendar_event.category !== 'online-resource']
       },
 
       suggestedTags: function () {
@@ -652,8 +613,6 @@
           // this.calendar_event.date != "" &&
           // this.calendar_event.time_start != "" &&
           // this.calendar_event.time_end != "" &&
-          this.eventMode &&
-          this.eventCategory &&
           this.hasValidDateTimes() &&
           this.calendar_event.venue_id !== '' &&
           this.calendar_event.organizer_contact !== '' &&
