@@ -425,16 +425,14 @@
             this.$refs.eventImage.files.length > 0
             // || this.$refs.eventSocialImage.files.length > 0
           ) {
-            ImageUploadService.forEvent(
-              this.$refs.eventImage.files[0]
-              // this.$refs.eventSocialImage.files[0]
-            ).then(resolve).catch(reject)
+            this.$apiService.uploadEventImage(this.$refs.eventImage.files[0])
+              .then(resolve)
+              .catch(reject)
           } else resolve({})
         }).then((response) => {
           // if response, update event prior to saving
           const data = response.data
-          if (data && data.hero) this.calendar_event.image = data.hero
-          if (data && data.social) this.calendar_event.social_image = data.social
+          if (data && data.imagePath) this.calendar_event.image = data.imagePath
 
           this.$store.dispatch('admin/UpdateEvent', {
             id: this.calendar_event.id,
@@ -506,12 +504,8 @@
           reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
         }
 
-        return ImageUploadService.forEvent(
-          this.$refs.eventImage.files[0]
-          // this.$refs.eventSocialImage.files[0]
-        ).then((response) => {
-          event.image = response.data.hero
-          if (response.data.social) event.social_image = response.data.social
+        return this.$apiService.uploadEventImage(this.$refs.eventImage.files[0]).then((response) => {
+          event.image = response.data.imagePath
 
           return this.$apiService.post('/events', event)
         }).then((response) => {

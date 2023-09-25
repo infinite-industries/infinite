@@ -10,6 +10,7 @@ import {
   PORT,
   ENV,
 } from './constants';
+import { json, urlencoded } from 'express';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -36,6 +37,11 @@ async function bootstrap() {
   });
 
   registerSwaggerDocsModule(app);
+
+  app.use(json({ limit: '50mb' }));
+  app.use(
+    urlencoded({ extended: true, limit: '50mb', parameterLimit: 1000000 }),
+  );
 
   await app.listen(PORT);
 

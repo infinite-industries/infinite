@@ -9,6 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import { NullableOrUndefinable } from './utils/NullableOrUndefinable';
 import { isNullOrUndefined } from './utils';
+import * as process from 'process';
 
 // db related values have to be defined in commonjs, we re-expose them here for convenience in typescript
 export const {
@@ -36,6 +37,10 @@ export const PORT = isNullOrUndefined(process.env.PORT)
   : process.env.PORT;
 export const INFINITE_WEB_PORTAL_BASE_URL =
   process.env.APP_URL || 'http://localhost:7779/';
+
+export const INFINITE_API_BASE_URL: string =
+  process.env.INFINITE_API_BASE_URL || `http://localhost:${PORT}`;
+
 export const ENV = process.env.ENV || 'dev';
 
 // === Auth0 Login ====

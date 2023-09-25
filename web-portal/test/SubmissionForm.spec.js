@@ -150,7 +150,9 @@ describe('SubmissionForm component', () => {
     const partner = 'wrfl'
 
     const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
-    ImageUploadService.forEvent.mockResolvedValue(Promise.resolve({ data: { hero: 'image.jpg' } }))
+    wrapper.vm.$apiService.uploadEventImage = jest.fn().mockResolvedValue(
+      { data: { imagePath: 'image.jpg' } }
+    )
 
     // unset when prop is null
     await wrapper.vm.UploadEvent()
@@ -167,7 +169,9 @@ describe('SubmissionForm component', () => {
   it('strips query params off Facebook links', async () => {
     const link = 'https://facebook.com/events/1234567890/'
     const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
-    ImageUploadService.forEvent.mockResolvedValue(Promise.resolve({ data: { hero: 'image.png' } }))
+    wrapper.vm.$apiService.uploadEventImage = jest.fn().mockResolvedValue(
+      { data: { imagePath: 'image.jpg' } }
+    )
 
     wrapper.vm.calendar_event.fb_event_link = `${link}?context={"weird":"tracking-nonsense"}`
 
@@ -179,7 +183,9 @@ describe('SubmissionForm component', () => {
   it('strips query params off Eventbrite links', async () => {
     const link = 'https://www.eventbrite.com/e/some-event-012345678910'
     const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
-    ImageUploadService.forEvent.mockResolvedValue(Promise.resolve({ data: { hero: 'image.png' } }))
+    wrapper.vm.$apiService.uploadEventImage = jest.fn().mockResolvedValue(
+      { data: { imagePath: 'image.jpg' } }
+    )
 
     wrapper.vm.calendar_event.eventbrite_link = `${link}?fbcid=gibberishgibberishandmoregibberish`
 

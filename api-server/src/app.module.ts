@@ -21,6 +21,9 @@ import {
 } from './constants';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
+import { UploadsModule } from './uploads/uploads.module';
+import { APP_FILTER, BaseExceptionFilter } from '@nestjs/core';
+import { ExceptionLogger } from './logging/ExceptionLogger';
 
 const dialectOptions = SQL_IS_USING_SSL
   ? {
@@ -70,8 +73,15 @@ const dialectOptions = SQL_IS_USING_SSL
     UsersModules,
     CalendaringModule,
     AuthenticationModule,
+    UploadsModule,
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: ExceptionLogger,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
