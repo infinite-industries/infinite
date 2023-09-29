@@ -20,7 +20,7 @@ const getEvent = () => {
     brief_description: 'The event lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed consequat ipsum neque.',
     venue: getVenue(),
     venue_id: venueId,
-    tags: []
+    condition: []
   }
 }
 
@@ -74,7 +74,7 @@ describe('Card component', () => {
   test('prepends appropriate condition label to title', async () => {
     await wrapper.setProps({
       calendar_event: Object.assign({}, event, {
-        tags: ['condition:postponed']
+        condition: ['postponed']
       })
     })
     expect(wrapper.find('h3').text()).toContain('[Postponed]')
@@ -84,7 +84,7 @@ describe('Card component', () => {
     // sold-out beats postponed
     await wrapper.setProps({
       calendar_event: Object.assign({}, event, {
-        tags: ['condition:postponed', 'condition:sold-out']
+        condition: ['postponed', 'sold-out']
       })
     })
     expect(wrapper.find('h3').text()).toContain('[Sold Out]')
@@ -93,7 +93,7 @@ describe('Card component', () => {
     // cancelled beats both
     await wrapper.setProps({
       calendar_event: Object.assign({}, event, {
-        tags: ['condition:postponed', 'condition:sold-out', 'condition:cancelled']
+        condition: ['postponed', 'sold-out', 'cancelled']
       })
     })
     expect(wrapper.find('h3').text()).toContain('[Cancelled]')
