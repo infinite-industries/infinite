@@ -60,7 +60,9 @@ context('Event editing:', () => {
           fb_event_link: '',
           ticket_link: '',
           organizer_contact: EVENT_EMAIL,
-          tags: [ EVENT_TAG, `mode:${EVENT_MODE}`, `category:${EVENT_CATEGORY}` ]
+          tags: [ EVENT_TAG ],
+          mode: EVENT_MODE,
+          category: EVENT_CATEGORY
         }
       })
     }).then((resp) => {
