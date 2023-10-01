@@ -69,20 +69,24 @@ export class EventsService {
 
   async findAllPaginated({
     tags = [],
-    category = '',
+    category,
     verifiedOnly = true,
     pageSize,
     requestedPage,
   }: {
     tags: string[] | string;
-    category: string;
+    category?: string;
     verifiedOnly?: boolean;
     pageSize: number;
     requestedPage: number;
   }): Promise<{ count: number; rows: EventModel[] }> {
     return this.sequelize.transaction(async (_) => {
       const tagClauseParams = this.getTagsClauseParams(tags);
-      const whereClause = this.getWhereClause(tagClauseParams, category, verifiedOnly);
+      const whereClause = this.getWhereClause(
+        tagClauseParams,
+        category,
+        verifiedOnly,
+      );
 
       // Sort events by the first start_time and apply pagination
       const paginatedRows: EventModel[] = await this.sequelize.query(
@@ -335,7 +339,7 @@ export class EventsService {
       ? `:tagFilter && events.tags`
       : null;
 
-      const categoryClause = isNotNullOrUndefined(category)
+    const categoryClause = isNotNullOrUndefined(category)
       ? `events.category = '${category}'`
       : null;
 
