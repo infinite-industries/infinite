@@ -134,7 +134,7 @@ export class EventsController {
   })
   getAllVerified(
     @Query('tags') tags: string[] | string = [],
-    @Query('category') category: string = '',
+    @Query('category') category: string,
     @Query() pagination: PaginationDto,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
