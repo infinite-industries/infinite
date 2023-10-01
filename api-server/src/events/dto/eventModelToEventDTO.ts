@@ -34,7 +34,7 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
     slug: eventModel.slug,
     social_image: eventModel.social_image,
     tags: eventModel.tags,
-    category:eventModel.category,
+    category: eventModel.category,
     condition: eventModel.condition,
     mode: eventModel.mode,
     ticket_link: eventModel.ticket_link,
