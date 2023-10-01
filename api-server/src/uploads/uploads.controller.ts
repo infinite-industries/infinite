@@ -14,11 +14,6 @@ import { UploadsResponse } from './dto/UploadsResponse';
 import { UploadsService } from './uploads.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
-import fs from 'fs';
-import { join, resolve } from 'path';
-import { INFINITE_API_BASE_URL } from '../constants';
-import { v4 as uuid } from 'uuid';
-import { PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS } from './uploads.module';
 
 const TEN_MEGABYTES = 10000000;
 
@@ -51,37 +46,7 @@ export class UploadsController {
     file: Express.Multer.File,
     @Req() request: Request,
   ): Promise<UploadsResponse> {
-    const imagePath = await this.saveToLocal(file);
-
-    const resp = new UploadsResponse({ imagePath });
-    return resp;
+    const imagePath = await this.uploadsService.saveImage(file);
+    return new UploadsResponse({ imagePath });
   }
-
-  private saveToLocal(img: Express.Multer.File): Promise<string> {
-    const subPath = 'event-images';
-
-    return new Promise((resolve, reject) => {
-      const newImageId = uuid();
-      const imageName = `${newImageId}.${getExtension(img)}`;
-
-      // wx flag mitigates the possibility of clobbering an existing file
-      // (will error out on write)
-      fs.writeFile(
-        join(PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS, imageName),
-        img.buffer,
-        { flag: 'wx' },
-        (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(`${INFINITE_API_BASE_URL}/uploads/${subPath}/${imageName}`);
-          }
-        },
-      );
-    });
-  }
-}
-
-function getExtension(file: Express.Multer.File) {
-  return file.mimetype.split('/')[1];
 }
