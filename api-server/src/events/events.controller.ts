@@ -64,7 +64,7 @@ export class EventsController {
   getAllCurrentVerified(
     @Query('embed') embed: string[] | string = [],
     @Query('tags') tags: string[] | string = [],
-    @Query('category') category: string | '',
+    @Query('category') category: string,
     @Req() request: Request,
   ): Promise<EventsResponse> {
     if (typeof embed === 'string') {
