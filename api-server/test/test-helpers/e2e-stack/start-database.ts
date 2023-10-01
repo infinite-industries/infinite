@@ -13,12 +13,14 @@ async function startDatabase(): Promise<DatabaseInformation> {
 
   const databaseReadyMessage = 'database system is ready to accept connections';
 
-  const dbContainer = await new GenericContainer('postgres', '9.6.2-alpine')
+  const dbContainer = await new GenericContainer('postgres:9.6.2-alpine')
     .withExposedPorts(DB_INTERNAL_PORT)
     .withTmpFs(TMP_FS)
-    .withEnv('POSTGRES_USER', DB_USERNAME)
-    .withEnv('POSTGRES_PASSWORD', DB_PASSWORD)
-    .withEnv('POSTGRES_DB', DB_NAME)
+    .withEnvironment({
+      POSTGRES_USER: DB_USERNAME,
+      POSTGRES_PASSWORD: DB_PASSWORD,
+      POSTGRES_DB: DB_NAME,
+    })
     .withWaitStrategy(Wait.forLogMessage(databaseReadyMessage))
     .start();
 
