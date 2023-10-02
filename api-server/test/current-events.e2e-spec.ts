@@ -63,7 +63,9 @@ describe('CurrentEvents (e2e)', () => {
 
     await killApp(appUnderTest);
 
-    appUnderTest.removeAllListeners();
+    if (appUnderTest) {
+      appUnderTest.removeAllListeners();
+    }
 
     await stopDatabase(dbContainer);
 
