@@ -12,7 +12,9 @@ export async function afterAllStackShutdown(
 ): Promise<void> {
   await killApp(appUnderTest);
 
-  appUnderTest.removeAllListeners();
+  if (appUnderTest) {
+    appUnderTest.removeAllListeners();
+  }
 
   await stopDatabase(dbContainer);
 
