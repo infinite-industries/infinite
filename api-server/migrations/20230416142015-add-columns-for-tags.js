@@ -2,40 +2,36 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return [
-      queryInterface.addColumn(
-        'datetime_venue',
-        'category',
-        {
-          type: Sequelize.STRING,
-          allowNull: true
-        }
-      ),
-      queryInterface.addColumn(
-        'events',
-        'category',
-        {
-          type: Sequelize.STRING,
-          allowNull: true
-        }
-      ),
-      queryInterface.addColumn(
-        'events',
-        'condition',
-        {
-          type: Sequelize.ARRAY(Sequelize.STRING),
-          allowNull: true
-        }
-      ),
-      queryInterface.addColumn(
-        'events',
-        'mode',
-        {
-          type: Sequelize.STRING,
-          allowNull: true
-        }
-      ),
-      queryInterface.sequelize.query(`
+    return queryInterface.sequelize.transaction(t => {
+      return Promise.all([
+        queryInterface.addColumn(
+          'datetime_venue',
+          'category',
+          {
+            type: Sequelize.STRING,
+            allowNull: true
+          }, { transaction: t }),
+        queryInterface.addColumn(
+          'events',
+          'category',
+          {
+            type: Sequelize.STRING,
+            allowNull: true
+          }, { transaction: t }),
+        queryInterface.addColumn(
+          'events',
+          'condition',
+          {
+            type: Sequelize.ARRAY(Sequelize.STRING),
+            allowNull: true
+          }, { transaction: t }),
+        queryInterface.addColumn(
+          'events',
+          'mode',
+          {
+            type: Sequelize.STRING,
+            allowNull: true
+          }, { transaction: t })]).then(queryInterface.sequelize.query(`
       /* move category labels from events.tags to events.category */
 
         UPDATE events
@@ -98,14 +94,13 @@ module.exports = {
         SET tags = ARRAY[]::character varying[]::character varying(255)[]
         FROM old_tags_removed
         WHERE events.id = old_tags_removed.id;
-    `)
-    ]
+    `, { transaction: t })
+    )})
   },
 
   async down(queryInterface, Sequelize) {
-    return [
-      queryInterface.removeColumn('datetime_venue', 'category'),
-      queryInterface.sequelize.query(`
+    return queryInterface.sequelize.transaction(t => {
+      return queryInterface.sequelize.query(`
         UPDATE events
         SET tags = tags || CONCAT('category:', category)::VARCHAR(255)
         WHERE category IS NOT NULL;
@@ -122,10 +117,12 @@ module.exports = {
         UPDATE events
         SET tags = tags || CONCAT('mode:', mode)::VARCHAR(255)
         WHERE mode IS NOT NULL;
-        `),
-      queryInterface.removeColumn('events', 'category'),
-      queryInterface.removeColumn('events', 'condition'),
-      queryInterface.removeColumn('events', 'mode')
-    ]
+      `, { transaction: t }).then(Promise.all([
+        queryInterface.removeColumn('events', 'category', { transaction: t }),
+        queryInterface.removeColumn('events', 'condition', { transaction: t }),
+        queryInterface.removeColumn('events', 'mode', { transaction: t }),
+        queryInterface.removeColumn('datetime_venue', 'category', { transaction: t })
+      ]))
+    })
   }
 };
