@@ -77,11 +77,15 @@
         </v-flex>
       </v-layout>
 
-      <v-expansion-panel expand v-model="showDateTimePicker">
-        <v-expansion-panel-content>
-          <date-time-picker v-model="calendar_event.date_times" :mode="user_action" />
-        </v-expansion-panel-content>
-      </v-expansion-panel>
+      <v-layout row wrap>
+        <v-flex xs12 sm11>
+          <v-expansion-panel expand v-model="showDateTimePicker">
+            <v-expansion-panel-content>
+              <date-time-picker v-model="calendar_event.date_times" :mode="user_action" />
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-flex>
+      </v-layout>
 
       <!-- Venue -->
       <v-layout row wrap>
@@ -179,8 +183,14 @@
       </v-layout>
 
       <!-- Full Event Description -->
-      <h3>Full Event Description:</h3>
-      <vue-editor id="vue-editor1" v-model="calendar_event.description"></vue-editor>
+      <v-layout row wrap>
+        <v-flex xs12 sm11>
+          <h3>Full Event Description:</h3>
+        </v-flex>
+        <v-flex xs12 sm11>
+          <vue-editor id="vue-editor1" v-model="calendar_event.description"></vue-editor>
+        </v-flex>
+      </v-layout>
 
       <v-layout row wrap>
         <v-flex xs12 sm3>
