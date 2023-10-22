@@ -23,7 +23,8 @@ module.exports = {
           'condition',
           {
             type: Sequelize.ARRAY(Sequelize.STRING),
-            allowNull: true
+            allowNull: true,
+            defaultValue: []
           }, { transaction: t }),
         queryInterface.addColumn(
           'events',
