@@ -27,6 +27,9 @@ export class UploadsService {
 
   saveImage(img: Express.Multer.File) {
     if (isNullOrUndefined(AWS_S3_UPLOADS_BUCKET)) {
+      console.debug(
+        'using local drive to persist image uploads, this should only be used for local testing',
+      );
       return this.saveToLocal(img);
     } else {
       return this.saveToS3(img);
@@ -57,27 +60,25 @@ export class UploadsService {
   }
 
   private async saveToS3(img: Express.Multer.File): Promise<string> {
-    const s3 = new S3();
+    console.log('!!! region: ', AWS_REGION);
+    const s3 = new S3({ region: AWS_REGION });
 
-    const bucket = AWS_S3_UPLOADS_BUCKET;
-    const region = AWS_REGION;
-
-    const imageName = `event-images/${this.generateNewImageName(img)}`;
+    const imageName = `uploads/${this.generateNewImageName(img)}`;
 
     try {
       const result = await s3.putObject({
         Body: img.buffer,
-        Bucket: bucket,
+        Bucket: AWS_S3_UPLOADS_BUCKET,
         Key: imageName,
       });
 
       console.log('!!! RESULT:');
       console.log(result);
 
-      return `https://${bucket}.s3.${region}.amazonaws.com/${imageName}`;
+      return `https://${AWS_S3_UPLOADS_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${imageName}`;
     } catch (ex) {
       this.logger.error(
-        `failed to upload an image to S3: "${imageName}" -> bucket: "${bucket}"`,
+        `failed to upload an image to S3: "${imageName}" -> bucket: "${AWS_S3_UPLOADS_BUCKET}"`,
       );
       throw ex;
     }
