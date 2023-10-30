@@ -175,7 +175,6 @@ export default {
   */
   serverMiddleware: [
     json(),
-    { path: '/internal-api/images', handler: '~/internal-api/upload-images.js' },
     { path: '/internal-api/slack-alert', handler: '~/internal-api/slack-alert.js' }
   ],
   /*
