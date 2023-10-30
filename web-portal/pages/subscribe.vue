@@ -24,12 +24,6 @@
   </div>
 </template>
 
-<script>
-  export default {
-    layout: 'no-subscribe'
-  }
-</script>
-
 <style scoped>
 
   .subscribe-button {

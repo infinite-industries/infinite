@@ -12,6 +12,7 @@ import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston';
 import { DatetimeVenueModel } from '../../../src/events/models/datetime-venue.model';
 import { EventAdminMetadataModel } from '../../../src/events/models/event-admin-metadata.model';
+import { SEQUELIZE_LOGGING } from '../../../src/constants';
 
 const NUXT_INTERNAL_POSTFIX = 'Repository';
 
@@ -29,6 +30,7 @@ async function buildDbConnectionsForTests(
         username: DB_USERNAME,
         password: DB_PASSWORD,
         database: DB_NAME,
+        logging: SEQUELIZE_LOGGING,
         models: [
           VenueModel,
           EventModel,

@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { VERSION_1_URI } from '../utils/versionts';
@@ -29,6 +30,9 @@ import {
   EventAdminMetadataListResponse,
   EventAdminMetadataSingleResponse,
 } from './dto/event-admin-metadata-response';
+import { EventsResponse } from './dto/events-response';
+import { getOptionsForEventsServiceFromEmbedsQueryParam } from '../utils/get-options-for-events-service-from-embeds-query-param';
+import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
 @UseGuards(AuthGuard)
@@ -37,6 +41,25 @@ import {
 @ApiResponse({ status: 403, description: 'Forbidden' })
 export default class EventsAuthenticatedController {
   constructor(private readonly eventsService: EventsService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiBearerAuth()
+  getAll(
+    @Query('embed') embed: string[] | string = [],
+    @Query('tags') tags: string[] | string = [],
+  ): Promise<EventsResponse> {
+    const findOptions = {
+      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+      where: getCommonQueryTermsForEvents(null, tags),
+    };
+
+    return this.eventsService
+      .findAll(findOptions)
+      .then((events) => events.map(eventModelToEventDTO))
+      .then((events) => new EventsResponse({ events }));
+  }
 
   // this probably shouldn't be needed long term, we should just fetch this with the event
   @Get('/admin-metadata')
@@ -48,6 +71,26 @@ export default class EventsAuthenticatedController {
         (eventAdminMetadata) =>
           new EventAdminMetadataListResponse({ eventAdminMetadata }),
       );
+  }
+
+  @Get('non-verified')
+  @ApiOperation({
+    summary: 'Get events that have not yet been verified (admin only)',
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiBearerAuth()
+  getAllNonVerified(
+    @Query('embed') embed: string[] | string = [],
+  ): Promise<EventsResponse> {
+    const findOptions = {
+      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+      where: { verified: false },
+    };
+
+    return this.eventsService
+      .findAll(findOptions)
+      .then((events) => events.map(eventModelToEventDTO))
+      .then((events) => new EventsResponse({ events }));
   }
 
   @Get('/:id')

@@ -15,13 +15,14 @@ import { DatetimeVenueModel } from '../src/events/models/datetime-venue.model';
 import { TestingModule } from '@nestjs/testing';
 import { afterAllStackShutdown } from './test-helpers/after-all-stack-shutdown';
 import {
-  createRandomEventWithDateTime,
+  createListOfFutureEventsInChronologicalOrder as _createListOfFutureEventsInChronologicalOrder,
   createRandomEventWithVenue,
 } from './fakers/event.faker';
 import { CURRENT_VERSION_URI } from '../src/utils/versionts';
 import EventDTO from '../src/events/dto/eventDTO';
 import { Nullable } from '../src/utils/NullableOrUndefinable';
 import faker from 'faker';
+import { assertEventsEqual } from './test-helpers/assert-events';
 
 describe('Events API', () => {
   const server = request('http://localhost:' + PORT);
@@ -520,87 +521,6 @@ describe('Events API', () => {
       });
   });
 
-  async function createListOfFutureEventsInChronologicalOrder(
-    numEvents = 30,
-    overrides: EventModelConstructorProps = {},
-    baseTime = new Date(),
-  ): Promise<[EventModel[], Date]> {
-    const events: EventModel[] = [];
-
-    for (let i = 0; i < numEvents; i++) {
-      const [newEvent, newBaseTime] = await createEventInPast(
-        baseTime,
-        overrides,
-      );
-
-      events.push(newEvent);
-      baseTime = newBaseTime;
-    }
-
-    return [events, baseTime];
-  }
-
-  async function createEventInPast(
-    baseTime,
-    overrides: EventModelConstructorProps = {},
-  ): Promise<[EventModel, Date]> {
-    const event = await createRandomEventWithDateTime(
-      eventModel,
-      venueModel,
-      datetimeVenueModel,
-      overrides,
-    );
-
-    let offset = 0;
-    let lastStartTime;
-
-    for (const dt of event.date_times) {
-      const newStartTime = new Date(baseTime);
-      newStartTime.setHours(baseTime.getHours() - offset);
-      offset++;
-      lastStartTime = newStartTime;
-
-      await dt.update({ start_time: newStartTime });
-    }
-
-    await event.reload();
-
-    const newStartTime = new Date(baseTime);
-    newStartTime.setHours(baseTime.getHours() - offset);
-    lastStartTime = newStartTime;
-
-    return [event, lastStartTime];
-  }
-
-  function assertEventsEqual(actualReturned: any, expectedEvent: EventModel) {
-    expect(actualReturned.id).toEqual(expectedEvent.id);
-    expect(actualReturned.verified).toEqual(expectedEvent.verified);
-    expect(actualReturned.title).toEqual(expectedEvent.title);
-    expect(actualReturned.multi_day).toEqual(expectedEvent.multi_day);
-    expect(actualReturned.image).toEqual(expectedEvent.image);
-    expect(actualReturned.social_image).toEqual(expectedEvent.social_image);
-    expect(actualReturned.admission_fee).toEqual(expectedEvent.admission_fee);
-    expect(actualReturned.organizer_contact).toEqual(
-      expectedEvent.organizer_contact,
-    );
-    expect(actualReturned.brief_description).toEqual(
-      expectedEvent.brief_description,
-    );
-    expect(actualReturned.description).toEqual(expectedEvent.description);
-    expect(actualReturned.links).toEqual(expectedEvent.links);
-    expect(actualReturned.website_link).toEqual(expectedEvent.website_link);
-    expect(actualReturned.ticket_link).toEqual(expectedEvent.ticket_link);
-    expect(actualReturned.fb_event_link).toEqual(expectedEvent.fb_event_link);
-    expect(actualReturned.eventbrite_link).toEqual(
-      expectedEvent.eventbrite_link,
-    );
-    expect(actualReturned.bitly_link).toEqual(expectedEvent.bitly_link);
-    expect(actualReturned.tags).toEqual(expectedEvent.tags);
-    expect(actualReturned.reviewed_by_org).toEqual(
-      expectedEvent.reviewed_by_org,
-    );
-  }
-
   // This type should be very close EventDTO but is a serialized/deserialized representation
   // Objects that don't translate direct to json will be off, Dates will be strings for example
   function assertOrderedByFirstStartTimeDescending(events: EventDTO[]) {
@@ -625,5 +545,20 @@ describe('Events API', () => {
 
       lastFirstStartTime = firstStartTime;
     });
+  }
+
+  async function createListOfFutureEventsInChronologicalOrder(
+    numEvents = 30,
+    overrides: EventModelConstructorProps = {},
+    baseTime = new Date(),
+  ): Promise<[EventModel[], Date]> {
+    return _createListOfFutureEventsInChronologicalOrder(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      numEvents,
+      overrides,
+      baseTime,
+    );
   }
 });
