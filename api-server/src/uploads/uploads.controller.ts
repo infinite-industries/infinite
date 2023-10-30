@@ -1,7 +1,10 @@
 import {
   Controller,
+  FileTypeValidator,
+  HttpStatus,
   MaxFileSizeValidator,
   ParseFilePipe,
+  ParseFilePipeBuilder,
   Post,
   Req,
   UploadedFile,
@@ -33,20 +36,24 @@ export class UploadsController {
   })
   @UseInterceptors(FileInterceptor('file'))
   async uploadEventImage(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: TEN_MEGABYTES }),
-          // new FileTypeValidator({
-          //   fileType: /\.(jpg|jpeg|png|webp|tif|tiff|bmp)$/i,
-          // }),
-        ],
-      }),
-    )
+    @UploadedFile(getImageUploadValidators())
     file: Express.Multer.File,
     @Req() request: Request,
   ): Promise<UploadsResponse> {
     const imagePath = await this.uploadsService.saveImage(file);
     return new UploadsResponse({ imagePath });
   }
+}
+
+function getImageUploadValidators(): ParseFilePipe {
+  return new ParseFilePipeBuilder()
+    .addFileTypeValidator({
+      fileType: /image\/(jpe?g|png|webp|tif|tiff|bmp)$/i,
+    })
+    .addMaxSizeValidator({
+      maxSize: TEN_MEGABYTES,
+    })
+    .build({
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+    });
 }

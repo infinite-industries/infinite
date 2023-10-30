@@ -398,6 +398,7 @@
         imageChosen: false,
         socialImageChosen: false,
         showSubmitError: false,
+        submissionError: '',
         eventSubmitted: false,
         content: '',
         showEventLoadingSpinner: false,
@@ -442,6 +443,7 @@
         }).catch((error) => {
           console.error(error)
           this.showSubmitError = true
+          this.submissionError = error
         })
       },
       ConfirmDeleteEvent: function () {
@@ -495,6 +497,7 @@
         this.showEventLoadingSpinner = true
         this.eventSubmitted = true // to disable button and prevent multiple submissions
         this.showSubmitError = false
+        this.submissionError = ''
 
         const event = {
           ...this.calendar_event,
@@ -516,6 +519,7 @@
           console.log(error)
           this.showEventLoadingSpinner = false
           this.eventSubmitted = false
+
           this.$emit('error')
         })
       },

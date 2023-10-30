@@ -60,7 +60,6 @@ export class UploadsService {
   }
 
   private async saveToS3(img: Express.Multer.File): Promise<string> {
-    console.log('!!! region: ', AWS_REGION);
     const s3 = new S3({ region: AWS_REGION });
 
     const imageName = `uploads/${this.generateNewImageName(img)}`;
@@ -71,9 +70,6 @@ export class UploadsService {
         Bucket: AWS_S3_UPLOADS_BUCKET,
         Key: imageName,
       });
-
-      console.log('!!! RESULT:');
-      console.log(result);
 
       return `https://${AWS_S3_UPLOADS_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${imageName}`;
     } catch (ex) {
