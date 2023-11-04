@@ -25,3 +25,14 @@ services:
       - "7779"
     ports:
       - "7779:7779"
+
+  discord-bot:
+    restart: always
+    image: "ghcr.io/infinite-industries/discord-bot:${DISCORD_BOT_VERSION:-latest}"
+    env_file:
+      - ./discord-bot.env
+    expose:
+      - "2112"
+    ports:
+      - "2112:2112"
+
