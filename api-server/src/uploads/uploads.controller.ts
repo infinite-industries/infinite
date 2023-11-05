@@ -1,8 +1,6 @@
 import {
   Controller,
-  FileTypeValidator,
   HttpStatus,
-  MaxFileSizeValidator,
   ParseFilePipe,
   ParseFilePipeBuilder,
   Post,
@@ -48,7 +46,7 @@ export class UploadsController {
 function getImageUploadValidators(): ParseFilePipe {
   return new ParseFilePipeBuilder()
     .addFileTypeValidator({
-      fileType: /image\/(jpe?g|png|webp|tif|tiff|bmp)$/i,
+      fileType: /image\/(jpeg|jpg|png|webp|tif|tiff|bmp)$/i,
     })
     .addMaxSizeValidator({
       maxSize: TEN_MEGABYTES,
