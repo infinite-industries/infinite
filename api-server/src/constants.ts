@@ -9,7 +9,6 @@ import fs from 'fs';
 import path from 'path';
 import { Nullable, NullableOrUndefinable } from './utils/NullableOrUndefinable';
 import { isNullOrUndefined } from './utils';
-import * as process from 'process';
 
 // db related values have to be defined in commonjs, we re-expose them here for convenience in typescript
 export const {
