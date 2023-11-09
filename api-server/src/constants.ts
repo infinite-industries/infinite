@@ -10,7 +10,6 @@ import path from 'path';
 import { Nullable, NullableOrUndefinable } from './utils/NullableOrUndefinable';
 import { isNullOrUndefined } from './utils';
 import * as process from 'process';
-import isNotNullOrUndefined from './utils/is-not-null-or-undefined';
 
 // db related values have to be defined in commonjs, we re-expose them here for convenience in typescript
 export const {
