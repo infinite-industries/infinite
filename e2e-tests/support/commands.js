@@ -1,13 +1,10 @@
 import { basename } from 'path'
 
-Cypress.Commands.add('selectFile', { prevSubject: 'element' }, (subject, fileName) => {
-  cy.fixture(fileName).then(function (res) {
+Cypress.Commands.add('selectFile', { prevSubject: 'element' }, (subject, file) => {
+  cy.fixture(file).then(function (res) {
     const dt = new DataTransfer()
 
-    const file = new File([res], basename(fileName));
-    file.type = "image/jpeg";
-
-    dt.items.add(file)
+    dt.items.add(new File([res], basename(file), { type: 'image/jpeg' }))
 
     subject[0].files = dt.files
     subject[0].dispatchEvent(new Event('change', { bubbles: true }))
