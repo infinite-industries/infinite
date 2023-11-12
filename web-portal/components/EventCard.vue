@@ -58,8 +58,6 @@
 
   import CalendarService from '@/services/CalendarService'
 
-  const _hasTag = (event, tag) => event && event.tags && event.tags.includes(tag)
-
   export default {
     name: 'Card',
     props: {
@@ -110,7 +108,7 @@
         return this.calendar_event.venue || {}
       },
       showTime: function () {
-        return !_hasTag(this.calendar_event, 'category:online-resource') &&
+        return !this.isOnlineResource &&
           (this.calendar_event && this.calendar_event.date_times.length > 0)
       },
       when_date: function () {
@@ -128,26 +126,30 @@
       },
       isCancelled: function () {
         return this.calendar_event &&
-          this.calendar_event.tags &&
-          this.calendar_event.tags.includes('condition:cancelled')
+          this.calendar_event.condition &&
+          this.calendar_event.condition.includes('cancelled')
       },
       isPostponed: function () {
         // 'cancelled' supersedes 'postponed' for purposes of displaying event status
         return this.calendar_event &&
-          this.calendar_event.tags &&
-          this.calendar_event.tags.includes('condition:postponed') &&
-          !this.calendar_event.tags.includes('condition:cancelled')
+          this.calendar_event.condition &&
+          this.calendar_event.condition.includes('postponed') &&
+          !this.calendar_event.condition.includes('cancelled')
       },
       isSoldOut: function () {
         return this.calendar_event &&
-          this.calendar_event.tags &&
-          this.calendar_event.tags.includes('condition:sold-out')
+          this.calendar_event.condition &&
+          this.calendar_event.condition.includes('sold-out')
       },
       isRemote: function () {
-        return _hasTag(this.calendar_event, 'mode:online')
+        return this.calendar_event &&
+          this.calendar_event.mode &&
+          this.calendar_event.mode === 'online'
       },
       isOnlineResource: function () {
-        return _hasTag(this.calendar_event, 'category:online-resource')
+        return this.calendar_event &&
+          this.calendar_event.category &&
+          this.calendar_event.category === 'online-resource'
       }
     },
     filters: {

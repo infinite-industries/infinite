@@ -7,7 +7,7 @@ export const state = () => {
 }
 
 const CURRENT_EVENTS_VERIFIED_PATH = '/events/current-verified'
-const EVENTS_NON_VERIFIED_PATH = '/events/non-verified?embed=DATE_TIME&embed=ADMIN_META_DATA'
+const EVENTS_NON_VERIFIED_PATH = '/authenticated/events/non-verified?embed=DATE_TIME&embed=ADMIN_META_DATA'
 
 export const getters = {
   GetUnverifiedEvents: (state, getters) => {
@@ -97,7 +97,7 @@ export const actions = {
   },
   LoadResourceEvents: function (context, payload) {
     const idToken = payload.idToken
-    this.$apiService.get('/events/verified?tags=category:online-resource&embed=ADMIN_META_DATA', idToken)
+    this.$apiService.get('/events/verified?category=online-resource&embed=ADMIN_META_DATA', idToken)
       .then(function (_response) {
         if (_response.data.status === 'success') {
           context.commit('POPULATE_RESOURCE_LIST', _response.data.events)

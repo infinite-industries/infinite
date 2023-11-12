@@ -60,7 +60,9 @@ context('Event editing:', () => {
           fb_event_link: '',
           ticket_link: '',
           organizer_contact: EVENT_EMAIL,
-          tags: [ EVENT_TAG, `mode:${EVENT_MODE}`, `category:${EVENT_CATEGORY}` ]
+          tags: [ EVENT_TAG ],
+          mode: EVENT_MODE,
+          category: EVENT_CATEGORY
         }
       })
     }).then((resp) => {
@@ -142,7 +144,7 @@ context('Event editing:', () => {
     cy.get('.time-confirm:not([disabled])').click()
 
     // edit second datetime
-    cy.get('#all-confirmed-times-dates tr:nth-child(2) button').contains('Edit').click()
+    cy.get('#all-confirmed-times-dates li:nth-child(2) button').contains('Edit').click()
     // calendar should already be on the correct month; choose the 20th
     cy.get('#cal-container .v-date-picker-table button').contains('20').click()
 
@@ -156,7 +158,7 @@ context('Event editing:', () => {
     cy.get('.time-update:not([disabled])').click()
 
     // delete first datetime
-    cy.get('#all-confirmed-times-dates tr:first-child button').contains('Delete').click()
+    cy.get('#all-confirmed-times-dates li:first-child button').contains('Delete').click()
 
     // save
     cy.get('.edit-container button').contains('Save').click()

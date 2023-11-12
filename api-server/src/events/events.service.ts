@@ -69,18 +69,24 @@ export class EventsService {
 
   async findAllPaginated({
     tags = [],
+    category,
     verifiedOnly = true,
     pageSize,
     requestedPage,
   }: {
     tags: string[] | string;
+    category?: string;
     verifiedOnly?: boolean;
     pageSize: number;
     requestedPage: number;
   }): Promise<{ count: number; rows: EventModel[] }> {
     return this.sequelize.transaction(async (_) => {
       const tagClauseParams = this.getTagsClauseParams(tags);
-      const whereClause = this.getWhereClause(tagClauseParams, verifiedOnly);
+      const whereClause = this.getWhereClause(
+        tagClauseParams,
+        category,
+        verifiedOnly,
+      );
 
       // Sort events by the first start_time and apply pagination
       const paginatedRows: EventModel[] = await this.sequelize.query(
@@ -101,6 +107,7 @@ export class EventsService {
           model: EventModel,
           replacements: {
             tagFilter: tagClauseParams,
+            categoryFilter: category,
           },
         },
       );
@@ -325,15 +332,20 @@ export class EventsService {
 
   private getWhereClause(
     tagClauseParams: Nullable<string>,
+    category: Nullable<string>,
     verifiedOnly: boolean,
   ): string {
     const tagClause = isNotNullOrUndefined(tagClauseParams)
       ? `:tagFilter && events.tags`
       : null;
 
+    const categoryClause = isNotNullOrUndefined(category)
+      ? `events.category = '${category}'`
+      : null;
+
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
-    const clauses = [tagClause, verifiedOnlyClause].filter((clause) =>
+    const clauses = [tagClause, categoryClause, verifiedOnlyClause].filter((clause) =>
       isNotNullOrUndefined(clause),
     );
 

@@ -1,164 +1,168 @@
 <template>
   <div id="cal-container">
-    <div>
-      <v-date-picker
-        v-model="picker"
-        color="gray lighten-1"
-        :allowed-dates="AllowedDates"
-        :no-title="true"
-        :dark="true"
-      />
+    <div class="instructions">
+      <transition name="fade">
+        <p>
+          <span class="required-field">*</span>Pick the date for your event. If it's a multi-day event, like a festival or a series of theater performances, pick the first day and you will have a chance to add more later.
+        </p>
+      </transition>
     </div>
-    <div>
-      <div id="display-time-date">
-        <transition name="fade">
-          <p style="max-width: 700px;">
-            <span class="required-field">*</span>Pick the date for your event. If it's a multi-day event, like a festival or a series of theater performances, pick the first day and you will have a chance to add more later.
-          </p>
-        </transition>
-        <div style="min-height:100px; max-width: 700px; border: 1px solid black; padding:15px;">
-          <div class="time-date-entry" v-show="picker">
-            On {{ picker }} from
-            <span>
-              <input
-                ref="startHourInput"
-                v-model="start_hour"
-                type="text"
-                min="0"
-                max="23"
-                placeholder="hh"
-                class="start-hour"
-                :class="{ 'invalid' : start_hour_invalid }"
-                maxlength="2"
-              />
-              <span>:</span>
-              <input
-                ref="startMinInput"
-                v-model="start_minute"
-                type="text"
-                min="0"
-                max="59"
-                placeholder="mm"
-                class="start-minute"
-                :class="{ 'invalid' : start_minute_invalid }"
-                maxlength="2"
-              />
-              <select ref="startAmPm" name="start_ampm" v-model="start_ampm">
-                <option value="am">AM</option>
-                <option value="pm">PM</option>
-              </select>
-            </span>
-            to
-            <span>
-              <input
-                ref="endHourInput"
-                v-model="end_hour"
-                type="text"
-                min="0"
-                max="23"
-                placeholder="hh"
-                class="end-hour"
-                :class="{ 'invalid' : end_hour_invalid }"
-                maxlength="2"
-              />
-              <span>:</span>
-              <input
-                ref="endMinInput"
-                v-model="end_minute"
-                type="text"
-                min="0"
-                max="59"
-                placeholder="mm"
-                class="end-minute"
-                :class="{ 'invalid' : end_minute_invalid }"
-                maxlength="2"
-              />
-              <select ref="endAmPm" name="end_ampm" v-model="end_ampm">
-                <option value="am">AM</option>
-                <option value="pm">PM</option>
-              </select>
-              <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
-                <option v-for="(tz) in $config.TIMEZONE_OPTIONS.split(',')" :key="tz">
-                  {{ tz }}
-                </option>
-              </select>
-            </span>
+    <div class="time-date-control-wrapper">
+      <div>
+        <v-date-picker
+          v-model="picker"
+          color="gray lighten-1"
+          :allowed-dates="AllowedDates"
+          :no-title="true"
+          :dark="true"
+        />
+      </div>
+      <div>
+        <div id="display-time-date">
+          <div class="time-date-input-box">
+            <!-- hide the box until a date is selected -->
+            <div class="time-date-entry" v-show="picker">
+              On {{ picker }} from
+              <span>
+                <input
+                  ref="startHourInput"
+                  v-model="start_hour"
+                  type="text"
+                  min="0"
+                  max="23"
+                  placeholder="hh"
+                  class="start-hour"
+                  :class="{ 'invalid' : start_hour_invalid }"
+                  maxlength="2"
+                />
+                <span>:</span>
+                <input
+                  ref="startMinInput"
+                  v-model="start_minute"
+                  type="text"
+                  min="0"
+                  max="59"
+                  placeholder="mm"
+                  class="start-minute"
+                  :class="{ 'invalid' : start_minute_invalid }"
+                  maxlength="2"
+                />
+                <select ref="startAmPm" name="start_ampm" v-model="start_ampm">
+                  <option value="am">AM</option>
+                  <option value="pm">PM</option>
+                </select>
+              </span>
+              to
+              <span>
+                <input
+                  ref="endHourInput"
+                  v-model="end_hour"
+                  type="text"
+                  min="0"
+                  max="23"
+                  placeholder="hh"
+                  class="end-hour"
+                  :class="{ 'invalid' : end_hour_invalid }"
+                  maxlength="2"
+                />
+                <span>:</span>
+                <input
+                  ref="endMinInput"
+                  v-model="end_minute"
+                  type="text"
+                  min="0"
+                  max="59"
+                  placeholder="mm"
+                  class="end-minute"
+                  :class="{ 'invalid' : end_minute_invalid }"
+                  maxlength="2"
+                />
+                <select ref="endAmPm" name="end_ampm" v-model="end_ampm">
+                  <option value="am">AM</option>
+                  <option value="pm">PM</option>
+                </select>
+                <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
+                  <option v-for="(tz) in $config.TIMEZONE_OPTIONS.split(',')" :key="tz">
+                    {{ tz }}
+                  </option>
+                </select>
+              </span>
 
-            <div v-if="edit_mode">
-              <v-btn
-                class="time-cancel"
-                small
-                dark
-                depressed
-                color="grey"
-                @click="Cancel()"
-              >Cancel</v-btn>
-              <v-btn
-                small
-                dark
-                depressed
-                color="green"
-                class="time-update"
-                @click="UpdateTimeSegment(time_segment_index)"
-              >UPDATE</v-btn>
-            </div>
-            <div v-else>
-              <v-btn
-                small
-                dark
-                depressed
-                color="grey"
-                class="white--text time-cancel"
-                @click="Cancel()"
-              >Cancel</v-btn>
-              <v-btn
-                small
-                dark
-                outline
-                color="green"
-                v-show="!validate_time"
-                class="time-confirm"
-                disabled
-              >CONFIRM</v-btn>
-              <!-- Ugly hack thanks to "disabled" bug in vuetify -->
-              <v-btn
-                small
-                dark
-                depressed
-                color="green"
-                class="white--text time-confirm"
-                @click="AddTimeSegment()"
-                v-show="validate_time"
-              >CONFIRM</v-btn>
+              <div v-if="edit_mode">
+                <v-btn
+                  class="time-cancel"
+                  small
+                  dark
+                  depressed
+                  color="grey"
+                  @click="Cancel()"
+                >Cancel</v-btn>
+                <v-btn
+                  small
+                  dark
+                  depressed
+                  color="green"
+                  class="time-update"
+                  @click="UpdateTimeSegment(time_segment_index)"
+                >UPDATE</v-btn>
+              </div>
+              <div v-else>
+                <v-btn
+                  small
+                  dark
+                  depressed
+                  color="grey"
+                  class="white--text time-cancel"
+                  @click="Cancel()"
+                >Cancel</v-btn>
+                <v-btn
+                  small
+                  dark
+                  outline
+                  color="green"
+                  v-show="!validate_time"
+                  class="time-confirm"
+                  disabled
+                >CONFIRM</v-btn>
+                <!-- Ugly hack thanks to "disabled" bug in vuetify -->
+                <v-btn
+                  small
+                  dark
+                  depressed
+                  color="green"
+                  class="white--text time-confirm"
+                  @click="AddTimeSegment()"
+                  v-show="validate_time"
+                >CONFIRM</v-btn>
+              </div>
+              <div v-if="chrono_order_invalid" class="error--text">
+                End time for the event must follow the start time. Unless you are a Time Lord, of course...
+              </div>
             </div>
           </div>
-        </div>
 
-        <div v-show="chrono_order_invalid" class="error--text">
-          End time for the event must follow the start time. Unless you are a Time Lord, of course...
-        </div>
+          <div id="all-confirmed-times-dates">
+            <ul>
+              <li v-for="(date_and_time, index) in dates_and_times" :key="date_and_time.start_time + '/' + date_and_time.end_time">
+                <div class="time-list-item">
+                  <div>{{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time, date_and_time.timezone) }}</div>
+                  <div>
+                    <v-btn dark depressed color="green" @click="EditTimeSegment(index)">Edit</v-btn>
+                    <v-btn dark depressed color="red" @click="DeleteTimeSegment(index)">Delete</v-btn>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
 
-        <div id="all-confirmed-times-dates">
-          <table>
-            <tr v-for="(date_and_time, index) in dates_and_times" :key="date_and_time.start_time + '/' + date_and_time.end_time">
-              <td>
-                <span> {{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time, date_and_time.timezone) }}</span>
-              </td>
-              <td>
-                <v-btn small dark depressed color="red" @click="DeleteTimeSegment(index)">Delete</v-btn>
-                <v-btn small dark depressed color="green" @click="EditTimeSegment(index)">Edit</v-btn>
-              </td>
-            </tr>
-          </table>
-        </div>
+          <div v-show="!picker&&!introduction">
+            If you need additional dates, please select them now.
+          </div>
+          <!-- <div v-show="!picker&&!introduction">
+              It's lonely here.
+            </div> -->
 
-        <div v-show="!picker&&!introduction">
-          If you need additional dates, please select them now.
         </div>
-        <!-- <div v-show="!picker&&!introduction">
-            It's lonely here.
-          </div> -->
-
       </div>
     </div>
   </div>
@@ -383,16 +387,41 @@
 
 <style scoped>
   #cal-container {
-    display: flex;
-    flex-wrap: wrap;
-
     background-color: white;
     padding: 10px;
     font-family: 'Open Sans', sans-serif;
   }
 
+  #cal-container .time-date-control-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  @media screen and (min-width: 875px) {
+    #cal-container .time-date-control-wrapper {
+      flex-direction: row;
+      gap: 15px;
+    }
+  }
+
+  #cal-container > .time-date-control-wrapper > :first-child {
+    flex-shrink: 0;
+    /* margin: auto; */
+  }
+
+  #cal-container > .time-date-control-wrapper > :last-child {
+    flex-grow: 1;
+  }
+
   #display-time-date {
-    padding: 15px;
+    /* this used to require padding; now it's gap w/ parent flex container */
+  }
+
+  .time-date-input-box {
+    min-height:100px;
+    padding:15px;
+    border: 1px solid black;
   }
 
   .time-date-entry {
@@ -410,9 +439,6 @@
     color: rgb(154, 154, 154);
   }
 
-  /* div {
-    display: inline-block;
-  } */
   input {
     padding: 2px;
     outline: 1px solid rgb(187, 187, 187);
@@ -421,6 +447,38 @@
   }
   .invalid {
     outline: 1px solid red;
+  }
+
+  #all-confirmed-times-dates {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  #all-confirmed-times-dates ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+
+  #all-confirmed-times-dates ul li:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+
+  .time-list-item {
+    background-color: #f2f2f2;
+  }
+
+  @media only screen and (min-width: 850px) {
+    .time-list-item {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .time-list-item > :first-child {
+      padding: 0 0.5rem;
+    }
   }
 
   /* --------------- transitions --------------- */

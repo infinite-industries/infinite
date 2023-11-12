@@ -12,14 +12,8 @@ import {
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventModel } from './models/event.model';
-import { AuthGuard } from '../authentication/auth.guard';
 import { Inject, LoggerService } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { VERSION_1_URI } from '../utils/versionts';
 import { getOptionsForEventsServiceFromEmbedsQueryParam } from '../utils/get-options-for-events-service-from-embeds-query-param';
 import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
@@ -70,6 +64,7 @@ export class EventsController {
   getAllCurrentVerified(
     @Query('embed') embed: string[] | string = [],
     @Query('tags') tags: string[] | string = [],
+    @Query('category') category: string,
     @Req() request: Request,
   ): Promise<EventsResponse> {
     if (typeof embed === 'string') {
@@ -82,7 +77,7 @@ export class EventsController {
       ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
       where: {
         [Op.and]: [
-          getCommonQueryTermsForEvents(true, tags),
+          getCommonQueryTermsForEvents(true, tags, category),
           {
             '$date_times.end_time$': {
               [Op.gte]: moment().subtract(2, 'hours').toDate(),
@@ -112,7 +107,7 @@ export class EventsController {
   @ApiImplicitQuery({
     name: 'tags',
     description: 'filter by associated tags',
-    example: ['category:online-resource'],
+    example: ['music'],
     required: false,
     isArray: true,
     type: String,
@@ -133,6 +128,7 @@ export class EventsController {
   })
   getAllVerified(
     @Query('tags') tags: string[] | string = [],
+    @Query('category') category: string,
     @Query() pagination: PaginationDto,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
@@ -140,6 +136,7 @@ export class EventsController {
     return this.eventsService
       .findAllPaginated({
         tags,
+        category,
         pageSize,
         requestedPage: page,
         verifiedOnly: true,
@@ -158,29 +155,6 @@ export class EventsController {
           events: paginatedEventResp.rows.map(eventModelToEventDTO),
         });
       });
-  }
-
-  // TODO - Move to events.authenticated.controller
-  @Get('non-verified')
-  @UseGuards(AuthGuard)
-  @ApiOperation({
-    summary: 'Get events that have not yet been verified (admin only)',
-  })
-  @ApiResponse({ status: 403, description: 'Forbidden' })
-  @ApiBearerAuth()
-  getAllNonVerified(
-    @Query('embed') embed: string[] | string = [],
-    @Query('tags') tags: string[] | string = [],
-  ): Promise<EventsResponse> {
-    const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: { verified: false },
-    };
-
-    return this.eventsService
-      .findAll(findOptions)
-      .then((events) => events.map(eventModelToEventDTO))
-      .then((events) => new EventsResponse({ events }));
   }
 
   @Get('/:id')
@@ -206,27 +180,6 @@ export class EventsController {
       .then(eventModelToEventDTO)
       .then((event) => removeSensitiveDataForNonAdmins(request, event))
       .then((event: EventDTO) => ({ event, status: 'success' }));
-  }
-
-  // TODO - Move to events.authenticated.controller
-  @Get()
-  @UseGuards(AuthGuard)
-  @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
-  @ApiResponse({ status: 403, description: 'Forbidden' })
-  @ApiBearerAuth()
-  getAll(
-    @Query('embed') embed: string[] | string = [],
-    @Query('tags') tags: string[] | string = [],
-  ): Promise<EventsResponse> {
-    const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: getCommonQueryTermsForEvents(null, tags),
-    };
-
-    return this.eventsService
-      .findAll(findOptions)
-      .then((events) => events.map(eventModelToEventDTO))
-      .then((events) => new EventsResponse({ events }));
   }
 
   @Post()

@@ -15,10 +15,12 @@ on:
     paths:
       - 'api-server/**'
       - '.github/workflows/api-tests.yml'
+  workflow_dispatch:  # manual execution through Github UI
 
 jobs:
-  build:
+  api-e2e-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node
@@ -35,3 +37,11 @@ jobs:
         working-directory: './api-server'
         env:
           PORT: 3003
+      - name: Save server logs
+        uses: actions/upload-artifact@v3
+        if : ${{ failure() }}
+        with:
+          name: server-logs
+          path: |
+            api-server/test/logs
+          retention-days: 14 # this gives us two weeks to troubleshoot

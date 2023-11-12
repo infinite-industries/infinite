@@ -63,7 +63,9 @@ describe('CurrentEvents (e2e)', () => {
 
     await killApp(appUnderTest);
 
-    appUnderTest.removeAllListeners();
+    if (appUnderTest) {
+      appUnderTest.removeAllListeners();
+    }
 
     await stopDatabase(dbContainer);
 
@@ -289,6 +291,9 @@ describe('CurrentEvents (e2e)', () => {
         expect(event.eventbrite_link).toEqual(dbEvent.eventbrite_link);
         expect(event.bitly_link).toEqual(dbEvent.bitly_link);
         expect(event.tags).toEqual(dbEvent.tags);
+        expect(event.category).toEqual(dbEvent.category);
+        expect(event.condition).toEqual(dbEvent.condition);
+        expect(event.mode).toEqual(dbEvent.mode);
         expect(event.reviewed_by_org).toEqual(dbEvent.reviewed_by_org);
 
         // except this one should be empty for non-admins

@@ -11,11 +11,13 @@ import { Op, WhereOptions } from 'sequelize';
 export default function getCommonQueryTermsForEvents(
   verified: boolean | null,
   tags: string[] | string,
+  category: string | null,
 ): WhereOptions {
   const queryTags = ensureIsArray(tags);
   const terms: WhereOptions = {};
   if (typeof verified === 'boolean') terms.verified = verified;
   if (queryTags.length > 0) terms.tags = { [Op.contains]: queryTags };
+  if (typeof category === 'string') terms.category = category;
   return terms;
 }
 

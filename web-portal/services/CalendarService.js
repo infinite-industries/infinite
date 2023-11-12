@@ -52,7 +52,7 @@ export default class CalendarService {
 function includeEventLocation(event) {
   return !(
     (event.venue && event.venue.name === 'Remote Event') ||
-    (event.tags && (event.tags.includes('category:online-resource') || event.tags.includes('mode:online')))
+    ((event.category && event.category === 'online-resource') || (event.mode && event.mode === 'online'))
   )
 }
 

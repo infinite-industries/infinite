@@ -15,15 +15,15 @@ export default class JsonLdService {
       : null
     const venue = event.venue
     const image = event.image
-    const tags = event.tags // TODO: this will change w/ B's work
+    const condition = event.condition ? event.condition : []
 
-    const eventStatus = tags.includes('condition:cancelled')
+    const eventStatus = condition.includes('cancelled')
       ? 'Cancelled'
-      : (tags.includes('condition:postponed') ? 'Postponed' : null)
+      : (condition.includes('postponed') ? 'Postponed' : null)
 
-    const soldOut = tags.includes('condition:sold-out')
+    const soldOut = condition.includes('sold-out')
 
-    const eventMode = tags.find(t => t.startsWith('mode:'))?.split(':')[1]
+    const eventMode = event.mode === 'in-person' ? 'Offline' : event.mode === 'online' ? 'Online' : 'Mixed'
 
     // if something doesn't have times, it's not an Event for purposes
     // of Schema.org's schemas; for now just bail but maybe there's a
@@ -38,7 +38,7 @@ export default class JsonLdService {
       'startDate': firstStartTime,
       'endDate': lastEndTime,
       'image': image,
-      'eventAttendanceMode': `${SCHEMA}/${eventMode === 'in-person' ? 'Offline' : eventMode === 'online' ? 'Online' : 'Mixed'}EventAttendanceMode`,
+      'eventAttendanceMode': `${SCHEMA}/${eventMode}EventAttendanceMode`,
       ...(venue ? { 'location': this.forVenue(venue, eventMode) } : null),
       ...(eventStatus ? { eventStatus: `${SCHEMA}/Event${eventStatus}` } : null),
       ...(event.ticket_link || event.eventbrite_link
