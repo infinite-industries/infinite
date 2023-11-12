@@ -113,9 +113,21 @@ export class EventModel extends Model<EventModel> {
 
   @Column(DataType.ARRAY(DataType.STRING))
   @ApiProperty({
-    example: ['mode:online', 'category:single-day-event', 'music'],
+    example: ['music', 'dance'],
   })
   tags: Array<string>;
+
+  @Column
+  @ApiProperty({ example: 'multi-day-event' })
+  category: string;
+
+  @Column(DataType.ARRAY(DataType.STRING))
+  @ApiProperty({ example: ['postponed', 'sold-out'] })
+  condition: Array<string>;
+
+  @Column
+  @ApiProperty({ example: 'in-person' })
+  mode: string;
 
   @Column(DataType.ARRAY(DataType.STRING))
   @ApiProperty({ example: [] })

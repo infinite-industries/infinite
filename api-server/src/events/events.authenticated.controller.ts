@@ -49,10 +49,11 @@ export default class EventsAuthenticatedController {
   getAll(
     @Query('embed') embed: string[] | string = [],
     @Query('tags') tags: string[] | string = [],
+    @Query('category') category: string,
   ): Promise<EventsResponse> {
     const findOptions = {
       ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: getCommonQueryTermsForEvents(null, tags),
+      where: getCommonQueryTermsForEvents(null, tags, category),
     };
 
     return this.eventsService

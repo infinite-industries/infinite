@@ -38,7 +38,7 @@ export const getters = {
 
   GetAllRemoteEvents: (state) => {
     return state.all_local_events.filter((localEvent) => {
-      return localEvent.tags && localEvent.tags.includes('mode:online') && !localEvent.tags.includes('category:online-resource')
+      return (localEvent.mode && localEvent.mode === 'online') && !(localEvent.category && localEvent.category === 'online-resource')
     })
   },
 
@@ -126,7 +126,7 @@ export const actions = {
       })
   },
   LoadAllStreamingEventData: function (context) {
-    return this.$apiService.get(`${EVENTS_VERIFIED_PATH}?tags=category:online-resource&${EMBED_VENUE}`)
+    return this.$apiService.get(`${EVENTS_VERIFIED_PATH}?category=online-resource&${EMBED_VENUE}`)
       .then((_response) => {
         context.commit('UPDATE_STREAMING_EVENTS', _response.data.events)
       })

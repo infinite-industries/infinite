@@ -156,8 +156,6 @@
   import Share from '@/components/vectors/Share.vue'
   import Twitter from '@/components/vectors/Twitter.vue'
 
-  const _hasTag = (event, tag) => event && event.tags && event.tags.includes(tag)
-
   export default {
     props: {
       event: {
@@ -173,10 +171,10 @@
     },
     computed: {
       statusMessage() {
-        if (this.event.tags) {
-          if (this.event.tags.includes('condition:cancelled')) return 'Cancelled'
-          else if (this.event.tags.includes('condition:sold-out')) return 'Sold Out'
-          else if (this.event.tags.includes('condition:postponed')) return 'Postponed'
+        if (this.event.condition) {
+          if (this.event.condition.includes('cancelled')) return 'Cancelled'
+          else if (this.event.condition.includes('sold-out')) return 'Sold Out'
+          else if (this.event.condition.includes('postponed')) return 'Postponed'
           else return null
         } else return null
       },
@@ -184,10 +182,14 @@
         return encodeURI(this.$config.APP_URL + '/events/' + this.event.id)
       },
       isRemote: function () {
-        return _hasTag(this.event, 'mode:online')
+        return this.event &&
+          this.event.mode &&
+          this.event.mode === 'online'
       },
       isOnlineResource: function () {
-        return _hasTag(this.event, 'category:online-resource')
+        return this.event &&
+          this.event.category &&
+          this.event.category === 'online-resource'
       },
       // true if the event's venue is the special "remote" venue
       venueIsRemote: function () {
