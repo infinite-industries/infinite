@@ -37,6 +37,7 @@
         - .env
         - web-portal.env
         - api.env
+        - discord-bot.env
       notify: Restart docker containers
     # this always executes - need to use the community.docker collection to
     # make it smarter and trigger the restart handler only if the image
