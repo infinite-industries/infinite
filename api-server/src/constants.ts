@@ -7,7 +7,7 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { NullableOrUndefinable } from './utils/NullableOrUndefinable';
+import { Nullable, NullableOrUndefinable } from './utils/NullableOrUndefinable';
 import { isNullOrUndefined } from './utils';
 
 // db related values have to be defined in commonjs, we re-expose them here for convenience in typescript
@@ -36,6 +36,10 @@ export const PORT = isNullOrUndefined(process.env.PORT)
   : process.env.PORT;
 export const INFINITE_WEB_PORTAL_BASE_URL =
   process.env.APP_URL || 'http://localhost:7779/';
+
+export const INFINITE_API_BASE_URL: string =
+  process.env.INFINITE_API_BASE_URL || `http://localhost:${PORT}`;
+
 export const ENV = process.env.ENV || 'dev';
 
 // === Auth0 Login ====
@@ -73,6 +77,21 @@ export const SLACK_WEBHOOK_VENUE_SUBMISSION =
 
 export const MAP_BOX_API_KEY = process.env.MAP_BOX_API_KEY;
 
+// === AWS S3 Uploads
+export const AWS_REGION: string = defaultOnEmpty(
+  process.env.AWS_REGION,
+  'us-east-1',
+);
+export const AWS_ACCESS_KEY_ID: Nullable<string> = emptyStringToNull(
+  process.env.AWS_ACCESS_KEY_ID,
+);
+export const AWS_SECRET_ACCESS_KEY: Nullable<string> = emptyStringToNull(
+  process.env.AWS_SECRET_ACCESS_KEY,
+);
+export const AWS_S3_UPLOADS_BUCKET: Nullable<string> = emptyStringToNull(
+  process.env.AWS_S3_UPLOADS_BUCKET,
+);
+
 // === Helper Functions ===
 function getPemPathDefault(authTestUsers) {
   return authTestUsers
@@ -82,4 +101,20 @@ function getPemPathDefault(authTestUsers) {
 
 function isTrueFromString(value: NullableOrUndefinable<string>): boolean {
   return (value || '').toLowerCase() === 'true';
+}
+
+function emptyStringToNull(
+  value: NullableOrUndefinable<string>,
+): Nullable<string> {
+  return defaultOnEmpty(value, null);
+}
+
+function defaultOnEmpty<T, Y>(value: Y, defaultValue: T) {
+  if (isNullOrUndefined(value)) {
+    return defaultValue;
+  } else if (typeof value === 'string' && value.trim().length === 0) {
+    return defaultValue;
+  } else {
+    return value;
+  }
 }

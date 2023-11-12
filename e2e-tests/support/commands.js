@@ -4,7 +4,7 @@ Cypress.Commands.add('selectFile', { prevSubject: 'element' }, (subject, file) =
   cy.fixture(file).then(function (res) {
     const dt = new DataTransfer()
 
-    dt.items.add(new File([res], basename(file)))
+    dt.items.add(new File([res], basename(file), { type: 'image/jpeg' }))
 
     subject[0].files = dt.files
     subject[0].dispatchEvent(new Event('change', { bubbles: true }))
