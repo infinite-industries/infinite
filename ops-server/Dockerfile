@@ -1,12 +1,5 @@
-FROM ghcr.io/jswank/alpine-cli:latest
-
-USER root
+FROM docker.io/library/postgres:alpine
 
 RUN apk --no-cache add \
-  postgresql-client aws-cli  
-
-COPY home/bin/* /home/cli/bin/
-
-RUN chown -R cli:cli /home/cli
-
-USER cli
+  less curl coreutils grep gawk perl \
+  aws-cli mandoc
