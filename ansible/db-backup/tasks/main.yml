@@ -7,6 +7,10 @@
   file:
     path: ~/backups
     state: directory
+- name: create the directory to store the backup script
+  file:
+    path: ~/bin
+    state: directory
 - name: fetch (or update) the container
   command: docker pull ghcr.io/infinite-industries/ops-server:{{ image_version }}
 - name: create systemd timer file infinite-db-backup.timer
@@ -19,6 +23,7 @@
   template:
     src: infinite-db-backup.service.j2
     dest: /etc/systemd/system/infinite-db-backup.service
+  notify: Reload systemd
 - name: enable the timer
   become: true
   systemd:
@@ -26,6 +31,11 @@
     enabled: true
     state: started
     daemon_reload: true
+- name: add the backup script
+  copy:
+    src: files/backup
+    dest: ~/bin/backup
+    mode: '0755'
 - name: include backup execution
   include_tasks:
     file: backup.yml
@@ -34,3 +44,4 @@
         - backup
   tags:
     - always
+

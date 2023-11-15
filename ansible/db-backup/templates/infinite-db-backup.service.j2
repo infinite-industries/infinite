@@ -6,7 +6,8 @@ User=infinite
 Group=infinite
 Type=oneshot
 WorkingDirectory=/home/infinite
-ExecStart=docker run --env-file docker-files/ops.env -v /home/infinite/backups:/var/tmp/backups --rm ghcr.io/infinite-industries/ops-server:{{ image_version }} bin/db-backup 
+Environment="IMAGE_TAG={{ image_version }}"
+ExecStart=/home/infinite/bin/backup
 
 [Install]
 WantedBy= multi-user.target
