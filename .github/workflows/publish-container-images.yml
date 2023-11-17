@@ -31,7 +31,7 @@ jobs:
         with:
           just-version: 1.13.0
       - name: build the image
-        run: just ctx=ctx build
+        run: just ctx=ctx build-image
       - name: publish the image
         run: just registry_user=${{ github.actor }} publish
   publish-api-server:
@@ -50,7 +50,7 @@ jobs:
         with:
           just-version: 1.13.0
       - name: build the image
-        run: just build
+        run: just build-image
       - name: publish the image
         run: just registry_user=${{ github.actor }} publish
   publish-web-portal:
@@ -69,6 +69,6 @@ jobs:
         with:
           just-version: 1.13.0
       - name: build the image
-        run: just build
+        run: just build-image
       - name: publish the image
         run: just registry_user=${{ github.actor }} publish

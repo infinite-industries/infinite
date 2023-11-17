@@ -14,7 +14,7 @@ registry_pass_var := "REGISTRY_PASSWORD"
 ctx := "."
 
 # build a new image
-build flags="":
+build-image flags="":
   cd {{ invocation_directory() }} \
     && docker build -t {{image_name}}:{{image_tag}} {{flags}} -f Dockerfile {{ ctx }}
 
