@@ -24,6 +24,9 @@ build-image flags="":
   cd {{ invocation_directory() }} \
     && docker build -t {{image_name}}:{{image_tag}} {{flags}} -f Dockerfile {{ ctx }}
 
+  # tag w/ default registry
+  docker tag {{image_name}}:{{image_tag}} {{registry}}/{{image_name}}:{{image_tag}}
+
 _login:
   @ echo "${{ registry_pass_var }}" | docker login {{registry}} -u {{registry_user}} --password-stdin
 
