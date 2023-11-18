@@ -1,0 +1,6 @@
+IMAGE_NAME := "infinite-industries/ops-server"
+
+# Create the docker image. This makes use of the top level just recipe.
+build-image:
+  IMAGE_NAME={{ IMAGE_NAME}} just -f ../justfile ctx=ctx build-image
+

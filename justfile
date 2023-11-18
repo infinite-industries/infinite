@@ -13,6 +13,12 @@ registry_pass_var := "REGISTRY_PASSWORD"
 # this directory is used as the build context when constructing the image
 ctx := "."
 
+# build all the docker images
+build-all-images flags="":
+  cd api-server && just build-image
+  cd web-portal && just build-image
+  cd ops-server && just build-image
+
 # build a new image
 build-image flags="":
   cd {{ invocation_directory() }} \
