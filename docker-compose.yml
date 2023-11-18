@@ -1,7 +1,7 @@
 version: '3.5'
 services:
   postgres:
-    image: 'postgres:9.6.2-alpine'
+    image: 'docker.io/library/postgres:alpine'
     environment:
       - POSTGRES_DB=infinite-api
       - POSTGRES_USER=postgres
@@ -9,27 +9,33 @@ services:
     expose:
       - "5432"
     ports:
-      - "5436:5432"
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready'"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
     # uncomment if you want to populate the db with a recent backup you have
     # in /var/tmp/infinite-prod.sql
     # volumes:
       #      - /var/tmp/infinite-prod.sql:/docker-entrypoint-initdb.d/init.sql
 
   api-server:
-    image: infinite-industries/api-server:latest
-    depends_on:
-      - postgres
+    image: ghcr.io/infinite-industries/api-server:latest
     environment:
       DB_HOST: postgres
       DB_PORT: 5432
-      AUTH_USE_TEST_USERS: true
+      AUTH_USE_TEST_USERS: "TRUE"
     expose:
       - "3003"
     ports:
       - "3003:3003"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   web-portal:
-    image: infinite-industries/web-portal:latest
+    image: ghcr.io/infinite-industries/web-portal:latest
     environment:
       HOST: 0.0.0.0 # Needed to make nuxt work inside docker
       USE_PROXY: "true" # starts a proxy service in the container to allow server side requests against localhost to work inside the compose stack
@@ -41,3 +47,4 @@ services:
       - "7779"
     ports:
       - "7779:7779"
+
