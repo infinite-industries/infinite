@@ -13,6 +13,13 @@ registry_pass_var := "REGISTRY_PASSWORD"
 # this directory is used as the build context when constructing the image
 ctx := "."
 
+# build and run within docker
+build-and-run: build-all-images run
+
+# run environment via docker-compose
+run: 
+  docker-compose up
+
 # build all the docker images
 build-all-images flags="":
   cd api-server && just build-image
