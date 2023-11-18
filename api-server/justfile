@@ -3,3 +3,7 @@ IMAGE_NAME := "infinite-industries/api-server"
 # Create the docker image. This makes use of the top level just recipe.
 build-image:
   IMAGE_NAME={{ IMAGE_NAME}} just -f ../justfile build-image
+
+# you're looking at it!
+help:
+  @just --list 

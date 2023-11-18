@@ -4,3 +4,7 @@ IMAGE_NAME := "infinite-industries/web-portal"
 build-image:
   IMAGE_NAME={{ IMAGE_NAME}} just -f ../justfile build-image
 
+# you're looking at it!
+help:
+  @just --list 
+

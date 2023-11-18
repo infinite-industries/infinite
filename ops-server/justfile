@@ -4,3 +4,6 @@ IMAGE_NAME := "infinite-industries/ops-server"
 build-image:
   IMAGE_NAME={{ IMAGE_NAME}} just -f ../justfile ctx=ctx build-image
 
+# you're looking at it!
+help:
+  @just --list 
