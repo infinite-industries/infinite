@@ -38,6 +38,7 @@ ln -sf ${PGDATABASE}.${TS}.gz ${BACKUP_DIR}/${PGDATABASE}.gz
 ln -sf ${PGDATABASE}.anon.${TS}.gz ${BACKUP_DIR}/${PGDATABASE}.anon.gz
 
 # copy to S3
-aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.dump.${TS} s3://${S3_BUCKET}/${S3_PATH}/
-aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.anon.gz s3://${S3_BUCKET}/${S3_PATH}/
-
+aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.dump s3://${S3_BUCKET}/${S3_PATH}/ >/dev/null 2>&1
+aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.gz s3://${S3_BUCKET}/${S3_PATH}/ >/dev/null 2>&1
+aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.anon.gz s3://${S3_BUCKET}/${S3_PATH}/ >/dev/null 2>&1
+aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.${TS}.gz s3://${S3_BUCKET}/${S3_PATH}/ >/dev/null 2>&1
