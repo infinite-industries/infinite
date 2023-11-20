@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# NOTE: this works in staging
+#
+# $ docker run --rm --env-file /home/infinite/docker-files/ops.env -v /home/infinite/backups:/var/tmp/backups -v /home/infinite/bin/backup-in-container:/tmp/script ghcr.io/infinite-industries/ops-server:backup-process sh -x '/tmp/script'
+
+set -o errexit
+
+# directory on the host where backups are stored
+BACKUP_DIR=${BACKUP_DIR:="/var/tmp/backups"}
+
+# timestamp
+TS=$(date -Iseconds)
+
+#
+# MAIN SCRIPT 
+#
+
+# create dumpfile
+pg_dump -d "sslmode=require" -Fc -f ${BACKUP_DIR}/${PGDATABASE}.dump.${TS}
+
+# create sql dump - no perms
+pg_dump -d "sslmode=require" -Fp --no-owner --no-acl \
+  | gzip -c > ${BACKUP_DIR}/${PGDATABASE}.${TS}.gz
+
+# There is an an alternate way to create the sql dump using the full dump
+#pg_restore --no-owner --no-acl -f - /var/tmp/backups/${PGDATABASE}.$TS \
+#  | gzip -c > ${BACKUP_DIR}/${PGDATABASE}.sql.${TS}.gz
+
+# create anonymized versions of the sql dump
+gzip -dc ${BACKUP_DIR}/${PGDATABASE}.${TS}.gz \
+  | perl -pE 's/[\w._+-]+@[\w._-]+\.[\w_-]+/nobody\@example.com/g' \
+  | gzip -c > ${BACKUP_DIR}/${PGDATABASE}.anon.${TS}.gz
+
+# create latest symlinks
+ln -sf ${PGDATABASE}.dump.${TS} ${BACKUP_DIR}/${PGDATABASE}.dump
+ln -sf ${PGDATABASE}.${TS}.gz ${BACKUP_DIR}/${PGDATABASE}.gz
+ln -sf ${PGDATABASE}.anon.${TS}.gz ${BACKUP_DIR}/${PGDATABASE}.anon.gz
+
+# copy to S3
+aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.dump.${TS} s3://${S3_BUCKET}/${S3_PATH}/
+aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.anon.gz s3://${S3_BUCKET}/${S3_PATH}/
+

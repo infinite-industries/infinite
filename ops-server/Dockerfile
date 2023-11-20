@@ -1,11 +1,18 @@
-FROM docker.io/library/postgres:alpine
+FROM docker.io/library/alpine:3
 
 RUN apk --no-cache add \
   less curl coreutils grep gawk perl doas doas-sudo-shim \
-  aws-cli mandoc
+  postgresql-client aws-cli \
+  postgresql-doc mandoc
 
 RUN adduser -h /home/infinite -s /bin/bash -D infinite infinite && \
     addgroup infinite wheel && \
     echo "permit nopass :wheel" > /etc/doas.d/allow-wheel.conf
 
+ADD --chown=infinite:infinite backup /home/infinite/bin/
+
 USER infinite
+
+WORKDIR /home/infinite
+
+CMD bin/backup
