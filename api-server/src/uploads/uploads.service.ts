@@ -14,6 +14,7 @@ import { S3 } from '@aws-sdk/client-s3';
 import sharp, { Sharp } from 'sharp';
 
 const IMAGE_EXTENSIONS = 'webp';
+const IMAGE_DESIRED_WIDTH = 1920;
 
 @Injectable()
 export class UploadsService {
@@ -48,8 +49,8 @@ export class UploadsService {
     let imageInProcess: Sharp = sharp(imgFile.buffer);
     const { width, height } = await imageInProcess.metadata();
 
-    if (width > 1024) {
-      imageInProcess = imageInProcess.resize(1024);
+    if (width > IMAGE_DESIRED_WIDTH) {
+      imageInProcess = imageInProcess.resize(IMAGE_DESIRED_WIDTH);
     }
 
     return imageInProcess.webp().toBuffer();
