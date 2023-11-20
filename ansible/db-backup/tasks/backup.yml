@@ -7,4 +7,4 @@
     state: started
 - name: echo backup info
   debug:
-    msg: The database backup is available at ~/backups/{{ pgdatabase }}.latest and ~/backups/{{ pgdatabase }}.sanitized.latest
+    msg: The database backup is available at ~/backups/{{ pgdatabase }}.gz and ~/backups/{{ pgdatabase }}.anon.gz
