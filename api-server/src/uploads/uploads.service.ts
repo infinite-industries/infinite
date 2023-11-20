@@ -47,7 +47,8 @@ export class UploadsService {
     imgFile: Express.Multer.File,
   ): Promise<Buffer> {
     let imageInProcess: Sharp = sharp(imgFile.buffer);
-    const { width, height } = await imageInProcess.metadata();
+
+    const { width } = await imageInProcess.metadata();
 
     if (width > IMAGE_DESIRED_WIDTH) {
       imageInProcess = imageInProcess.resize(IMAGE_DESIRED_WIDTH);
