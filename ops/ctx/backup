@@ -1,8 +1,7 @@
 #!/bin/sh
-
-# NOTE: this works in staging
+# 
+#  Create backups of a postgres database, copy them to S3
 #
-# $ docker run --rm --env-file /home/infinite/docker-files/ops.env -v /home/infinite/backups:/var/tmp/backups -v /home/infinite/bin/backup-in-container:/tmp/script ghcr.io/infinite-industries/ops-server:backup-process sh -x '/tmp/script'
 
 set -o errexit
 
@@ -10,7 +9,7 @@ set -o errexit
 BACKUP_DIR=${BACKUP_DIR:="/var/tmp/backups"}
 
 # timestamp
-TS=$(date -Iseconds)
+TS=$(date -u +%Y-%m-%dT%H:%M:%S)
 
 #
 # MAIN SCRIPT 

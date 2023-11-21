@@ -8,7 +8,7 @@
     path: ~/backups
     state: directory
 - name: fetch (or update) the container
-  command: docker pull ghcr.io/infinite-industries/ops-server:{{ image_version }}
+  command: docker pull ghcr.io/infinite-industries/ops:{{ image_version }}
 - name: create systemd timer file infinite-db-backup.timer
   become: true
   copy:
