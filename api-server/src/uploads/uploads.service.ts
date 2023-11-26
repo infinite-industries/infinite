@@ -11,6 +11,10 @@ import { PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS } from './uploads.module';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { isNullOrUndefined } from '../utils';
 import { S3 } from '@aws-sdk/client-s3';
+import sharp, { Sharp } from 'sharp';
+
+const IMAGE_EXTENSION = 'webp';
+const IMAGE_DESIRED_WIDTH = 1920;
 
 @Injectable()
 export class UploadsService {
@@ -25,28 +29,45 @@ export class UploadsService {
     }
   }
 
-  saveImage(img: Express.Multer.File) {
+  async saveImage(img: Express.Multer.File) {
+    const resizedImage = await this.resizeAndCompress(img);
+
     if (isNullOrUndefined(AWS_S3_UPLOADS_BUCKET)) {
       console.debug(
         'using local drive to persist image uploads, this should only be used for local testing',
       );
-      return this.saveToLocal(img);
+
+      return this.saveToLocal(resizedImage);
     } else {
-      return this.saveToS3(img);
+      return this.saveToS3(resizedImage);
     }
   }
 
-  private saveToLocal(img: Express.Multer.File): Promise<string> {
+  private async resizeAndCompress(
+    imgFile: Express.Multer.File,
+  ): Promise<Buffer> {
+    let imageInProcess: Sharp = sharp(imgFile.buffer);
+
+    const { width } = await imageInProcess.metadata();
+
+    if (width > IMAGE_DESIRED_WIDTH) {
+      imageInProcess = imageInProcess.resize(IMAGE_DESIRED_WIDTH);
+    }
+
+    return imageInProcess.webp().toBuffer();
+  }
+
+  private saveToLocal(imgBuffer: Buffer): Promise<string> {
     const subPath = 'event-images';
 
     return new Promise((resolve, reject) => {
-      const imageName = this.generateNewImageName(img);
+      const imageName = this.generateNewImageName();
 
       // wx flag mitigates the possibility of clobbering an existing file
       // (will error out on write)
       fs.writeFile(
         join(PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS, imageName),
-        img.buffer,
+        imgBuffer,
         { flag: 'wx' },
         (err) => {
           if (err) {
@@ -59,14 +80,14 @@ export class UploadsService {
     });
   }
 
-  private async saveToS3(img: Express.Multer.File): Promise<string> {
+  private async saveToS3(imageBuffer: Buffer): Promise<string> {
     const s3 = new S3({ region: AWS_REGION });
 
-    const imageName = `uploads/${this.generateNewImageName(img)}`;
+    const imageName = `uploads/${this.generateNewImageName()}`;
 
     try {
-      const result = await s3.putObject({
-        Body: img.buffer,
+      await s3.putObject({
+        Body: imageBuffer,
         Bucket: AWS_S3_UPLOADS_BUCKET,
         Key: imageName,
       });
@@ -80,12 +101,8 @@ export class UploadsService {
     }
   }
 
-  private generateNewImageName(img: Express.Multer.File): string {
+  private generateNewImageName(): string {
     const newImageId = uuid();
-    return `${newImageId}.${this.getExtension(img)}`;
-  }
-
-  private getExtension(file: Express.Multer.File) {
-    return file.mimetype.split('/')[1];
+    return `${newImageId}.${IMAGE_EXTENSION}`;
   }
 }
