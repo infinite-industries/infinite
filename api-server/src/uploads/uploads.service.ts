@@ -13,7 +13,7 @@ import { isNullOrUndefined } from '../utils';
 import { S3 } from '@aws-sdk/client-s3';
 import sharp, { Sharp } from 'sharp';
 
-const IMAGE_EXTENSIONS = 'webp';
+const IMAGE_EXTENSION = 'webp';
 const IMAGE_DESIRED_WIDTH = 1920;
 
 @Injectable()
@@ -103,6 +103,6 @@ export class UploadsService {
 
   private generateNewImageName(): string {
     const newImageId = uuid();
-    return `${newImageId}.${IMAGE_EXTENSIONS}`;
+    return `${newImageId}.${IMAGE_EXTENSION}`;
   }
 }
