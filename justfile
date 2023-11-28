@@ -74,8 +74,3 @@ fetchdb file="sanitized-infinite-prod.latest":
 # populate database
 populatedb file="sanitized-infinite-prod.latest": fetchdb 
   PGPASSWORD=$PGPASSWORD pg_restore --clean --no-privileges --no-owner -v -d $PGDATABASE {{ file }}  
-
-# you're looking at it!
-help:
-  @just --list 
-
