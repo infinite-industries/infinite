@@ -11,6 +11,9 @@ BACKUP_DIR=${BACKUP_DIR:="/var/tmp/backups"}
 # timestamp
 TS=$(date -u +%Y-%m-%dT%H:%M:%S)
 
+# number of days of backup retention
+NUM_DAYS=${NUM_DAYS:=10}
+
 #
 # MAIN SCRIPT 
 #
@@ -40,4 +43,6 @@ ln -sf ${PGDATABASE}.anon.${TS}.gz ${BACKUP_DIR}/${PGDATABASE}.anon.gz
 aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.dump s3://${S3_BUCKET}/${S3_PATH}/ >/dev/null 2>&1
 aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.gz s3://${S3_BUCKET}/${S3_PATH}/ >/dev/null 2>&1
 aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.anon.gz s3://${S3_BUCKET}/${S3_PATH}/ >/dev/null 2>&1
-aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.${TS}.gz s3://${S3_BUCKET}/${S3_PATH}/ >/dev/null 2>&1
+
+# delete files older than NUM_DAYS old
+find ${BACKUP_DIR} -type f -mtime +${NUM_DAYS} -name "${PGDATABASE}*" -exec rm {} \;

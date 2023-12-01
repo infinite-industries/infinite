@@ -15,4 +15,6 @@ USER infinite
 
 WORKDIR /home/infinite
 
+# default local file retention for backups
+ENV NUM_DAYS=10
 CMD bin/backup
