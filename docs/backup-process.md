@@ -32,7 +32,7 @@ uploaded to S3.  The examples below refer to the production database
 * **Host location**: `~/backups`
 * **S3 location**: `s3://infinite-industries-backups/db/`
 
-![](https://s3.hedgedoc.org/demo/uploads/d392a187-9414-48c5-9ca7-ebd57c7912cd.png)
+![](./backup-process.png)
 
 *TODO: Azure provides an automated backup functionality for Azure Postgres.
 Enable (and document) it.*
@@ -84,9 +84,10 @@ $ zcat infinite-prod.anon.gz | psql dbname
 
 ### Restoring backups (Docker)
 
-The official [postgres docker image]() is an ideal target to use for local
-development purposes. It includes functionality to trivially populate database
-by including exported data as part of the database initialization.
+The official [postgres docker image](https://hub.docker.com/_/postgres) is an
+ideal target to use for local development purposes. It includes functionality
+to trivially populate database by including exported data as part of the
+database initialization.
 
 These commands will start a docker container with a database populated from the
 backup.  The database name, user, and password are specified as environment
@@ -141,7 +142,7 @@ There are three distinct backup files that are created as part of this process.
 
 On the host, 10 days of backups are retained. This is controlled by the
 `NUM_BACKUPS` variable passed to the backup script in the systemd unit file
-[infinite-db-backup.service](). 
+[infinite-db-backup.service](../ansible/db-backup/templates/infinite-db-backup.service.j2). 
 
 In S3, 45 non-current versions of every backup are retained; non-current
 versions older than this are deleted. This is controlled via a lifecycle policy
