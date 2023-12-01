@@ -39,17 +39,33 @@ Enable (and document) it.*
 
 ## About the database
 
-The database is Postgres. A schema exists for each environment, like
-*infinite-prod* or *infinite-staging*.  A single role (user) is defined which
-owns and has full access to all the tables in the schema. This user is used for
-all operations against the database. 
+The database is **Azure Database for PostgreSQL Single Server**. The instance
+is shared by both staging and production environments. A schema exists for each
+environment, like *infinite-prod* or *infinite-staging*.  A single role (user)
+is defined for each environment which owns and has full access to all the
+tables in the schema. This user is used for all operations against the
+database. 
 
 The database schema is created and managed by the Infinite Industries API
 server.
 
+## Creating a backup
+
+**Using ansible**:
+```
+$ cd ansible
+$ just backup
+```
+
+**From the host**:
+```
+$ sudo systemctl start infinite-db-backup
+```
+
 ## Using the backups
 
-*Note: the examples in this section use the anonymized backups.*
+*Note: the examples in this section refer to the production the anonymized
+backups, `infinite-prod.anin.gz`.*
 
 ### Retrieving backups (ssh)
 
@@ -127,7 +143,7 @@ There are three distinct backup files that are created as part of this process.
    information (see the *--no-owner* flag) and GRANT/REVOKE info (see the
    *--no-acl* flag) to maximize portability. This can be used with
    [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html) or
-   [psql(https://www.postgresql.org/docs/current/app-psql.html). 
+   [psql](https://www.postgresql.org/docs/current/app-psql.html). 
 
 2. `infinite-prod.anon.gz`. This is a (compressed) plain-text SQL format dump
    where all email addresses have been anonymized to nobody@example.com. **This
@@ -137,6 +153,19 @@ There are three distinct backup files that are created as part of this process.
    [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) in
    Postgres custom archive format. It is potentially useful for legacy purposes
    or full database restores.
+
+### Configuration and Deployment 
+
+There is an ansible role, [db-backups](../ansible/db-backup), that is used to
+deploy the backup process and to perform backups on-demand. Whenever services
+are deployed using ansible, a backup is performed by default.
+
+The role defines two tags which can be used to control usage.
+1. `backup-setup` - deploys everything required to perform backups to the host.
+   Config files, image, etc.
+1. `backup` - trigger a backup.
+
+In the sections below, links are made to files that are part part of this role.
 
 ### Backup Retention
 
@@ -150,9 +179,10 @@ on the S3 bucket.
 
 ### The `backup` script
 
-Primary orchestration of the process is a single shell script, [backup](),
-installed in `~/bin/backup`. It runs on the host, but additionally relies on
-the tools that are installed in the *ops* Docker image.
+Primary orchestration of the process is a single shell script,
+[backup](../ops/ctx/backup), installed in `~/bin/backup`. It runs on the host,
+but additionally relies on the tools that are installed in the *ops* Docker
+image.
 
 ### The `ops` docker image
 
@@ -161,11 +191,11 @@ and AWS CLI) that were not readily available on the host. Additionally:
 packages on the host are not actively managed and the service environment is
 based on docker-compose.
 
-The [ops](/path/to/Dockerfile) image was created to address this need. 
+The [ops](../ops/Dockerfile) image was created to address this need. 
 
 * It includes requsite packages and the [backup] orchestration script.
 * Standard postgres and AWS variables are expected by the script.
-* Credentials are managed as part of the docker-compose environment - [ops.env]().
+* Credentials are managed as part of the docker-compose environment - [ops.env](../ansible/db-backup/templates/ops.env.j2).
 * It executes with a bind mounted directory containing backups- `/home/infinite/backups`.
 
 ### Systemd integration
@@ -185,18 +215,17 @@ more easily than using cron: both scheduled and on-demand execution are able to
 use the same mechanism and no additional management techniques need to be
 introduced.
 
-The schedule for execution is defined in [infinite-db-backup.timer]().
+The schedule for execution is defined in
+[infinite-db-backup.timer](../ansible/db-backup/files/infinite-db-backup.timer).
 
 ### Deployment integration
 
-There is an ansible role, [db-backups](), that is used to deploy the backup
-process and to perform backups on-demand. Whenever services are deployed using
-ansible, a backup is performed by default.
+TODO: this config needs to be addressed... current config only configures the
+backup: it doesn't **perform** one.
 
-**Performing a backup with ansible**
-```
-$ just backup
-```
+The primary ansible playbook
+[deploy_site_playbook](ansible/deploy_site_playbook.yml) includes the
+`db-backup` role.  Actions are limited to the `backup-setup` tag.  
 
 ### AWS (S3) configuration
 
