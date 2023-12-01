@@ -2,6 +2,7 @@
 
 * [Overview](#overview)
 * [About the database](#about-the-database)
+* [Creating a backup](#creating-a-backup)
 * [Using the backups](#using-the-backups)
   * [Retrieving backups (ssh)](#retrieving-backups-ssh)
   * [Retrieving backups (S3)](#retrieving-backups-s3)
