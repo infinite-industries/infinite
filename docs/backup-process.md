@@ -35,9 +35,6 @@ uploaded to S3.  The examples below refer to the production database
 
 ![](./backup-process.png)
 
-*TODO: Azure provides an automated backup functionality for Azure Postgres.
-Enable (and document) it.*
-
 ## About the database
 
 The database is **Azure Database for PostgreSQL Single Server**. The instance
@@ -221,9 +218,6 @@ The schedule for execution is defined in
 
 ### Deployment integration
 
-TODO: this config needs to be addressed... current config only configures the
-backup: it doesn't **perform** one.
-
 The primary ansible playbook
 [deploy_site_playbook](ansible/deploy_site_playbook.yml) includes the
 `db-backup` role.  Actions are limited to the `backup-setup` tag.  
@@ -259,7 +253,16 @@ account is used by production and staging systems to perform backups.
 
 A second dedicated IAM user, `s3-backup-ro` exists to support read-only access
 to backups. When Github organization (team) members instantiate Codespaces
-environments, credentials for this user are suppplied to the environment. TODO:
-create a new IAM user for this purpose called `github-codespaces` and remove
-the user `s3-backup-ro`.
+environments, credentials for this user are suppplied to the environment. 
+
+### Future Work
+
+- Azure provides an automated backup functionality for Azure Postgres. Enable (and document) it.
+
+- The deployment configuration needs to be addressed: currently, it only
+  configures the backup: it doesn't **perform** one.
+
+- The read-only IAM account used to read backups should be renamed from
+  's3-backup-ro' to 'github-codespaces' to indicate the environment which uses
+  the account.
 
