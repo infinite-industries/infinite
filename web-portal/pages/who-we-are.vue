@@ -109,16 +109,15 @@
         <p> About Art </p>
       </li>
     </ul> -->
-
     <h2>Thank you! Thank you! Thank you!</h2>
 
     <p>
-      Shout out to all the folks who have made this happen by offering their time and advice: Brian Frye, Arthur Shechet, Eugene Lukin, Jill Schinberg, Evan Heaton, Nettie Tesmer, Jourdan Rahschulte, Michael Brewster, Reva Russell English, Armando Diaz, Richie Hoagland, Ming Ying Hong, Drura Parrish, Tiffany Palumbo, Roxanne Coburn, Nicole Rademacher.
+      Shout out to all the folks who have made this happen by offering their time and advice: Brian Frye, Arthur Shechet, Eugene Lukin, Jill Schinberg, Evan Heaton, Nettie Tesmer, Jourdan Rahschulte, Michael Brewster, Reva Russell English, Kasey Hall, Armando Diaz, Richie Hoagland, Ming Ying Hong, Drura Parrish, Tiffany Palumbo, Roxanne Coburn, Nicole Rademacher.
 
       Apologies if we have forgotten anyone. Any omission is simply a function of cluttered minds and short deadlines.
     </p>
     <p>
-      Giant thanks to Kasey Hall for marketing and promo work and <a href="https://www.visitlex.com/" target="_new">VisitLex</a> for helping us out with the publicity grant.
+      Giant thanks to huskKY Fund for their continued support and to <a href="https://www.visitlex.com/" target="_new">VisitLex</a> for helping us out with the publicity grant.
     </p>
     <p>
       We would also like to thank Microsoft for the server space and Google for email and other digital nourishment.
