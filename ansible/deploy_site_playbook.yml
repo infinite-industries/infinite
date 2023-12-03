@@ -3,7 +3,7 @@
 -
   hosts: all
   roles:
-    - role: db-backup
+    - db-backup
   tasks:
     ####
     # Setup the docker containers & docker-compose based environment
