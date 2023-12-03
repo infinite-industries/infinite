@@ -18,6 +18,7 @@
   * [Deployment integration](#deployment-integration)
   * [AWS (S3) configuration](#aws-s3-configuration)
   * [AWS (IAM) configuration](#aws-iam-configuration)
+* [Future Work](#future-work)
 
 ## Overview
 Every night, a backup of the database is created on the host and copies are
@@ -220,7 +221,7 @@ The schedule for execution is defined in
 
 The primary ansible playbook
 [deploy_site_playbook](ansible/deploy_site_playbook.yml) includes the
-`db-backup` role.  Actions are limited to the `backup-setup` tag.  
+`db-backup` role in order to setup and execute database backups.
 
 ### AWS (S3) configuration
 
@@ -255,14 +256,11 @@ A second dedicated IAM user, `s3-backup-ro` exists to support read-only access
 to backups. When Github organization (team) members instantiate Codespaces
 environments, credentials for this user are suppplied to the environment. 
 
-### Future Work
+## Future Work
 
-- Azure provides an automated backup functionality for Azure Postgres. Enable (and document) it.
-
-- The deployment configuration needs to be addressed: currently, it only
-  configures the backup: it doesn't **perform** one.
+- Azure provides an automated backup functionality for Azure Postgres. Enable
+  (and document) it.
 
 - The read-only IAM account used to read backups should be renamed from
   's3-backup-ro' to 'github-codespaces' to indicate the environment which uses
   the account.
-
