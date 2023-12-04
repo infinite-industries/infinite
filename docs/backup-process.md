@@ -262,5 +262,5 @@ environments, credentials for this user are suppplied to the environment.
   (and document) it.
 
 - The read-only IAM account used to read backups should be renamed from
-  's3-backup-ro' to 'github-codespaces' to indicate the environment which uses
+  `s3-backup-ro` to `github-codespaces` to indicate the environment which uses
   the account.
