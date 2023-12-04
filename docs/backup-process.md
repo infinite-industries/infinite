@@ -64,7 +64,7 @@ $ sudo systemctl start infinite-db-backup
 ## Using the backups
 
 *Note: the examples in this section refer to the production the anonymized
-backups, `infinite-prod.anin.gz`.*
+backups, `infinite-prod.anon.gz`.*
 
 ### Retrieving backups (ssh)
 
