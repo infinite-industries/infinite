@@ -169,8 +169,8 @@ In the sections below, links are made to files that are part of this role.
 ### Backup Retention
 
 On the host, 10 days of backups are retained. This is controlled by the
-`NUM_BACKUPS` variable passed to the backup script in the systemd unit file
-[infinite-db-backup.service](../ansible/db-backup/templates/infinite-db-backup.service.j2). 
+`NUM_BACKUPS` variable and set along with others in
+[ops.env](../ansible/db-backup/templates/ops.env.j2).
 
 In S3, 45 non-current versions of every backup are retained; non-current
 versions older than this are deleted. This is controlled via a lifecycle policy
