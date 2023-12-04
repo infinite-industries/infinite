@@ -164,7 +164,7 @@ The role defines two tags which can be used to control usage.
    Config files, image, etc.
 1. `backup` - trigger a backup.
 
-In the sections below, links are made to files that are part part of this role.
+In the sections below, links are made to files that are part of this role.
 
 ### Backup Retention
 
