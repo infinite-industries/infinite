@@ -11,6 +11,7 @@ backup_aws_default_region: us-west-2
 backup_aws_s3_bucket: infinite-industries-backups
 backup_aws_access_key_id: akia
 backup_aws_secret_access_key: secret
+backup_checkin_url: ''
 
 images_aws_region: us-west-2
 images_aws_s3_bucket: infinite-industries-backups

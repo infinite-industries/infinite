@@ -18,6 +18,7 @@
   * [Deployment integration](#deployment-integration)
   * [AWS (S3) configuration](#aws-s3-configuration)
   * [AWS (IAM) configuration](#aws-iam-configuration)
+  * [Backup Monitoring](#backup-monitoring)
 * [Future Work](#future-work)
 
 ## Overview
@@ -255,6 +256,14 @@ account is used by production and staging systems to perform backups.
 A second dedicated IAM user, `s3-backup-ro` exists to support read-only access
 to backups. When Github organization (team) members instantiate Codespaces
 environments, credentials for this user are suppplied to the environment. 
+
+### Backup Monitoring
+
+Successful execution of the backup process submits a check-in to Honeybadger-
+this ensures that a backup was created successfully.
+
+The URL is supplied as the environment variable `CHECKIN_URL` and set in
+[ops.env](../ansible/db-backup/templates/ops.env.j2).
 
 ## Future Work
 

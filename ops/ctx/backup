@@ -14,6 +14,9 @@ TS=$(date -u +%Y-%m-%dT%H:%M:%S)
 # number of days of backup retention
 NUM_DAYS=${NUM_DAYS:=10}
 
+#  URL for a check-in / cron-monitoring service. empty => no checkin
+CHECKIN_URL=${CHECKIN_URL:=""}
+
 #
 # MAIN SCRIPT 
 #
@@ -46,3 +49,8 @@ aws s3 cp ${BACKUP_DIR}/${PGDATABASE}.anon.gz s3://${S3_BUCKET}/${S3_PATH}/ >/de
 
 # delete files older than NUM_DAYS old
 find ${BACKUP_DIR} -type f -mtime +${NUM_DAYS} -name "${PGDATABASE}*" -exec rm {} \;
+
+# cron monitoring: check in upon successful run
+if [ -n "${CHECKIN_URL}" ]; then
+  curl --output /dev/null --silent ${CHECKIN_URL} || true
+fi
