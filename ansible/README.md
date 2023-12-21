@@ -5,19 +5,21 @@ This is a trimmed down version of the rats ansible meant for quick experimentati
 Table of Contents
 =================
 
- * [Requirements](#requirements)
- * [Before Running](#before-running)
- * [Running](#running)
-    * [Using just](#using-just)
-    * [Common Task: Site Status](#common-task-site-status)
-    * [Common Task: Restart Services](#common-task-restart-services)
-    * [Common Task: Site Deployment](#common-task-site-deployment)
-    * [Common Task: Make a DB Backup](#common-task-make-a-db-backup)
-    * [Task: First Time Setup](#task-first-time-setup)
-    * [Task: Updating secret information](#task-updating-secret-information)
-    * [Task: Adding Domains to TLS certs](#task-adding-domains-to-tls-certs)
-    * [Task: Manually updating certs](#task-manually-updating-certs)
-
+* [Requirements](#requirements)
+* [Before Running](#before-running)
+* [Running](#running)
+  * [Using just](#using-just)
+  * [Common Task: Site Status](#common-task-site-status)
+  * [Common Task: Restart Services](#common-task-restart-services)
+  * [Common Task: Site Deployment](#common-task-site-deployment)
+  * [Common Task: Make a DB Backup](#common-task-make-a-db-backup)
+  * [Task: Rotate ansible\-vault Passphrase](#task-rotate-ansible-vault-passphrase)
+  * [Task: Deploy Images from Alternative Branches](#task-deploy-images-from-alternative-branches)
+  * [Task: First Time Setup](#task-first-time-setup)
+  * [Task: Updating secret information](#task-updating-secret-information)
+  * [Task: Adding Domains to TLS certs](#task-adding-domains-to-tls-certs)
+  * [Task: Manually updating certs](#task-manually-updating-certs)
+  * [Task: Only Setup / Perform Backups](#task-only-setup--perform-backups)
 
 ## Requirements
 
@@ -194,7 +196,7 @@ off when not in use*
 $ sudo certbot renew
 ```
 
-### Task: Just Setup / Perform Backups
+### Task: Only Setup / Perform Backups
 
 This command uses ansible to run a "single" task: including the backup role to setup & perform a backup.
 
