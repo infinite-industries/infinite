@@ -193,5 +193,13 @@ off when not in use*
 ```console
 $ sudo certbot renew
 ```
+
+### Task: Just Setup / Perform Backups
+
+This command uses ansible to run a "single" task: including the backup role to setup & perform a backup.
+
+```console
+$ ansible --playbook-dir . -m include_role -a name=db-backup -e image_version=add-backup-monitor staging
+```
 TODOS (Jason):
 * Add SSH key management for users.
