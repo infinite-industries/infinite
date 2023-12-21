@@ -127,6 +127,18 @@ $ cd group_vars/staging
 $ ansible-vault view secrets
 ```
 
+### Task: Deploy Images from Alternative Branches
+
+As work happens in feature branches, it is sometimes desirable to deploy
+container images from those branches.  This can be done by overriding the
+`image_version` variable when running ansible.
+
+For instance, to deploy from a feature-branch into staging:
+
+```console
+$ ansible-playbook -l staging -e image_version=my_feature_branch deploy_site_playbook.yml
+```
+
 ### Task: First Time Setup
 
 **These steps only needs to happen once**
