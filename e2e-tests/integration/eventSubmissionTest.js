@@ -68,6 +68,8 @@ context('Event Submission', () => {
     // preview submission
     cy.get('.submit-container button').click()
     cy.get('.event-preview').should('exist')
+    // NOTE: preview is tabbed on smaller screens; this only works because Cypress
+    // still sees the content in the DOM, even though it isn't visible
     cy.get('.event .event-heading h1').contains(TEMP_EVENT_NAME).should('exist')
     cy.get('.infinite-card h3').contains(TEMP_EVENT_NAME).should('exist')
     // check that venue field contains something
