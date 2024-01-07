@@ -11,7 +11,7 @@ None
 Role Variables
 --------------
 
-The following variables, already used by other parts of the ansible deployemnt, are required:
+The following variables, already used by other parts of the ansible deployment, are required:
 
 ```
 # defaults file for db-backup

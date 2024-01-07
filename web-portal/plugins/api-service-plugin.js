@@ -36,6 +36,14 @@ class ApiService {
   all(calls) {
     return axios.all(calls)
   }
+
+  uploadEventImage(file) {
+    const data = new FormData()
+    data.append('type', 'event')
+    data.append('file', file)
+
+    return this.post('/uploads/event-image', data)
+  }
 }
 
 function formatToken(idToken) {

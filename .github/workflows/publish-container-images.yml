@@ -15,14 +15,14 @@ env:
   REGISTRY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  publish-ops-server:
+  publish-ops:
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash
-        working-directory: ops-server
+        working-directory: ops
     env:
-      IMAGE_NAME: infinite-industries/ops-server
+      IMAGE_NAME: infinite-industries/ops
     steps:
       - name: checkout branch
         uses: actions/checkout@v3

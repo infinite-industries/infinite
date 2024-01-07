@@ -31,9 +31,10 @@ publish alt_tag=image_tag: _login
   docker logout {{registry}}
 
 # retrieve latest database backup
-fetchdb file="sanitized-infinite-prod.latest":
+fetchdb file="infinite-prod.anon.gz":
   aws s3 cp s3://infinite-industries-backups/db/{{ file }} .
 
 # populate database
-populatedb file="sanitized-infinite-prod.latest": fetchdb 
+populatedb file="infinite-prod.anon.gz": fetchdb 
+  gunzip {{file}} 
   PGPASSWORD=$PGPASSWORD pg_restore --clean --no-privileges --no-owner -v -d $PGDATABASE {{ file }}  
