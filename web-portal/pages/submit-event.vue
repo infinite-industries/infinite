@@ -17,8 +17,8 @@
             <div class="preview-message">
               <p>Please review the information for your event</p>
               <div class="preview-controls">
-                <button class="ii-button" @click="submitEventForReal">SUBMIT FOR REVIEW</button>
-                <button class="ii-button secondary-button" @click="changeTheEvent">BACK TO EDITING</button>
+                <button class="ii-button" @click="submitEventForReal">Submit for Review</button>
+                <button class="ii-button secondary-button" @click="changeTheEvent">Back to Editing</button>
               </div>
             </div>
           </template>
@@ -222,7 +222,27 @@
   }
 
   .preview-controls {
-    margin-left: 100px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    background-color: black;
+  }
+
+  .preview-controls .ii-button {
+    min-width: 250px;
+    border-radius: 10px;
+  }
+
+  @media only screen and (min-width: 640px) {
+    .preview-controls {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
   }
 
   .centered-header {
