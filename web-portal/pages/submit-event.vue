@@ -65,15 +65,6 @@
               >
                 Back To Form
               </button>
-
-<!--              <div>
-                <v-btn
-                  color="green"
-                  :flat="false"
-                  depressed
-                  @click="handleErrorDismissed()"
-                >Back To Form</v-btn>
-              </div>-->
             </div>
           </template>
 
