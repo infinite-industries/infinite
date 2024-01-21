@@ -15,8 +15,8 @@ import { UploadsResponse } from './dto/UploadsResponse';
 import { UploadsService } from './uploads.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
-
-const TEN_MEGABYTES = 10000000;
+import EventImageMaxFileSizeValidator from './validators/EventImageMaxFileSizeValidator';
+import EventImageFileTypeValidator from './validators/EventImageFileTypeValidator';
 
 @Controller(`${VERSION_1_URI}/uploads`)
 @ApiTags('uploads')
@@ -45,13 +45,10 @@ export class UploadsController {
 
 function getImageUploadValidators(): ParseFilePipe {
   return new ParseFilePipeBuilder()
-    .addFileTypeValidator({
-      fileType: /image\/.*$/i,
-    })
-    .addMaxSizeValidator({
-      maxSize: TEN_MEGABYTES,
-    })
+    .addValidator(new EventImageFileTypeValidator())
+    .addValidator(new EventImageMaxFileSizeValidator())
     .build({
       errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      fileIsRequired: true,
     });
 }
