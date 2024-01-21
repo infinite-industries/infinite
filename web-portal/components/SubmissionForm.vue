@@ -507,7 +507,7 @@
           this.showEventLoadingSpinner = false
           this.$emit('submitted')
         }).catch((error) => {
-          console.error(`error uploading image: ${error}`)
+          console.error('error uploading image:', error)
 
           this.showEventLoadingSpinner = false
           this.eventSubmitted = false
