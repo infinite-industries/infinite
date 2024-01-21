@@ -55,8 +55,8 @@
               </p>
 
               <p class="infinite-submission-form__report-problem-message">
-                Please ping the management at or go back and try again
-                <a href="mailto:info@infinite.industries">info@infinite.industries</a>.
+                Please ping the management at <a href="mailto:info@infinite.industries">info@infinite.industries</a> or
+                go back and try again.
               </p>
 
               <button
