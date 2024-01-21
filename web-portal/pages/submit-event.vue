@@ -45,10 +45,27 @@
             <h1 class="centered-header">
               Hmmm... something went wrong :(
             </h1>
-            <p style="text-align: center">
-              Please ping the management at
-              <a href="mailto:info@infinite.industries">info@infinite.industries</a>.
-            </p>
+
+            <div class="infinite-submission-form__error-info-section">
+              <p
+                class="infinite-submission-form__error-message"
+                v-if="submissionErrorMessage !== null"
+              >
+                {{submissionErrorMessage}}
+              </p>
+
+              <p class="infinite-submission-form__report-problem-message">
+                Please ping the management at <a href="mailto:info@infinite.industries">info@infinite.industries</a> or
+                go back and try again.
+              </p>
+
+              <button
+                class="ii-button"
+                @click="handleErrorDismissed()"
+              >
+                Back To Form
+              </button>
+            </div>
           </template>
 
         </div>
@@ -68,7 +85,7 @@
           ref="form"
           @preview="onPreview"
           @submitted="mode = 'success'"
-          @error="mode = 'error'"
+          @error="handleSubmissionError"
         />
         <submission-preview
           v-if="mode == 'preview'"
@@ -96,7 +113,8 @@
       return {
         mode: 'edit',
         previewEvent: null,
-        partner: null
+        partner: null,
+        submissionErrorMessage: null
       }
     },
     asyncData: function ({ query }) {
@@ -166,6 +184,23 @@
           // eslint-disable-next-line no-return-assign
           return event.returnValue = 'You have unsaved changes. Sure?'
         }
+      },
+      handleSubmissionError: function({ error }) {
+        this.mode = 'error'
+
+        const errorResp = error?.response
+
+        if (
+          errorResp !== null &&
+          errorResp !== undefined &&
+          !!errorResp?.data?.message
+        ) {
+          this.submissionErrorMessage = errorResp.data.message
+        }
+      },
+      handleErrorDismissed: function() {
+        this.submissionErrorMessage = null
+        this.mode = 'edit'
       }
     },
     components: {
@@ -264,5 +299,13 @@
     display: block;
     margin: 35px auto 0;
     height: 150px;
+  }
+
+  .infinite-submission-form__error-info-section {
+    text-align: center;
+  }
+
+  .infinite-submission-form__error-message {
+    color: red;
   }
 </style>

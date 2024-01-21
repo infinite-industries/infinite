@@ -332,7 +332,7 @@
       <!-- CONFIRM EVENT DELETION -->
       <v-dialog v-model="dialog" persistent max-width="300">
         <v-card>
-          <v-card-title class="headline">U shure you wanna delete the event?</v-card-title>
+          <v-card-title class="headline">U sure you wanna delete the event?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" flat="flat" @click.native="dialog = false">Cancel</v-btn>
@@ -507,11 +507,12 @@
           this.showEventLoadingSpinner = false
           this.$emit('submitted')
         }).catch((error) => {
-          console.log(error)
+          console.error('error uploading image:', error)
+
           this.showEventLoadingSpinner = false
           this.eventSubmitted = false
 
-          this.$emit('error')
+          this.$emit('error', { error })
         })
       },
       selectVenue: function (venue) {
