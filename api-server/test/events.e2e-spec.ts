@@ -70,10 +70,13 @@ describe('Events API', () => {
     return Promise.resolve();
   });
 
-  afterAll(
-    async () => afterAllStackShutdown(appUnderTest, dbContainer, testingModule),
-    30000,
-  );
+  afterAll(async () => {
+    return await afterAllStackShutdown(
+      appUnderTest,
+      dbContainer,
+      testingModule,
+    );
+  }, 30000);
 
   it('/verified should be able to return the first page using defaults', async () => {
     const givenTotalNumEvents = 40;
@@ -170,7 +173,7 @@ describe('Events API', () => {
 
     await createListOfFutureEventsInChronologicalOrder(20, { verified: false });
 
-    return server
+    return await server
       .get(
         `/${CURRENT_VERSION_URI}/events/verified?page=1&pageSize=${givenTotalNumEvents}`,
       )
@@ -537,6 +540,21 @@ describe('Events API', () => {
       expect(firstStartTime).not.toBeUndefined();
 
       if (ndx > 0) {
+        if (
+          new Date(lastFirstStartTime).getTime() <=
+          new Date(firstStartTime).getTime()
+        ) {
+          console.log(
+            '!!! going to fail: ' +
+              lastFirstStartTime +
+              ' <= ' +
+              firstStartTime,
+          );
+          console.log('!!! event failing: ' + event.title);
+
+          console.log('!!! all event: ' + JSON.stringify(events, null, 4));
+        }
+
         // check that first start time is greater than the last first start time
         expect(new Date(lastFirstStartTime).getTime()).toBeGreaterThan(
           new Date(firstStartTime).getTime(),

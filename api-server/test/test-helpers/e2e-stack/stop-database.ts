@@ -5,7 +5,7 @@ async function stopDatabase(
   dbContainer: StartedTestContainer,
 ): Promise<StoppedTestContainer | void> {
   if (isNotNullOrUndefined(dbContainer)) {
-    return dbContainer.stop();
+    return await dbContainer.stop();
   } else {
     console.warn('stopDatabase passed a null');
     return Promise.resolve();
