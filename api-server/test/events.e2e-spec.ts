@@ -161,10 +161,11 @@ describe('Events API', () => {
       });
   });
 
-  it('verified by any other name', async () => {
-    const allVerifiedEvents = await givenSpecialCaseEvents();
+  // this covers a specific bug we ran into https://github.com/infinite-industries/infinite/issues/469
+  it('/verified should maintain sort from oldest to newest after rejoining on events', async () => {
     const givenTotalNumEvents = 2;
-    const expectedPageSize = 40;
+
+    await givenSpecialCaseEvents();
 
     return server
       .get(
@@ -262,10 +263,11 @@ describe('Events API', () => {
       { verified: true },
     );
 
+    // null should sort to the front on descending sort
     const allVerifiedEvents = [
-      ...someVerifiedEventsWithDateTimes,
+      eventWithoutDateTime2, // the most recently created online resource will show first since created_at is secondary sort
       eventWithoutDateTime1,
-      eventWithoutDateTime2,
+      ...someVerifiedEventsWithDateTimes,
     ];
 
     return server
@@ -290,6 +292,14 @@ describe('Events API', () => {
         expect(pageSize).toEqual(20);
         expect(events.length).toEqual(allVerifiedEvents.length);
 
+        const expected = allVerifiedEvents.map((ve) => {
+          return { id: ve.id, title: ve.title };
+        });
+
+        const actaul = events.map((e) => {
+          return { id: e.id, title: e.title, date_times: e.date_times };
+        });
+
         for (let i = 0; i < numEventsWithDateTimes; i++) {
           const paginatedEventReturned = events[i];
           const expectedEvent = allVerifiedEvents[i];
@@ -297,9 +307,9 @@ describe('Events API', () => {
           assertEventsEqual(paginatedEventReturned, expectedEvent);
         }
 
-        // last 2 entries should have no date_times
-        expect(events[3].date_times).toEqual([]);
-        expect(events[4].date_times).toEqual([]);
+        // first 2 entries should have no date_times
+        expect(events[0].date_times).toEqual([]);
+        expect(events[1].date_times).toEqual([]);
       });
   });
 
@@ -614,7 +624,7 @@ describe('Events API', () => {
       image: 'http://amiya.com',
       links: [],
       organizer_contact: 'Gay66@hotmail.com',
-      reviewed_by_org: false,
+      reviewed_by_org: 'some-org-1',
       slug: 'quibusdam-architecto-eos',
       social_image: 'https://kelsi.net',
       tags: [],
@@ -673,7 +683,7 @@ describe('Events API', () => {
       image: 'http://brody.name',
       links: [],
       organizer_contact: 'Rodrigo37@hotmail.com',
-      reviewed_by_org: false,
+      reviewed_by_org: 'somoe-other-org',
       slug: 'vero-exercitationem-velit',
       social_image: 'https://lauriane.biz',
       tags: [],

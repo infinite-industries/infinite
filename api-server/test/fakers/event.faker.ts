@@ -45,7 +45,7 @@ export function generateEvent(
     eventbrite_link: faker.internet.url(),
     bitly_link: faker.internet.url(),
     tags: [],
-    reviewed_by_org: faker.boolean(),
+    reviewed_by_org: faker.company.companyName(),
     category: faker.lorem.word(),
     mode: faker.lorem.word(),
     condition: generateList(() => faker.lorem.word(), 0, 10),
