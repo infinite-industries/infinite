@@ -1,4 +1,4 @@
-FROM node:gallium
+FROM node:iron
 
 ADD ./ /api-server
 WORKDIR /api-server

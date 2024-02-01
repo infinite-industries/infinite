@@ -1,4 +1,4 @@
-FROM node:gallium
+FROM node:iron
 
 ADD containers/web-portal.test.docker-scripts /scripts
 RUN chmod +x /scripts/*

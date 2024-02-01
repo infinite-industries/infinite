@@ -12,8 +12,8 @@ Front-end web application for [Infinite Industries](https://infinite.industries)
 
 You will need the following tools:
 
-- [Node.js](https://nodejs.org/en/): 16.x.x or higher
-- [npm](https://www.npmjs.com/get-npm): 8.x.x or higher
+- [Node.js](https://nodejs.org/en/): 20.x.x
+- [npm](https://www.npmjs.com/get-npm): 10.x.x
 
 ### Recommended
 
