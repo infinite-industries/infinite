@@ -37,6 +37,7 @@ import {
   EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
   PaginationDto,
 } from './dto/pagination-dto';
+import ExistingEventDetectionParameters from './dto/existing-event-detection-parameters';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -156,6 +157,14 @@ export class EventsController {
         });
       });
   }
+
+  @Post('/detect-existing')
+  @ApiOperation({
+    summary: 'Determine if someone may have already submitted an event before',
+  })
+  async detectExistingEvents(
+    @Body() eventSearchParameters: ExistingEventDetectionParameters,
+  ) {}
 
   @Get('/:id')
   @ApiOperation({ summary: 'Get single event by id' })
