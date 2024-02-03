@@ -1,15 +1,6 @@
 import moment from 'moment';
 import { Op, literal } from 'sequelize';
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventModel } from './models/event.model';
 import { Inject, LoggerService } from '@nestjs/common';
@@ -37,7 +28,6 @@ import {
   EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
   PaginationDto,
 } from './dto/pagination-dto';
-import ExistingEventDetectionParameters from './dto/existing-event-detection-parameters';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -157,14 +147,6 @@ export class EventsController {
         });
       });
   }
-
-  @Post('/detect-existing')
-  @ApiOperation({
-    summary: 'Determine if someone may have already submitted an event before',
-  })
-  async detectExistingEvents(
-    @Body() eventSearchParameters: ExistingEventDetectionParameters,
-  ) {}
 
   @Get('/:id')
   @ApiOperation({ summary: 'Get single event by id' })

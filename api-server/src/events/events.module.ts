@@ -9,6 +9,8 @@ import { NotificationsModule } from '../notifications/notifications.module';
 import { DatetimeVenueModel } from './models/datetime-venue.model';
 import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
 import { VenueModel } from '../venues/models/venue.model';
+import ExistingEventDetectionService from './existing-event-detection-service';
+import { ExistingEventDetectionController } from './existing-event-detection-controller';
 
 @Module({
   imports: [
@@ -20,7 +22,11 @@ import { VenueModel } from '../venues/models/venue.model';
     ]),
     NotificationsModule,
   ],
-  controllers: [EventsAuthenticatedController, EventsController],
-  providers: [EventsService, BitlyService],
+  controllers: [
+    ExistingEventDetectionController,
+    EventsAuthenticatedController,
+    EventsController,
+  ],
+  providers: [EventsService, BitlyService, ExistingEventDetectionService],
 })
 export class EventsModule {}

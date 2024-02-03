@@ -1,7 +1,3 @@
-import startDatabase from './test-helpers/e2e-stack/start-database';
-import runMigrations from './test-helpers/e2e-stack/run-migrations';
-import startApplication from './test-helpers/e2e-stack/start-application';
-import buildDbConnectionsForTests from './test-helpers/e2e-stack/build-db-connection-for-tests';
 import request from 'supertest';
 import { PORT } from '../src/constants';
 import { ChildProcessWithoutNullStreams } from 'child_process';
@@ -23,6 +19,8 @@ import EventDTO from '../src/events/dto/eventDTO';
 import { Nullable } from '../src/utils/NullableOrUndefinable';
 import faker from 'faker';
 import { assertEventsEqual } from './test-helpers/assert-events';
+import bringUpStackAndEstablishDbEntities from './test-helpers/bring-up-stack-and-establish-db-entities';
+import clearDatabaseEntries from './test-helpers/clear-database-entries';
 
 describe('Events API', () => {
   const server = request('http://localhost:' + PORT);
@@ -40,34 +38,29 @@ describe('Events API', () => {
   beforeAll(async () => {
     console.info('preparing Events API test suite');
 
-    const dbInfo = await startDatabase();
+    ({
+      appUnderTest,
+      dbContainer,
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      testingModule,
+      dbHostPort,
+    } = await bringUpStackAndEstablishDbEntities());
 
-    dbContainer = dbInfo.dbContainer;
-    dbHostPort = dbInfo.dbHostPort;
-
-    await runMigrations(dbHostPort);
-
-    appUnderTest = await startApplication(dbHostPort);
-
-    const databaseModels = await buildDbConnectionsForTests(dbHostPort);
-
-    eventModel = databaseModels.eventModel;
-    venueModel = databaseModels.venueModel;
-    datetimeVenueModel = databaseModels.datetimeVenueModel;
-
-    testingModule = databaseModels.testingModule;
-
-    console.log('Events API test suite ready');
+    console.log(
+      `Events API test suite ready, db listing on port ${dbHostPort}`,
+    );
 
     return Promise.resolve();
   }, 30000);
 
   afterEach(async () => {
-    await datetimeVenueModel.destroy({ where: {} });
-    await eventModel.destroy({ where: {} });
-    await venueModel.destroy({ where: {} });
-
-    return Promise.resolve();
+    return await clearDatabaseEntries({
+      datetimeVenueModel,
+      eventModel,
+      venueModel,
+    });
   });
 
   afterAll(

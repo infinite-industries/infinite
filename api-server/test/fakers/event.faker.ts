@@ -61,11 +61,10 @@ export async function createRandomEventWithVenue(
   eventOverrides: EventModelConstructorProps = {},
   venueOverrides?: VenueModelConstructorProps,
 ): Promise<[EventModel, VenueModel]> {
-  const venue: Nullable<VenueModel> = await (isNotNullOrUndefined(
+  const venue: Nullable<VenueModel> = await generateVenue(
+    venueModelConstructor,
     venueOverrides,
-  )
-    ? generateVenue(venueModelConstructor, venueOverrides).save()
-    : Promise.resolve(null));
+  ).save();
 
   const event: EventModel = await generateEvent(
     eventModelConstructor,
@@ -192,6 +191,37 @@ export async function createEventInPast(
   const newStartTime = new Date(baseTime);
   newStartTime.setHours(baseTime.getHours() - offset);
   lastStartTime = newStartTime;
+
+  return [event, lastStartTime];
+}
+
+export async function createEventInFuture(
+  eventModel: typeof EventModel,
+  venueModel: typeof VenueModel,
+  datetimeVenueModel: typeof DatetimeVenueModel,
+  baseTime = new Date(),
+  overrides: EventModelConstructorProps = {},
+): Promise<[EventModel, Date]> {
+  const event = await createRandomEventWithDateTime(
+    eventModel,
+    venueModel,
+    datetimeVenueModel,
+    overrides,
+  );
+
+  let offset = 4;
+  let lastStartTime;
+
+  for (const dt of event.date_times) {
+    const newStartTime = new Date(baseTime);
+    newStartTime.setHours(baseTime.getHours() + offset);
+    offset++;
+    lastStartTime = newStartTime;
+
+    await dt.update({ start_time: newStartTime });
+  }
+
+  await event.reload();
 
   return [event, lastStartTime];
 }

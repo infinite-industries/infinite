@@ -3,6 +3,6 @@ export default class ExistingEventDetectionParameters {
 }
 
 export class TimeAndLocationSearchParameters {
-  venue_id: string;
-  start_time: Date;
+  venueId: string;
+  startTime: Date;
 }

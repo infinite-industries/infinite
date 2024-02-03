@@ -71,6 +71,17 @@ $ npm run test:cov
 local: http://localhost:3003/api/
 prod:  https://api.infinite.industries/api/
 
+## API Design Philosophy and Best Practices
+
+* While database models use snake for fields the API should generally use camel case.
+* Exceptions have been made for this where the data directly represents a database entity.
+  * This is not deal, we should not directly expose database model definitions via the api, but shortcuts
+    have been take.
+* Endpoints should be as self descriptive as possible. You should be able to read the url and have a good idea what
+  the endpoint does.
+* Endpoints that requires authentication should be grouped into .authenticated controllers to make them stand out, see
+  for example, the events.authenticated.controller.
+
 ## License
 
 MIT
