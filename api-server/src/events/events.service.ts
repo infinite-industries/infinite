@@ -89,6 +89,11 @@ export class EventsService {
       );
 
       // Sort events by the first start_time and apply pagination
+      // Note, we have to sort by first_start_time in our common table expression to apply pagination correctly, but we
+      // also have to sort again over our page in the final join with events, because the order after joining is not
+      // guaranteed to stay the same.
+      // We've also added a secondary order by on created_at to ensure that events with with not start_time like
+      // online resources at least sort consistently
       const paginatedRows: EventModel[] = await this.sequelize.query(
         `
               with compressed_event as (SELECT events.*, min(dv.start_time) as first_start_time
@@ -96,11 +101,12 @@ export class EventsService {
                                                  LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
                   ${whereClause}
               GROUP BY (events.id)
-              ORDER BY first_start_time DESC
+              ORDER BY first_start_time DESC, "createdAt" DESC
               OFFSET ${(requestedPage - 1) * pageSize} LIMIT ${pageSize} )
               SELECT events.*
               FROM compressed_event
                        JOIN events ON events.id = compressed_event.id
+                       ORDER BY compressed_event.first_start_time DESC, "createdAt" DESC
           `,
         {
           type: QueryTypes.SELECT,
@@ -345,8 +351,8 @@ export class EventsService {
 
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
-    const clauses = [tagClause, categoryClause, verifiedOnlyClause].filter((clause) =>
-      isNotNullOrUndefined(clause),
+    const clauses = [tagClause, categoryClause, verifiedOnlyClause].filter(
+      (clause) => isNotNullOrUndefined(clause),
     );
 
     if (clauses.length === 0) {

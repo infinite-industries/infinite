@@ -109,7 +109,7 @@ export class EventModel extends Model<EventModel> {
 
   @Column
   @ApiProperty({ example: 'radio-mc-radio-station' })
-  reviewed_by_org: boolean;
+  reviewed_by_org: string;
 
   @Column(DataType.ARRAY(DataType.STRING))
   @ApiProperty({
