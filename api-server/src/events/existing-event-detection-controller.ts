@@ -1,4 +1,11 @@
-import { Body, Controller, Inject, LoggerService, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Inject,
+  LoggerService,
+  Post,
+} from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import ExistingEventDetectionService from './existing-event-detection-service';
 import { VERSION_1_URI } from '../utils/versionts';
@@ -19,6 +26,7 @@ export class ExistingEventDetectionController {
   ) {}
 
   @Post('/by-time-and-location')
+  @HttpCode(200)
   @ApiOperation({
     summary:
       'Determine if someone may have already submitted an event before based on the start times and the venue',

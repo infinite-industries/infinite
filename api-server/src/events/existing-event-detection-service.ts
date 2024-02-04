@@ -39,6 +39,10 @@ export default class ExistingEventDetectionService {
   private async getPercentMatchingStartTimesAtSameVenue({
     timeAndLocations,
   }: ExistingEventDetectionParameters): Promise<[number, CandidateEvent[]]> {
+    console.log(
+      '!!! timeAndLocations: ',
+      JSON.stringify(timeAndLocations, null, 4),
+    );
     const numberOfTimesForPossibleNewEvent = timeAndLocations.length;
     let numberOfMatchingStartTimesAtSameVenue = 0;
     let candidateEventIds: string[] = [];
@@ -52,6 +56,7 @@ export default class ExistingEventDetectionService {
         where: { venue_id: venueId, start_time: startTime },
       });
 
+      console.log('!!! result: ' + JSON.stringify(result, null, 4));
       if (result.length > 0) {
         numberOfMatchingStartTimesAtSameVenue++;
 
