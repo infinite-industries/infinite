@@ -23,6 +23,8 @@ import EventDTO from '../src/events/dto/eventDTO';
 import { Nullable } from '../src/utils/NullableOrUndefinable';
 import faker from 'faker';
 import { assertEventsEqual } from './test-helpers/assert-events';
+import { v4 as uuidv4 } from 'uuid';
+import generateVenue from './fakers/venue.faker';
 
 describe('Events API', () => {
   const server = request('http://localhost:' + PORT);
@@ -159,6 +161,40 @@ describe('Events API', () => {
       });
   });
 
+  // this covers a specific bug we ran into https://github.com/infinite-industries/infinite/issues/469
+  it('/verified should maintain sort from oldest to newest after rejoining on events', async () => {
+    const givenTotalNumEvents = 2;
+
+    await givenSpecialCaseEvents();
+
+    return server
+      .get(
+        `/${CURRENT_VERSION_URI}/events/verified?page=1&pageSize=${givenTotalNumEvents}`,
+      )
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+        expect(totalPages).toEqual(1);
+        expect(nextPage).toBeUndefined();
+        expect(page).toEqual(1);
+        expect(pageSize).toEqual(2);
+        expect(events.length).toEqual(2);
+
+        assertOrderedByFirstStartTimeDescending(events);
+      });
+  });
+
   it('/verified exclude unverified events', async () => {
     const givenTotalNumEvents = 40;
     const expectedPageSize = 40;
@@ -227,10 +263,11 @@ describe('Events API', () => {
       { verified: true },
     );
 
+    // null should sort to the front on descending sort
     const allVerifiedEvents = [
-      ...someVerifiedEventsWithDateTimes,
+      eventWithoutDateTime2, // the most recently created online resource will show first since created_at is secondary sort
       eventWithoutDateTime1,
-      eventWithoutDateTime2,
+      ...someVerifiedEventsWithDateTimes,
     ];
 
     return server
@@ -255,6 +292,14 @@ describe('Events API', () => {
         expect(pageSize).toEqual(20);
         expect(events.length).toEqual(allVerifiedEvents.length);
 
+        const expected = allVerifiedEvents.map((ve) => {
+          return { id: ve.id, title: ve.title };
+        });
+
+        const actaul = events.map((e) => {
+          return { id: e.id, title: e.title, date_times: e.date_times };
+        });
+
         for (let i = 0; i < numEventsWithDateTimes; i++) {
           const paginatedEventReturned = events[i];
           const expectedEvent = allVerifiedEvents[i];
@@ -262,9 +307,9 @@ describe('Events API', () => {
           assertEventsEqual(paginatedEventReturned, expectedEvent);
         }
 
-        // last 2 entries should have no date_times
-        expect(events[3].date_times).toEqual([]);
-        expect(events[4].date_times).toEqual([]);
+        // first 2 entries should have no date_times
+        expect(events[0].date_times).toEqual([]);
+        expect(events[1].date_times).toEqual([]);
       });
   });
 
@@ -560,5 +605,118 @@ describe('Events API', () => {
       overrides,
       baseTime,
     );
+  }
+
+  async function givenSpecialCaseEvents(): Promise<EventModel[]> {
+    const venue1 = await generateVenue(VenueModel).save();
+    const venue2 = await generateVenue(VenueModel).save();
+    const venue3 = await generateVenue(VenueModel).save();
+
+    const event1 = await EventModel.create({
+      admission_fee: '750.00',
+      bitly_link: 'https://walker.biz',
+      brief_description: 'Et ut expedita harum nihil.',
+      createdAt: new Date('2024-01-21T18:21:44.516Z'),
+      description: 'Quos qui quo.',
+      eventbrite_link: 'http://vivienne.name',
+      fb_event_link: 'https://maiya.net',
+      id: '600405bb-b9f8-49bc-b62d-f2a16ec226e2',
+      image: 'http://amiya.com',
+      links: [],
+      organizer_contact: 'Gay66@hotmail.com',
+      reviewed_by_org: 'some-org-1',
+      slug: 'quibusdam-architecto-eos',
+      social_image: 'https://kelsi.net',
+      tags: [],
+      category: 'odio',
+      condition: [
+        'consequatur',
+        'quaerat',
+        'ipsam',
+        'officiis',
+        'perspiciatis',
+        'et',
+        'illum',
+        'voluptatem',
+        'dolorem',
+        'id',
+      ],
+      mode: 'voluptatem',
+      ticket_link: 'https://travon.net',
+      title: 'Stamm, Reilly and Schuster',
+      updatedAt: new Date('2024-01-21T18:21:44.516Z'),
+      venue_id: null,
+      verified: true,
+      website_link: 'http://novella.org',
+      multi_day: true,
+    });
+
+    await DatetimeVenueModel.create({
+      id: uuidv4(),
+      start_time: new Date('2024-01-20T02:21:44.196Z'),
+      end_time: new Date('2067-12-28T22:22:12.022Z'),
+      venue_id: venue1.id,
+      timezone: 'US/Eastern',
+      optional_title: 'numquam ut atque',
+      event_id: event1.id,
+    });
+
+    await DatetimeVenueModel.create({
+      id: uuidv4(),
+      start_time: new Date('2024-01-20T03:21:44.196Z'),
+      end_time: new Date('2026-04-11T02:11:56.139Z'),
+      venue_id: venue2.id,
+      timezone: 'US/Eastern',
+      optional_title: 'quis non consectetur',
+      event_id: event1.id,
+    });
+
+    const event2 = await EventModel.create({
+      admission_fee: '141.00',
+      bitly_link: 'https://dovie.info',
+      brief_description: 'Dolorem at et quia.',
+      createdAt: new Date('2024-01-21T18:21:44.196Z'),
+      description: 'Veritatis qui et ullam sint excepturi.',
+      eventbrite_link: 'http://georgianna.info',
+      fb_event_link: 'https://lacy.biz',
+      id: 'd06c5b70-5c4f-42c0-8afd-4bd306ad6f38',
+      image: 'http://brody.name',
+      links: [],
+      organizer_contact: 'Rodrigo37@hotmail.com',
+      reviewed_by_org: 'somoe-other-org',
+      slug: 'vero-exercitationem-velit',
+      social_image: 'https://lauriane.biz',
+      tags: [],
+      category: 'debitis',
+      condition: [
+        'vero',
+        'eligendi',
+        'perferendis',
+        'tempore',
+        'et',
+        'dolor',
+        'ratione',
+      ],
+      mode: 'aliquam',
+      ticket_link: 'http://aurelia.org',
+      title: 'Ferry, Rolfson and Cassin',
+      updatedAt: new Date('2024-01-21T18:21:44.196Z'),
+      venue_id: null,
+      verified: true,
+      website_link: 'https://leo.name',
+      multi_day: true,
+    });
+
+    await DatetimeVenueModel.create({
+      id: uuidv4(),
+      start_time: new Date('2024-01-21T18:21:44.196Z'),
+      end_time: new Date('2046-05-05T03:19:58.569Z'),
+      venue_id: venue3.id,
+      timezone: 'US/Eastern',
+      optional_title: 'ut enim in',
+      event_id: event2.id,
+    });
+
+    return [event1, event2];
   }
 });
