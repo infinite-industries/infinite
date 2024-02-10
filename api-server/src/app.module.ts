@@ -47,7 +47,7 @@ const dialectOptions = SQL_IS_USING_SSL
       username: DB_USER_NAME,
       password: DB_PASSWORD,
       database: DB_NAME,
-      logging: SEQUELIZE_LOGGING,
+      logging: true,
       ssl: SQL_IS_USING_SSL,
       dialectOptions,
     }),

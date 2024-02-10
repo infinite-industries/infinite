@@ -85,19 +85,20 @@ describe('Existing Event Detection API', () => {
       .send(givenQuery)
       .expect(200)
       .then(async ({ body }) => {
-        console.log('!!! body: ' + JSON.stringify(body, null, 4));
         expect(body).toEqual({
           isLikelyExisting: true,
           confidence: 100.0,
           factors: {
             percentMatchingStartTimesAtSameVenue: 100.0,
           },
-          candidateEvents: {
-            title: event.title,
-            briefDescription: event.brief_description,
-            verified: event.verified,
-            url: `${INFINITE_API_BASE_URL}/events/${event.id}`,
-          },
+          candidateEvents: [
+            {
+              title: event.title,
+              briefDescription: event.brief_description,
+              verified: event.verified,
+              url: `${INFINITE_API_BASE_URL}/events/${event.id}`,
+            },
+          ],
         });
       });
   });

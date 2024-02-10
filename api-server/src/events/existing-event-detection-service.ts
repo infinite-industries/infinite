@@ -7,13 +7,14 @@ import ExistingEventDetectionResults, {
 } from './dto/existing-event-detection-results';
 import { EventModel } from './models/event.model';
 import { INFINITE_API_BASE_URL } from '../constants';
+import request from 'supertest';
 
 @Injectable()
 export default class ExistingEventDetectionService {
   constructor(
     @InjectModel(DatetimeVenueModel)
     private dateTimeVenueModel: typeof DatetimeVenueModel,
-    @InjectModel(DatetimeVenueModel)
+    @InjectModel(EventModel)
     private eventModel: typeof EventModel,
   ) {}
 
@@ -39,13 +40,9 @@ export default class ExistingEventDetectionService {
   private async getPercentMatchingStartTimesAtSameVenue({
     timeAndLocations,
   }: ExistingEventDetectionParameters): Promise<[number, CandidateEvent[]]> {
-    console.log(
-      '!!! timeAndLocations: ',
-      JSON.stringify(timeAndLocations, null, 4),
-    );
     const numberOfTimesForPossibleNewEvent = timeAndLocations.length;
     let numberOfMatchingStartTimesAtSameVenue = 0;
-    let candidateEventIds: string[] = [];
+    const candidateEventIds: Set<string> = new Set();
 
     for (let i = 0; i < numberOfTimesForPossibleNewEvent; i++) {
       const timeAndLocation = timeAndLocations[i];
@@ -56,14 +53,12 @@ export default class ExistingEventDetectionService {
         where: { venue_id: venueId, start_time: startTime },
       });
 
-      console.log('!!! result: ' + JSON.stringify(result, null, 4));
       if (result.length > 0) {
         numberOfMatchingStartTimesAtSameVenue++;
 
-        candidateEventIds = [
-          ...candidateEventIds,
-          ...result.map(({ event_id }) => event_id),
-        ];
+        result.forEach(({ event_id }) => {
+          candidateEventIds.add(event_id);
+        });
       }
     }
 
@@ -79,11 +74,13 @@ export default class ExistingEventDetectionService {
   }
 
   private async resolveCandidateEventIds(
-    candidateEventIds: string[],
+    candidateEventIds: Set<string>,
   ): Promise<CandidateEvent[]> {
     const events = await this.eventModel.findAll({
-      where: { id: candidateEventIds },
+      where: { id: Array.from(candidateEventIds) },
     });
+
+    console.log('!!! got events: ' + events.length);
 
     return events.map(({ id, title, brief_description, verified }) => ({
       title,
