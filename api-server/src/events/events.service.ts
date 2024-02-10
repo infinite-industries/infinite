@@ -345,8 +345,8 @@ export class EventsService {
 
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
-    const clauses = [tagClause, categoryClause, verifiedOnlyClause].filter((clause) =>
-      isNotNullOrUndefined(clause),
+    const clauses = [tagClause, categoryClause, verifiedOnlyClause].filter(
+      (clause) => isNotNullOrUndefined(clause),
     );
 
     if (clauses.length === 0) {

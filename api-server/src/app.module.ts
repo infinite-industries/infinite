@@ -22,7 +22,7 @@ import {
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ConfigModule } from '@nestjs/config';
 import { UploadsModule } from './uploads/uploads.module';
-import { APP_FILTER, BaseExceptionFilter } from '@nestjs/core';
+import { APP_FILTER } from '@nestjs/core';
 import { ExceptionLogger } from './logging/ExceptionLogger';
 
 const dialectOptions = SQL_IS_USING_SSL
@@ -47,7 +47,7 @@ const dialectOptions = SQL_IS_USING_SSL
       username: DB_USER_NAME,
       password: DB_PASSWORD,
       database: DB_NAME,
-      logging: true,
+      logging: SEQUELIZE_LOGGING,
       ssl: SQL_IS_USING_SSL,
       dialectOptions,
     }),

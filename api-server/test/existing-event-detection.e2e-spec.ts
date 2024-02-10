@@ -15,6 +15,7 @@ import generateEvent, {
 } from './fakers/event.faker';
 import ExistingEventDetectionParameters from '../src/events/dto/existing-event-detection-parameters';
 import { v4 as uuidv4 } from 'uuid';
+import generateVenue, { createVenue } from './fakers/venue.faker';
 
 describe('Existing Event Detection API', () => {
   const server = request('http://localhost:' + PORT);
@@ -282,6 +283,113 @@ describe('Existing Event Detection API', () => {
 
         // extra assert needed because arrayContaining doesn't guarantee same length
         expect(body.candidateEvents.length).toEqual(2);
+      });
+  });
+
+  it(`${detectByTimeAndPlacePath} should handle case where no times match`, async () => {
+    // === Given
+    const [event, venue] = await createRandomEventWithVenue(
+      eventModel,
+      venueModel,
+    );
+
+    const existingDateTimesForVenue =
+      await createFiveDateTimeVenueModelsInFutureForVenue(event.id, venue.id);
+
+    // === When none of the requested times match
+    const queryStartTime = existingDateTimesForVenue[0].start_time;
+    queryStartTime.setHours(queryStartTime.getHours() + 1);
+    const query: ExistingEventDetectionParameters = {
+      timeAndLocations: [
+        {
+          venueId: venue.id,
+          startTime: queryStartTime,
+        },
+      ],
+    };
+
+    // === Then
+    return server
+      .post(`/${CURRENT_VERSION_URI}${detectByTimeAndPlacePath}`)
+      .send(query)
+      .expect(200)
+      .then(async ({ body }) => {
+        expect(body).toEqual({
+          isLikelyExisting: false,
+          confidence: 0.0,
+          factors: {
+            percentMatchingStartTimesAtSameVenue: 0.0,
+          },
+          candidateEvents: [],
+        });
+      });
+  });
+
+  it(`${detectByTimeAndPlacePath} should handle case where the times match but the venue does not`, async () => {
+    // === Given
+    const [event, venue] = await createRandomEventWithVenue(
+      eventModel,
+      venueModel,
+    );
+
+    const existingDateTimesForVenue =
+      await createFiveDateTimeVenueModelsInFutureForVenue(event.id, venue.id);
+
+    const otherVenue = await createVenue(generateVenue(venueModel));
+
+    // === When all queries for times match but the venue id is different
+    const query: ExistingEventDetectionParameters = {
+      timeAndLocations: existingDateTimesForVenue.map(({ start_time }) => ({
+        venueId: otherVenue.id,
+        startTime: start_time,
+      })),
+    };
+
+    // === Then
+    return server
+      .post(`/${CURRENT_VERSION_URI}${detectByTimeAndPlacePath}`)
+      .send(query)
+      .expect(200)
+      .then(async ({ body }) => {
+        expect(body).toEqual({
+          isLikelyExisting: false,
+          confidence: 0.0,
+          factors: {
+            percentMatchingStartTimesAtSameVenue: 0.0,
+          },
+          candidateEvents: [],
+        });
+      });
+  });
+
+  it(`${detectByTimeAndPlacePath} should handle case where the venue id does not exist`, async () => {
+    // === Given
+    await createRandomEventWithVenue(eventModel, venueModel);
+
+    // === When then venue id points to a missing venue
+    const query: ExistingEventDetectionParameters = {
+      timeAndLocations: [
+        {
+          venueId: uuidv4(), // any venue not in the database
+          startTime: new Date(), // any date
+        },
+      ],
+    };
+
+    // === Then
+    return server
+      .post(`/${CURRENT_VERSION_URI}${detectByTimeAndPlacePath}`)
+      .send(query)
+      .expect(200)
+      .then(async ({ body }) => {
+        expect(body).toEqual({
+          isLikelyExisting: false,
+          confidence: 0.0,
+          factors: {
+            percentMatchingStartTimesAtSameVenue: 0.0,
+          },
+          candidateEvents: [],
+        });
       });
   });
 
