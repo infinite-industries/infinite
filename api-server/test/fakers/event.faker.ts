@@ -112,6 +112,7 @@ export async function createRandomEventWithDateTime(
   return event;
 }
 
+// TODO: Cleanup this name, createEvent is a bad name, it takes an event, saves and then adds date times
 export async function createEvent(
   event: EventModel,
   startEndTimes: { start_time: Date; end_time: Date }[],

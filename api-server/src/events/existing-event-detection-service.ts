@@ -80,8 +80,6 @@ export default class ExistingEventDetectionService {
       where: { id: Array.from(candidateEventIds) },
     });
 
-    console.log('!!! got events: ' + events.length);
-
     return events.map(({ id, title, brief_description, verified }) => ({
       title,
       briefDescription: brief_description,
