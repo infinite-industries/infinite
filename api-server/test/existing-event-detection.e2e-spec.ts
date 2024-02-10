@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { INFINITE_API_BASE_URL, PORT } from '../src/constants';
+import { INFINITE_WEB_PORTAL_BASE_URL, PORT } from '../src/constants';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import { StartedTestContainer } from 'testcontainers';
 import { EventModel } from '../src/events/models/event.model';
@@ -83,6 +83,11 @@ describe('Existing Event Detection API', () => {
     };
 
     // === Then
+    const expectedEventUrl = `${new URL(
+      `/events/${event.id}`,
+      INFINITE_WEB_PORTAL_BASE_URL,
+    )}`;
+
     return server
       .post(`/${CURRENT_VERSION_URI}${detectByTimeAndPlacePath}`)
       .send(query)
@@ -99,7 +104,7 @@ describe('Existing Event Detection API', () => {
               title: event.title,
               briefDescription: event.brief_description,
               verified: event.verified,
-              url: `${INFINITE_API_BASE_URL}/events/${event.id}`,
+              url: expectedEventUrl,
             },
           ],
         });
@@ -132,6 +137,11 @@ describe('Existing Event Detection API', () => {
     );
 
     // === Then
+    const expectedEventUrl = `${new URL(
+      `/events/${event.id}`,
+      INFINITE_WEB_PORTAL_BASE_URL,
+    )}`;
+
     return server
       .post(`/${CURRENT_VERSION_URI}${detectByTimeAndPlacePath}`)
       .send(query)
@@ -148,7 +158,7 @@ describe('Existing Event Detection API', () => {
               title: event.title,
               briefDescription: event.brief_description,
               verified: event.verified,
-              url: `${INFINITE_API_BASE_URL}/events/${event.id}`,
+              url: expectedEventUrl,
             },
           ],
         });
@@ -184,6 +194,11 @@ describe('Existing Event Detection API', () => {
     );
 
     // === Then
+    const expectedEventUrl = `${new URL(
+      `/events/${event.id}`,
+      INFINITE_WEB_PORTAL_BASE_URL,
+    )}`;
+
     return server
       .post(`/${CURRENT_VERSION_URI}${detectByTimeAndPlacePath}`)
       .send(query)
@@ -200,7 +215,7 @@ describe('Existing Event Detection API', () => {
               title: event.title,
               briefDescription: event.brief_description,
               verified: event.verified,
-              url: `${INFINITE_API_BASE_URL}/events/${event.id}`,
+              url: expectedEventUrl,
             },
           ],
         });
@@ -228,6 +243,15 @@ describe('Existing Event Detection API', () => {
     };
 
     // === Then
+    const expectedEventUrl1 = `${new URL(
+      `/events/${event1.id}`,
+      INFINITE_WEB_PORTAL_BASE_URL,
+    )}`;
+    const expectedEventUrl2 = `${new URL(
+      `/events/${event2.id}`,
+      INFINITE_WEB_PORTAL_BASE_URL,
+    )}`;
+
     return server
       .post(`/${CURRENT_VERSION_URI}${detectByTimeAndPlacePath}`)
       .send(query)
@@ -245,13 +269,13 @@ describe('Existing Event Detection API', () => {
               title: event1.title,
               briefDescription: event1.brief_description,
               verified: event1.verified,
-              url: `${INFINITE_API_BASE_URL}/events/${event1.id}`,
+              url: expectedEventUrl1,
             },
             {
               title: event2.title,
               briefDescription: event2.brief_description,
               verified: event2.verified,
-              url: `${INFINITE_API_BASE_URL}/events/${event2.id}`,
+              url: expectedEventUrl2,
             },
           ]),
         });

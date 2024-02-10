@@ -6,8 +6,7 @@ import ExistingEventDetectionResults, {
   CandidateEvent,
 } from './dto/existing-event-detection-results';
 import { EventModel } from './models/event.model';
-import { INFINITE_API_BASE_URL } from '../constants';
-import request from 'supertest';
+import { INFINITE_WEB_PORTAL_BASE_URL } from '../constants';
 
 @Injectable()
 export default class ExistingEventDetectionService {
@@ -84,7 +83,7 @@ export default class ExistingEventDetectionService {
       title,
       briefDescription: brief_description,
       verified,
-      url: `${INFINITE_API_BASE_URL}/events/${id}`,
+      url: new URL(`/events/${id}`, INFINITE_WEB_PORTAL_BASE_URL).toString(),
     }));
   }
 }
