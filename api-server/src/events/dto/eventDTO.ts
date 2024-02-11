@@ -72,7 +72,7 @@ export default class EventDTO {
   updatedAt: Date;
 
   @ApiProperty({ example: 'radio-mc-radio-station' })
-  reviewed_by_org: boolean;
+  reviewed_by_org: string;
 
   @ApiProperty({
     example: [{ start_time: EXAMPLE_START_DATE, end_time: EXAMPLE_END_DATE }],
