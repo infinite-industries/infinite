@@ -1,15 +1,6 @@
 import moment from 'moment';
 import { Op, literal } from 'sequelize';
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventModel } from './models/event.model';
 import { Inject, LoggerService } from '@nestjs/common';
