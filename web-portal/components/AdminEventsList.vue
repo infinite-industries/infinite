@@ -14,7 +14,8 @@
         <td><img v-if="calendar_event.reviewed_by_org" :src="calendar_event.reviewed_by_org | ownerLogo" width="30" /></td>
         <td>{{ calendar_event.title }}</td>
         <td>
-          <div v-for="(date_time, index) in calendar_event.date_times" :key="index">{{ date_time | dateFormat }}</div>
+          <div v-for="(date_time, index) in calendar_event.date_times.slice(0, 2)" :key="index">{{ date_time | dateFormat }}</div>
+          <small v-if="calendar_event.date_times.length > 2">(and {{ calendar_event.date_times.length - 2 }} more)</small>
           <template v-if="calendar_event.category && calendar_event.category==='online-resource'">Online Resource</template>
         </td>
         <td><v-btn nuxt :to="{ name: 'admin-event-edit-id', params: { id: calendar_event.id } }">Edit</v-btn></td>
