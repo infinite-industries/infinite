@@ -81,7 +81,7 @@
         <v-flex xs12 sm11>
           <v-expansion-panel expand v-model="showDateTimePicker">
             <v-expansion-panel-content>
-              <date-time-picker v-model="calendar_event.date_times" :mode="user_action" />
+              <date-time-picker v-model="calendar_event.date_times" :mode="user_action" @change="onDateTimeVenueChanged" />
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-flex>
@@ -517,10 +517,33 @@
       },
       selectVenue: function (venue) {
         this.calendar_event.venue_id = venue.id
+        this.doTimeAndLocationExistingEventDetection()
       },
       newVenue: function (venue) {
         this.calendar_event.venue_id = venue.id
         this.$refs.venuePicker.handleNewVenue(venue)
+        this.doTimeAndLocationExistingEventDetection()
+      },
+      doTimeAndLocationExistingEventDetection: function() {
+        const venueId = this.calendar_event.venue_id
+        const dateTimes = this.date_times
+
+        if (!this.isAdmin) {
+          // for now, we will only expose duplicate detection to ourselves. We are using admin kind of like a feature flag
+          console.log('!!! role: ' + this.user_role + ', ' + this.isAdmin)
+          return
+        } else if (venueId === undefined || venueId === null) {
+          console.log('!!! no venue id: ' + venueId)
+          // we need a venue to do the check
+          return
+        } else if (!Array.isArray(dateTimes) || dateTimes.length === 0) {
+          console.log('!!! no dateTimes: ' + dateTimes)
+          // we need at least one start time to do the check
+          return
+        }
+
+        console.log('!!! got venue set: ' + venueId)
+        console.log('!!! all the things: ' + JSON.stringify(dateTimes, null, 4))
       },
 
       sendEmails: function () {
@@ -566,6 +589,10 @@
         if (this.calendar_event.additional_dates.length === 0) {
           this.calendar_event.multi_day = false
         }
+      },
+      onDateTimeVenueChanged: function(data) {
+        console.log('!!! much change: ', JSON.stringify(data, null, 4))
+        this.doTimeAndLocationExistingEventDetection()
       }
     },
 
@@ -632,6 +659,9 @@
           this.isEmail(this.calendar_event.organizer_contact) &&
           this.imageChosen > 0 &&
           this.calendar_event.brief_description !== ''
+      },
+      isAdmin: function () {
+        return this.$auth.loggedIn && this.$store.getters.IsUserAdmin
       }
     },
     components: {
