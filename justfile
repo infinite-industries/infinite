@@ -33,8 +33,8 @@ publish alt_tag=image_tag: _login
 # retrieve latest database backup
 fetchdb file="infinite-prod.anon.gz":
   aws s3 cp s3://infinite-industries-backups/db/{{ file }} .
+  gunzip -f {{file}}
 
 # populate database
-populatedb file="infinite-prod.anon.gz": fetchdb 
-  gunzip {{file}} 
-  PGPASSWORD=$PGPASSWORD pg_restore --clean --no-privileges --no-owner -v -d $PGDATABASE {{ file }}  
+populatedb file="infinite-prod.anon":
+  psql $PGDATABASE < {{ file }}  
