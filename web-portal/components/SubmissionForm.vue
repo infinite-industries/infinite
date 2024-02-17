@@ -99,6 +99,19 @@
         <v-flex xs12 sm8>
           <p style="margin: 10px 0px 10px 0px; text-align: center;">OR</p>
         </v-flex>
+
+        <v-flex v-if="shouldShowExistingEventDetectionByStartTime()">
+          <h2>Existing Event Detected</h2>
+
+          <p>It looks like someone may have already entered this event.</p>
+
+          <div>Possible Matches:</div>
+          <ul>
+            <li v-for="candidate in duplicateEventsByStartTime.candidateEvents" :key="candidate.url">
+              <a :href="candidate.url">{{ candidate.title }}</a> {{ !candidate.verified ? '(not yet verified)' : '' }}
+            </li>
+          </ul>
+        </v-flex>
       </v-layout>
 
       <!-- Add a Venue (collapsible content)-->
@@ -383,7 +396,7 @@
       return {
         dialog: false,
         dirtyOnVerifyDialog: false,
-
+        duplicateEventsByStartTime: null,
         calendar_event: null,
         imageChosen: false,
         socialImageChosen: false,
@@ -525,29 +538,45 @@
         this.doTimeAndLocationExistingEventDetection()
       },
       doTimeAndLocationExistingEventDetection: function() {
+        this.duplicateEventsByStartTime = null
+
         const venueId = this.calendar_event.venue_id
-        const dateTimes = this.date_times
+        const dateTimes = this.calendar_event.date_times
 
         if (!this.isAdmin) {
           // for now, we will only expose duplicate detection to ourselves. We are using admin kind of like a feature flag
-          console.log('!!! role: ' + this.user_role + ', ' + this.isAdmin)
           return
         } else if (venueId === undefined || venueId === null) {
-          console.log('!!! no venue id: ' + venueId)
           // we need a venue to do the check
           return
         } else if (!Array.isArray(dateTimes) || dateTimes.length === 0) {
-          console.log('!!! no dateTimes: ' + dateTimes)
           // we need at least one start time to do the check
           return
         }
 
-        console.log('!!! got venue set: ' + venueId)
-        console.log('!!! all the things: ' + JSON.stringify(dateTimes, null, 4))
-      },
+        const duplicateDetectionPayload = {
+          timeAndLocations: dateTimes.map(({ start_time }) => ({
+            venueId: venueId,
+            startTime: start_time
+          }))
+        }
 
+        this.$apiService.post('/events/detect-existing/by-time-and-location', duplicateDetectionPayload)
+          .then((resp) => {
+            this.duplicateEventsByStartTime = resp.data || null
+          })
+          .catch((err) => {
+            console.error('Error performing duplicate detection on start times: ', err)
+          })
+      },
+      shouldShowExistingEventDetectionByStartTime: function () {
+        return this.duplicateEventsByStartTime !== null &&
+          this.duplicateEventsByStartTime !== undefined &&
+          this.duplicateEventsByStartTime.isLikelyExisting
+      },
       sendEmails: function () {
-        console.log('Allan please send emails.') // Who is Allan?
+        // Allan! Allan! ... Steve!
+        console.log('Allan, please send emails.') // Who is Allan?
       },
       onFileChange: function (type) {
         // files.length will be a 0 for no image, 1 for image
@@ -591,7 +620,6 @@
         }
       },
       onDateTimeVenueChanged: function(data) {
-        console.log('!!! much change: ', JSON.stringify(data, null, 4))
         this.doTimeAndLocationExistingEventDetection()
       }
     },
