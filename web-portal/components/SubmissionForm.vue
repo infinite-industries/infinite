@@ -99,23 +99,27 @@
         <v-flex xs12 sm8>
           <p style="margin: 10px 0px 10px 0px; text-align: center;">OR</p>
         </v-flex>
-
-        <v-flex v-if="shouldShowExistingEventDetectionByStartTime()">
-          <h2>Existing Event Detected</h2>
-
-          <p>It looks like someone may have already entered this event.</p>
-
-          <div>Possible Matches:</div>
-          <ul>
-            <li v-for="candidate in duplicateEventsByStartTime.candidateEvents" :key="candidate.url">
-              <a :href="candidate.url">{{ candidate.title }}</a> {{ !candidate.verified ? '(not yet verified)' : '' }}
-            </li>
-          </ul>
-        </v-flex>
       </v-layout>
 
       <!-- Add a Venue (collapsible content)-->
       <add-new-venue @newVenue="newVenue" />
+
+      <div class="existing-event-alert" v-if="shouldShowExistingEventDetectionByStartTime()">
+        <h3>Existing Event Detected</h3> <span class="existing-event-alert__icon">⚠️</span>
+
+        <p>Someone has entered a similar event starting around the same time at the same location.</p>
+
+        <div>Possible Matches:</div>
+        <ul>
+          <li v-for="candidate in duplicateEventsByStartTime.candidateEvents" :key="candidate.url">
+            <a :href="candidate.url">
+              {{ candidate.title }}
+            </a>
+            {{ !candidate.verified ? ' (unverified)' : '' }}:
+            {{ candidate.briefDescription }}
+          </li>
+        </ul>
+      </div>
 
       <!-- Event Image -->
       <v-layout row wrap>
@@ -388,6 +392,28 @@
     }
   })
 
+  const example = {
+    'isLikelyExisting': true,
+    'confidence': 70,
+    'factors': {
+      'percentMatchingStartTimesAtSameVenue': 70
+    },
+    'candidateEvents': [
+      {
+        'title': 'The Main Event',
+        'briefDescription': 'Do not miss this',
+        'verified': false,
+        'url': 'http://my-host/events/dfef2ffe-0eed-4049-af94-cabf46852417'
+      },
+      {
+        'title': 'The Locusts Eat Your Soul',
+        'briefDescription': 'Your mind and body will be destroyed by an aggressive wall of sound. Embrace the ambiguity of the selfless all.',
+        'verified': true,
+        'url': 'http://www.google.com'
+      }
+    ]
+  }
+
   export default {
     props: ['event_id', 'user_role', 'user_action', 'reviewOrg'],
     // user_role --> admin, venue, regular
@@ -396,7 +422,7 @@
       return {
         dialog: false,
         dirtyOnVerifyDialog: false,
-        duplicateEventsByStartTime: null,
+        duplicateEventsByStartTime: example,
         calendar_event: null,
         imageChosen: false,
         socialImageChosen: false,
@@ -538,36 +564,36 @@
         this.doTimeAndLocationExistingEventDetection()
       },
       doTimeAndLocationExistingEventDetection: function() {
-        this.duplicateEventsByStartTime = null
-
-        const venueId = this.calendar_event.venue_id
-        const dateTimes = this.calendar_event.date_times
-
-        if (!this.isAdmin) {
-          // for now, we will only expose duplicate detection to ourselves. We are using admin kind of like a feature flag
-          return
-        } else if (venueId === undefined || venueId === null) {
-          // we need a venue to do the check
-          return
-        } else if (!Array.isArray(dateTimes) || dateTimes.length === 0) {
-          // we need at least one start time to do the check
-          return
-        }
-
-        const duplicateDetectionPayload = {
-          timeAndLocations: dateTimes.map(({ start_time }) => ({
-            venueId: venueId,
-            startTime: start_time
-          }))
-        }
-
-        this.$apiService.post('/events/detect-existing/by-time-and-location', duplicateDetectionPayload)
-          .then((resp) => {
-            this.duplicateEventsByStartTime = resp.data || null
-          })
-          .catch((err) => {
-            console.error('Error performing duplicate detection on start times: ', err)
-          })
+        // this.duplicateEventsByStartTime = null
+        //
+        // const venueId = this.calendar_event.venue_id
+        // const dateTimes = this.calendar_event.date_times
+        //
+        // if (!this.isAdmin) {
+        //   // for now, we will only expose duplicate detection to ourselves. We are using admin kind of like a feature flag
+        //   return
+        // } else if (venueId === undefined || venueId === null) {
+        //   // we need a venue to do the check
+        //   return
+        // } else if (!Array.isArray(dateTimes) || dateTimes.length === 0) {
+        //   // we need at least one start time to do the check
+        //   return
+        // }
+        //
+        // const duplicateDetectionPayload = {
+        //   timeAndLocations: dateTimes.map(({ start_time }) => ({
+        //     venueId: venueId,
+        //     startTime: start_time
+        //   }))
+        // }
+        //
+        // this.$apiService.post('/events/detect-existing/by-time-and-location', duplicateDetectionPayload)
+        //   .then((resp) => {
+        //     this.duplicateEventsByStartTime = resp.data || null
+        //   })
+        //   .catch((err) => {
+        //     console.error('Error performing duplicate detection on start times: ', err)
+        //   })
       },
       shouldShowExistingEventDetectionByStartTime: function () {
         return this.duplicateEventsByStartTime !== null &&
@@ -822,6 +848,45 @@
 
 .status-container label input[type="checkbox"] {
   margin-right: 0.25em;
+}
+
+.existing-event-alert {
+  position: relative;
+  color: white;
+  background-color: #424242;
+
+  border: 1px solid #ffcc4d !important;
+
+  margin-top: 16px;
+  margin-bottom: 16px;
+
+  padding: 0.01em 16px 16px;
+}
+
+.existing-event-alert h3 {
+  margin: 10px 0;
+  color: #ffcc4d;
+}
+
+.existing-event-alert__icon {
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 8px 16px;
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.existing-event-alert a:link, .existing-event-alert a:hover  {
+  color: #51b4e5;
+  //margin-top: 1.2em;
+  //margin-bottom: 1.2em;
+}
+
+.existing-event-alert a:visited {
+  color: #039be5;
 }
 
 </style>
