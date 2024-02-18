@@ -13,6 +13,8 @@ export class ExceptionLogger extends BaseExceptionFilter {
       : 'unknown method';
 
     console.info(`Handled Exception (${url}, ${method}): "${message}"`);
+    console.error(exception);
+
     super.catch(exception, host);
   }
 }

@@ -32,4 +32,15 @@ export async function createVenue(venue: VenueModel) {
   return venue.save();
 }
 
+type CreateRandomVenueProps = {
+  venueModel: typeof VenueModel;
+  overrides?: VenueModelConstructorProps;
+};
+export async function createRandomVenue({
+  venueModel,
+  overrides = {},
+}: CreateRandomVenueProps) {
+  return await generateVenue(venueModel, overrides).save();
+}
+
 export default generateVenue;

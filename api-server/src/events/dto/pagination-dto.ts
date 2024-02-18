@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsNumber, IsOptional, Max, MAX, Validate } from 'class-validator';
+import { IsNumber, IsOptional, Max } from 'class-validator';
 
 export const EVENT_PAGINATION_DEFAULT_PAGE = 1;
 export const EVENT_PAGINATION_DEFAULT_PAGE_SIZE = 20;

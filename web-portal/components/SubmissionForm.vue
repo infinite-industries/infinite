@@ -81,7 +81,7 @@
         <v-flex xs12 sm11>
           <v-expansion-panel expand v-model="showDateTimePicker">
             <v-expansion-panel-content>
-              <date-time-picker v-model="calendar_event.date_times" :mode="user_action" />
+              <date-time-picker v-model="calendar_event.date_times" :mode="user_action" @change="onDateTimeVenueChanged" />
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-flex>
@@ -103,6 +103,11 @@
 
       <!-- Add a Venue (collapsible content)-->
       <add-new-venue @newVenue="newVenue" />
+
+      <existing-event-detection-alert
+        :duplicate-events-by-start-time="duplicateEventsByStartTime"
+        :is-shown="shouldShowExistingEventDetectionByStartTime"
+      />
 
       <!-- Event Image -->
       <v-layout row wrap>
@@ -361,6 +366,7 @@
   import AddNewVenue from './AddNewVenue.vue'
   import ImageUploadService from '@/services/ImageUploadService'
   import getToken from '../helpers/getToken'
+  import ExistingEventDetectionAlert from '@/components/ExistingEventDetectionAlert.vue'
 
   const boolToCondition = condition_tag => ({
     get: function () {
@@ -383,7 +389,7 @@
       return {
         dialog: false,
         dirtyOnVerifyDialog: false,
-
+        duplicateEventsByStartTime: null,
         calendar_event: null,
         imageChosen: false,
         socialImageChosen: false,
@@ -517,14 +523,47 @@
       },
       selectVenue: function (venue) {
         this.calendar_event.venue_id = venue.id
+        this.doTimeAndLocationExistingEventDetection()
       },
       newVenue: function (venue) {
         this.calendar_event.venue_id = venue.id
         this.$refs.venuePicker.handleNewVenue(venue)
+        this.doTimeAndLocationExistingEventDetection()
       },
+      doTimeAndLocationExistingEventDetection: function() {
+        this.duplicateEventsByStartTime = null
+        const venueId = this.calendar_event.venue_id
+        const dateTimes = this.calendar_event.date_times
 
+        if (!this.isAdmin) {
+          // for now, we will only expose duplicate detection to ourselves. We are using admin kind of like a feature flag
+          return
+        } else if (venueId === undefined || venueId === null) {
+          // we need a venue to do the check
+          return
+        } else if (!Array.isArray(dateTimes) || dateTimes.length === 0) {
+          // we need at least one start time to do the check
+          return
+        }
+
+        const duplicateDetectionPayload = {
+          timeAndLocations: dateTimes.map(({ start_time }) => ({
+            venueId: venueId,
+            startTime: start_time
+          }))
+        }
+
+        this.$apiService.post('/events/detect-existing/by-time-and-location', duplicateDetectionPayload)
+          .then((resp) => {
+            this.duplicateEventsByStartTime = resp.data || null
+          })
+          .catch((err) => {
+            console.error('Error performing duplicate detection on start times: ', err)
+          })
+      },
       sendEmails: function () {
-        console.log('Allan please send emails.') // Who is Allan?
+        // Allan! Allan! ... Steve!
+        console.log('Allan, please send emails.') // Who is Allan?
       },
       onFileChange: function (type) {
         // files.length will be a 0 for no image, 1 for image
@@ -566,6 +605,9 @@
         if (this.calendar_event.additional_dates.length === 0) {
           this.calendar_event.multi_day = false
         }
+      },
+      onDateTimeVenueChanged: function(data) {
+        this.doTimeAndLocationExistingEventDetection()
       }
     },
 
@@ -632,13 +674,23 @@
           this.isEmail(this.calendar_event.organizer_contact) &&
           this.imageChosen > 0 &&
           this.calendar_event.brief_description !== ''
+      },
+      isAdmin: function () {
+        return this.$auth.loggedIn && this.$store.getters.IsUserAdmin
+      },
+      shouldShowExistingEventDetectionByStartTime: function () {
+        return this.duplicateEventsByStartTime !== null &&
+          this.duplicateEventsByStartTime !== undefined &&
+          this.duplicateEventsByStartTime.isLikelyExisting
       }
     },
     components: {
+      ExistingEventDetectionAlert,
       // 'vue-editor': VueEditor,
       'venue-picker': VenuePicker,
       'add-new-venue': AddNewVenue,
-      'date-time-picker': DateTimePicker
+      'date-time-picker': DateTimePicker,
+      'existing-event-detection-alert': ExistingEventDetectionAlert
     }
 
   }
@@ -765,5 +817,4 @@
 .status-container label input[type="checkbox"] {
   margin-right: 0.25em;
 }
-
 </style>
