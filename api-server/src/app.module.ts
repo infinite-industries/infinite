@@ -16,6 +16,7 @@ import {
   DB_PASSWORD,
   DB_PORT,
   DB_USER_NAME,
+  ENV,
   SEQUELIZE_LOGGING,
   SQL_IS_USING_SSL,
 } from './constants';
@@ -56,7 +57,7 @@ const dialectOptions = SQL_IS_USING_SSL
         // TODO: should we factor this out into a secondary file?
         new transports.Console({
           format: format.combine(
-            format.label({ label: `TEST:api-server:${process.pid}` }),
+            format.label({ label: `${ENV}:api-server:${process.pid}` }),
             format.timestamp(),
             format.colorize(),
             format.printf(({ level, message, label, timestamp }) => {

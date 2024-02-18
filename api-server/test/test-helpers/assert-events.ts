@@ -3,6 +3,7 @@ import { EventModel } from '../../src/events/models/event.model';
 export function assertEventsEqual(
   actualReturned: any,
   expectedEvent: EventModel,
+  compareAuthenticatedUser = true,
 ) {
   expect(actualReturned.id).toEqual(expectedEvent.id);
   expect(actualReturned.verified).toEqual(expectedEvent.verified);
@@ -11,9 +12,16 @@ export function assertEventsEqual(
   expect(actualReturned.image).toEqual(expectedEvent.image);
   expect(actualReturned.social_image).toEqual(expectedEvent.social_image);
   expect(actualReturned.admission_fee).toEqual(expectedEvent.admission_fee);
-  expect(actualReturned.organizer_contact).toEqual(
-    expectedEvent.organizer_contact,
-  );
+
+  if (compareAuthenticatedUser) {
+    expect(actualReturned.organizer_contact).toEqual(
+      expectedEvent.organizer_contact,
+    );
+  } else {
+    // we filter organizer contact on un-authenticated endpoints, in such cases it should be undefined
+    expect(actualReturned.organizer_contact).toEqual(undefined);
+  }
+
   expect(actualReturned.brief_description).toEqual(
     expectedEvent.brief_description,
   );
