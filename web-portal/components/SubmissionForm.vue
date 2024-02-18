@@ -106,7 +106,7 @@
 
       <existing-event-detection-alert
         :duplicate-events-by-start-time="duplicateEventsByStartTime"
-        :is-shown="shouldShowExistingEventDetectionByStartTime()"
+        :is-shown="shouldShowExistingEventDetectionByStartTime"
       />
 
       <!-- Event Image -->
@@ -561,11 +561,6 @@
             console.error('Error performing duplicate detection on start times: ', err)
           })
       },
-      shouldShowExistingEventDetectionByStartTime: function () {
-        return this.duplicateEventsByStartTime !== null &&
-          this.duplicateEventsByStartTime !== undefined &&
-          this.duplicateEventsByStartTime.isLikelyExisting
-      },
       sendEmails: function () {
         // Allan! Allan! ... Steve!
         console.log('Allan, please send emails.') // Who is Allan?
@@ -682,6 +677,11 @@
       },
       isAdmin: function () {
         return this.$auth.loggedIn && this.$store.getters.IsUserAdmin
+      },
+      shouldShowExistingEventDetectionByStartTime: function () {
+        return this.duplicateEventsByStartTime !== null &&
+          this.duplicateEventsByStartTime !== undefined &&
+          this.duplicateEventsByStartTime.isLikelyExisting
       }
     },
     components: {

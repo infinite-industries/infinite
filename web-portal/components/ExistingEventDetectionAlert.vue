@@ -1,5 +1,5 @@
 <template>
-  <div class="existing-event-detection-alert" v-show="isShown">
+  <div class="existing-event-detection-alert" v-if="isShown">
     <h3>Existing Event Detected</h3> <span class="existing-event-detection-alert__icon">⚠️</span>
 
     <p>Someone has entered a similar event starting around the same time at the same location.</p>
