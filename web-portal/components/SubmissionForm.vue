@@ -82,6 +82,7 @@
           <v-expansion-panel expand v-model="showDateTimePicker">
             <v-expansion-panel-content>
               <date-time-picker v-model="calendar_event.date_times" :mode="user_action" @change="onDateTimeVenueChanged" />
+
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-flex>
@@ -103,6 +104,8 @@
 
       <!-- Add a Venue (collapsible content)-->
       <add-new-venue @newVenue="newVenue" />
+
+      <date-time-picker-new />
 
       <existing-event-detection-alert
         :duplicate-events-by-start-time="duplicateEventsByStartTime"
@@ -367,6 +370,7 @@
   import ImageUploadService from '@/services/ImageUploadService'
   import getToken from '../helpers/getToken'
   import ExistingEventDetectionAlert from '@/components/ExistingEventDetectionAlert.vue'
+  import DateTimePickerNew from '~/components/DateTimePickerNew.vue'
 
   const boolToCondition = condition_tag => ({
     get: function () {
@@ -690,6 +694,7 @@
       'venue-picker': VenuePicker,
       'add-new-venue': AddNewVenue,
       'date-time-picker': DateTimePicker,
+      'date-time-picker-new': DateTimePickerNew,
       'existing-event-detection-alert': ExistingEventDetectionAlert
     }
 
