@@ -12,6 +12,7 @@ import { TestingModule } from '@nestjs/testing';
 import { afterAllStackShutdown } from './test-helpers/after-all-stack-shutdown';
 import {
   createListOfFutureEventsInChronologicalOrder as _createListOfFutureEventsInChronologicalOrder,
+  createRandomEventWithDateTime,
   createRandomEventWithVenue,
 } from './fakers/event.faker';
 import { CURRENT_VERSION_URI } from '../src/utils/versionts';
@@ -285,14 +286,6 @@ describe('Events API', () => {
         expect(pageSize).toEqual(20);
         expect(events.length).toEqual(allVerifiedEvents.length);
 
-        const expected = allVerifiedEvents.map((ve) => {
-          return { id: ve.id, title: ve.title };
-        });
-
-        const actaul = events.map((e) => {
-          return { id: e.id, title: e.title, date_times: e.date_times };
-        });
-
         for (let i = 0; i < numEventsWithDateTimes; i++) {
           const paginatedEventReturned = events[i];
           const expectedEvent = allVerifiedEvents[i];
@@ -556,6 +549,41 @@ describe('Events API', () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.message).toEqual(['pageSize must not be greater than 300']);
+      });
+  });
+
+  it('/events/{eventId} should be able to fetch a single existing verified event', async () => {
+    const givenExistingEvent = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+    );
+
+    const givenExistingEventId = givenExistingEvent.id;
+
+    return await server
+      .get(`/${CURRENT_VERSION_URI}/events/${givenExistingEventId}`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const { event: eventReturned, status } = body;
+        expect(status).toEqual('success');
+        assertEventsEqual(eventReturned, givenExistingEvent, false);
+      });
+  });
+
+  it('/events/{eventId} should return a 404 given the even requested does not exist', async () => {
+    const givenNonExistingEventId = uuidv4();
+
+    return await server
+      .get(`/${CURRENT_VERSION_URI}/events/${givenNonExistingEventId}`)
+      .expect(404)
+      .then(async ({ body }) => {
+        expect(body.statusCode).toEqual(404);
+        expect(body.error).toEqual('Not Found');
+        expect(body.message).toEqual(
+          `Could not find event: ${givenNonExistingEventId}`,
+        );
       });
   });
 

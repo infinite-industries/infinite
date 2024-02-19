@@ -1,6 +1,16 @@
 import moment from 'moment';
 import { Op, literal } from 'sequelize';
-import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  NotFoundException,
+  Param,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventModel } from './models/event.model';
 import { Inject, LoggerService } from '@nestjs/common';
@@ -28,6 +38,7 @@ import {
   EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
   PaginationDto,
 } from './dto/pagination-dto';
+import { isNullOrUndefined } from '../utils';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -168,6 +179,13 @@ export class EventsController {
     return this.eventsService
       .findById(id, findOptions)
       .then((event) => Promise.resolve(event))
+      .then((event) => {
+        if (isNullOrUndefined(event)) {
+          throw new NotFoundException('Could not find event: ' + id);
+        } else {
+          return event;
+        }
+      })
       .then(eventModelToEventDTO)
       .then((event) => removeSensitiveDataForNonAdmins(request, event))
       .then((event: EventDTO) => ({ event, status: 'success' }));
