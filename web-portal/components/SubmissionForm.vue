@@ -105,8 +105,6 @@
       <!-- Add a Venue (collapsible content)-->
       <add-new-venue @newVenue="newVenue" />
 
-      <date-time-picker-new />
-
       <existing-event-detection-alert
         :duplicate-events-by-start-time="duplicateEventsByStartTime"
         :is-shown="shouldShowExistingEventDetectionByStartTime"
@@ -370,7 +368,6 @@
   import ImageUploadService from '@/services/ImageUploadService'
   import getToken from '../helpers/getToken'
   import ExistingEventDetectionAlert from '@/components/ExistingEventDetectionAlert.vue'
-  import DateTimePickerNew from '~/components/DateTimePickerNew.vue'
 
   const boolToCondition = condition_tag => ({
     get: function () {
@@ -694,7 +691,6 @@
       'venue-picker': VenuePicker,
       'add-new-venue': AddNewVenue,
       'date-time-picker': DateTimePicker,
-      'date-time-picker-new': DateTimePickerNew,
       'existing-event-detection-alert': ExistingEventDetectionAlert
     }
 

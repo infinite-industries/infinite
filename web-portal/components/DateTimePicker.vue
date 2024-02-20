@@ -9,13 +9,7 @@
     </div>
     <div class="time-date-control-wrapper">
       <div>
-        <v-date-picker
-          v-model="picker"
-          color="gray lighten-1"
-          :allowed-dates="AllowedDates"
-          :no-title="true"
-          :dark="true"
-        />
+        <date-time-picker-new @change="dateChanged" />
       </div>
       <div>
         <div id="display-time-date">
@@ -169,8 +163,8 @@
 </template>
 
 <script>
-
   import momenttz from 'moment-timezone'
+  import DateTimePickerNew from '@/components/DateTimePickerNew.vue'
 
   // this is how the date/time is stored in data and sent to the server
   const dateTimeStorageFormat = momenttz.ISO_8601
@@ -228,6 +222,10 @@
     // stuff
     },
     methods: {
+      dateChanged: function(date) {
+        console.log('!!! dateChanged: ' + date)
+        this.picker = date
+      },
       AllowedDates: function (val) {
         // in edit mode, anything goes
         // otherwise, disallow days in the past
@@ -381,6 +379,9 @@
           return false
         }
       }
+    },
+    components: {
+      'date-time-picker-new': DateTimePickerNew
     }
   }
 </script>
