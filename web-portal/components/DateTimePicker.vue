@@ -83,6 +83,8 @@
               </span>
 
               <div v-if="edit_mode">
+                <date-time-picker-button text="Cancel" />
+
                 <v-btn
                   class="time-cancel"
                   small
@@ -109,6 +111,9 @@
                   class="white--text time-cancel"
                   @click="Cancel()"
                 >Cancel</v-btn>
+
+                <date-time-picker-button text="Cancel" />
+
                 <v-btn
                   small
                   dark
@@ -165,6 +170,7 @@
 <script>
   import momenttz from 'moment-timezone'
   import DatePicker from '@/components/DatePicker.vue'
+  import DateTimePickerButton from '@/components/DateTimePickerButton.vue'
 
   // this is how the date/time is stored in data and sent to the server
   const dateTimeStorageFormat = momenttz.ISO_8601
@@ -223,7 +229,6 @@
     },
     methods: {
       dateChanged: function(date) {
-        console.log('!!! dateChanged: ' + date)
         this.picker = date
       },
       AllowedDates: function (val) {
@@ -381,7 +386,8 @@
       }
     },
     components: {
-      'date-picker': DatePicker
+      'date-picker': DatePicker,
+      'date-time-picker-button': DateTimePickerButton
     }
   }
 </script>
