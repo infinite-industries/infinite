@@ -18,9 +18,6 @@
           onChange: (date) => {
             this.onDateChanged(date)
           }
-          // nextMonthNav: false
-          // selectedDateElem: false,
-          // readonly: true
         }
       }
     },
@@ -28,8 +25,8 @@
       flatPickr
     },
     methods: {
-      onDateChanged: function(date) {
-        this.$emit('change', date)
+      onDateChanged: function() {
+        this.$emit('change', this.date)
       }
     }
   }
