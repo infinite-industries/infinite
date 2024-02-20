@@ -33,7 +33,6 @@
 </script>
 
 <template>
-  <!--  <no-ssr placeholder="loading...">-->
   <div id="grr">
     <flat-pickr readonly="true" v-model="date" :config="config"></flat-pickr>
   </div>
@@ -41,6 +40,7 @@
 </template>
 
 <style scoped>
+   /* hide the input box that flatpickr wants to show */
   .flatpickr-input {
     display: none;
   }

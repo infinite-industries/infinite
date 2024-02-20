@@ -9,7 +9,7 @@
     </div>
     <div class="time-date-control-wrapper">
       <div>
-        <date-time-picker-new @change="dateChanged" />
+        <date-picker @change="dateChanged" />
       </div>
       <div>
         <div id="display-time-date">
@@ -164,7 +164,7 @@
 
 <script>
   import momenttz from 'moment-timezone'
-  import DateTimePickerNew from '@/components/DateTimePickerNew.vue'
+  import DatePicker from '@/components/DatePicker.vue'
 
   // this is how the date/time is stored in data and sent to the server
   const dateTimeStorageFormat = momenttz.ISO_8601
@@ -381,7 +381,7 @@
       }
     },
     components: {
-      'date-time-picker-new': DateTimePickerNew
+      'date-picker': DatePicker
     }
   }
 </script>
