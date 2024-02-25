@@ -14,3 +14,7 @@ npm ci
 cd /workspaces/infinite/web-portal
 cp .env.codespaces .env
 npm ci
+
+# fetch the latest db dump
+just fetchdb
+
