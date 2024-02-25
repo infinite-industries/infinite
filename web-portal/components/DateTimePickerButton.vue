@@ -1,3 +1,11 @@
+<template>
+  <button :class="getClasses()" @click="onClick()">
+    <div class="date-time-picker-button__content">
+      <slot></slot>
+    </div>
+  </button>
+</template>
+
 <script>
   export default {
     props: {
@@ -42,14 +50,6 @@
     }
   }
 </script>
-
-<template>
-  <button :class="getClasses()" @click="onClick()">
-    <div class="date-time-picker-button__content">
-      <slot></slot>
-    </div>
-  </button>
-</template>
 
 <style scoped>
   .date-time-picker-button {
