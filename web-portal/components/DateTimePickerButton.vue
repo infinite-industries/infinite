@@ -4,22 +4,38 @@
       type: {
         type: String,
         default: 'standard'
-      },
-      text: {
-        type: String,
-        default: ''
       }
     },
     model: {
-      event: 'change'
+      event: 'click'
+    },
+    methods: {
+      onClick() {
+        this.$emit('click')
+      },
+      getClasses() {
+        const classes = ['date-time-picker-button']
+
+        switch (this.type) {
+        case 'confirm':
+          classes.push('date-time-picker-button__confirm')
+          break
+        case 'cancel':
+        case 'default':
+          classes.push('date-time-picker-button__cancel')
+          break
+        }
+
+        return classes.join(' ')
+      }
     }
   }
 </script>
 
 <template>
-  <button class="date-time-picker-button">
+  <button :class="getClasses()" @click="onClick()">
     <div class="date-time-picker-button__content">
-      {{ text }}
+      <slot></slot>
     </div>
   </button>
 </template>
@@ -64,5 +80,13 @@
     margin: 0 auto;
     transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
     white-space: nowrap;
+  }
+
+  .date-time-picker-button__confirm {
+    background-color: #4caf50;
+  }
+
+  .date-time-picker-button__confirm:hover {
+    background-color: #66bb6a;
   }
 </style>

@@ -83,16 +83,8 @@
               </span>
 
               <div v-if="edit_mode">
-                <date-time-picker-button text="Cancel" />
+                <date-time-picker-button text="Cancel" @click="Cancel()" />
 
-                <v-btn
-                  class="time-cancel"
-                  small
-                  dark
-                  depressed
-                  color="grey"
-                  @click="Cancel()"
-                >Cancel</v-btn>
                 <v-btn
                   small
                   dark
@@ -103,36 +95,17 @@
                 >UPDATE</v-btn>
               </div>
               <div v-else>
-                <v-btn
-                  small
-                  dark
-                  depressed
-                  color="grey"
-                  class="white--text time-cancel"
-                  @click="Cancel()"
-                >Cancel</v-btn>
+                <date-time-picker-button @click="Cancel()">
+                  Cancel
+                </date-time-picker-button>
 
-                <date-time-picker-button text="Cancel" />
-
-                <v-btn
-                  small
-                  dark
-                  outline
-                  color="green"
-                  v-show="!validate_time"
-                  class="time-confirm"
-                  disabled
-                >CONFIRM</v-btn>
-                <!-- Ugly hack thanks to "disabled" bug in vuetify -->
-                <v-btn
-                  small
-                  dark
-                  depressed
-                  color="green"
-                  class="white--text time-confirm"
+                <date-time-picker-button
+                  type="confirm"
                   @click="AddTimeSegment()"
                   v-show="validate_time"
-                >CONFIRM</v-btn>
+                >
+                  Confirm
+                </date-time-picker-button>
               </div>
               <div v-if="chrono_order_invalid" class="error--text">
                 End time for the event must follow the start time. Unless you are a Time Lord, of course...
