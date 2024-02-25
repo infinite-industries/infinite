@@ -83,16 +83,16 @@
               </span>
 
               <div v-if="edit_mode">
-                <date-time-picker-button text="Cancel" @click="Cancel()" />
+                <date-time-picker-button @click="Cancel()">
+                  Cancel
+                </date-time-picker-button>
 
-                <v-btn
-                  small
-                  dark
-                  depressed
-                  color="green"
-                  class="time-update"
+                <date-time-picker-button
+                  type="confirm"
                   @click="UpdateTimeSegment(time_segment_index)"
-                >UPDATE</v-btn>
+                >
+                  Update
+                </date-time-picker-button>
               </div>
               <div v-else>
                 <date-time-picker-button @click="Cancel()">
@@ -119,8 +119,21 @@
                 <div class="time-list-item">
                   <div>{{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time, date_and_time.timezone) }}</div>
                   <div>
-                    <v-btn dark depressed color="green" @click="EditTimeSegment(index)">Edit</v-btn>
-                    <v-btn dark depressed color="red" @click="DeleteTimeSegment(index)">Delete</v-btn>
+                    <date-time-picker-button
+                      type="confirm"
+                      size="large"
+                      @click="EditTimeSegment(index)"
+                    >
+                      Edit
+                    </date-time-picker-button>
+
+                    <date-time-picker-button
+                      type="delete"
+                      size="large"
+                      @click="DeleteTimeSegment(index)"
+                    >
+                      Delete
+                    </date-time-picker-button>
                   </div>
                 </div>
               </li>
@@ -289,6 +302,7 @@
 
       Cancel: function () {
         this.picker = null
+        this.edit_mode = false
       }
 
     },

@@ -4,6 +4,10 @@
       type: {
         type: String,
         default: 'standard'
+      },
+      size: {
+        type: String,
+        default: 'size'
       }
     },
     model: {
@@ -20,10 +24,17 @@
         case 'confirm':
           classes.push('date-time-picker-button__confirm')
           break
-        case 'cancel':
+        case 'delete':
+          classes.push('date-time-picker-button__delete')
+          break
+        case 'cancel': // fall through
         case 'default':
           classes.push('date-time-picker-button__cancel')
           break
+        }
+
+        if (this.size === 'large') {
+          classes.push('date-time-picker-button__large')
         }
 
         return classes.join(' ')
@@ -88,5 +99,18 @@
 
   .date-time-picker-button__confirm:hover {
     background-color: #66bb6a;
+  }
+
+  .date-time-picker-button__delete {
+    background-color: #f44336
+  }
+
+  .date-time-picker-button__delete:hover {
+    background-color: #ef5350;
+  }
+
+  .date-time-picker-button__large {
+    height: 36px;
+    font-size: 14px;
   }
 </style>
