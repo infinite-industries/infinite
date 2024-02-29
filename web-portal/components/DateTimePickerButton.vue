@@ -16,6 +16,10 @@
       size: {
         type: String,
         default: 'size'
+      },
+      className: {
+        type: String,
+        default: ''
       }
     },
     model: {
@@ -27,6 +31,9 @@
       },
       getClasses() {
         const classes = ['date-time-picker-button']
+        if (this.className.trim().length > 0) {
+          classes.push(this.className)
+        }
 
         switch (this.type) {
         case 'confirm':

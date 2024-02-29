@@ -89,6 +89,7 @@
 
                 <date-time-picker-button
                   type="confirm"
+                  className="date-time-picker_update-date"
                   @click="UpdateTimeSegment(time_segment_index)"
                 >
                   Update
@@ -101,6 +102,7 @@
 
                 <date-time-picker-button
                   type="confirm"
+                  className="date-time-picker_new-date"
                   @click="AddTimeSegment()"
                   v-show="validate_time"
                 >
