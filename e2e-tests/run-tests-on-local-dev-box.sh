@@ -4,17 +4,20 @@ echo "make sure you do not have any of the infinite stack running already"
 
 # This is an attempt to make running the tests on local quick and easy, you may still want to do this the more manual
 # way, but this tries to script a lot of that
-DB_HOST=localhost
-DB_PORT=5436
-DB_NAME=infinite-api
-DB_USER=postgres
-DB_PASSWORD=xxx
+export DB_HOST=localhost
+export DB_PORT=6436
+export DB_NAME=infinite-api
+export DB_USER_NAME=postgres
+export DB_PASSWORD=xxx
+
+DB_CONTAINER_NAME=infinite-db-e2e
 
 # === start database with docker
-docker run --name infinite-db \
+docker stop $DB_CONTAINER_NAME > /dev/null
+docker run --name $DB_CONTAINER_NAME \
   --rm \
   -p $DB_PORT:5432 \
-  -e POSTGRES_USER=$DB_USER \
+  -e POSTGRES_USER=$DB_USER_NAME \
   -e POSTGRES_PASSWORD=$DB_PASSWORD \
   -e POSTGRES_DB=$DB_NAME \
   -d postgres:9.6.2-alpine
@@ -30,7 +33,7 @@ fi
 WAIT_FOR_DB_NUM_RETRIES=10
 
 echo "wait_for_db_num_retries: $WAIT_FOR_DB_NUM_RETRIES"
-echo "DB_HOST: $DB_HOST, DB_PORT: $DB_PORT, DB_NAME: $DB_NAME, DB_USER: $DB_USER"
+echo "DB_HOST: $DB_HOST, DB_PORT: $DB_PORT, DB_NAME: $DB_NAME, DB_USER_NAME: $DB_USER_NAME"
 
 connect_retries=$WAIT_FOR_DB_NUM_RETRIES
 
@@ -40,7 +43,7 @@ duration_for_wait=5
 until PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" \
   -p "$DB_PORT" \
   -d "$DB_NAME" \
-  -U "$DB_USER" \
+  -U "$DB_USER_NAME" \
   -c "select 1" > /dev/null 2>&1 || [ -z "$DB_PASSWORD" ]; do
 
   echo "Waiting for db $DB_NAME -- Max Retries: $CONNECT_RETRIES"
@@ -54,6 +57,8 @@ until PGPASSWORD="$DB_PASSWORD" psql -h "$DB_HOST" \
     exit 1
   fi
 done
+
+trap "kill 0" EXIT
 
 ### === migrate and see the database
 pushd ../api-server || exit 1
@@ -78,16 +83,11 @@ pid_test_runner=$!
 echo "test-runner pid: $pid_test_runner"
 
 echo "check test-api-server.logs, test-web-portal.logs and test-runner.logs for more info when debugging failures."
+echo "when done press ctrl+c and this plus all the spawned processes should be stopped"
 
-read -pr "Press any key when done and processes will be stopped"
+# this plus the trap "kill 0" EXIT line above, will make such that this process will keep going and also kill all the processes that it spawned when we stop it
+wait
 
-echo "exiting now"
-
-kill $pid_api_server
-kill $pid_web_portal
-kill $pid_test_runner
-
-docker stop infinite-db
 
 
 
