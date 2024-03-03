@@ -9,7 +9,7 @@
     </div>
     <div class="time-date-control-wrapper">
       <div>
-        <date-picker @change="dateChanged" />
+        <date-picker :date="picker" @change="dateChanged" />
       </div>
       <div>
         <div id="display-time-date">
@@ -216,8 +216,8 @@
     // stuff
     },
     methods: {
-      dateChanged: function(date) {
-        this.picker = date
+      dateChanged: function(newDate) {
+        this.picker = newDate
       },
       AllowedDates: function (val) {
         // in edit mode, anything goes

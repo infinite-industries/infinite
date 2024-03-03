@@ -1,5 +1,5 @@
 <template>
-  <flat-pickr readonly="true" v-model="date" :config="config"></flat-pickr>
+  <flat-pickr readonly="true" v-model="dateValue" :config="config"></flat-pickr>
 </template>
 
 <script>
@@ -13,23 +13,30 @@
     },
     data: function() {
       return {
-        date: null,
         config: {
           inline: true,
           enableTime: false,
-          minDate: 'today',
-          onChange: (date) => {
-            this.onDateChanged(date)
-          }
+          minDate: 'today'
         }
       }
     },
     components: {
       flatPickr
     },
-    methods: {
-      onDateChanged: function() {
-        this.$emit('change', this.date)
+    computed: {
+      dateValue: {
+        get() {
+          return this.date
+        },
+        set(newDate) {
+          this.$emit('change', newDate)
+        }
+      }
+    },
+    props: {
+      date: {
+        type: String,
+        default: null
       }
     }
   }
