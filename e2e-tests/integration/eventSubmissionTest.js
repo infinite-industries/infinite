@@ -43,9 +43,9 @@ context('Event Submission', () => {
 
     // can't select dates in the past
     // advance calendar one month and select the first
-    cy.get('#cal-container .v-date-picker-header > button:last-child').click()
+    cy.get('#cal-container .flatpickr-next-month').click()
     cy.wait(1000) // wait for calendar animation to complete
-    cy.get('#cal-container .v-date-picker-table button').contains('1').click()
+    cy.get('#cal-container .flatpickr-day').contains('1').click()
 
     cy.get('.start-hour').type('9')
     cy.get('.start-minute').type('00')
@@ -54,7 +54,7 @@ context('Event Submission', () => {
     cy.get('.end-hour').type('10')
     cy.get('.end-minute').type('00')
     cy.get('select[name=end_ampm]').select('PM')
-    cy.get('.time-confirm:not([disabled])').click()
+    cy.get('.date-time-picker_new-date:not([disabled])').click()
 
     cy.get('.venue').focus()
     cy.get('.results-container > :first-child').click()

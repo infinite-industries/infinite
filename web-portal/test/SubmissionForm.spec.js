@@ -1,17 +1,13 @@
 import Vuex from 'vuex'
-import Vuetify from 'vuetify'
 // import moment from 'moment'
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import SubmissionForm from '../components/SubmissionForm'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
-import ImageUploadService from '@/services/ImageUploadService'
-
 jest.mock('@/services/ImageUploadService')
 
 const localVue = createLocalVue()
 localVue.use(Vuex)
-localVue.use(Vuetify)
 
 /**
  * When submission was refactored (Nov 2021) the only test case here

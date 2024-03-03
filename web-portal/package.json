@@ -40,6 +40,7 @@
     "slack-notify": "^2.0.2",
     "uuid": "^9.0.0",
     "vue-clipboard2": "^0.3.0",
+    "vue-flatpickr-component": "^8.1.8",
     "vue-moment": "^4.0.0",
     "vue-scrollto": "^2.17.1",
     "vue2-editor": "^2.10.0",

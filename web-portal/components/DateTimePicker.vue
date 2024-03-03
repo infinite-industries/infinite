@@ -9,13 +9,7 @@
     </div>
     <div class="time-date-control-wrapper">
       <div>
-        <v-date-picker
-          v-model="picker"
-          color="gray lighten-1"
-          :allowed-dates="AllowedDates"
-          :no-title="true"
-          :dark="true"
-        />
+        <date-picker :allow-past="allowPast" :date="picker" @change="dateChanged" />
       </div>
       <div>
         <div id="display-time-date">
@@ -89,51 +83,31 @@
               </span>
 
               <div v-if="edit_mode">
-                <v-btn
-                  class="time-cancel"
-                  small
-                  dark
-                  depressed
-                  color="grey"
-                  @click="Cancel()"
-                >Cancel</v-btn>
-                <v-btn
-                  small
-                  dark
-                  depressed
-                  color="green"
-                  class="time-update"
+                <date-time-picker-button @click="Cancel()">
+                  Cancel
+                </date-time-picker-button>
+
+                <date-time-picker-button
+                  type="confirm"
+                  className="date-time-picker_update-date"
                   @click="UpdateTimeSegment(time_segment_index)"
-                >UPDATE</v-btn>
+                >
+                  Update
+                </date-time-picker-button>
               </div>
               <div v-else>
-                <v-btn
-                  small
-                  dark
-                  depressed
-                  color="grey"
-                  class="white--text time-cancel"
-                  @click="Cancel()"
-                >Cancel</v-btn>
-                <v-btn
-                  small
-                  dark
-                  outline
-                  color="green"
-                  v-show="!validate_time"
-                  class="time-confirm"
-                  disabled
-                >CONFIRM</v-btn>
-                <!-- Ugly hack thanks to "disabled" bug in vuetify -->
-                <v-btn
-                  small
-                  dark
-                  depressed
-                  color="green"
-                  class="white--text time-confirm"
+                <date-time-picker-button @click="Cancel()">
+                  Cancel
+                </date-time-picker-button>
+
+                <date-time-picker-button
+                  type="confirm"
+                  className="date-time-picker_new-date"
                   @click="AddTimeSegment()"
                   v-show="validate_time"
-                >CONFIRM</v-btn>
+                >
+                  Confirm
+                </date-time-picker-button>
               </div>
               <div v-if="chrono_order_invalid" class="error--text">
                 End time for the event must follow the start time. Unless you are a Time Lord, of course...
@@ -147,8 +121,21 @@
                 <div class="time-list-item">
                   <div>{{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time, date_and_time.timezone) }}</div>
                   <div>
-                    <v-btn dark depressed color="green" @click="EditTimeSegment(index)">Edit</v-btn>
-                    <v-btn dark depressed color="red" @click="DeleteTimeSegment(index)">Delete</v-btn>
+                    <date-time-picker-button
+                      type="confirm"
+                      size="large"
+                      @click="EditTimeSegment(index)"
+                    >
+                      Edit
+                    </date-time-picker-button>
+
+                    <date-time-picker-button
+                      type="delete"
+                      size="large"
+                      @click="DeleteTimeSegment(index)"
+                    >
+                      Delete
+                    </date-time-picker-button>
                   </div>
                 </div>
               </li>
@@ -169,8 +156,9 @@
 </template>
 
 <script>
-
   import momenttz from 'moment-timezone'
+  import DatePicker from '@/components/DatePicker.vue'
+  import DateTimePickerButton from '@/components/DateTimePickerButton.vue'
 
   // this is how the date/time is stored in data and sent to the server
   const dateTimeStorageFormat = momenttz.ISO_8601
@@ -228,6 +216,9 @@
     // stuff
     },
     methods: {
+      dateChanged: function(newDate) {
+        this.picker = newDate
+      },
       AllowedDates: function (val) {
         // in edit mode, anything goes
         // otherwise, disallow days in the past
@@ -313,10 +304,14 @@
 
       Cancel: function () {
         this.picker = null
+        this.edit_mode = false
       }
 
     },
     computed: {
+      allowPast: function() {
+        return this.mode === 'edit'
+      },
       start_hour_invalid: function () {
         return this.CheckForFocusOutHour('START')
       },
@@ -381,6 +376,10 @@
           return false
         }
       }
+    },
+    components: {
+      'date-picker': DatePicker,
+      'date-time-picker-button': DateTimePickerButton
     }
   }
 </script>
