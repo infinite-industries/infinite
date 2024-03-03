@@ -9,7 +9,7 @@
     </div>
     <div class="time-date-control-wrapper">
       <div>
-        <date-picker :date="picker" @change="dateChanged" />
+        <date-picker :allow-past="allowPast" :date="picker" @change="dateChanged" />
       </div>
       <div>
         <div id="display-time-date">
@@ -309,6 +309,9 @@
 
     },
     computed: {
+      allowPast: function() {
+        return this.mode === 'edit'
+      },
       start_hour_invalid: function () {
         return this.CheckForFocusOutHour('START')
       },

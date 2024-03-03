@@ -16,7 +16,7 @@
         config: {
           inline: true,
           enableTime: false,
-          minDate: 'today'
+          minDate: this.allowPast ? null : 'today'
         }
       }
     },
@@ -37,6 +37,10 @@
       date: {
         type: String,
         default: null
+      },
+      allowPast: {
+        type: Boolean,
+        default: false
       }
     }
   }
