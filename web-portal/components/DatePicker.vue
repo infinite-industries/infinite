@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <flat-pickr readonly="true" v-model="date" :config="config"></flat-pickr>
-  </div>
+  <flat-pickr readonly="true" v-model="date" :config="config"></flat-pickr>
 </template>
 
 <script>
