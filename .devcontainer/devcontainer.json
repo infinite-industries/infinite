@@ -8,7 +8,8 @@
 
     "workspaceFolder": "/workspaces/infinite",
 
-    "postCreateCommand": "/workspaces/infinite/.devcontainer/post-create",
+    "updateContentCommand": "/workspaces/infinite/.devcontainer/updateContentCommand",
+    "postCreateCommand": "/workspaces/infinite/.devcontainer/postCreateCommand",
 
     "forwardPorts":  [3003,7779,"db:5432"],
 
