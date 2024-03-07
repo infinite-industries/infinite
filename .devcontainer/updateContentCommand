@@ -14,4 +14,4 @@ npm ci
 cd /workspaces/infinite/web-portal
 cp .env.codespaces .env
 npm ci
-
+npm run build
