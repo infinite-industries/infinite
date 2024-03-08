@@ -1,6 +1,7 @@
 name: build devcontainer image                                                                                                
 
 on:
+  push:
   workflow_dispatch:  # manual execution through Github UI
 
 jobs:
