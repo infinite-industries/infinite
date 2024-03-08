@@ -1,5 +1,8 @@
 name: build devcontainer image
 
+on:
+  workflow_dispatch:  # manual execution through Github UI
+
 jobs:
   build:
     runs-on: ubuntu-latest
