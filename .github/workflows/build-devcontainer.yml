@@ -23,5 +23,6 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           imageName: ghcr.io/infinite-industries/infinite-devcontainer
-          runCmd: |
-            echo "I'm runCmd"             
+          cacheFrom: ghcr.io/infinite-industries/infinite-devcontainer
+          push: always
+          subfolder: .devcontainer/prebuild

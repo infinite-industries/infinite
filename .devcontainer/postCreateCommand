@@ -1,8 +1,0 @@
-#!/bin/sh
-
-set -o nounset
-set -o errexit
-set -o xtrace
-
-# fetch the latest db dump
-just fetchdb

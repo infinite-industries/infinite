@@ -8,6 +8,8 @@
 
     "workspaceFolder": "/workspaces/infinite",
 
+    "updateContentCommand": "/workspaces/infinite/.devcontainer/updateContentCommand",
+
     "forwardPorts":  [3003,7779,"db:5432"],
 
     "portsAttributes": {
