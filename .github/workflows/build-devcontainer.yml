@@ -25,4 +25,4 @@ jobs:
           imageName: ghcr.io/infinite-industries/infinite-devcontainer
           cacheFrom: ghcr.io/infinite-industries/infinite-devcontainer
           push: always
-          subfolder: .devcontainer/prebuild
+          configFile: ./.devcontainer-prebuild/devcontainer.json
