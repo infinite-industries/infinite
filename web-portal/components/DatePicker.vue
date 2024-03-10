@@ -16,7 +16,9 @@
         config: {
           inline: true,
           enableTime: false,
-          minDate: this.allowPast ? null : 'today'
+          minDate: this.allowPast ? null : 'today',
+          clickOpens: false,
+          position: 'center'
         }
       }
     },
@@ -47,8 +49,16 @@
 </script>
 
 <style scoped>
-   /* hide the input box that flatpickr wants to show */
+  /* hide the input box that flatpickr wants to show */
   .flatpickr-input {
+    display: none;
+  }
+</style>
+
+<!-- not scoping this because it breaks the selector to hid the arrow -->
+<style>
+  /* hide a strange arrow that shows on Safari */
+  .flatpickr-calendar.arrowTop:before, .flatpickr-calendar.arrowTop:after {
     display: none;
   }
 </style>
