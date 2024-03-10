@@ -16,9 +16,7 @@
         config: {
           inline: true,
           enableTime: false,
-          minDate: this.allowPast ? null : 'today',
-          clickOpens: false,
-          position: 'center'
+          minDate: this.allowPast ? null : 'today'
         }
       }
     },
