@@ -684,7 +684,7 @@
           this.calendar_event.brief_description !== ''
       },
       isAdmin: function () {
-        return this.$auth.loggedIn && this.$store.getters.IsUserAdmin
+        return this.$auth && this.$auth.loggedIn && this.$store.getters.IsUserAdmin
       },
       shouldShowExistingEventDetectionByStartTime: function () {
         return this.duplicateEventsByStartTime !== null &&
