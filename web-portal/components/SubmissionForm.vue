@@ -413,6 +413,9 @@
         tags: new_event.tags ? new_event.tags.map(t => t) : []
       })
     },
+    mounted() {
+      this.doTimeAndLocationExistingEventDetection()
+    },
     methods: {
       /** @public */
       isDirty: function () {
@@ -552,6 +555,11 @@
             venueId: venueId,
             startTime: start_time
           }))
+        }
+
+        if (typeof this.calendar_event.id === 'string' && this.calendar_event.id.trim().length !== 0) {
+          // if we are editing an existing event, exclude that even from duplicate detection
+          duplicateDetectionPayload.excludeIds = [this.calendar_event.id]
         }
 
         this.$apiService.post('/events/detect-existing/by-time-and-location', duplicateDetectionPayload)

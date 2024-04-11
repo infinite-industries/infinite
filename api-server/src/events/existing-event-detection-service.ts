@@ -7,6 +7,8 @@ import ExistingEventDetectionResults, {
 } from './dto/existing-event-detection-results';
 import { EventModel } from './models/event.model';
 import { INFINITE_WEB_PORTAL_BASE_URL } from '../constants';
+import { Op, WhereOptions } from 'sequelize';
+import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 
 @Injectable()
 export default class ExistingEventDetectionService {
@@ -38,6 +40,7 @@ export default class ExistingEventDetectionService {
 
   private async getPercentMatchingStartTimesAtSameVenue({
     timeAndLocations,
+    excludeIds,
   }: ExistingEventDetectionParameters): Promise<[number, CandidateEvent[]]> {
     const numberOfTimesForPossibleNewEvent = timeAndLocations.length;
     let numberOfMatchingStartTimesAtSameVenue = 0;
@@ -48,9 +51,19 @@ export default class ExistingEventDetectionService {
 
       const { venueId, startTime } = timeAndLocation;
 
-      const result = await this.dateTimeVenueModel.findAll({
-        where: { venue_id: venueId, start_time: startTime },
-      });
+      const where: WhereOptions<DatetimeVenueModel> = {
+        venue_id: venueId,
+        start_time: startTime,
+      };
+
+      if (isNotNullOrUndefined(excludeIds) && excludeIds.length > 0) {
+        // add id exclusions to to the query when present
+        where.event_id = {
+          [Op.notIn]: isNotNullOrUndefined(excludeIds) ? excludeIds : [],
+        };
+      }
+
+      const result = await this.dateTimeVenueModel.findAll({ where });
 
       if (result.length > 0) {
         numberOfMatchingStartTimesAtSameVenue++;

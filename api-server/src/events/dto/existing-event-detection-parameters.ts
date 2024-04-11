@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 const EXAMPLE_DATE = new Date();
 
@@ -15,6 +15,15 @@ export default class ExistingEventDetectionParameters {
   })
   @IsNotEmpty()
   timeAndLocations: TimeAndLocationSearchParameters[];
+
+  @ApiProperty({
+    required: false,
+    example: ['dfef2ffe-0eed-4049-af94-cabf46852417'],
+    description:
+      'used to exclude some issues from matching, for example the issue currently presented to the user',
+  })
+  @IsOptional()
+  excludeIds?: string[];
 }
 
 export class TimeAndLocationSearchParameters {
