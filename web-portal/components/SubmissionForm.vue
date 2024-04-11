@@ -82,7 +82,6 @@
           <v-expansion-panel expand v-model="showDateTimePicker">
             <v-expansion-panel-content>
               <date-time-picker v-model="calendar_event.date_times" :mode="user_action" @change="onDateTimeVenueChanged" />
-
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-flex>
