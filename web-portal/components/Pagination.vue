@@ -1,47 +1,46 @@
 <template>
   <div>
     <slot v-bind="page" />
-    <v-pagination v-model="pageNumber" :length="pageCount" />
 
     <!--    !!! page.label is a bad key, it can happen more than once, should create a key field, that's number prev or next-->
     <ul class="ii-pagination__list">
       <li
-        v-for="page in visiblePageLinks"
-        :key="page.label"
+        v-for="pageEntry in visiblePageLinks"
+        :key="pageEntry.label"
         class="ii-pagination__entry"
       >
         <button
-          :class="getLinkClasses(page)"
-          v-if="page.entryType === 'page-number'"
-          :disabled="!page.enabled"
-          @click="setPage(page.pageNumber)"
+          :class="getLinkClasses(pageEntry)"
+          v-if="pageEntry.entryType === 'page-number'"
+          :disabled="!pageEntry.enabled"
+          @click="setPage(pageEntry.pageNumber)"
         >
-          {{ page.label }}
+          {{ pageEntry.label }}
         </button>
 
         <button
-          :class="getLinkClasses(page)"
-          v-if="page.entryType === 'previous'"
-          :disabled="!page.enabled"
+          :class="getLinkClasses(pageEntry)"
+          v-if="pageEntry.entryType === 'previous'"
+          :disabled="!pageEntry.enabled"
           @click="decrementPage()"
         >
-          {{ page.label }}
+          {{ pageEntry.label }}
         </button>
 
         <button
-          :class="getLinkClasses(page)"
-          v-if="page.entryType === 'next'"
-          :disabled="!page.enabled"
+          :class="getLinkClasses(pageEntry)"
+          v-if="pageEntry.entryType === 'next'"
+          :disabled="!pageEntry.enabled"
           @click="incrementPage()"
         >
-          {{ page.label }}
+          {{ pageEntry.label }}
         </button>
 
         <span
           class="ii-pagination__entry-separator"
-          v-if="page.isSeparator"
+          v-if="pageEntry.isSeparator"
         >
-          {{ page.label }}
+          {{ pageEntry.label }}
         </span>
       </li>
     </ul>
@@ -62,7 +61,21 @@
     },
     data: function () {
       return {
-        pageNumber: 1
+        pageNumber: 1,
+        windowWidth: null
+      }
+    },
+    mounted() {
+      if (window) {
+        window.addEventListener('resize', this.windowResized)
+        this.windowWidth = window.innerWidth
+      } else {
+        this.windowWidth = null
+      }
+    },
+    destroyed() {
+      if (window) {
+        window.removeEventListener('resize', this.windowResized)
       }
     },
     computed: {
@@ -83,20 +96,18 @@
       },
 
       maxLinks: function () {
-        if (process.client) {
-          console.log('!!! client side: ' + window.innerWidth)
+        const defaultNumLinks = 10
+
+        if (this.windowWidth === null || this.windowWidth === undefined) {
+          return defaultNumLinks
         }
 
-        console.log('!!! computing')
-        if (!process.client) {
-          console.log('!!! server side')
-          return 10
-        } else if (window.innerWidth > 700) {
-          return 25
-        } else if (window.innerWidth < 300) {
-          return 2
+        if (this.windowWidth >= 700) {
+          return defaultNumLinks
+        } else if (this.windowWidth >= 300) {
+          return 5
         } else {
-          return 10
+          return 2
         }
       },
 
@@ -210,6 +221,9 @@
         }
 
         return classes.join(' ').trimEnd()
+      },
+      windowResized() {
+        this.windowWidth = window.innerWidth
       }
     },
     watch: {
