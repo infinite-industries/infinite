@@ -86,15 +86,15 @@ Native Postgres utilties provide the basis for restoring backups.
 This instruction assumes that a database role already exists - i.e. you can
 connect to the database and create tables.
 
-**Using pg_restore** to restore to the *dbname* database.
-```bash
-$ gunzip infinite-prod.anon.gz
-$ pg_restore --clean --no-privileges --no-owner -v -d dbname infinite-prod.anon
-```
-
 **Using psql** to restore to the *dbname* database.
 ```bash
 $ zcat infinite-prod.anon.gz | psql dbname
+```
+
+**Using pg_restore** to restore to the *dbname* database.
+```bash
+$ gunzip infinite-prod.anon.gz
+$ pg_restore --clean --if-exists --no-privileges --no-owner -v -d dbname infinite-prod.dump
 ```
 
 ### Restoring backups (Docker)
@@ -127,7 +127,7 @@ $ PGPASSWORD=xxx psql -h localhost -U infinite infinite-local
 
 There are `just` recipes to fetch backups from S3 and to populate a local database. 
 ```bash
-$ just populatedb
+$ just fetchdb populatedb
 ```
 
 ## Details

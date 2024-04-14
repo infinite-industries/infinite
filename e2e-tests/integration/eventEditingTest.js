@@ -130,9 +130,9 @@ context('Event editing:', () => {
 
     // add a new datetime
     // advance calendar one month and select the 10th
-    cy.get('#cal-container .v-date-picker-header > button:last-child').click()
+    cy.get('#cal-container .flatpickr-next-month').click()
     cy.wait(1000) // wait for calendar animation to complete
-    cy.get('#cal-container .v-date-picker-table button').contains('10').click()
+    cy.get('#cal-container .flatpickr-day').contains('10').click()
 
     cy.get('.start-hour').type('9')
     cy.get('.start-minute').type('00')
@@ -141,12 +141,12 @@ context('Event editing:', () => {
     cy.get('.end-hour').type('10')
     cy.get('.end-minute').type('00')
     cy.get('select[name=end_ampm]').select('PM')
-    cy.get('.time-confirm:not([disabled])').click()
+    cy.get('.date-time-picker_new-date:not([disabled])').click()
 
     // edit second datetime
     cy.get('#all-confirmed-times-dates li:nth-child(2) button').contains('Edit').click()
     // calendar should already be on the correct month; choose the 20th
-    cy.get('#cal-container .v-date-picker-table button').contains('20').click()
+    cy.get('#cal-container .flatpickr-day').contains('20').click()
 
     cy.get('.start-hour').type('9')
     cy.get('.start-minute').type('00')
@@ -155,7 +155,7 @@ context('Event editing:', () => {
     cy.get('.end-hour').type('10')
     cy.get('.end-minute').type('00')
     cy.get('select[name=end_ampm]').select('PM')
-    cy.get('.time-update:not([disabled])').click()
+    cy.get('.date-time-picker_update-date:not([disabled])').click()
 
     // delete first datetime
     cy.get('#all-confirmed-times-dates li:first-child button').contains('Delete').click()

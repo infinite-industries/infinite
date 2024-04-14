@@ -393,6 +393,42 @@ describe('Existing Event Detection API', () => {
       });
   });
 
+  it('should not detect events included in excludedIds as duplicates', async () => {
+    // === Given
+    const [event, venue] = await createRandomEventWithVenue(
+      eventModel,
+      venueModel,
+    );
+
+    const existingDateTimesForVenue =
+      await createFiveDateTimeVenueModelsInFutureForVenue(event.id, venue.id);
+
+    // === When all the start times in the query match exactly the start times we createad for this venue
+    const query: ExistingEventDetectionParameters = {
+      excludeIds: [event.id],
+      timeAndLocations: existingDateTimesForVenue.map(({ start_time }) => ({
+        venueId: venue.id,
+        startTime: start_time,
+      })),
+    };
+
+    // === Then
+    return server
+      .post(`/${CURRENT_VERSION_URI}${detectByTimeAndPlacePath}`)
+      .send(query)
+      .expect(200)
+      .then(async ({ body }) => {
+        expect(body).toEqual({
+          isLikelyExisting: false,
+          confidence: 0,
+          factors: {
+            percentMatchingStartTimesAtSameVenue: 0,
+          },
+          candidateEvents: [],
+        });
+      });
+  });
+
   async function createFiveDateTimeVenueModelsInFutureForVenue(
     eventId: string,
     venueId: string,

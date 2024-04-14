@@ -1,6 +1,10 @@
 <template>
   <div class="container admin-page">
-    <v-app>
+    <div v-if="$store.getters.GetUserDataLoading">
+      loading...
+    </div>
+
+    <v-app v-if="!$store.getters.GetUserDataLoading">
       <client-only>
         <submission-form :user_action="'edit'" :user_role="'admin'" :event_id="id"></submission-form>
       </client-only>

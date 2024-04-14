@@ -18,16 +18,16 @@ NUM_DAYS=${NUM_DAYS:=10}
 # MAIN SCRIPT 
 #
 
-# create dumpfile
+# create a dumpfile
 pg_dump -d "sslmode=require" -Fc -f ${BACKUP_DIR}/${PGDATABASE}.dump.${TS}
 
-# create sql dump - no perms
-pg_dump -d "sslmode=require" -Fp --no-owner --no-acl \
+# create sql dump - no perms, plain sql
+pg_dump -d "sslmode=require" -Fplain --no-owner --no-acl --clean --if-exists \
   | gzip -c > ${BACKUP_DIR}/${PGDATABASE}.${TS}.gz
 
-# There is an an alternate way to create the sql dump using the full dump
-#pg_restore --no-owner --no-acl -f - /var/tmp/backups/${PGDATABASE}.$TS \
-#  | gzip -c > ${BACKUP_DIR}/${PGDATABASE}.sql.${TS}.gz
+# This is an an alternate way to create the sql dump using the full dump
+#pg_restore --no-owner --no-acl --clean --if-exists -f - /var/tmp/backups/${PGDATABASE}.dump.$TS \
+#  | gzip -c > ${BACKUP_DIR}/${PGDATABASE}.${TS}.gz
 
 # create anonymized versions of the sql dump
 gzip -dc ${BACKUP_DIR}/${PGDATABASE}.${TS}.gz \
