@@ -13,6 +13,9 @@ export const state = () => {
     calendar_event: {},
 
     user_data: {},
+    user_data_loading: true,
+    user_data_error: null,
+
     loaded_from_api: false,
 
     all_local_events: [],
@@ -60,6 +63,14 @@ export const getters = {
     return state.user_data
   },
 
+  GetUserDataLoading: (state) => {
+    return state.user_data_loading
+  },
+
+  GetUserDataError: (state) => {
+    return state.user_data_error
+  },
+
   IsUserAdmin: (state) => {
     return !!state.user_data && state.user_data.isInfiniteAdmin
   }
@@ -72,7 +83,19 @@ export const mutations = {
 
   UPDATE_USER_DATA: (state, userData) => {
     state.user_data = { ...userData }
+    state.user_data_loading = false
+    state.user_data_error = null
     state.loaded_from_api = true
+  },
+
+  USER_DATA_FETCH_START: (state) => {
+    state.user_data_loading = true
+    state.user_data_error = null
+  },
+
+  USER_DATA_FETCH_FAIL: (state, err) => {
+    state.user_data_loading = false
+    state.user_data_error = err
   },
 
   POPULATE_CURRENT_EVENT: (state, payload) => {
@@ -107,9 +130,15 @@ export const actions = {
   },
 
   LoadAllUserData: function (context, payload) {
+    context.commit('USER_DATA_FETCH_START')
+
     return this.$apiService.get('/users/current', payload.idToken)
       .then(function (_response) {
         context.commit('UPDATE_USER_DATA', _response.data)
+      }).catch((ex) => {
+        context.commit('USER_DATA_FETCH_FAIL', ex)
+
+        throw ex
       })
   },
   LoadAllLocalEventData: function (context) {
