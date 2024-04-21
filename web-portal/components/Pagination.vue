@@ -146,7 +146,7 @@
           }
 
           if (this.pageNumber + maxLinks < this.pageCount) {
-            for (let i = this.pageNumber; i <= this.pageNumber + maxLinks; i++) {
+            for (let i = this.pageNumber; i <= this.pageNumber + maxLinks - 1; i++) {
               visiblePages.push(this.createPageEntry(i, this.pageNumber !== i))
             }
           } else {

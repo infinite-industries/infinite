@@ -20,7 +20,11 @@
     <div class="admin-event-edit-page_venue-list">
       <VenueSpinner :is-shown="isFetching">Loading Venues...</VenueSpinner>
 
-      <ii-pagination v-show="!isFetching" :items="selectedVenueList">
+      <ii-pagination
+        v-show="!isFetching"
+        :items="selectedVenueList"
+        :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
+      >
         <template slot-scope="page">
           <venue-card
             v-for="venue in page"
@@ -43,6 +47,7 @@
   import VenueCard from '../../components/admin-venue-edit/VenueCard'
   import VenueSpinner from '../../components/admin-venue-edit/VenueSpinner'
   import Pagination from '../../components/Pagination'
+  import getToken from '@/helpers/getToken'
   const sortMethod = (venueA, venueB) => venueA.name > venueB.name ? 1 : -1
 
   export default {
@@ -57,11 +62,50 @@
       }
     },
 
+    mounted: function () {
+      this.$store.dispatch('admin/LoadUnverifiedEvents', { idToken: getToken(this.$auth) })
+      this.$store.dispatch('admin/LoadCurrentEvents', { idToken: getToken(this.$auth) })
+      this.$store.dispatch('admin/LoadResourceEvents', { idToken: getToken(this.$auth) })
+
+      if (window) {
+        this._mediaQueryListenerExtralSmall = window.matchMedia('(max-width: 500px)')
+        this._mediaQueryListenerSmall = window.matchMedia('(max-width: 900px)')
+        this._mediaQueryListenerMedium = window.matchMedia('(max-width: 1660px)')
+
+        this.onMatchMediaChange()
+
+        this._mediaQueryListenerExtralSmall.addEventListener('change', this.onMatchMediaChange)
+        this._mediaQueryListenerSmall.addEventListener('change', this.onMatchMediaChange)
+        this._mediaQueryListenerMedium.addEventListener('change', this.onMatchMediaChange)
+      }
+    },
+    destroyed() {
+      if (this._mediaQueryListenerExtralSmall) {
+        this._mediaQueryListenerExtralSmall.removeEventListener('change', this.onMatchMediaChange)
+        this._mediaQueryListenerExtralSmall = undefined
+      }
+
+      if (this._mediaQueryListenerSmall) {
+        this._mediaQueryListenerSmall.removeEventListener('change', this.onMatchMediaChange)
+        this._mediaQueryListenerSmall = undefined
+      }
+
+      if (this._mediaQueryListenerMedium) {
+        this._mediaQueryListenerMedium.removeEventListener('change', this.onMatchMediaChange)
+        this._mediaQueryListenerMedium = undefined
+      }
+    },
+
     methods: {
       onFilter() {
         this.$store.commit(COMMIT_VENUE_CHANGE_ACTIVE_FILTER_STATE, this.selectedList)
 
         this.$fetch()
+      },
+      onMatchMediaChange() {
+        this.isWindowExtraSmall = this._mediaQueryListenerExtralSmall.matches
+        this.isWindowSmall = this._mediaQueryListenerSmall.matches
+        this.isWindowMedium = this._mediaQueryListenerMedium.matches
       }
     },
 
@@ -72,6 +116,18 @@
 
       isDeletedVenuesFetching: function () {
         return this.$store.state.venues.getDeletedVenuesQuery.isFetching
+      },
+
+      maxNumberOfPageShortcuts() {
+        if (this.isWindowExtraSmall) {
+          return 2
+        } else if (this.isWindowSmall) {
+          return 5
+        } else if (this.isWindowMedium) {
+          return 10
+        } else {
+          return 25
+        }
       },
 
       selectedVenueList: function () {
@@ -120,7 +176,10 @@
     data() {
       return {
         selectedList: ACTIVE_VENUE_SELECTION,
-        searchByNameValue: ''
+        searchByNameValue: '',
+        isWindowExtraSmall: false,
+        isWindowSmall: false,
+        isWindowMedium: false
       }
     }
   }
