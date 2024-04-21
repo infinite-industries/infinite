@@ -6,6 +6,7 @@
     <ii-pagination
       :items="verified_events"
       :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
+      class-name-page-list="ii-admin-page_current-events-pagination-list"
     >
       <admin-events-list slot-scope="page" :calendar_events="page" class="current-events" />
     </ii-pagination>
@@ -13,6 +14,7 @@
     <ii-pagination
       :items="resource_events"
       :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
+      class-name-page-list="ii-admin-page_resources-pagination-list"
     >
       <admin-events-list slot-scope="page" :calendar_events="page" class="resources" />
     </ii-pagination>
@@ -85,6 +87,15 @@
   }
 </script>
 
-<style scoped>
+<style>
+.ii-pagination__list.ii-admin-page_current-events-pagination-list,
+.ii-pagination__list.ii-admin-page_resources-pagination-list {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+}
 
+.ii-pagination__list-wrapper {
+  display: flex;
+}
 </style>

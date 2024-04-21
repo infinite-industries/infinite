@@ -1,48 +1,50 @@
 <template>
-  <div>
+  <div class="ii-pagination">
     <slot v-bind="page" />
 
-    <ul class="ii-pagination__list">
-      <li
-        v-for="pageEntry in visiblePageLinks"
-        :key="pageEntry.entrykey"
-        class="ii-pagination__entry"
-      >
-        <button
-          :class="getLinkClasses(pageEntry)"
-          v-if="pageEntry.entryType === 'page-number'"
-          :disabled="!pageEntry.enabled"
-          @click="setPage(pageEntry.pageNumber)"
+    <div class="ii-pagination__list-wrapper">
+      <ul :class="pageLinkListClassNames">
+        <li
+          v-for="pageEntry in visiblePageLinks"
+          :key="pageEntry.entrykey"
+          class="ii-pagination__entry"
         >
-          {{ pageEntry.label }}
-        </button>
+          <button
+            :class="getLinkClasses(pageEntry)"
+            v-if="pageEntry.entryType === 'page-number'"
+            :disabled="!pageEntry.enabled"
+            @click="setPage(pageEntry.pageNumber)"
+          >
+            {{ pageEntry.label }}
+          </button>
 
-        <button
-          :class="getLinkClasses(pageEntry)"
-          v-if="pageEntry.entryType === 'previous'"
-          :disabled="!pageEntry.enabled"
-          @click="decrementPage()"
-        >
-          {{ pageEntry.label }}
-        </button>
+          <button
+            :class="getLinkClasses(pageEntry)"
+            v-if="pageEntry.entryType === 'previous'"
+            :disabled="!pageEntry.enabled"
+            @click="decrementPage()"
+          >
+            {{ pageEntry.label }}
+          </button>
 
-        <button
-          :class="getLinkClasses(pageEntry)"
-          v-if="pageEntry.entryType === 'next'"
-          :disabled="!pageEntry.enabled"
-          @click="incrementPage()"
-        >
-          {{ pageEntry.label }}
-        </button>
+          <button
+            :class="getLinkClasses(pageEntry)"
+            v-if="pageEntry.entryType === 'next'"
+            :disabled="!pageEntry.enabled"
+            @click="incrementPage()"
+          >
+            {{ pageEntry.label }}
+          </button>
 
-        <span
-          class="ii-pagination__entry-separator"
-          v-if="pageEntry.isSeparator"
-        >
-          {{ pageEntry.label }}
-        </span>
-      </li>
-    </ul>
+          <span
+            class="ii-pagination__entry-separator"
+            v-if="pageEntry.isSeparator"
+          >
+            {{ pageEntry.label }}
+          </span>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -60,6 +62,10 @@
       maxNumberOfPageShortcuts: {
         type: Number,
         default: 10
+      },
+      classNamePageList: {
+        type: String,
+        default: null
       }
     },
     data: function () {
@@ -98,20 +104,14 @@
         return items && items.length > 0 ? Math.ceil(items.length / pageSize) : 0
       },
 
-      maxLinks: function () {
-        const defaultNumLinks = 10
+      pageLinkListClassNames() {
+        const classes = ['ii-pagination__list']
 
-        if (this.windowWidth === null || this.windowWidth === undefined) {
-          return defaultNumLinks
+        if (typeof this.classNamePageList === 'string') {
+          classes.push(this.classNamePageList)
         }
 
-        if (this.windowWidth >= 700) {
-          return defaultNumLinks
-        } else if (this.windowWidth >= 300) {
-          return 5
-        } else {
-          return 2
-        }
+        return classes.join(' ')
       },
 
       visiblePageLinks: function() {
@@ -260,8 +260,8 @@
     display: inline-flex;
     list-style-type: none;
     margin: 0;
-    max-width: 100%;
     padding: 0;
+    max-width: 100%;
   }
 
   .ii-pagination__entry {

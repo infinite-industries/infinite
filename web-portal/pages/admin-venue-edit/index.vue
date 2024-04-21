@@ -24,6 +24,7 @@
         v-show="!isFetching"
         :items="selectedVenueList"
         :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
+        class-name-page-list="ii-admin-event-edit-page_pagination-list"
       >
         <template slot-scope="page">
           <venue-card
@@ -206,4 +207,16 @@
     -moz-appearance: auto;
     -webkit-appearance: auto;
   }
+</style>
+
+<style>
+.ii-pagination__list.ii-admin-event-edit-page_pagination-list {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+}
+
+.ii-pagination__list-wrapper {
+  display: flex;
+}
 </style>
