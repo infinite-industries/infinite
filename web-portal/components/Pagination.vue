@@ -2,11 +2,10 @@
   <div>
     <slot v-bind="page" />
 
-    <!--    !!! page.label is a bad key, it can happen more than once, should create a key field, that's number prev or next-->
     <ul class="ii-pagination__list">
       <li
         v-for="pageEntry in visiblePageLinks"
-        :key="pageEntry.label"
+        :key="pageEntry.entrykey"
         class="ii-pagination__entry"
       >
         <button
@@ -55,6 +54,10 @@
         required: true
       },
       pageSize: {
+        type: Number,
+        default: 10
+      },
+      maxNumberOfPageShortcuts: {
         type: Number,
         default: 10
       }
@@ -112,7 +115,7 @@
       },
 
       visiblePageLinks: function() {
-        const maxLinks = this.maxLinks
+        const maxLinks = this.maxNumberOfPageShortcuts // this.maxLinks
 
         const visiblePages = [this.createPreviousEntry(this.pageNumber !== 1)]
 
@@ -129,16 +132,17 @@
           }
 
           if (maxLinks < this.pageCount) {
-            visiblePages.push(this.createPageEntry('...'))
+            visiblePages.push(this.createTruncationEntry('truncationEntry1'))
           }
 
-          visiblePages.push(this.createPageEntry(this.pageCount))
+          // make sure to show a link to the last page
+          visiblePages.push(this.createPageEntry(this.pageCount, true))
         } else {
-          // the current page is is greater than number of links shown, so make
+          // the current page is greater than number of links shown, so make
           // sure to display first page, ..., and current through number shown
-          visiblePages.push(this.createPageEntry(1))
+          visiblePages.push(this.createPageEntry(1, true))
           if (maxLinks < this.pageCount) {
-            visiblePages.push(this.createPageEntry('...'))
+            visiblePages.push(this.createTruncationEntry('truncationEntry2'))
           }
 
           if (this.pageNumber + maxLinks < this.pageCount) {
@@ -153,9 +157,9 @@
 
           // add ... and last page if last page is not already shown
           if (this.pageNumber + maxLinks < this.pageCount) {
-            visiblePages.push(this.createPageEntry('...'))
+            visiblePages.push(this.createTruncationEntry('truncationEntry3'))
 
-            visiblePages.push(this.createPageEntry(this.pageCount))
+            visiblePages.push(this.createPageEntry(this.pageCount, true))
           }
         }
 
@@ -168,37 +172,45 @@
       createPreviousEntry(enabled) {
         return {
           entryType: 'previous',
-          entrykey: 'previous',
+          label: '<',
+          entryKey: 'previous',
           enabled,
-          label: '<'
+          isBookEnd: true
         }
       },
 
       createNextEntry(enabled) {
         return {
           entryType: 'next',
-          entryKey: 'next',
           label: '>',
-          enabled
+          entryKey: 'next',
+          enabled,
+          isBookEnd: true
         }
       },
+
+      createTruncationEntry(entryKey) {
+        return {
+          entryType: 'truncation',
+          entryKey: entryKey,
+          label: '...',
+          enabled: false,
+          isSeparator: true,
+          isBookEnd: false
+        }
+      },
+
       createPageEntry(label, enabled) {
         const pageNumber = isNaN(label) ? null : `${label}`
 
-        const isSeparator = pageNumber === '...'
-        const isBookEnd = pageNumber === '>' || pageNumber === '<'
-        if (enabled === null || enabled === undefined) {
-          enabled = true
-        }
-
         return {
-          entryType: isSeparator ? 'separator' : 'page-number',
+          entryType: 'page-number',
           label,
+          entryKey: label,
           pageNumber,
-          isSeparator,
-          isBookEnd,
-          enabled,
-          entryKey: isSeparator ? 'Separator' : label
+          isSeparator: false,
+          isBookEnd: false,
+          enabled
         }
       },
       setPage(newPageNumber) {
