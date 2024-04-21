@@ -1,6 +1,6 @@
 import { createLocalVue, shallowMount } from '@vue/test-utils'
 import Vuetify from 'vuetify'
-import Pagination from '@/components/Pagination.vue'
+import Pagination from '@/components/pagination/Pagination.vue'
 
 const localVue = createLocalVue()
 localVue.use(Vuetify)

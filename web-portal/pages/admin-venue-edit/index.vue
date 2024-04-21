@@ -47,7 +47,7 @@
   } from '../../store/venues'
   import VenueCard from '../../components/admin-venue-edit/VenueCard'
   import VenueSpinner from '../../components/admin-venue-edit/VenueSpinner'
-  import Pagination from '../../components/Pagination'
+  import Pagination from '../../components/pagination/Pagination.vue'
   import getToken from '@/helpers/getToken'
   const sortMethod = (venueA, venueB) => venueA.name > venueB.name ? 1 : -1
 

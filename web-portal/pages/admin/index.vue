@@ -23,7 +23,7 @@
 
 <script>
   import AdminEventsList from '../../components/AdminEventsList.vue'
-  import Pagination from '../../components/Pagination.vue'
+  import Pagination from '../../components/pagination/Pagination.vue'
   import getToken from '../../helpers/getToken'
 
   export default {
