@@ -224,9 +224,6 @@
         }
 
         return classes.join(' ').trimEnd()
-      },
-      windowResized() {
-        this.windowWidth = window.innerWidth
       }
     },
     watch: {
