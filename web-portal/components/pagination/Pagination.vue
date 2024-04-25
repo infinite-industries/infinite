@@ -9,7 +9,7 @@
           :key="pageEntry.entryKey"
           :label="pageEntry.label"
           :entry-type="pageEntry.entryType"
-          :is-selected="pageEntry.pageNumber && `${pageEntry.pageNumber}` === `${pageNumber}`"
+          :is-selected="pageEntry.label && pageEntry.label === `${pageNumber}`"
           :is-disabled="!pageEntry.enabled"
           @decrementPageClicked="decrementPage()"
           @incrementPage="incrementPage()"
@@ -134,8 +134,7 @@
           entryType: 'previous',
           label: '<',
           entryKey: 'previous',
-          enabled,
-          isBookEnd: true
+          enabled
         }
       },
 
@@ -144,19 +143,16 @@
           entryType: 'next',
           label: '>',
           entryKey: 'next',
-          enabled,
-          isBookEnd: true
+          enabled
         }
       },
 
       createTruncationEntry(entryKey) {
         return {
           entryType: 'truncation',
-          entryKey: entryKey,
           label: '...',
-          enabled: false,
-          isSeparator: true,
-          isBookEnd: false
+          entryKey: entryKey,
+          enabled: false
         }
       },
 
@@ -164,10 +160,7 @@
         return {
           entryType: 'page-number',
           label: `${pageNumber}`,
-          entryKey: pageNumber,
-          pageNumber,
-          isSeparator: false,
-          isBookEnd: false,
+          entryKey: `${pageNumber}`,
           enabled
         }
       },
