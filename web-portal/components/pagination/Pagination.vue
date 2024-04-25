@@ -4,51 +4,25 @@
 
     <div class="ii-pagination__list-wrapper">
       <ul :class="pageLinkListClassNames">
-        <li
+        <ii-pagination-list-entry
           v-for="pageEntry in visiblePageLinks"
-          :key="pageEntry.entrykey"
-          class="ii-pagination__entry"
-        >
-          <button
-            :class="getLinkClasses(pageEntry)"
-            v-if="pageEntry.entryType === 'page-number'"
-            :disabled="!pageEntry.enabled"
-            @click="setPage(pageEntry.pageNumber)"
-          >
-            {{ pageEntry.label }}
-          </button>
-
-          <button
-            :class="getLinkClasses(pageEntry)"
-            v-if="pageEntry.entryType === 'previous'"
-            :disabled="!pageEntry.enabled"
-            @click="decrementPage()"
-          >
-            {{ pageEntry.label }}
-          </button>
-
-          <button
-            :class="getLinkClasses(pageEntry)"
-            v-if="pageEntry.entryType === 'next'"
-            :disabled="!pageEntry.enabled"
-            @click="incrementPage()"
-          >
-            {{ pageEntry.label }}
-          </button>
-
-          <span
-            class="ii-pagination__entry-separator"
-            v-if="pageEntry.isSeparator"
-          >
-            {{ pageEntry.label }}
-          </span>
-        </li>
+          :key="pageEntry.entryKey"
+          :label="pageEntry.label"
+          :entry-type="pageEntry.entryType"
+          :is-selected="pageEntry.pageNumber && `${pageEntry.pageNumber}` === `${pageNumber}`"
+          :is-disabled="!pageEntry.enabled"
+          @decrementPageClicked="decrementPage()"
+          @incrementPage="incrementPage()"
+          @pageEntryClicked="setPage(...arguments)"
+        />
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+  import PagenationListEntry from '@/components/pagination/PagenationListEntry.vue'
+
   export default {
     props: {
       items: {
@@ -186,13 +160,11 @@
         }
       },
 
-      createPageEntry(label, enabled) {
-        const pageNumber = isNaN(label) ? null : `${label}`
-
+      createPageEntry(pageNumber, enabled) {
         return {
           entryType: 'page-number',
-          label,
-          entryKey: label,
+          label: `${pageNumber}`,
+          entryKey: pageNumber,
           pageNumber,
           isSeparator: false,
           isBookEnd: false,
@@ -209,17 +181,10 @@
       },
       decrementPage() {
         this.setPage(this.pageNumber - 1)
-      },
-      getLinkClasses(pageEntry) {
-        const classes = ['ii-pagination__entry-button']
-        if (pageEntry.isBookEnd) {
-          classes.push('ii-pagination__entry-bookend')
-        } else if (pageEntry.pageNumber && pageEntry.pageNumber === `${this.pageNumber}`) {
-          classes.push('ii-pagination__entry-active')
-        }
-
-        return classes.join(' ').trimEnd()
       }
+    },
+    components: {
+      'ii-pagination-list-entry': PagenationListEntry
     },
     watch: {
       items: function (newItems, oldItems) {
@@ -232,12 +197,6 @@
 </script>
 
 <style scoped>
-  /* >>> overrides scoping, allowing the targeting of child components */
-  .v-pagination >>> .v-pagination__item--active {
-    color: white;
-    background-color: black;
-  }
-
   .ii-pagination__list {
     align-items: center;
     display: inline-flex;
@@ -245,54 +204,5 @@
     margin: 0;
     padding: 0;
     max-width: 100%;
-  }
-
-  .ii-pagination__entry {
-    align-items: center;
-    display: flex;
-
-    background-repeat: no-repeat;
-    padding: 0;
-    margin: 0;
-
-    list-style: none;
-  }
-
-  .ii-pagination__entry-button {
-    background: #fff;
-    color: #000;
-    min-width: 34px;
-    padding: 0 5px;
-
-    box-shadow: 0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12);
-    border-radius: 4px;
-    font-size: 14px;
-    height: 34px;
-    width: 34px;
-    margin: 0.3rem;
-    text-decoration: none;
-    transition: 0.3s cubic-bezier(0, 0, 0.2, 1);
-
-    border-style: none;
-
-    text-transform: none;
-  }
-
-  .ii-pagination__entry-bookend {
-    margin: 0.3rem 10px;
-  }
-
-  .ii-pagination__entry-active {
-    color: white;
-    background-color: black;
-  }
-
-  .ii-pagination__entry-separator {
-    margin: 0.3rem;
-    display: inline-flex;
-    align-items: flex-end;
-    justify-content: center;
-    height: 2rem;
-    width: 2rem;
   }
 </style>

@@ -1,4 +1,4 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import { createLocalVue, mount } from '@vue/test-utils'
 import Pagination from '@/components/pagination/Pagination.vue'
 
 const localVue = createLocalVue()
@@ -9,7 +9,7 @@ describe('Pagination component', () => {
   const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 
   beforeEach(() => {
-    wrapper = shallowMount(Pagination, {
+    wrapper = mount(Pagination, {
       localVue,
       propsData: {
         items
