@@ -73,20 +73,15 @@ describe('Pagination component', () => {
 
     const paginationButtonList = wrapper.find('.ii-pagination__list')
     expect(paginationButtonList.exists()).toBe(true)
-    const paginationButtons = paginationButtonList.findAll('.ii-pagination__entry-button')
+    const paginationEntries = paginationButtonList.findAll('.ii-pagination__entry')
 
     // prev, page 1, page 2, ..., last page, next
-    expect(paginationButtons.length).toEqual(5)
-    assertHasBookends(paginationButtons)
-    expect(paginationButtons.at(1).text()).toEqual('1')
-    expect(paginationButtons.at(2).text()).toEqual('2')
-
-    // should show span just before last page
-    const paginationEntries = paginationButtonList.findAll('.ii-pagination__entry')
     expect(paginationEntries.length).toEqual(6)
-    expect(paginationEntries.at(paginationEntries.length - 3).text()).toEqual('...')
-
-    console.log('!!! paginationButtonList: ' + paginationButtonList.html())
+    assertHasBookends(paginationEntries)
+    expect(paginationEntries.at(1).text()).toEqual('1')
+    expect(paginationEntries.at(2).text()).toEqual('2')
+    expect(paginationEntries.at(3).text()).toEqual('...')
+    expect(paginationEntries.at(4).text()).toEqual('10')
   })
 
   it('should show truncation spanner (...) for first half of list when page selection near the end', async () => {
@@ -103,20 +98,19 @@ describe('Pagination component', () => {
 
     const paginationButtonList = wrapper.find('.ii-pagination__list')
     expect(paginationButtonList.exists()).toBe(true)
-    const paginationButtons = paginationButtonList.findAll('.ii-pagination__entry-button')
+    const paginationEntries = paginationButtonList.findAll('.ii-pagination__entry')
 
     console.log('!!! paginationButtonList: ' + paginationButtonList.html())
 
     // prev, page 1, ..., page 8, page 9, last page, next
-    expect(paginationButtons.length).toEqual(6)
-    assertHasBookends(paginationButtons)
-    expect(paginationButtons.at(1).text()).toEqual('1')
-    expect(paginationButtons.at(2).text()).toEqual('2')
+    expect(paginationEntries.length).toEqual(7)
+    assertHasBookends(paginationEntries)
 
-    // should show span just before last page
-    const paginationEntries = paginationButtonList.findAll('.ii-pagination__entry')
-    expect(paginationEntries.length).toEqual(6)
+    expect(paginationEntries.at(1).text()).toEqual('1') // always show first page
     expect(paginationEntries.at(2).text()).toEqual('...')
+    expect(paginationEntries.at(3).text()).toEqual('8') // maxNumberOfPageShortcuts is 2
+    expect(paginationEntries.at(4).text()).toEqual('9') // maxNumberOfPageShortcuts is 2
+    expect(paginationEntries.at(5).text()).toEqual('10') // always show last page
   })
 
   function assertPaginationListDrawnCorrect({ wrapper, numExpectedLinks }) {
