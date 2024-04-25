@@ -101,22 +101,17 @@
       },
 
       visiblePageLinks: function() {
-        console.log('!!! compute visiblePageLinks: ' + this.items.length)
         const maxLinks = this.maxNumberOfPageShortcuts // this.maxLinks
 
-        console.log('!!! maxLinks: ' + maxLinks)
-        console.log('!!! pageCount: ' + this.pageCount)
         const visiblePages = [this.createPreviousEntry(this.pageNumber !== 1)]
 
         if (this.pageCount <= maxLinks) {
-          console.log('!!! just show everything')
           // just show everything
           for (let i = 1; i <= this.pageCount; i++) {
             visiblePages.push(this.createPageEntry(i, this.pageNumber !== i))
           }
         } else if (this.pageNumber <= maxLinks) {
-          console.log('!!! second condition')
-          // too many to show everything, current is is less that number of links
+          // too many to show everything, current is less that number of links
           // we will show
           for (let i = 1; i <= maxLinks; i++) {
             visiblePages.push(this.createPageEntry(i, this.pageNumber !== i))

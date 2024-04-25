@@ -64,10 +64,6 @@
     },
 
     mounted: function () {
-      this.$store.dispatch('admin/LoadUnverifiedEvents', { idToken: getToken(this.$auth) })
-      this.$store.dispatch('admin/LoadCurrentEvents', { idToken: getToken(this.$auth) })
-      this.$store.dispatch('admin/LoadResourceEvents', { idToken: getToken(this.$auth) })
-
       if (window) {
         this._mediaQueryListenerExtralSmall = window.matchMedia('(max-width: 500px)')
         this._mediaQueryListenerSmall = window.matchMedia('(max-width: 900px)')
