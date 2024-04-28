@@ -9,10 +9,7 @@
 </template>
 
 <script>
-  import { cl } from '@fullcalendar/core/internal-common'
-
   export default {
-    methods: { cl },
     props: {
       type: {
         type: String,
