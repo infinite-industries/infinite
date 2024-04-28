@@ -25,14 +25,21 @@
         type: Array,
         required: true
       },
+
+      // number of items shown in a page
       pageSize: {
         type: Number,
         default: 10
       },
+
+      // the max number of links in addition to first/last/next/prev that will be shown
       maxNumberOfPageShortcuts: {
         type: Number,
         default: 10
       },
+
+      // an additional class name that will be added to the ul element of the pagination component to allow
+      // additional styling by the parent
       classNamePageList: {
         type: String,
         default: ''
