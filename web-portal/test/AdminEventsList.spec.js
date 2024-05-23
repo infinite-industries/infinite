@@ -1,10 +1,7 @@
-import Vuetify from 'vuetify'
-
 import { createLocalVue, RouterLinkStub, mount } from '@vue/test-utils'
 import AdminEventsList from '@/components/AdminEventsList.vue'
 
 const localVue = createLocalVue()
-localVue.use(Vuetify)
 
 const getEventList = () => {
   return [
