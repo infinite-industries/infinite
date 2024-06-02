@@ -3,6 +3,7 @@
     :class="classes"
     @click="$emit('click', ...arguments)"
     :type="type"
+    :data-test-id="testId"
   >
     <slot></slot>
   </button>
@@ -18,6 +19,10 @@
       styleType: {
         type: String,
         default: 'default'
+      },
+      testId: {
+        type: String,
+        default: ''
       }
     },
     model: {

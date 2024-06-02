@@ -22,6 +22,7 @@
           <ii-form-button
             style-type="light"
             @click="onEditClicked(calendar_event.id)"
+            :test-id="'edit-issue-button-' + calendar_event.id"
           >
             Edit
           </ii-form-button>
