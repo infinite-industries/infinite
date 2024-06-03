@@ -3,6 +3,7 @@
     :class="classes"
     @click="$emit('click', ...arguments)"
     :type="type"
+    :data-test-id="testId"
   >
     <slot></slot>
   </button>
@@ -18,6 +19,10 @@
       styleType: {
         type: String,
         default: 'default'
+      },
+      testId: {
+        type: String,
+        default: ''
       }
     },
     model: {
@@ -29,7 +34,10 @@
 
         if (this.styleType === 'default') {
           classes.push('ii-form-button_default')
+        } else if (this.styleType === 'light') {
+          classes.push('ii-form-button_light')
         }
+
         return classes
       }
     }
@@ -75,4 +83,12 @@
  .ii-form-button_default:hover {
    background-color: #8d8d8d
  }
+
+  .ii-form-button_light {
+    background-color: #f5f5f5
+  }
+
+  .ii-form-button_light:hover {
+    background-color: #dbdbdb;
+  }
 </style>

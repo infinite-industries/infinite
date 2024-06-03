@@ -97,7 +97,7 @@ context('Event editing:', () => {
 
     // verify event is gone
     cy.location('pathname').should('not.include', 'admin-event-edit/')
-    cy.contains('.unverified-events tr td a[href$="admin-event-edit/' + EVENT_ID + '"]').should('not.exist')
+    cy.contains(`.unverified-events tr td button[data-test-id="edit-issue-button-${EVENT_ID}"]`).should('not.exist')
   })
 
   it('Title can be modified', () => {
@@ -105,7 +105,7 @@ context('Event editing:', () => {
 
     // find and open event
     cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/admin')
-    cy.get('.unverified-events tr td a[href$="admin-event-edit/' + EVENT_ID + '"]').click()
+    cy.get(`.unverified-events tr td button[data-test-id="edit-issue-button-${EVENT_ID}"]`).click()
     cy.location('pathname').should('include', 'admin-event-edit')
 
     // modify its title, wait for it to save
