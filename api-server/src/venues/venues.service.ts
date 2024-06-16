@@ -129,14 +129,12 @@ export class VenuesService {
             ...venue,
             gps_long: coordinates.longitude,
             gps_lat: coordinates.latitude,
-            gps_alt: coordinates.altitude,
           }) as T;
         } else {
           return new UpdateVenueRequest({
             ...venue,
             gps_long: coordinates.longitude,
             gps_lat: coordinates.latitude,
-            gps_alt: coordinates.altitude,
           }) as T;
         }
       } catch (ex) {
