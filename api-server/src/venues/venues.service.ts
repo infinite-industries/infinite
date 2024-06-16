@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { VenueModel } from './models/venue.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,10 +8,18 @@ import {
 } from './dto/create-update-venue-request';
 import { FindOptions } from 'sequelize';
 import getSlug from '../utils/get-slug';
+import { GpsService } from './gps.services';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 
 @Injectable()
 export class VenuesService {
-  constructor(@InjectModel(VenueModel) private venueModel: typeof VenueModel) {}
+  constructor(
+    @InjectModel(VenueModel) private venueModel: typeof VenueModel,
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
+    private readonly gpsService: GpsService,
+  ) {}
 
   findById(id: string): Promise<VenueModel> {
     const options: FindOptions = {
@@ -37,22 +45,26 @@ export class VenuesService {
     });
   }
 
-  create(newVenue: CreateVenueRequest): Promise<VenueModel> {
+  async create(newVenue: CreateVenueRequest): Promise<VenueModel> {
     const id = uuidv4();
     const slug = getSlug(newVenue.name);
+
+    newVenue = await this.fillInGPSCoordinatesIfNeededWhenPossible(newVenue);
 
     return this.venueModel.create({ ...newVenue, id, slug });
   }
 
-  update(id: string, updatedValues: UpdateVenueRequest): Promise<VenueModel> {
-    let values;
-    if (updatedValues.name) {
-      const slug = getSlug(updatedValues.name);
+  async update(
+    id: string,
+    updatedValues: UpdateVenueRequest,
+  ): Promise<VenueModel> {
+    updatedValues = await this.fillInGPSCoordinatesIfNeededWhenPossible(
+      updatedValues,
+    );
 
-      values = { ...updatedValues, slug };
-    } else {
-      values = { ...updatedValues };
-    }
+    const values = isNotNullOrUndefined(updatedValues.name)
+      ? { ...updatedValues, slug: getSlug(updatedValues.name) }
+      : { ...updatedValues };
 
     return this.venueModel
       .update(values, {
@@ -94,5 +106,70 @@ export class VenuesService {
       .then((resp: [number, VenueModel[]]) => {
         return resp[1][0];
       });
+  }
+
+  private async fillInGPSCoordinatesIfNeededWhenPossible<
+    T extends UpdateVenueRequest | CreateVenueRequest,
+  >(venue: T): Promise<T> {
+    if (this.hasGPSCoordinates(venue)) {
+      return Promise.resolve(venue);
+    } else {
+      const { street, city, state, zip } = venue;
+
+      try {
+        const coordinates = await this.gpsService.getCoordinatesFromAddress({
+          street,
+          city,
+          state,
+          zip,
+        });
+
+        if (this.isCreateRequest(venue)) {
+          return new CreateVenueRequest({
+            ...venue,
+            gps_long: coordinates.longitude,
+            gps_lat: coordinates.latitude,
+            gps_alt: coordinates.altitude,
+          }) as T;
+        } else {
+          return new UpdateVenueRequest({
+            ...venue,
+            gps_long: coordinates.longitude,
+            gps_lat: coordinates.latitude,
+            gps_alt: coordinates.altitude,
+          }) as T;
+        }
+      } catch (ex) {
+        // for /get-gps-from-address we will return a 500 in this case, but for venue creation and update we will just
+        // log this and let the user continue
+        this.logger.warn(
+          `There was an exception fetching GPS coordinates, during venue creation (name: ${venue.name}, street: ${venue.street}):
+
+        ${ex}
+        `,
+        );
+      }
+    }
+  }
+
+  private isCreateRequest(
+    request: CreateVenueRequest | UpdateVenueRequest,
+  ): request is CreateVenueRequest {
+    return request instanceof CreateVenueRequest;
+  }
+
+  private isUpdateRequest(
+    request: CreateVenueRequest | UpdateVenueRequest,
+  ): request is UpdateVenueRequest {
+    return request instanceof UpdateVenueRequest;
+  }
+
+  private hasGPSCoordinates(
+    venue: CreateVenueRequest | UpdateVenueRequest,
+  ): boolean {
+    return (
+      isNotNullOrUndefined(venue.gps_lat) &&
+      isNotNullOrUndefined(venue.gps_long)
+    );
   }
 }

@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Column } from 'sequelize-typescript';
+import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';
+import cloneAttributes from '../../utils/clone-attributes';
 
 export class CreateVenueRequest {
   @ApiProperty({ example: "Bob Vance's Chill Bar" })
@@ -49,6 +51,12 @@ export class CreateVenueRequest {
   @ApiProperty({ example: 'Downtown' })
   @IsOptional()
   neighborhood?: string;
+
+  constructor(copy?: Partial<CreateVenueRequest>) {
+    if (isNotNullOrUndefined(copy)) {
+      cloneAttributes<CreateVenueRequest>(copy, this);
+    }
+  }
 }
 
 export class UpdateVenueRequest {
@@ -100,4 +108,10 @@ export class UpdateVenueRequest {
   @ApiProperty({ example: 17.1 })
   @IsOptional()
   gps_alt?: number;
+
+  constructor(copy?: Partial<UpdateVenueRequest>) {
+    if (isNotNullOrUndefined(copy)) {
+      cloneAttributes<UpdateVenueRequest>(copy, this);
+    }
+  }
 }
