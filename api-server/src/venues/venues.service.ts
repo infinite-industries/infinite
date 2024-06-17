@@ -11,6 +11,7 @@ import getSlug from '../utils/get-slug';
 import { GpsService } from './gps.services';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
+import { isNullOrUndefined } from '../utils';
 
 @Injectable()
 export class VenuesService {
@@ -111,6 +112,10 @@ export class VenuesService {
   private async fillInGPSCoordinatesIfNeededWhenPossible<
     T extends UpdateVenueRequest | CreateVenueRequest,
   >(venue: T): Promise<T> {
+    if (isNullOrUndefined(venue)) {
+      return venue;
+    }
+
     if (this.hasGPSCoordinates(venue)) {
       return Promise.resolve(venue);
     } else {
@@ -141,11 +146,11 @@ export class VenuesService {
         // for /get-gps-from-address we will return a 500 in this case, but for venue creation and update we will just
         // log this and let the user continue
         this.logger.warn(
-          `There was an exception fetching GPS coordinates, during venue creation (name: ${venue.name}, street: ${venue.street}):
-
-        ${ex}
-        `,
+          `There was an exception fetching GPS coordinates, during venue creation (name: ${venue.name}, street: ${venue.street}):`,
         );
+        this.logger.warn(ex);
+
+        return venue;
       }
     }
   }
