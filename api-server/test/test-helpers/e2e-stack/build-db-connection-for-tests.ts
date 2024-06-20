@@ -13,6 +13,7 @@ import { format, transports } from 'winston';
 import { DatetimeVenueModel } from '../../../src/events/models/datetime-venue.model';
 import { EventAdminMetadataModel } from '../../../src/events/models/event-admin-metadata.model';
 import { SEQUELIZE_LOGGING } from '../../../src/constants';
+import { GpsService } from '../../../src/venues/gps.services';
 
 const NUXT_INTERNAL_POSTFIX = 'Repository';
 
@@ -67,6 +68,7 @@ async function buildDbConnectionsForTests(
       VenuesService,
       AnnouncementsService,
       BitlyService,
+      GpsService,
     ],
   }).compile();
 

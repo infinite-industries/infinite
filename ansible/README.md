@@ -46,6 +46,14 @@ decrypt them.  Ask a team member. Then, run:
 $ echo -n "passphrase" >> .password
 ```
 
+### To Decrypt a File
+
+Run: `ansible-vault decrypt {file-path}`
+
+For example: `ansible-vault decrypt ./group_vars/prod/secrets`
+
+Make sure to never checkin the decrypted file
+
 *Alternatively:*
 
 ```console

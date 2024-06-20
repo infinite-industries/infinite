@@ -6,6 +6,8 @@ import {
   Body,
   Param,
   Query,
+  Inject,
+  LoggerService,
 } from '@nestjs/common';
 import { VenuesService } from './venues.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -23,11 +25,14 @@ import {
   GetGPSCoordinatesResponse,
 } from './dto/GetGPSCoordinatesRequest';
 import { GpsService } from './gps.services';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller(`${VERSION_1_URI}/venues`)
 @ApiTags('venues')
 export class VenuesController {
   constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
     private readonly venuesService: VenuesService,
     private readonly slackNotificationService: SlackNotificationService,
     private readonly gpsService: GpsService,
@@ -81,15 +86,18 @@ export class VenuesController {
     description: 'create a venue',
     type: SingleVenueResponse,
   })
-  create(@Body() venue: CreateVenueRequest): Promise<SingleVenueResponse> {
+  async create(
+    @Body() venue: CreateVenueRequest,
+  ): Promise<SingleVenueResponse> {
     return this.venuesService
       .create(venue)
       .then((venue) => {
-        const venueData = JSON.stringify((venue as any).dataValues, null, 4);
-        this.slackNotificationService.sendNotification(
-          VENUE_SUBMIT,
-          `(${ENV}) New venue created:\n${venueData}`,
+        this.logger.log(
+          `created a new venue -> id: ${venue.id}, name: ${venue.name}`,
         );
+
+        this.sendVenueCreationNotification(venue);
+
         return venue;
       })
       .then((venue) => new SingleVenueResponse({ venue }));
@@ -114,6 +122,14 @@ export class VenuesController {
             gpsCoordinates,
           }),
       );
+  }
+
+  private sendVenueCreationNotification(venue: CreateVenueRequest) {
+    const venueData = JSON.stringify((venue as any).dataValues, null, 4);
+    this.slackNotificationService.sendNotification(
+      VENUE_SUBMIT,
+      `(${ENV}) New venue created:\n${venueData}`,
+    );
   }
 }
 
