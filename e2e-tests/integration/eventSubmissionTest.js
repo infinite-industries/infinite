@@ -109,7 +109,7 @@ context('Event Submission', () => {
     cy.get('#nav-list li').contains('Admin').click()
     cy.location('pathname').should('include', 'admin')
     cy.contains('.unverified-events tr:first-child td', EVENT_NAME)
-    cy.get('.unverified-events tr:first-child a').contains('Edit').click()
+    cy.get('.unverified-events tr:first-child button').contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
     cy.get('.submitter-email input').should('have.value', EVENT_EMAIL)
 

@@ -18,7 +18,15 @@
           <small v-if="calendar_event.date_times.length > 2">(and {{ calendar_event.date_times.length - 2 }} more)</small>
           <template v-if="calendar_event.category && calendar_event.category==='online-resource'">Online Resource</template>
         </td>
-        <td><v-btn nuxt :to="{ name: 'admin-event-edit-id', params: { id: calendar_event.id } }">Edit</v-btn></td>
+        <td>
+          <ii-form-button
+            style-type="light"
+            @click="onEditClicked(calendar_event.id)"
+            :test-id="'edit-issue-button-' + calendar_event.id"
+          >
+            Edit
+          </ii-form-button>
+        </td>
         <td>
           <input
             type="checkbox"
@@ -37,9 +45,13 @@
   import PartnerService from '@/services/PartnerService'
   import { UPSERT_ADMIN_EVENT_METADATA } from '../store/event-admin-metadata'
   import getToken from '../helpers/getToken'
+  import FormButton from '@/components/FormButton.vue'
 
   export default {
     name: 'AdminEventsList',
+    components: {
+      'ii-form-button': FormButton
+    },
     props: ['calendar_events'],
     data: function () {
       return {
@@ -79,6 +91,9 @@
           UPSERT_ADMIN_EVENT_METADATA,
           { eventId: id, isProblem: event.currentTarget.checked, idToken }
         )
+      },
+      onEditClicked(eventId) {
+        this.$router.push({ name: 'admin-event-edit-id', params: { id: eventId } })
       }
     }
   }

@@ -33,7 +33,7 @@
           </v-flex>
         </v-layout>
 
-        <v-btn color="grey" type="submit">Send</v-btn>
+        <ii-form-button type="submit">Send</ii-form-button>
       </v-form>
     </div>
   </div>
@@ -41,6 +41,7 @@
 
 <script>
   import ContactService from '../services/ContactService'
+  import FormButton from '@/components/FormButton.vue'
 
   export default {
     data: function () {
@@ -81,6 +82,9 @@
         this.$refs.form.reset() // resets form validation
         this.dialog = true
       }
+    },
+    components: {
+      'ii-form-button': FormButton
     }
   }
 </script>
