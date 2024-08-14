@@ -9,10 +9,12 @@ export class SummarizationService {
     this.client = new Anthropic({ apiKey: process.env['ANTHROPIC_API_KEY'] });
   }
   async getTagsFromSummary(description: string): Promise<string[]> {
+    const sanitizedDescription = this.sanitizeDescription(description);
+
     const prompt = `
     Generate a set of concise, relevant tags for categorizing the following event in a database. The tags should be single words or short hyphenated phrases. Focus on the event type, musical genre, and key characteristics:
 
-    ${description}
+    ${sanitizedDescription}
 
     Output the tags as a JSON array of strings. Do not include any additional text or formatting."""
     `;
@@ -100,6 +102,16 @@ export class SummarizationService {
       console.warn('invalid json returned from anthropic');
       throw new BadAnthropicResponse();
     }
+  }
+
+  private sanitizeDescription(description: string): string {
+    const maxLen = 10000;
+
+    return description
+      .replace(/<[^<]+?>/gi, '') // replace html tags
+      .replace(/[^\x20-\x7E]/g, '') // replace non-printable characters
+      .slice(0, maxLen) // limit length
+      .trim(); // drop any trailing white space;
   }
 }
 
