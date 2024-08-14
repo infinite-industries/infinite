@@ -24,9 +24,9 @@ function doDeploy {
   ssh "$USER@$SERVER" bash --login -i << EOF
   set +e
   cd ./docker-files
-  docker-compose pull
-  docker-compose down
-  docker-compose up -d
+  docker compose pull
+  docker compose down
+  docker compose up -d
 
   echo 'Done!'
 EOF
