@@ -1,7 +1,5 @@
 # Infinite Industries API Server
 
-DON'T MERGE THIS PR
-
 Backend API powering [Infinite Industries](https://infinite.industries).
 
 ## Features
