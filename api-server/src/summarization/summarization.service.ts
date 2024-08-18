@@ -1,5 +1,8 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import Anthropic from '@anthropic-ai/sdk';
+const fs = require('fs');
+const { parse } = require('csv-parse');
+const ObjectsToCsv = require('objects-to-csv');
 
 @Injectable()
 export class SummarizationService {
@@ -9,14 +12,51 @@ export class SummarizationService {
     this.client = new Anthropic({ apiKey: process.env['ANTHROPIC_API_KEY'] });
   }
   async getTagsFromSummary(description: string): Promise<string[]> {
+    const rows = await this.getFile();
+    console.log('!!! rows: ', rows);
+
+    const completedRows = await Promise.all(
+      rows.map(async (row) => {
+        const description = row[0];
+        const tags = row[1];
+
+        try {
+          const suggestedTags = await this._getTagsFromSummary(description);
+          // console.log('!!! got suggestedTags: ', suggestedTags);
+
+          return [description, tags, suggestedTags];
+        } catch (ex) {
+          console.warn('!!! could not get do it: ', ex);
+          return [description, tags, 'ERROR: ' + ex];
+        }
+      }),
+    );
+
+    const csv = new ObjectsToCsv(completedRows);
+    await csv.toDisk(
+      '/Users/chriswininger/projects/infinite/api-server/src/summarization/caw_description_tags_output_4.csv',
+    );
+
+    return this._getTagsFromSummary(description);
+  }
+
+  async _getTagsFromSummary(description: string): Promise<string[]> {
     const sanitizedDescription = this.sanitizeDescription(description);
 
     const prompt = `
-    Generate a set of concise, relevant tags for categorizing the following event in a database. The tags should be single words or short hyphenated phrases. Focus on the event type, musical genre, and key characteristics:
+    Generate a set of concise, relevant tags for categorizing the following event in a database.
+    The tags should be single words or short hyphenated phrases. Focus on the event type, musical genre,
+    and key characteristics. When applicable, use one of these tags "gallery, music, theater, dance, film, literary-arts,
+    talk, festival, comedy":
 
     ${sanitizedDescription}
 
-    Output the tags as a JSON array of strings. Do not include any additional text or formatting."""
+    Output the tags as a JSON array of strings. Do not include any additional text or formatting. Make it directly
+    consumable by a function such as
+    
+    function myFunction(tags: string []) {
+      tags.forEach(tag => console.log("tag is:" + tag);
+    }
     `;
 
     const numTries = 3;
@@ -26,7 +66,7 @@ export class SummarizationService {
           console.info('trying to get a valid message from anthropic again');
         }
 
-        return this.tryToGetSummaryTags(prompt);
+        return await this.tryToGetSummaryTags(prompt);
       } catch (ex) {
         console.warn(`error handled for attempt ${i + 1}`);
       }
@@ -40,6 +80,25 @@ export class SummarizationService {
       'Unable to get a valid response from third party tag provider',
       500,
     );
+  }
+
+  private async getFile(): Promise<[]> {
+    const rows: [] = [];
+
+    return new Promise((resolve, _) => {
+      fs.createReadStream(
+        '/Users/chriswininger/projects/infinite/api-server/src/summarization/caw_description_tags.csv',
+      )
+        .pipe(parse({ delimiter: ',', from_line: 2 }))
+        .on('data', async function (row) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          rows.push(row);
+        })
+        .on('end', function () {
+          resolve(rows);
+        });
+    });
   }
 
   private async tryToGetSummaryTags(prompt: string): Promise<string[]> {
@@ -99,7 +158,7 @@ export class SummarizationService {
     try {
       return JSON.parse(messageText);
     } catch (ex) {
-      console.warn('invalid json returned from anthropic');
+      console.warn(`invalid json returned from anthropic: "${messageText}"`);
       throw new BadAnthropicResponse();
     }
   }
