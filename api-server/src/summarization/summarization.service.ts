@@ -1,5 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import Anthropic from '@anthropic-ai/sdk';
+import { delay } from 'rxjs';
 const fs = require('fs');
 const { parse } = require('csv-parse');
 const ObjectsToCsv = require('objects-to-csv');
@@ -22,6 +23,7 @@ export class SummarizationService {
 
         try {
           const suggestedTags = await this._getTagsFromSummary(description);
+          delay(1000);
           // console.log('!!! got suggestedTags: ', suggestedTags);
 
           return [description, tags, suggestedTags];
@@ -34,7 +36,7 @@ export class SummarizationService {
 
     const csv = new ObjectsToCsv(completedRows);
     await csv.toDisk(
-      '/Users/chriswininger/projects/infinite/api-server/src/summarization/caw_description_tags_output_4.csv',
+      '/Users/chriswininger/projects/infinite/api-server/src/summarization/caw_description_tags_output_6.csv',
     );
 
     return this._getTagsFromSummary(description);
@@ -59,6 +61,7 @@ export class SummarizationService {
     }
     `;
 
+    const errors = [];
     const numTries = 3;
     for (let i = 0; i < numTries; i++) {
       try {
@@ -68,7 +71,8 @@ export class SummarizationService {
 
         return await this.tryToGetSummaryTags(prompt);
       } catch (ex) {
-        console.warn(`error handled for attempt ${i + 1}`);
+        errors.push(ex);
+        console.warn(`error handled for attempt ${i + 1}: ` + ex);
       }
     }
 
@@ -77,7 +81,8 @@ export class SummarizationService {
     );
 
     throw new HttpException(
-      'Unable to get a valid response from third party tag provider',
+      'Unable to get a valid response from third party tag provider: ' +
+        JSON.stringify(errors, null, 4),
       500,
     );
   }
@@ -143,14 +148,20 @@ export class SummarizationService {
         return parsedValue;
       } else {
         console.warn(
-          'The tag array returned by anthropic is a json array but does not contain all string values',
+          'The tag array returned by anthropic is a json array but does not contain all string values: ',
+          parsedValue,
         );
 
-        throw new BadAnthropicResponse();
+        throw new BadAnthropicResponse(
+          'The tag array returned by anthropic is a json array but does not contain all string values: ' +
+            messageText,
+        );
       }
     } else {
       console.warn('Anthropic returned valid JSON but it was not an array');
-      throw new BadAnthropicResponse();
+      throw new BadAnthropicResponse(
+        'Anthropic returned valid JSON but it was not an array: ' + messageText,
+      );
     }
   }
 
@@ -159,7 +170,9 @@ export class SummarizationService {
       return JSON.parse(messageText);
     } catch (ex) {
       console.warn(`invalid json returned from anthropic: "${messageText}"`);
-      throw new BadAnthropicResponse();
+      throw new BadAnthropicResponse(
+        `invalid json returned from anthropic: "${messageText}"`,
+      );
     }
   }
 
@@ -175,7 +188,7 @@ export class SummarizationService {
 }
 
 class BadAnthropicResponse extends Error {
-  constructor() {
-    super('Anthropic Returned A Bad Response');
+  constructor(messasge = 'Anthropic Returned A Bad Response') {
+    super(messasge);
   }
 }
