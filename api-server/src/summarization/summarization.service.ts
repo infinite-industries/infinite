@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import Anthropic from '@anthropic-ai/sdk';
-import { delay } from 'rxjs';
+import ollama from 'ollama';
+
 const fs = require('fs');
 const { parse } = require('csv-parse');
 const ObjectsToCsv = require('objects-to-csv');
@@ -23,7 +24,6 @@ export class SummarizationService {
 
         try {
           const suggestedTags = await this._getTagsFromSummary(description);
-          delay(1000);
           // console.log('!!! got suggestedTags: ', suggestedTags);
 
           return [description, tags, suggestedTags];
@@ -36,7 +36,7 @@ export class SummarizationService {
 
     const csv = new ObjectsToCsv(completedRows);
     await csv.toDisk(
-      '/Users/chriswininger/projects/infinite/api-server/src/summarization/caw_description_tags_output_6.csv',
+      '/home/chris/projects/infinite/api-server/src/summarization/caw_description_tags_output_7.csv',
     );
 
     return this._getTagsFromSummary(description);
@@ -53,12 +53,8 @@ export class SummarizationService {
 
     ${sanitizedDescription}
 
-    Output the tags as a JSON array of strings. Do not include any additional text or formatting. Make it directly
-    consumable by a function such as
-    
-    function myFunction(tags: string []) {
-      tags.forEach(tag => console.log("tag is:" + tag);
-    }
+    This is important, Generate a valid array JSON strings, for example: [ "gallery", "music" ]. Output only this json,
+    do not wrap it in anything, do explain yourself, or include any other text.
     `;
 
     const errors = [];
@@ -92,7 +88,7 @@ export class SummarizationService {
 
     return new Promise((resolve, _) => {
       fs.createReadStream(
-        '/Users/chriswininger/projects/infinite/api-server/src/summarization/caw_description_tags.csv',
+        '/home/chris/projects/infinite/api-server/src/summarization/caw_description_tags.csv',
       )
         .pipe(parse({ delimiter: ',', from_line: 2 }))
         .on('data', async function (row) {
@@ -106,7 +102,7 @@ export class SummarizationService {
     });
   }
 
-  private async tryToGetSummaryTags(prompt: string): Promise<string[]> {
+  private async promptAnthropic(prompt: string) {
     const message: Anthropic.Message = await this.client.messages.create({
       max_tokens: 300,
       system:
@@ -116,7 +112,25 @@ export class SummarizationService {
       temperature: 0.5,
     });
 
-    const messageText = this.getAnthropicMessageText(message);
+    return this.getAnthropicMessageText(message);
+  }
+
+  private async promptOllama(prompt: string): Promise<string> {
+    const response = await ollama.chat({
+      model: 'llama3.1',
+      messages: [{ role: 'user', content: prompt }],
+      options: {
+        temperature: 0.1, // Lower temperature for more deterministic output
+      },
+    });
+
+    return response?.message?.content;
+  }
+
+  private async tryToGetSummaryTags(prompt: string): Promise<string[]> {
+    // const messageText = await this.promptAnthropic(prompt);
+    const messageText = await this.promptOllama(prompt);
+
     return this.parseMessageTextToArray(messageText);
   }
 
@@ -129,6 +143,10 @@ export class SummarizationService {
   }
 
   private parseMessageTextToArray(messageText: string): string[] {
+    if (messageText.indexOf('```json') === 0) {
+      messageText = messageText.replace('```json', '').replace('```', '');
+    }
+
     const parsedValue: unknown = this.parseMessageText(messageText);
 
     if (Array.isArray(parsedValue)) {

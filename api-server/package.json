@@ -48,6 +48,7 @@
     "moment": "~2.29.1",
     "moment-timezone": "~0.5.33",
     "nest-winston": "^1.9.1",
+    "ollama": "^0.5.8",
     "pg": "^8.3.2",
     "pg-hstore": "^2.3.3",
     "reflect-metadata": "^0.1.13",
