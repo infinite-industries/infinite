@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import Anthropic from '@anthropic-ai/sdk';
-import ollama from 'ollama';
+import { Ollama } from 'ollama';
 
 const fs = require('fs');
 const { parse } = require('csv-parse');
@@ -14,47 +14,80 @@ export class SummarizationService {
     this.client = new Anthropic({ apiKey: process.env['ANTHROPIC_API_KEY'] });
   }
   async getTagsFromSummary(description: string): Promise<string[]> {
+    await this.runTests();
+    return await this._getTagsFromSummary(description);
+  }
+
+  async runTests() {
     const rows = await this.getFile();
     console.log('!!! rows: ', rows);
 
-    const completedRows = await Promise.all(
-      rows.map(async (row) => {
-        const description = row[0];
-        const tags = row[1];
+    const completedRows = [];
 
-        try {
-          const suggestedTags = await this._getTagsFromSummary(description);
-          // console.log('!!! got suggestedTags: ', suggestedTags);
+    for (let ndx = 0; ndx < rows.length; ndx++) {
+      const row = rows[ndx];
 
-          return [description, tags, suggestedTags];
-        } catch (ex) {
-          console.warn('!!! could not get do it: ', ex);
-          return [description, tags, 'ERROR: ' + ex];
-        }
-      }),
-    );
+      const description = row[0];
+      const tags = row[1];
+
+      try {
+        console.log(`processing row ${ndx}`);
+        await delay();
+        console.log(`done waiting for ${ndx}`);
+
+        const suggestedTags = await this._getTagsFromSummary(description);
+        console.log(`got suggestedTags (${row}): `, suggestedTags);
+        console.log(`original tags: `, tags);
+        console.log('');
+        console.log('description: ' + description);
+
+        completedRows.push([description, tags, suggestedTags]);
+      } catch (ex) {
+        console.warn('!!! could not get do it: ', ex);
+
+        completedRows.push([description, tags, 'ERROR: ' + ex]);
+      }
+    }
+
+    console.log('done with for loop');
 
     const csv = new ObjectsToCsv(completedRows);
     await csv.toDisk(
-      '/home/chris/projects/infinite/api-server/src/summarization/caw_description_tags_output_7.csv',
+      '/Users/chriswininger/projects/infinite/api-server/src/summarization/caw_description_tags_output_8.csv',
     );
-
-    return this._getTagsFromSummary(description);
   }
 
   async _getTagsFromSummary(description: string): Promise<string[]> {
     const sanitizedDescription = this.sanitizeDescription(description);
 
+    // const prompt = `
+    // Generate a set of concise, relevant tags for categorizing the following event in a database.
+    // The tags should be single words or short hyphenated phrases. Focus on the event type, musical genre,
+    // and key characteristics. When applicable, use one of these tags "gallery, music, theater, dance, film, literary-arts,
+    // talk, festival, comedy":
+    //
+    // ${sanitizedDescription}
+    //
+    // This is important, Generate a valid array JSON strings, for example: [ "gallery", "music" ]. Output only this json,
+    // do not wrap it in anything, do explain yourself, or include any other text.
+    // `;
+
     const prompt = `
     Generate a set of concise, relevant tags for categorizing the following event in a database.
     The tags should be single words or short hyphenated phrases. Focus on the event type, musical genre,
-    and key characteristics. When applicable, use one of these tags "gallery, music, theater, dance, film, literary-arts,
-    talk, festival, comedy":
-
+    and key characteristics. When applicable, use one of these tags
+    'gallery, music, theater, dance, film, literary-arts, talk, festival, comedy'
+    
+    This is important, generate a valid array JSON strings.
+    
+    Example1 : [ "gallery", "music" ]
+    
+    Output JSON only.
+    Do not wrap JSON output in anything.
+    Do not try to explain the code you generated.
+    Do not add any other text to your JSON output.
+    
     ${sanitizedDescription}
-
-    This is important, Generate a valid array JSON strings, for example: [ "gallery", "music" ]. Output only this json,
-    do not wrap it in anything, do explain yourself, or include any other text.
     `;
 
     const errors = [];
@@ -88,7 +121,7 @@ export class SummarizationService {
 
     return new Promise((resolve, _) => {
       fs.createReadStream(
-        '/home/chris/projects/infinite/api-server/src/summarization/caw_description_tags.csv',
+        '/Users/chriswininger/projects/infinite/api-server/src/summarization/caw_description_tags.csv',
       )
         .pipe(parse({ delimiter: ',', from_line: 2 }))
         .on('data', async function (row) {
@@ -116,6 +149,7 @@ export class SummarizationService {
   }
 
   private async promptOllama(prompt: string): Promise<string> {
+    const ollama = new Ollama({ host: 'http://100.99.97.97:11434' });
     const response = await ollama.chat({
       model: 'llama3.1',
       messages: [{ role: 'user', content: prompt }],
@@ -128,8 +162,8 @@ export class SummarizationService {
   }
 
   private async tryToGetSummaryTags(prompt: string): Promise<string[]> {
-    // const messageText = await this.promptAnthropic(prompt);
-    const messageText = await this.promptOllama(prompt);
+    const messageText = await this.promptAnthropic(prompt);
+    // const messageText = await this.promptOllama(prompt);
 
     return this.parseMessageTextToArray(messageText);
   }
@@ -209,4 +243,12 @@ class BadAnthropicResponse extends Error {
   constructor(messasge = 'Anthropic Returned A Bad Response') {
     super(messasge);
   }
+}
+
+async function delay(time = 12000): Promise<void> {
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      resolve();
+    }, time),
+  );
 }
