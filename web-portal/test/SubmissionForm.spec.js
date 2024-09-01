@@ -41,7 +41,8 @@ describe('SubmissionForm component', () => {
         'vue-editor': true
       },
       mocks: {
-        $apiService: { }
+        $apiService: { },
+        $tagSuggestionService: { getBaseTagSuggestions () { return [] } }
       }
     })
   })
