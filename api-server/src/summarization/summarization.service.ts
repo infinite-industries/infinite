@@ -1,14 +1,37 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  Inject,
+  Injectable,
+  LoggerService,
+} from '@nestjs/common';
 import Anthropic from '@anthropic-ai/sdk';
+import { isNullOrUndefined } from '../utils';
+import { isEmptyString } from '../utils/is-not-empty-string';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Injectable()
 export class SummarizationService {
   private readonly client: Anthropic;
 
-  constructor() {
-    this.client = new Anthropic({ apiKey: process.env['ANTHROPIC_API_KEY'] });
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
+  ) {
+    this.logger = logger;
+
+    if (isEmptyString(process.env['ANTHROPIC_API_KEY'])) {
+      this.logger.warn(
+        'ANTHROPIC_API_KEY is not set, the server will not be able to recommended tags',
+      );
+    } else {
+      this.client = new Anthropic({ apiKey: process.env['ANTHROPIC_API_KEY'] });
+    }
   }
   async getTagsFromSummary(description: string): Promise<string[]> {
+    if (isNullOrUndefined(this.client)) {
+      return [];
+    }
+
     const sanitizedDescription = this.sanitizeDescription(description);
 
     const prompt = `
