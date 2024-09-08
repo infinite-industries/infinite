@@ -59,17 +59,17 @@ export class SummarizationService {
     for (let i = 0; i < numTries; i++) {
       try {
         if (numTries > 0) {
-          console.info('trying to get a valid message from anthropic again');
+          this.logger.log('trying to get a valid message from anthropic again');
         }
 
         return this.tryToGetSummaryTags(prompt);
       } catch (ex) {
         errors.push(ex);
-        console.warn(`error handled for attempt ${i + 1}: ` + ex);
+        this.logger.warn(`error handled for attempt ${i + 1}: ` + ex);
       }
     }
 
-    console.warn(
+    this.logger.warn(
       `unable to get a valid set of tags from anthropic after ${numTries} attempts
       
       ${JSON.stringify(errors, null, 4)}
@@ -126,7 +126,7 @@ export class SummarizationService {
     if (Array.isArray(parsedValue)) {
       if (parsedValue.length === 0) {
         // for now, it may be worth not retrying this edge case, lets just log and move on
-        console.warn(
+        this.logger.warn(
           'Anthropic returned a valid but empty array of strings, no suggested tags',
         );
         return [];
@@ -139,7 +139,7 @@ export class SummarizationService {
       if (isStringArray) {
         return parsedValue;
       } else {
-        console.warn(
+        this.logger.warn(
           'The tag array returned by anthropic is a json array but does not contain all string values: ',
           parsedValue,
         );
@@ -150,7 +150,7 @@ export class SummarizationService {
         );
       }
     } else {
-      console.warn('Anthropic returned valid JSON but it was not an array');
+      this.logger.warn('Anthropic returned valid JSON but it was not an array');
       throw new BadAnthropicResponse(
         'Anthropic returned valid JSON but it was not an array: ' + messageText,
       );
@@ -161,7 +161,9 @@ export class SummarizationService {
     try {
       return JSON.parse(messageText);
     } catch (ex) {
-      console.warn(`invalid json returned from anthropic: "${messageText}"`);
+      this.logger.warn(
+        `invalid json returned from anthropic: "${messageText}"`,
+      );
       throw new BadAnthropicResponse(
         `invalid json returned from anthropic: "${messageText}"`,
       );
