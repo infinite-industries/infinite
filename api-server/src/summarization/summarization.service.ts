@@ -78,7 +78,7 @@ export class SummarizationService {
 
     throw new HttpException(
       'Unable to get a valid response from third party tag provider',
-      500,
+      503,
     );
   }
 
