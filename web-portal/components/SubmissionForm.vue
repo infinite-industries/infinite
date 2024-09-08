@@ -193,7 +193,7 @@
           <h3>Full Event Description:</h3>
         </v-flex>
         <v-flex xs12 sm11>
-          <vue-editor id="vue-editor1" v-model="calendar_event.description"></vue-editor>
+          <vue-editor id="vue-editor1" v-model="calendar_event.description" @blur="suggestTagsFromDescription"></vue-editor>
         </v-flex>
       </v-layout>
 
@@ -209,6 +209,9 @@
             chips
             deletable-chips
             :items="suggestedTags"
+            :messages="showingSuggestedTags ? 'These tags are generated from your description, using AI. Feel free to edit or remove them.' : ''"
+            :loading="loadingSuggestedTags"
+            @change="showingSuggestedTags = false"
           />
         </v-flex>
       </v-layout>
@@ -398,6 +401,8 @@
         eventSubmitted: false,
         content: '',
         showEventLoadingSpinner: false,
+        loadingSuggestedTags: false,
+        showingSuggestedTags: false,
         send_summary: false,
         send_summary_to: '',
         send_summary_others: false,
@@ -616,6 +621,23 @@
       },
       onDateTimeVenueChanged: function(data) {
         this.doTimeAndLocationExistingEventDetection()
+      },
+      suggestTagsFromDescription: function () {
+        if (this.calendar_event.description && this.calendar_event.tags.length === 0) {
+          this.loadingSuggestedTags = true
+          this.$tagSuggestionService.getSuggestionsForDescription(this.calendar_event.description)
+            .then((suggestions) => {
+              if (suggestions) {
+                this.showingSuggestedTags = true
+                this.calendar_event.tags = suggestions
+                this.rawSuggestedTags = [...suggestions]
+              }
+            })
+            .catch(err => console.error(err))
+            .finally(() => {
+              this.loadingSuggestedTags = false
+            })
+        }
       }
     },
 
@@ -658,17 +680,7 @@
       },
 
       suggestedTags: function () {
-        return [
-          'gallery',
-          'music',
-          'theater',
-          'dance',
-          'film',
-          'literary arts',
-          'talk',
-          'festival',
-          'comedy'
-        ]
+        return this.$tagSuggestionService.getBaseTagSet()
       },
 
       eventRequiredFields: function () {
