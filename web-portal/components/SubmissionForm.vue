@@ -626,9 +626,12 @@
         if (this.calendar_event.description && this.calendar_event.tags.length === 0) {
           this.loadingSuggestedTags = true
           this.$tagSuggestionService.getSuggestionsForDescription(this.calendar_event.description)
-            .then(({ data }) => {
-              this.showingSuggestedTags = true
-              this.calendar_event.tags = data
+            .then((suggestions) => {
+              if (suggestions) {
+                this.showingSuggestedTags = true
+                this.calendar_event.tags = suggestions
+                this.rawSuggestedTags = [...suggestions]
+              }
             })
             .catch(err => console.error(err))
             .finally(() => {

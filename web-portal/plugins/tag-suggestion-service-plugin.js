@@ -26,9 +26,15 @@ class TagSuggestionService {
 
   /**
    * Return tag suggestions for an event's description
+   *
+   * On empty array response or error, returns null
    */
   async getSuggestionsForDescription(description) {
-    const response = await this.$apiService.post('/summarization/get-tags', { description })
-    return response.data
+    try {
+      const response = await this.$apiService.post('/summarization/get-tags', { description })
+      return response.data?.length > 0 ? response.data : null
+    } catch (e) {
+      return null
+    }
   }
 }
