@@ -677,7 +677,7 @@
       },
 
       suggestedTags: function () {
-        return this.$tagSuggestionService.getBaseTagSuggestions()
+        return this.$tagSuggestionService.getBaseTagSet()
       },
 
       eventRequiredFields: function () {

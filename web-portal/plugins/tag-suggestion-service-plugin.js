@@ -10,7 +10,7 @@ class TagSuggestionService {
   /**
    * Return the set of base tags we've historically offerred as suggestions
    */
-  getBaseTagSuggestions() {
+  getBaseTagSet() {
     return [
       'gallery',
       'music',
