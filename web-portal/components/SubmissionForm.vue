@@ -646,10 +646,6 @@
             .catch(err => console.error(err))
             .finally(() => {
               this.loadingSuggestedTags = false
-              if (!this.rawSuggestedTags) {
-                this.rawSuggestedTags = ['art', 'culture']
-                this.calendar_event.tags = ['art', 'science']
-              }
             })
         }
       },
