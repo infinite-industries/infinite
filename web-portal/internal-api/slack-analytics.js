@@ -48,7 +48,7 @@ function PostToSlack(suggested, submitted, eventId) {
     }
 
     contactChannel.send({
-      channel: 'analytics-test',
+      channel: 'analytics',
       icon_emoji: ':computer:',
       text: message
     })
