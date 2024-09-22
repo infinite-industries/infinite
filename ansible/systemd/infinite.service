@@ -9,7 +9,7 @@ Group=infinite
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/bin/bash -c "docker-compose --project-directory /home/infinite/docker-files up --detach"
-ExecStop=/bin/bash -c "docker-compose --project-directory /home/infinite/docker-files stop"
+ExecStop=/bin/bash -c "docker-compose --project-directory /home/infinite/docker-files down"
 
 [Install]
 WantedBy=multi-user.target
