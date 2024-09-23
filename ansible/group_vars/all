@@ -25,12 +25,6 @@ auth_use_test_users: false
 # The environment {dev|staging|prod}
 env: dev
 
-# The public location of the frontend service (for example https://infinite.industries)
-app_url: fe_url
-
-# The URL of the API
-api_url: api_url
-
 # Timezone handling
 timezone_default: US/Eastern
 timezone_options: US/Eastern,US/Central,US/Mountain,US/Pacific
