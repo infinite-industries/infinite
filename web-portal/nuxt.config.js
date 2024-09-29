@@ -100,6 +100,7 @@ export default {
     { src: '~/plugins/vue-editor', ssr: false },
     '~/plugins/close-sidebar-on-nav.client.js', // client-only
     '~/plugins/api-service-plugin.js',
+    '~/plugins/tag-suggestion-service-plugin.js',
     '~/plugins/page-meta-plugin.js',
     '~/plugins/analytics.client.js'
   ],

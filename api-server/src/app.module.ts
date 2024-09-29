@@ -25,6 +25,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UploadsModule } from './uploads/uploads.module';
 import { APP_FILTER } from '@nestjs/core';
 import { ExceptionLogger } from './logging/ExceptionLogger';
+import { SummarizationModule } from './summarization/summarization.module';
 
 const dialectOptions = SQL_IS_USING_SSL
   ? {
@@ -75,6 +76,7 @@ const dialectOptions = SQL_IS_USING_SSL
     CalendaringModule,
     AuthenticationModule,
     UploadsModule,
+    SummarizationModule,
   ],
   controllers: [AppController],
   providers: [
