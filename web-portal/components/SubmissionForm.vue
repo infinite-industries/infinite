@@ -629,7 +629,12 @@
             .then((suggestions) => {
               if (suggestions) {
                 this.showingSuggestedTags = true
-                this.calendar_event.tags = suggestions
+
+                if (!this.calendar_event.tags) {
+                  this.calendar_event.tags = []
+                }
+
+                this.calendar_event.tags = [...this.calendar_event.tags, ...suggestions]
                 this.rawSuggestedTags = [...suggestions]
               }
             })
