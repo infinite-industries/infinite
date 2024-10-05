@@ -7,6 +7,8 @@ if (!SLACK_WEBHOOK_ANALYTICS) {
   logger.warn('Slack webhook (analytics) is not configured; will not be able to send messages')
 }
 
+export const ENV = process.env.ENV || 'dev'
+
 export default async function slackAnalyticsHandler(req, res) {
   logger.info('JavaScript HTTP trigger (analytics) function processed a request.')
 
@@ -36,6 +38,7 @@ function PostToSlack(suggested, submitted, eventId) {
   return new Promise((resolve, reject) => {
     const message = JSON.stringify({
       type: 'tag-feedback',
+      env: ENV,
       suggested,
       submitted,
       ...(eventId ? { eventId } : null)
