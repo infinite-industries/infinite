@@ -176,7 +176,8 @@ export default {
   */
   serverMiddleware: [
     json(),
-    { path: '/internal-api/slack-alert', handler: '~/internal-api/slack-alert.js' }
+    { path: '/internal-api/slack-alert', handler: '~/internal-api/slack-alert.js' },
+    { path: '/internal-api/analytics', handler: '~/internal-api/slack-analytics' }
   ],
   /*
   ** Build configuration

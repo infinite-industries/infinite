@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 export default ({ app }, inject) => {
   inject('tagSuggestionService', new TagSuggestionService(app.$apiService))
 }
@@ -36,5 +38,9 @@ class TagSuggestionService {
     } catch (e) {
       return null
     }
+  }
+
+  async submitFeedback(suggested, submitted, eventId) {
+    await axios.post('/internal-api/analytics/tag-feedback', { suggested, submitted, eventId })
   }
 }

@@ -403,6 +403,7 @@
         showEventLoadingSpinner: false,
         loadingSuggestedTags: false,
         showingSuggestedTags: false,
+        rawSuggestedTags: null,
         send_summary: false,
         send_summary_to: '',
         send_summary_others: false,
@@ -453,6 +454,8 @@
           this.showSubmitError = true
           this.submissionError = error
         })
+
+        this.recordSuggestedTags()
       },
       ConfirmDeleteEvent: function () {
         this.dialog = true
@@ -517,6 +520,8 @@
           event.image = response.data.imagePath
 
           return this.$apiService.post('/events', event)
+        }).then((response) => {
+          return this.recordSuggestedTags(response.data?.id)
         }).then((response) => {
           this.showEventLoadingSpinner = false
           this.$emit('submitted')
@@ -643,6 +648,15 @@
               this.loadingSuggestedTags = false
             })
         }
+      },
+      recordSuggestedTags(eventId) {
+        if (this.rawSuggestedTags) {
+          return this.$tagSuggestionService.submitFeedback(
+            this.rawSuggestedTags,
+            this.calendar_event.tags,
+            eventId || this.calendar_event.id
+          )
+        } else return Promise.resolve()
       }
     },
 
