@@ -33,7 +33,6 @@ timezone_options: US/Eastern,US/Central,US/Mountain,US/Pacific
 api_port: 3003
 
 google_analytics_id: UA-00000
-fathom_site_id: OUVQWFDS
 
 # slack webhooks are used to send messages about events on the website to a
 # slack channel (they are not required)
