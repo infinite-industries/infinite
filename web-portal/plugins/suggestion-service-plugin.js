@@ -1,10 +1,10 @@
 import axios from 'axios'
 
 export default ({ app }, inject) => {
-  inject('tagSuggestionService', new TagSuggestionService(app.$apiService))
+  inject('suggestionService', new SuggestionService(app.$apiService))
 }
 
-class TagSuggestionService {
+class SuggestionService {
   constructor(apiService) {
     this.$apiService = apiService
   }

@@ -645,7 +645,7 @@
 
         if (this.calendar_event.description && isTagsEmpty()) {
           this.loadingSuggestedTags = true
-          this.$tagSuggestionService.getSuggestionsForDescription(this.calendar_event.description)
+          this.$suggestionService.getSuggestionsForDescription(this.calendar_event.description)
             .then((suggestions) => {
               if (suggestions) {
                 this.showingSuggestedTags = true
@@ -670,7 +670,7 @@
 
         if (this.calendar_event.description && isBriefDescriptionEmpty()) {
           this.loadingSuggestedBriefDescription = true
-          this.$tagSuggestionService.getBriefDescriptionFromFullDescription(this.calendar_event.description)
+          this.$suggestionService.getBriefDescriptionFromFullDescription(this.calendar_event.description)
             .then((response) => {
               if (!response) {
                 return
@@ -697,7 +697,7 @@
       },
       recordSuggestedTags(eventId) {
         if (this.rawSuggestedTags) {
-          return this.$tagSuggestionService.submitFeedback(
+          return this.$suggestionService.submitFeedback(
             this.rawSuggestedTags,
             this.calendar_event.tags,
             eventId || this.calendar_event.id
@@ -745,7 +745,7 @@
       },
 
       suggestedTags: function () {
-        return this.$tagSuggestionService.getBaseTagSet()
+        return this.$suggestionService.getBaseTagSet()
       },
 
       eventRequiredFields: function () {

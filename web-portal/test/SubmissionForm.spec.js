@@ -42,7 +42,7 @@ describe('SubmissionForm component', () => {
       },
       mocks: {
         $apiService: { },
-        $tagSuggestionService: { getBaseTagSet () { return [] } }
+        $suggestionService: { getBaseTagSet () { return [] } }
       }
     })
   })
