@@ -27,8 +27,48 @@ export class SummarizationService {
       this.client = new Anthropic({ apiKey: process.env['ANTHROPIC_API_KEY'] });
     }
   }
+
+  async getBriefDescriptionFromSummary(description: string): Promise<string> {
+    description = description.trim();
+
+    if (isNullOrUndefined(this.client) || description.length === 0) {
+      return '';
+    }
+
+    if (description.length <= 120) {
+      return description;
+    }
+
+    const prompt = `
+    Generate a 120 character summary of the event described below. Be brief, this
+    should be a description that can be displayed as a headline on a small card:
+ 
+    ${this.sanitizeDescription(description)}
+    `;
+
+    return (await this.retryPromptLoop(async () => {
+      const promptResult = await this.doAnthropicPrompt(
+        'You are a helpful assistant that generates summaries for events.',
+        prompt,
+      );
+
+      // === validation ===
+      if (
+        promptResult.toLowerCase().indexOf('as a large language model') >= 0
+      ) {
+        throw new BadAnthropicResponse(
+          'The response contains "as a large language model"',
+        );
+      }
+
+      return promptResult;
+    })) as string;
+  }
+
   async getTagsFromSummary(description: string): Promise<string[]> {
-    if (isNullOrUndefined(this.client)) {
+    description = description.trim();
+
+    if (isNullOrUndefined(this.client) || description.length === 0) {
       return [];
     }
 
@@ -54,6 +94,19 @@ export class SummarizationService {
     Output the tags as a JSON array of strings. Do not include any additional text or formatting."""
     `;
 
+    return (await this.retryPromptLoop(async () => {
+      const promptResult: string = await this.doAnthropicPrompt(
+        'You are a helpful assistant that generates relevant tags for events.',
+        prompt,
+      );
+
+      return this.tryToGetSummaryTags(promptResult);
+    })) as string[];
+  }
+
+  private async retryPromptLoop(
+    promptMethod: () => Promise<string[] | string>,
+  ) {
     const errors = [];
     const numTries = 3;
     for (let i = 0; i < numTries; i++) {
@@ -62,7 +115,7 @@ export class SummarizationService {
           this.logger.log('trying to get a valid message from anthropic again');
         }
 
-        return this.tryToGetSummaryTags(prompt);
+        return promptMethod();
       } catch (ex) {
         errors.push(ex);
         this.logger.warn(`error handled for attempt ${i + 1}: ` + ex);
@@ -82,10 +135,8 @@ export class SummarizationService {
     );
   }
 
-  private async tryToGetSummaryTags(prompt: string): Promise<string[]> {
-    const messageText = await this.promptAnthropic(prompt);
-
-    const tags = this.parseMessageTextToArray(messageText);
+  private tryToGetSummaryTags(promptResult: string): string[] {
+    const tags = this.parseMessageTextToArray(promptResult);
 
     if (tags.length > 3) {
       return tags.slice(0, 3);
@@ -94,11 +145,10 @@ export class SummarizationService {
     return tags;
   }
 
-  private async promptAnthropic(prompt: string) {
+  private async doAnthropicPrompt(systemPrompt: string, prompt: string) {
     const message: Anthropic.Message = await this.client.messages.create({
       max_tokens: 300,
-      system:
-        'You are a helpful assistant that generates relevant tags for events.',
+      system: systemPrompt,
       messages: [{ role: 'user', content: prompt }],
       model: 'claude-3-sonnet-20240229',
       temperature: 0.5,

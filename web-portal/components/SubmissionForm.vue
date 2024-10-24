@@ -183,7 +183,13 @@
           <h3 class="form-label">Brief Description<span class="required-field">*</span>:</h3>
         </v-flex>
         <v-flex xs12 sm8>
-          <v-text-field class="brief-description" label="A brief description for short-attention-span humans and webcrawlers" v-model="calendar_event.brief_description"></v-text-field>
+          <v-text-field
+            class="brief-description"
+            label="A brief description for short-attention-span humans and webcrawlers"
+            v-model="calendar_event.brief_description"
+            :loading="loadingSuggestedBriefDescription"
+            :messages="showingSuggestedBriefDescription ? 'This summary was generated from your full description using AI. Feel free to edit or replace it.' : ''"
+          />
         </v-flex>
       </v-layout>
 
@@ -193,7 +199,7 @@
           <h3>Full Event Description:</h3>
         </v-flex>
         <v-flex xs12 sm11>
-          <vue-editor id="vue-editor1" v-model="calendar_event.description" @blur="suggestTagsFromDescription"></vue-editor>
+          <vue-editor id="vue-editor1" v-model="calendar_event.description" @blur="makeSuggestionsBasedOnDescription" />
         </v-flex>
       </v-layout>
 
@@ -404,6 +410,9 @@
         loadingSuggestedTags: false,
         showingSuggestedTags: false,
         rawSuggestedTags: null,
+        loadingSuggestedBriefDescription: false,
+        showingSuggestedBriefDescription: false,
+        rawSuggestedBriefDescription: null,
         send_summary: false,
         send_summary_to: '',
         send_summary_others: false,
@@ -627,8 +636,14 @@
       onDateTimeVenueChanged: function(data) {
         this.doTimeAndLocationExistingEventDetection()
       },
+      makeSuggestionsBasedOnDescription: function () {
+        this.suggestTagsFromDescription()
+        this.suggestBriefDescriptionFromFullDescription()
+      },
       suggestTagsFromDescription: function () {
-        if (this.calendar_event.description && this.calendar_event.tags.length === 0) {
+        const isTagsEmpty = () => !this.calendar_event.tags || this.calendar_event.tags.length === 0
+
+        if (this.calendar_event.description && isTagsEmpty()) {
           this.loadingSuggestedTags = true
           this.$tagSuggestionService.getSuggestionsForDescription(this.calendar_event.description)
             .then((suggestions) => {
@@ -646,6 +661,37 @@
             .catch(err => console.error(err))
             .finally(() => {
               this.loadingSuggestedTags = false
+            })
+        }
+      },
+      suggestBriefDescriptionFromFullDescription: function () {
+        const isBriefDescriptionEmpty = () => (!this.calendar_event.brief_description ||
+          this.calendar_event.brief_description.length === 0)
+
+        if (this.calendar_event.description && isBriefDescriptionEmpty()) {
+          this.loadingSuggestedBriefDescription = true
+          this.$tagSuggestionService.getBriefDescriptionFromFullDescription(this.calendar_event.description)
+            .then((response) => {
+              if (!response) {
+                return
+              }
+
+              const { summary } = response
+
+              if (summary && summary.trim().length > 0) {
+                this.rawSuggestedBriefDescription = summary
+
+                // double check that no one edited the field while we were waiting on the server
+                if (isBriefDescriptionEmpty()) {
+                  this.calendar_event.brief_description = summary
+
+                  this.showingSuggestedBriefDescription = true
+                }
+              }
+            })
+            .catch(err => console.error(err))
+            .finally(() => {
+              this.loadingSuggestedBriefDescription = false
             })
         }
       },
