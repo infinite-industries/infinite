@@ -29,6 +29,7 @@ export class SummarizationService {
   }
 
   async getBriefDescriptionFromSummary(description: string): Promise<string> {
+    console.log(`!!! full description: ${description}`);
     description = description.trim();
 
     if (isNullOrUndefined(this.client) || description.length === 0) {
@@ -39,10 +40,18 @@ export class SummarizationService {
       return description;
     }
 
+    console.log(
+      `!!! sanitizedDescription: ${this.sanitizeDescription(description)}`,
+    );
+
     const prompt = `
-    Generate a 120 character summary of the event described below. Be brief, this
-    should be a description that can be displayed as a headline on a small card:
- 
+    Generate a 120 character summary of the event described below.
+    
+    * Be brief, this should be a description that can be displayed as a headline on a small card
+    * Respond only in English
+    * Do not include any dates or times
+    
+    Event:
     ${this.sanitizeDescription(description)}
     `;
 
@@ -223,11 +232,13 @@ export class SummarizationService {
   private sanitizeDescription(description: string): string {
     const maxLen = 10000;
 
-    return description
-      .replace(/<[^<]+?>/gi, '') // replace html tags
-      .replace(/[^\x20-\x7E]/g, '') // replace non-printable characters
-      .slice(0, maxLen) // limit length
-      .trim(); // drop any trailing white space;
+    return (
+      description
+        .replace(/<[^<]+?>/gi, '') // replace html tags
+        // .replace(/[^\x20-\x7E]/g, '') // replace non-printable characters
+        .slice(0, maxLen) // limit length
+        .trim()
+    ); // drop any trailing white space;
   }
 }
 
