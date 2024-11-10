@@ -29,20 +29,11 @@ export class SummarizationService {
   }
 
   async getBriefDescriptionFromSummary(description: string): Promise<string> {
-    console.log(`!!! full description: ${description}`);
     description = description.trim();
 
-    if (isNullOrUndefined(this.client) || description.length === 0) {
+    if (isNullOrUndefined(this.client) || description.length <= 120) {
       return '';
     }
-
-    if (description.length <= 120) {
-      return description;
-    }
-
-    console.log(
-      `!!! sanitizedDescription: ${this.sanitizeDescription(description)}`,
-    );
 
     const prompt = `
     Generate a 120 character summary of the event described below.

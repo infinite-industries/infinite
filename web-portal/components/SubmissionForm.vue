@@ -177,10 +177,20 @@
         </v-flex>
       </v-layout>
 
+      <!-- Full Event Description -->
+      <v-layout row wrap>
+        <v-flex xs12 sm11>
+          <h3>Description:</h3>
+        </v-flex>
+        <v-flex xs12 sm11>
+          <vue-editor id="vue-editor1" v-model="calendar_event.description" @blur="makeSuggestionsBasedOnDescription" />
+        </v-flex>
+      </v-layout>
+
       <!-- Brief Description -->
       <v-layout row wrap>
         <v-flex xs12 sm3>
-          <h3 class="form-label">Brief Description<span class="required-field">*</span>:</h3>
+          <h3 class="form-label">Summary<span class="required-field">*</span>:</h3>
         </v-flex>
         <v-flex xs12 sm8>
           <v-text-field
@@ -190,16 +200,6 @@
             :loading="loadingSuggestedBriefDescription"
             :messages="showingSuggestedBriefDescription ? 'This summary was generated from your full description using AI. Feel free to edit or replace it.' : ''"
           />
-        </v-flex>
-      </v-layout>
-
-      <!-- Full Event Description -->
-      <v-layout row wrap>
-        <v-flex xs12 sm11>
-          <h3>Full Event Description:</h3>
-        </v-flex>
-        <v-flex xs12 sm11>
-          <vue-editor id="vue-editor1" v-model="calendar_event.description" @blur="makeSuggestionsBasedOnDescription" />
         </v-flex>
       </v-layout>
 
