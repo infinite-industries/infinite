@@ -1,16 +1,16 @@
 import axios from 'axios'
 
 export default ({ app }, inject) => {
-  inject('tagSuggestionService', new TagSuggestionService(app.$apiService))
+  inject('suggestionService', new SuggestionService(app.$apiService))
 }
 
-class TagSuggestionService {
+class SuggestionService {
   constructor(apiService) {
     this.$apiService = apiService
   }
 
   /**
-   * Return the set of base tags we've historically offerred as suggestions
+   * Return the set of base tags we've historically offered as suggestions
    */
   getBaseTagSet() {
     return [
@@ -36,6 +36,16 @@ class TagSuggestionService {
       const response = await this.$apiService.post('/summarization/get-tags', { description })
       return response.data?.length > 0 ? response.data : null
     } catch (e) {
+      return null
+    }
+  }
+
+  async getBriefDescriptionFromFullDescription(description) {
+    try {
+      const response = await this.$apiService.post('/summarization/get-brief-description', { description })
+      return response.data
+    } catch (e) {
+      console.warn(e)
       return null
     }
   }
