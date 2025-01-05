@@ -199,6 +199,7 @@
             v-model="calendar_event.brief_description"
             :loading="loadingSuggestedBriefDescription"
             :messages="showingSuggestedBriefDescription ? 'This summary was generated from your full description using AI. Feel free to edit or replace it.' : ''"
+            @change="showingSuggestedBriefDescription = false"
           />
         </v-flex>
       </v-layout>
@@ -464,7 +465,7 @@
           this.submissionError = error
         })
 
-        this.recordSuggestedTags()
+        this.recordSuggestions()
       },
       ConfirmDeleteEvent: function () {
         this.dialog = true
@@ -530,7 +531,7 @@
 
           return this.$apiService.post('/events', event)
         }).then((response) => {
-          return this.recordSuggestedTags(response.data?.id)
+          return this.recordSuggestions(response.data?.id)
         }).then((response) => {
           this.showEventLoadingSpinner = false
           this.$emit('submitted')
@@ -695,12 +696,12 @@
             })
         }
       },
-      recordSuggestedTags(eventId) {
-        if (this.rawSuggestedTags) {
+      recordSuggestions(eventId) {
+        if (this.rawSuggestedTags || this.rawSuggestedBriefDescription) {
           return this.$suggestionService.submitFeedback(
-            this.rawSuggestedTags,
-            this.calendar_event.tags,
-            eventId || this.calendar_event.id
+            { tags: this.rawSuggestedTags, summary: this.rawSuggestedBriefDescription },
+            { tags: this.calendar_event.tags, summary: this.calendar_event.brief_description },
+            eventId
           )
         } else return Promise.resolve()
       }

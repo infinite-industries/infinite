@@ -51,6 +51,6 @@ class SuggestionService {
   }
 
   async submitFeedback(suggested, submitted, eventId) {
-    await axios.post('/internal-api/analytics/tag-feedback', { suggested, submitted, eventId })
+    await axios.post('/internal-api/analytics/suggestion-feedback', { suggested, submitted, eventId })
   }
 }
