@@ -511,7 +511,7 @@
           this.$emit('preview', event)
         })
       },
-      UploadEvent: function () {
+      UploadEvent: async function () {
         this.showEventLoadingSpinner = true
         this.eventSubmitted = true // to disable button and prevent multiple submissions
         this.showSubmitError = false
@@ -525,23 +525,36 @@
           reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
         }
 
-        return this.$apiService.uploadEventImage(this.$refs.eventImage.files[0]).then((response) => {
+        const result = await this.$apiService.uploadEventImage(this.$refs.eventImage.files[0]).then((response) => {
           event.image = response.data.imagePath
 
           return this.$apiService.post('/events', event)
-        }).then((response) => {
-          return this.recordSuggestedTags(response.data?.id)
-        }).then((response) => {
-          this.showEventLoadingSpinner = false
-          this.$emit('submitted')
-        }).catch((error) => {
-          console.error('error uploading image:', error)
-
-          this.showEventLoadingSpinner = false
-          this.eventSubmitted = false
-
-          this.$emit('error', { error })
         })
+          .then((response) => {
+            this.showEventLoadingSpinner = false
+            this.$emit('submitted')
+
+            return response
+          }).catch((error) => {
+            console.error('error uploading image:', error)
+
+            this.showEventLoadingSpinner = false
+            this.eventSubmitted = false
+
+            this.$emit('error', { error })
+
+            return null
+          })
+
+        try {
+          if (result !== null) {
+            await this.recordSuggestedTags(result)
+          }
+        } catch (ex) {
+          console.warn('could not submit tag analytics: ' + ex)
+        }
+
+        return result
       },
       selectVenue: function (venue) {
         this.calendar_event.venue_id = venue.id
