@@ -12,11 +12,27 @@ export const ENV = process.env.ENV || 'dev'
 export default async function slackAnalyticsHandler(req, res) {
   logger.info('JavaScript HTTP trigger (analytics) function processed a request.')
 
+  // deprecated now that we're also tracking brief description/"summary";
+  // prefer "suggestion-feedback"
   if (req.method === 'POST' && req.url.match(/\/?tag-feedback/i)) {
     logger.info('Processing tag generation feedback')
     if (req.body.suggested && req.body.submitted) {
       try {
-        await PostToSlack(req.body.suggested, req.body.submitted, req.body.eventId)
+        await PostToSlack('tag-feedback', req.body.suggested, req.body.submitted, req.body.eventId)
+      } catch (e) {
+        logger.error(e)
+        res.statusCode = 500
+        return res.end()
+      }
+    } else {
+      res.statusCode = 400
+      return res.end()
+    }
+  } else if (req.method === 'POST' && req.url.match(/\/?suggestion-feedback/i)) {
+    logger.info('Processing submission suggestion feedback')
+    if (req.body.suggested && req.body.submitted) {
+      try {
+        await PostToSlack('suggestion-feedback', req.body.suggested, req.body.submitted, req.body.eventId)
       } catch (e) {
         logger.error(e)
         res.statusCode = 500
@@ -34,10 +50,10 @@ export default async function slackAnalyticsHandler(req, res) {
   res.end()
 }
 
-function PostToSlack(suggested, submitted, eventId) {
+function PostToSlack(type, suggested, submitted, eventId) {
   return new Promise((resolve, reject) => {
     const message = JSON.stringify({
-      type: 'tag-feedback',
+      type,
       env: ENV,
       suggested,
       submitted,
@@ -46,16 +62,17 @@ function PostToSlack(suggested, submitted, eventId) {
 
     // slack-notify doesn't handle this gracefully
     // hopefully it isn't necessary in production but in dev it's useful
-    if (!SLACK_WEBHOOK_ANALYTICS) {
-      return reject(new Error('No Slack URL configured'))
+    if (SLACK_WEBHOOK_ANALYTICS) {
+      contactChannel.send({
+        channel: 'analytics',
+        icon_emoji: ':computer:',
+        text: message
+      })
+        .then(() => resolve('Message received!'))
+        .catch(err => reject(new Error('API error:' + err)))
+    } else {
+      console.warn('slack webhooks are not enabled -- no analytics sent')
+      resolve()
     }
-
-    contactChannel.send({
-      channel: 'analytics',
-      icon_emoji: ':computer:',
-      text: message
-    })
-      .then(() => resolve('Message received!'))
-      .catch(err => reject(new Error('API error:' + err)))
   })
 }

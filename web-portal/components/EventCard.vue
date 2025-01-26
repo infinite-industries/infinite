@@ -14,20 +14,19 @@
         <div class="info-container">
           <h3>
             <template v-if="statusMessage">[{{ statusMessage }}] - </template>
-            {{ calendar_event.title | truncate(statusMessage ? 30 : 40) }}
+            {{ truncatedTitle }}
           </h3>
           <h4 v-if="showVenue">
             <ii-remote v-if="isRemote || isOnlineResource" iconColor="#B7B09C" width="20" height="20" />
             <ii-location v-else iconColor="#B7B09C" width="20" height="20" />
-            {{ venue.name | truncate(60) }}
+            {{ truncatedVenueName }}
           </h4>
 
           <template v-if="showTime">
             <p class="date">{{ when_date }}</p>
             <p class="time">{{ when_time }}</p>
           </template>
-
-          <p class="description">{{ calendar_event.brief_description | truncate(120) }} </p>
+          <p class="description">{{ truncatedBriefDescription }} </p>
         </div>
       </div>
       <div class="btn-actions">
@@ -86,6 +85,19 @@
           ? this.calendar_event
           : Object.assign({}, this.calendar_event, { venue: this.venue })
         CalendarService.generate(this.$config.API_URL, event, calType)
+      },
+      truncate(fullText, truncationLength) {
+        if (!fullText) {
+          return ''
+        }
+
+        fullText = fullText.trim()
+
+        if (fullText.length <= truncationLength) {
+          return fullText
+        }
+
+        return fullText.slice(0, truncationLength) + '...'
       }
     },
     computed: {
@@ -100,6 +112,18 @@
         else if (this.isSoldOut) return 'Sold Out'
         else if (this.isPostponed) return 'Postponed'
         else return null
+      },
+      truncatedTitle: function () {
+        // leave extra length for status messages like 'Sold Out'
+        const truncationLength = this.statusMessage ? 30 : 40
+
+        return this.truncate(this.calendar_event?.title, truncationLength)
+      },
+      truncatedVenueName() {
+        return this.truncate(this.venue?.name, 60)
+      },
+      truncatedBriefDescription() {
+        return this.truncate(this.calendar_event?.brief_description, 120)
       },
       showVenue: function () {
         return !!this.calendar_event.venue_id && (!!this.calendar_event.venue || (!!this.venue && !!this.venue.id))
@@ -150,15 +174,6 @@
         return this.calendar_event &&
           this.calendar_event.category &&
           this.calendar_event.category === 'online-resource'
-      }
-    },
-    filters: {
-      truncate: function (text, stop, clamp) {
-        if (text === undefined || text === null) {
-          return ''
-        }
-
-        return text.slice(0, stop) + (stop < text.length ? clamp || '...' : '')
       }
     },
     components: {
