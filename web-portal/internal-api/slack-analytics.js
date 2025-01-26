@@ -62,16 +62,17 @@ function PostToSlack(type, suggested, submitted, eventId) {
 
     // slack-notify doesn't handle this gracefully
     // hopefully it isn't necessary in production but in dev it's useful
-    if (!SLACK_WEBHOOK_ANALYTICS) {
-      return reject(new Error('No Slack URL configured'))
+    if (SLACK_WEBHOOK_ANALYTICS) {
+      contactChannel.send({
+        channel: 'analytics',
+        icon_emoji: ':computer:',
+        text: message
+      })
+        .then(() => resolve('Message received!'))
+        .catch(err => reject(new Error('API error:' + err)))
+    } else {
+      console.warn('slack webhooks are not enabled -- no analytics sent')
+      resolve()
     }
-
-    contactChannel.send({
-      channel: 'analytics',
-      icon_emoji: ':computer:',
-      text: message
-    })
-      .then(() => resolve('Message received!'))
-      .catch(err => reject(new Error('API error:' + err)))
   })
 }
