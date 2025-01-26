@@ -48,9 +48,9 @@
 </template>
 
 <script>
-  import FormButton from '@/components/FormButton.vue'
+  import FormButton from '~/components/FormButton.vue'
   import momenttz from 'moment-timezone'
-  import PartnerService from '@/services/PartnerService'
+  import PartnerService from '~/services/PartnerService'
 
   export default {
     name: 'AdminEventsListRow',

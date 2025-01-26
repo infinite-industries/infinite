@@ -24,7 +24,7 @@
   import PartnerService from '@/services/PartnerService'
   import { UPSERT_ADMIN_EVENT_METADATA } from '../store/event-admin-metadata'
   import getToken from '../helpers/getToken'
-  import AdminEventsListRow from '@/components/admin-venue-edit/AdminEventsListRow.vue'
+  import AdminEventsListRow from '~/components/AdminEventsListRow.vue'
 
   export default {
     name: 'AdminEventsList',
