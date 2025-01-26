@@ -21,7 +21,6 @@
 </template>
 
 <script>
-  import PartnerService from '@/services/PartnerService'
   import { UPSERT_ADMIN_EVENT_METADATA } from '../store/event-admin-metadata'
   import getToken from '../helpers/getToken'
   import AdminEventsListRow from '~/components/AdminEventsListRow.vue'
@@ -35,11 +34,6 @@
     data: function () {
       return {
         metadata: {}
-      }
-    },
-    filters: {
-      ownerLogo: function (owner) {
-        return PartnerService.getLogoForReviewer(owner)
       }
     },
     methods: {
