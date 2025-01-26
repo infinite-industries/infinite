@@ -2,26 +2,26 @@
   <tr>
     <td>
       <img
-        v-if="calendar_event.reviewed_by_org"
+        v-if="calendarEvent.reviewed_by_org"
         :src="ownerLogo"
         width="30"
       />
 
     </td>
 
-    <td>{{ calendar_event.title }}</td>
+    <td>{{ calendarEvent.title }}</td>
 
     <td>
-      <div v-for="(date_time, index) in calendar_event.date_times.slice(0, 2)" :key="index">
+      <div v-for="(date_time, index) in calendarEvent.date_times.slice(0, 2)" :key="index">
         {{ dateFormat(date_time) }}
       </div>
 
-      <small v-if="calendar_event.date_times.length > 2">
-        (and {{ calendar_event.date_times.length - 2 }} more)
+      <small v-if="calendarEvent.date_times.length > 2">
+        (and {{ calendarEvent.date_times.length - 2 }} more)
       </small>
 
       <template
-        v-if="calendar_event.category && calendar_event.category==='online-resource'"
+        v-if="calendarEvent.category && calendarEvent.category==='online-resource'"
       >
         Online Resource
       </template>
@@ -30,8 +30,8 @@
     <td>
       <ii-form-button
         style-type="light"
-        @click="onEditClicked(calendar_event.id)"
-        :test-id="'edit-issue-button-' + calendar_event.id"
+        @click="onEditClicked(calendarEvent.id)"
+        :test-id="'edit-issue-button-' + calendarEvent.id"
       >
         Edit
       </ii-form-button>
@@ -41,7 +41,7 @@
       <input
         type="checkbox"
         :checked="isProblem"
-        @change="hasProblemsValueUpdated(calendar_event, $event)"
+        @change="hasProblemsValueUpdated(calendarEvent, $event)"
       >
     </td>
   </tr>
@@ -57,18 +57,18 @@
     components: {
       'ii-form-button': FormButton
     },
-    props: ['calendar_event', 'isProblemUpdated'],
+    props: ['calendarEvent', 'isProblemUpdated'],
     computed: {
       isProblem: function() {
         // TODO (THIS IS NOT WORKING FOR UN-VERIFIED EVENTS OR RESOURCES BECAUSE THEY ARE FETCHED WITHOUT METADATA)
-        if (!this.calendar_event.event_admin_meta_data) {
+        if (!this.calendarEvent.event_admin_meta_data) {
           return false
         } else {
-          return this.calendar_event.event_admin_meta_data.is_problem
+          return this.calendarEvent.event_admin_meta_data.is_problem
         }
       },
       ownerLogo: function () {
-        return PartnerService.getLogoForReviewer(this.calendar_event.reviewed_by_org)
+        return PartnerService.getLogoForReviewer(this.calendarEvent.reviewed_by_org)
       }
     },
     methods: {

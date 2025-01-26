@@ -11,9 +11,9 @@
     </thead>
     <tbody>
       <ii-admin-events-list-row
-        v-for="calendar_event in calendar_events"
-        :key="calendar_event.id"
-        :calendar_event="calendar_event"
+        v-for="calendarEvent in calendar_events"
+        :key="calendarEvent.id"
+        :calendar-event="calendarEvent"
         @hasProblemsChanged="isProblemUpdatedChanged"
       />
     </tbody>
