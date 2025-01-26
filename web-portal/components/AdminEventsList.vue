@@ -69,12 +69,12 @@
     font-family: "Open Sans", sans-serif;
   }
 
-  .calendar-events-table td, .calendar-events-table th {
+  .calendar-events-table >>> td, .calendar-events-table th {
       border: 1px solid #ddd;
       padding: 8px;
   }
 
-  .calendar-events-table td:first-child {
+  .calendar-events-table >>> td:first-child {
     text-align: center;
   }
 
