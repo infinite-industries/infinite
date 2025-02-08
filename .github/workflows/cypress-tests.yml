@@ -76,7 +76,7 @@ jobs:
           ENV_US: "test"
           ENV_PW: "xxx"
       - name: Save Cypress artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
           name: cypress-artifacts
@@ -90,7 +90,7 @@ jobs:
           docker logs $(docker ps -a --filter name=infinite_web-portal --format "{{.ID}}") &> ./web-portal.log
           docker logs $(docker ps -a --filter name=infinite_api-server --format "{{.ID}}") &> ./api-server.log
       - name: Save log artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         with:
           name: docker-artifacts
