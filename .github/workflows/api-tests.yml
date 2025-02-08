@@ -38,7 +38,7 @@ jobs:
         env:
           PORT: 3003
       - name: Save server logs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if : ${{ failure() }}
         with:
           name: server-logs
