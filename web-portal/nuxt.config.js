@@ -1,5 +1,5 @@
-import colors from 'vuetify/es5/util/colors'
-import 'dotenv/config'
+import { defineNuxtConfig } from '@nuxt/bridge'
+// import colors from 'vuetify/es5/util/colors'
 import { json } from 'body-parser'
 
 const API_URL = process.env.API_URL || 'http://localhost:3003/v1'
@@ -8,8 +8,18 @@ const TIMEZONE_DEFAULT = process.env.TIMEZONE_DEFAULT || 'US/Eastern'
 const TIMEZONE_OPTIONS = process.env.TIMEZONE_OPTIONS || 'US/Eastern,US/Central'
 const FATHOM_SITE_ID = process.env.FATHOM_SITE_ID
 
-export default {
-  mode: 'universal',
+export default defineNuxtConfig({
+  bridge: {
+    // enabling this breaks everything immediately
+    nitro: true,
+    // should enable this at some point if we make progress on Nitro,
+    // docs imply it's not necessary in combination w/ Nitro
+    // vite: true,
+    // disabling auto-imports to narrow down what might be causing the error
+    autoImports: false,
+    imports: false
+  },
+  // mode: 'universal',
   /*
   ** Headers of the page
   */
@@ -95,29 +105,30 @@ export default {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: [
-    '~/plugins/vue-moment',
-    { src: '~/plugins/vue-editor', ssr: false },
-    '~/plugins/close-sidebar-on-nav.client.js', // client-only
-    '~/plugins/api-service-plugin.js',
-    '~/plugins/suggestion-service-plugin.js',
-    '~/plugins/page-meta-plugin.js',
-    '~/plugins/analytics.client.js'
-  ],
+  // plugins: [
+  //   '~/plugins/vue-moment',
+  //   { src: '~/plugins/vue-editor', ssr: false },
+  //   '~/plugins/close-sidebar-on-nav.client.js', // client-only
+  //   '~/plugins/api-service-plugin.js',
+  //   '~/plugins/suggestion-service-plugin.js',
+  //   '~/plugins/page-meta-plugin.js',
+  //   '~/plugins/analytics.client.js',
+  //   // '~/plugins/migrationtest.js'
+  // ],
   /*
   ** Nuxt.js modules
   */
-  modules: [
-    '@nuxtjs/vuetify',
-    // Doc: https://axios.nuxtjs.org/usage
-    '@nuxtjs/axios',
-    '@nuxtjs/auth',
-    ['@nuxtjs/pwa', { workbox: false, icon: false }],
-    '@nuxtjs/google-gtag',
-    '@nuxtjs/eslint-module',
-    'nuxt-clipboard2',
-    'vue-scrollto/nuxt'
-  ],
+  // modules: [
+  //   '@nuxtjs/vuetify',
+  //   // Doc: https://axios.nuxtjs.org/usage
+  //   '@nuxtjs/axios',
+  //   '@nuxtjs/auth',
+  //   ['@nuxtjs/pwa', { workbox: false, icon: false }],
+  //   '@nuxtjs/google-gtag',
+  //   '@nuxtjs/eslint-module',
+  //   'nuxt-clipboard2',
+  //   'vue-scrollto/nuxt'
+  // ],
 
 
   /*
@@ -143,27 +154,27 @@ export default {
   /*
   ** Google Analytics configuration
   */
-  'google-gtag': {
-    id: process.env.GOOGLE_ANALYTICS_ID,
-    config: {
-      anonymize_ip: true // TODO: can we do this?
-    }
-  },
+  // 'google-gtag': {
+  //   id: process.env.GOOGLE_ANALYTICS_ID,
+  //   config: {
+  //     anonymize_ip: true // TODO: can we do this?
+  //   }
+  // },
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
   */
-  vuetify: {
-    theme: {
-      primary: colors.blue.darken2,
-      accent: colors.grey.darken3,
-      secondary: colors.amber.darken3,
-      info: colors.teal.lighten1,
-      warning: colors.amber.base,
-      error: colors.deepOrange.accent4,
-      success: colors.green.accent3
-    }
-  },
+  // vuetify: {
+  //   // theme: {
+  //   //   primary: colors.blue.darken2,
+  //   //   accent: colors.grey.darken3,
+  //   //   secondary: colors.amber.darken3,
+  //   //   info: colors.teal.lighten1,
+  //   //   warning: colors.amber.base,
+  //   //   error: colors.deepOrange.accent4,
+  //   //   success: colors.green.accent3
+  //   // }
+  // },
   /*
   ** Server configuration
   */
@@ -191,11 +202,15 @@ export default {
     }
   },
 
-  publicRuntimeConfig: {
-    APP_URL,
-    API_URL,
-    FATHOM_SITE_ID,
-    TIMEZONE_DEFAULT,
-    TIMEZONE_OPTIONS
+  // enabling Nitro is a prereq for updating to this new runtime config setup
+  // places where we reference these will need to be changed to $config.public.APP_URL etc
+  runtimeConfig: {
+    public: {
+      APP_URL,
+      API_URL,
+      FATHOM_SITE_ID,
+      TIMEZONE_DEFAULT,
+      TIMEZONE_OPTIONS
+    }
   }
-}
+})
