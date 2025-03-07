@@ -194,7 +194,7 @@ export default defineNuxtConfig({
   ** Build configuration
   */
   build: {
-    transpile: /@fullcalendar.*/,
+    // transpile: /@fullcalendar.*/,
     /*
     ** You can extend webpack config here
     */
