@@ -144,8 +144,10 @@
       if (this.isDirtyOrPending()) {
         console.log('warning user that incomplete is not submitted')
         const sure = window.confirm('You have unsaved changes. Sure?')
-        next(sure ? undefined : false)
-      } else next()
+        //next(sure ? undefined : false)
+      } else {
+        ///next()
+      }
     },
     methods: {
       onPreview: function (event) {

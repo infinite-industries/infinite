@@ -6,6 +6,7 @@
     "name": "Infinite Crew",
     "url": "https://infinite.industries/who-we-are"
   },
+  "type": "module",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
@@ -13,7 +14,7 @@
     "test": "jest",
     "build": "nuxi build",
     "start": "nuxi preview",
-    "start:dev": "nuxi dev",
+    "start:dev": "nuxi dev --insepct",
     "generate": "nuxi generate"
   },
   "dependencies": {
@@ -28,9 +29,11 @@
     "@nuxtjs/google-gtag": "^1.0.4",
     "@nuxtjs/pwa": "^3.3.5",
     "@nuxtjs/vuetify": "0.5.5",
-    "body-parser": "^1.19.1",
+    "defu": "^6.1.4",
     "fathom-client": "3.6.0",
     "gsap": "^3.6.0",
+    "h3": "^1.15.1",
+    "hookable": "^5.5.3",
     "lodash.isequal": "^4.5.0",
     "moment": "^2.24.0",
     "moment-timezone": "^0.5.25",
@@ -38,6 +41,7 @@
     "nuxt": "^2.18.0",
     "nuxt-clipboard2": "^0.2.1",
     "slack-notify": "^2.0.2",
+    "unenv": "^1.10.0",
     "uuid": "^9.0.0",
     "vue-clipboard2": "^0.3.0",
     "vue-flatpickr-component": "^8.1.8",

@@ -1,6 +1,5 @@
 import { defineNuxtConfig } from '@nuxt/bridge'
 // import colors from 'vuetify/es5/util/colors'
-import { json } from 'body-parser'
 
 const API_URL = process.env.API_URL || 'http://localhost:3003/v1'
 const APP_URL = process.env.APP_URL || 'http://localhost:7779'
@@ -12,12 +11,20 @@ export default defineNuxtConfig({
   bridge: {
     // enabling this breaks everything immediately
     nitro: true,
+    expressMiddleware: false,
     // should enable this at some point if we make progress on Nitro,
     // docs imply it's not necessary in combination w/ Nitro
     // vite: true,
     // disabling auto-imports to narrow down what might be causing the error
-    autoImports: false,
+    // autoImports: false,
     imports: false
+  },
+  imports: {
+     autoImport: false
+  },
+  sourcemap: {
+    server: true,
+    client: true
   },
   // mode: 'universal',
   /*
@@ -186,7 +193,6 @@ export default defineNuxtConfig({
   ** Server middleware
   */
   serverMiddleware: [
-    json(),
     { path: '/internal-api/slack-alert', handler: '~/internal-api/slack-alert.js' },
     { path: '/internal-api/analytics', handler: '~/internal-api/slack-analytics' }
   ],
