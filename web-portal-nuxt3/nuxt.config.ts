@@ -77,6 +77,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+
   /*
   ** Customize the progress-bar color
   */
@@ -93,10 +94,11 @@ export default defineNuxtConfig({
   // plugins: [
   // ],
   /*
+
   ** Nuxt.js modules
   */
-  // modules: [
-  // ],
+  modules: ['nuxt-auth-utils'],
+
   /*
   ** Auth configuration
   */
@@ -114,6 +116,7 @@ export default defineNuxtConfig({
   devServer: {
     port: 7779
   },
+
   // this may not be needed
   /*
   ** Server middleware
@@ -136,5 +139,5 @@ export default defineNuxtConfig({
       timezoneDefault: 'US/Eastern',
       timezoneOptions: 'US/Eastern,US/Central'
     },
-  },
+  }
 })
