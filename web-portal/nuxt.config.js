@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     // docs imply it's not necessary in combination w/ Nitro
     // vite: true,
     // disabling auto-imports to narrow down what might be causing the error
-    // autoImports: false,
+    autoImports: false,
     imports: false
   },
   imports: {
@@ -204,8 +204,7 @@ export default defineNuxtConfig({
     /*
     ** You can extend webpack config here
     */
-    extend(config, ctx) {
-    }
+    extend(config, ctx) {}
   },
 
   // enabling Nitro is a prereq for updating to this new runtime config setup

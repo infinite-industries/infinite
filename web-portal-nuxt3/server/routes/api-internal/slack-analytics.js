@@ -13,28 +13,7 @@ export default defineEventHandler(async (event) => {
 
   // deprecated now that we're also tracking brief description/"summary";
   // prefer "suggestion-feedback"
-  if (isMethod(event, 'POST') && event.path.match(/\/?tag-feedback/i)) {
-    logger.info('Processing tag generation feedback')
-    const body = await readBody(event);
-
-    if (body.suggested && body.submitted) {
-      try {
-        await PostToSlack('tag-feedback', body.suggested, body.submitted, body.eventId, slackWebhookAnalytics)
-      } catch (e) {
-        logger.error(e)
-
-        throw createError({
-          statusCode: 500,
-          statusMessage: 'could post tag-feedback analytics to slack channel'
-        })
-      }
-    } else {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'invalid request for tag-feedback analytics'
-      })
-    }
-  } else if (isMethod(event, 'POST') && event.path.match(/\/?suggestion-feedback/i)) {
+  if (isMethod(event, 'POST')) {
     logger.info('Processing submission suggestion feedback')
     const body = await readBody(event);
 

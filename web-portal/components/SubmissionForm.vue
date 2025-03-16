@@ -370,7 +370,6 @@
 </template>
 
 <script>
-  import isEqual from 'lodash.isequal'
   import VenuePicker from './VenuePicker.vue'
   import DateTimePicker from './DateTimePicker.vue'
   import AddNewVenue from './AddNewVenue.vue'
@@ -434,7 +433,14 @@
     methods: {
       /** @public */
       isDirty: function () {
-        return !isEqual(this.calendar_event, this.$store.getters.GetCurrentEvent)
+        return !this.isEqual(this.calendar_event, this.$store.getters.GetCurrentEvent)
+      },
+      isEqual: function(x, y) {
+        const ok = Object.keys, tx = typeof x, ty = typeof y;
+        return x && y && tx === 'object' && tx === ty ? (
+          ok(x).length === ok(y).length &&
+          ok(x).every(key => this.isEqual(x[key], y[key]))
+        ) : (x === y);
       },
       UpdateEvent: function () {
         this.showEventLoadingSpinner = true
@@ -483,7 +489,7 @@
       VerifyEvent: function () {
         this.showEventLoadingSpinner = true
 
-        const isDirty = !isEqual(this.calendar_event, this.$store.getters.GetCurrentEvent)
+        const isDirty = !this.isEqual(this.calendar_event, this.$store.getters.GetCurrentEvent)
 
         this.$store.dispatch('admin/VerifyEvent', {
           id: this.calendar_event.id,
