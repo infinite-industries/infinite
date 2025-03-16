@@ -1,9 +1,3 @@
-const API_URL = process.env.API_URL || 'http://localhost:3003/v1'
-const APP_URL = process.env.APP_URL || 'http://localhost:7779'
-const TIMEZONE_DEFAULT = process.env.TIMEZONE_DEFAULT || 'US/Eastern'
-const TIMEZONE_OPTIONS = process.env.TIMEZONE_OPTIONS || 'US/Eastern,US/Central'
-const FATHOM_SITE_ID = process.env.FATHOM_SITE_ID
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -136,11 +130,11 @@ export default defineNuxtConfig({
     slackWebhookContact: '',
     slackWebhookAnalytics: '',
     public: {
-      APP_URL,
-      API_URL,
-      FATHOM_SITE_ID,
-      TIMEZONE_DEFAULT,
-      TIMEZONE_OPTIONS
-    }
+      appUrl: 'http://localhost:7779',
+      apiUrl: 'http://localhost:3003/v1',
+      fathomSiteId: '',
+      timezoneDefault: 'US/Eastern',
+      timezoneOptions: 'US/Eastern,US/Central'
+    },
   },
 })
