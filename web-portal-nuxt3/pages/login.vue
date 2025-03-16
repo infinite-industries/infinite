@@ -44,8 +44,9 @@
 
 <script setup>
 const router = useRouter()
-const { user, fetch, loggedIn} = useUserSession()
+const { user, fetch, loggedIn } = useUserSession()
 
+let errorMessage = ref(null)
 
 async function onLoginClick(event) {
   const target = event.target
@@ -58,10 +59,11 @@ async function onLoginClick(event) {
     },
   }).then(() => {
     fetch()
-    console.log('!!! success')
-    router.push({ path: 'page-with-items-requiring-auth' })
+    console.debug('successfully authenticated')
+    router.push({ path: '/test-auth' })
   }).catch((err) => {
-    console.log(err)
+    errorMessage.value = 'Sorry, could not authenticated';
+    console.warn('Error authenticating:', err)
   })
 }
 </script>
