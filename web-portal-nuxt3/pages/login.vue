@@ -57,8 +57,8 @@ async function onLoginClick(event) {
       username: target.username.value,
       password: target.password.value,
     },
-  }).then(() => {
-    fetch()
+  }).then(async () => {
+    await fetch()
     console.debug('successfully authenticated')
     router.push({ path: '/test-auth' })
   }).catch((err) => {
