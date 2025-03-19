@@ -97,7 +97,10 @@ export default defineNuxtConfig({
 
   ** Nuxt.js modules
   */
-  modules: ['nuxt-auth-utils'],
+  modules: [
+    'nuxt-auth-utils',
+    'nuxt3-vuex-module'
+  ],
 
   /*
   ** Auth configuration
