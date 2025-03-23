@@ -32,14 +32,14 @@
         // useAsyncData('events', () => nuxtApp.$apiService.get('events/verified?embed=Venue')),
         // 'resources' works, but 'events' doesn't yet
         useAsyncData('events', () => store.dispatch('LoadAllLocalEventData')),
-        useAsyncData('resources', () => nuxtApp.$apiService.get('events/verified?category=online-resources'))
+        useAsyncData('resources', () => nuxtApp.$apiService.get('/events/verified?category=online-resources'))
       ])
       // console.log('data', eventsData)
       // console.log('value?', eventsData.value)
       // console.log('store?', nuxtApp.$store.getters.GetUtilLoading, store.getters.GetUtilLoading)
 
       return {
-        // events: eventsData.value.events,
+        events: eventsData.value.events,
         resources: resourcesData.value.events
       }
     },

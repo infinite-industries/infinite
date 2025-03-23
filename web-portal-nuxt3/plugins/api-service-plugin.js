@@ -17,7 +17,7 @@ class ApiService {
     const userToken = formatToken(idToken)
 
     // TODO: thread through the ID token (or rely on $fetch to thread it through?)
-    return $fetch(`${this.apiUrl}/${path}`)
+    return $fetch(`${this.apiUrl}${path}`)
     // return axios.get(this.apiUrl + path, idToken ? { headers: { 'x-access-token': userToken } } : null)
   }
 
