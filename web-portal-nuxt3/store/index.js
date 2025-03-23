@@ -3,6 +3,13 @@ const CURRENT_EVENTS_VERIFIED_PATH = '/events/current-verified'
 const EVENTS_VERIFIED_PATH = '/events/verified'
 const EMBED_VENUE = 'embed=Venue'
 
+// this may not be necessary
+export const plugins = [
+  function injectNuxtApp(store) {
+    store.$nuxt = useNuxtApp()
+  }
+]
+
 export const state = () => {
   return {
     util: {
@@ -76,17 +83,18 @@ export const actions = {
     // this isn't working because `$apiService` isn't available on the Vue instance
     // this is probably related to changes in the way plugins work
     // Fix TBD
-    return this.$apiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
-      .then((_response) => {
-        console.log('RESPONSE!', _response.data)
-        context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
+    return useNuxtApp().$apiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
+      .then((data) => {
+        console.log(Object.keys(data))
+        console.log('RESPONSE!', data.events)
+        context.commit('UPDATE_LOCALIZED_EVENTS', data.events)
         context.commit('SET_LOADING_STATUS', false)
-        return _response
+        return data
       })
       .catch((error) => {
         console.log('ERROR')
         console.error(error)
-        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.' }, { root: true })
+        // context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.' }, { root: true })
       })
   },
 }
