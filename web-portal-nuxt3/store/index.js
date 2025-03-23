@@ -34,6 +34,20 @@ export const getters = {
   GetAllLocalEvents: (state) => {
     return state.all_local_events
   },
+
+  GetAllRemoteEvents: (state) => {
+    return state.all_local_events.filter((localEvent) => {
+      return (localEvent.mode && localEvent.mode === 'online') && !(localEvent.category && localEvent.category === 'online-resource')
+    })
+  },
+
+  GetAllStreamEvents: (state) => {
+    return state.all_streaming_events
+  },
+
+  IsUserAdmin: (state) => {
+    return !!state.user_data && state.user_data.isInfiniteAdmin
+  }
 }
 
 export const mutations = {
@@ -61,6 +75,9 @@ export const mutations = {
   UPDATE_LOCALIZED_EVENTS: (state, payload) => {
     state.all_local_events = payload
   },
+  UPDATE_STREAMING_EVENTS: (state, payload) => {
+    state.all_streaming_events = payload
+  },
 }
 
 export const actions = {
@@ -80,21 +97,25 @@ export const actions = {
   LoadAllLocalEventData: function (context) {
     context.commit('SET_LOADING_STATUS', true)
 
-    // this isn't working because `$apiService` isn't available on the Vue instance
-    // this is probably related to changes in the way plugins work
-    // Fix TBD
     return useNuxtApp().$apiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
       .then((data) => {
-        console.log(Object.keys(data))
-        console.log('RESPONSE!', data.events)
         context.commit('UPDATE_LOCALIZED_EVENTS', data.events)
         context.commit('SET_LOADING_STATUS', false)
         return data
       })
       .catch((error) => {
-        console.log('ERROR')
         console.error(error)
-        // context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.' }, { root: true })
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get event data. Please contact us and we will figure out what went wrong.' }, { root: true })
+      })
+  },
+  LoadAllStreamingEventData: function (context) {
+    return useNuxtApp().$apiService.get(`${EVENTS_VERIFIED_PATH}?category=online-resource&${EMBED_VENUE}`)
+      .then((data) => {
+        context.commit('UPDATE_STREAMING_EVENTS', data.events)
+      })
+      .catch((error) => {
+        console.error(error)
+        context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get some event data. Please contact us and we will endeavor to address it.' }, { root: true })
       })
   },
 }
