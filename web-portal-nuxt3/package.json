@@ -19,6 +19,8 @@
   "dependencies": {
     "gsap": "^3.6.0",
     "h3": "^1.15.1",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.48",
     "nuxt": "^3.16.0",
     "nuxt-auth-utils": "^0.5.16",
     "nuxt3-vuex-module": "^1.1.2",

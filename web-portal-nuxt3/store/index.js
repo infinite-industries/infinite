@@ -24,6 +24,8 @@ export const state = () => {
 
     all_local_events: [],
     all_streaming_events: [],
+
+    announcements: []
   }
 }
 
@@ -43,6 +45,16 @@ export const getters = {
 
   GetAllStreamEvents: (state) => {
     return state.all_streaming_events
+  },
+
+  GetAnnouncements: (state) => {
+    return state.announcements
+  },
+
+  GetActiveAnnouncement: (state) => {
+    if (state.announcements && state.announcements.length > 0) {
+      return state.announcements[state.announcements.length - 1]
+    }
   },
 
   IsUserAdmin: (state) => {
@@ -77,6 +89,10 @@ export const mutations = {
   },
   UPDATE_STREAMING_EVENTS: (state, payload) => {
     state.all_streaming_events = payload
+  },
+
+  POPULATE_ANNOUNCEMENTS: (state, payload) => {
+    state.announcements = payload && payload.length > 0 ? [...payload] : []
   },
 }
 
@@ -116,6 +132,18 @@ export const actions = {
       .catch((error) => {
         console.error(error)
         context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Hrrmm... unable to get some event data. Please contact us and we will endeavor to address it.' }, { root: true })
+      })
+  },
+
+  LoadAnnouncements: function (context) {
+    return useNuxtApp().$apiService.get('/announcements')
+      .then((data) => {
+        if (data.status === 'success') {
+          context.commit('POPULATE_ANNOUNCEMENTS', data.announcements)
+        } else console.error('Error processing announcements', data)
+      })
+      .catch((error) => {
+        console.error('Unable to load announcements', error)
       })
   },
 }

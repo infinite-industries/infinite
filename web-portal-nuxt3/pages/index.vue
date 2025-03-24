@@ -1,30 +1,31 @@
 <template>
   <div>
-    <div class="info-page">
+    <!-- So sometimes we have pandemics in this world -->
+    <client-only>
+      <ii-jumbotron />
+    </client-only>
 
-      <h1>Home page</h1>
+    <ii-list-viewer :calendar_events="events" />
 
-      <pre>
-        APP_URL: {{ $config.public.APP_URL }}
-        API_URL: {{ $config.public.API_URL }}
-        $apiService is set: {{ !!$apiService }}
-        <!-- data is {{ JSON.stringify(events, null, 2) }} -->
-        events are {{ JSON.stringify(events, null, 2) }}
-        resources are {{ JSON.stringify($store.getters.GetAllRemoteEvents, null, 2)}}
-      </pre>
-
-      <h2>Online Resources / Projects</h2>
-    </div>
+    <h2>Online Resources / Projects</h2>
+    <ii-list-viewer :calendar_events="streamEvents" />
   </div>
 </template>
 
 <script>
   import { useStore } from 'vuex'
+  import ListViewer from '../components/ListViewer.vue'
+  import Jumbotron from '../components/Jumbotron.vue'
 
   export default defineNuxtComponent({
     async setup () {
       const config = useRuntimeConfig()
-      const { $apiService } = useNuxtApp()
+      const { $apiService, $urlFor } = useNuxtApp()
+      useHead({
+        link: [
+          { rel: 'canonical', href: $urlFor('/') }
+        ]
+      })
       const store = useStore()
       await callOnce('fetchHomeData', async () =>
         Promise.all([
@@ -44,9 +45,6 @@
 
       return {}
     },
-    created () {
-      console.log(!!this.$apiService)
-    },
     computed: {
       events: function () {
         return this.$store.getters.GetAllLocalEvents
@@ -55,6 +53,10 @@
         return this.$store.getters.GetAllStreamEvents
       }
     },
+    components: {
+      'ii-list-viewer': ListViewer,
+      'ii-jumbotron': Jumbotron
+    }
   })
 </script>
 
