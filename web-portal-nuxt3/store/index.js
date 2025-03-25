@@ -124,7 +124,6 @@ export const actions = {
       .then((data) => {
         context.commit('UPDATE_LOCALIZED_EVENTS', data.events)
         context.commit('SET_LOADING_STATUS', false)
-        return data
       })
       .catch((error) => {
         console.error(error)
