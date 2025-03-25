@@ -24,14 +24,17 @@
     <li>
       <nuxt-link to="/contact">Contact</nuxt-link>
     </li>
-    <!-- <li v-if="!$auth.loggedIn">
-      <nuxt-link to="/login">Login</nuxt-link>
-    </li>
-    <li v-if="$auth.loggedIn && $store.getters.IsUserAdmin">
-      <nuxt-link to="/admin">Admin</nuxt-link>
-    </li>
-    <li v-if="$auth.loggedIn">
-      <nuxt-link to="/logout">Logout</nuxt-link>
-    </li> -->
+    <AuthState v-slot="{ loggedIn }">
+      <li v-if="!loggedIn">
+        <nuxt-link to="/login">Login</nuxt-link>
+      </li>
+      <li v-if="loggedIn && $store.getters.IsUserAdmin">
+        <nuxt-link to="/admin">Admin</nuxt-link>
+      </li>
+      <li v-if="loggedIn">
+        <!-- TODO: does this need to call clear (exposed via v-slot)? -->
+        <nuxt-link to="/logout">Logout</nuxt-link>
+      </li>
+    </AuthState>
   </ul>
 </template>

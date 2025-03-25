@@ -94,9 +94,16 @@ export const mutations = {
   POPULATE_ANNOUNCEMENTS: (state, payload) => {
     state.announcements = payload && payload.length > 0 ? [...payload] : []
   },
+
+  LOGOUT: (state) => {
+    state.user_data = {}
+  }
 }
 
 export const actions = {
+  Logout: function (context) {
+    context.commit('LOGOUT')
+  },
   LoadAllUserData: function (context, payload) {
     context.commit('USER_DATA_FETCH_START')
 
