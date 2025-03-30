@@ -6,7 +6,7 @@
     <!-- Toolbar and Nav -->
     <ii-toolbar>
       <template #navigation>
-        <ii-site-navigation slot="navigation" />
+        <ii-site-navigation />
       </template>
     </ii-toolbar>
     <main>
