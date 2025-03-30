@@ -40,10 +40,7 @@
   export default defineNuxtComponent({
     name: 'Jumbotron',
     async setup () {
-      const store = useStore()
-      await callOnce('announcements', async () =>
-        store.dispatch('LoadAnnouncements')
-      )
+      await useLegacyStoreFetch('announcements', 'LoadAnnouncements')
     },
     data: function () {
       return {
@@ -57,7 +54,6 @@
     },
     mounted: function () {
       // see if jumbotron needs to open
-      console.log('Jumbotron trying: ', this.currentAnnouncement, getLastViewed())
       if (this.currentAnnouncement && this.currentAnnouncement.message.trim().length !== 0) {
         const lastViewed = getLastViewed()
         if (!lastViewed || (Date.now() - parseFloat(lastViewed)) > THROTTLE_INTERVAL) {

@@ -19,21 +19,17 @@
 
   export default defineNuxtComponent({
     async setup () {
-      const config = useRuntimeConfig()
-      const { $apiService, $urlFor } = useNuxtApp()
+      // const config = useRuntimeConfig()
+      const { $urlFor } = useNuxtApp()
       useHead({
         link: [
           { rel: 'canonical', href: $urlFor('/') }
         ]
       })
-      const store = useStore()
-      await callOnce('fetchHomeData', async () =>
-        Promise.all([
-          store.dispatch('LoadAllLocalEventData'),
-          store.dispatch('LoadAllStreamingEventData')
-        ]),
-        { mode: 'navigation' }
-      )
+      await useLegacyStoreFetch('fetchHomeData', [
+        'LoadAllLocalEventData',
+        'LoadAllStreamingEventData'
+      ])
       // const { data, status } = await useFetch(`${config.public.API_URL}/events/verified`)
       // const [
       //   { data: eventsData },

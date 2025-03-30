@@ -20,10 +20,7 @@
       FullCalendar
     },
     setup: async function () {
-      const store = useStore()
-      await callOnce('LoadAllLocalEventData', async function () {
-        await store.dispatch('LoadAllLocalEventData')
-      }, { mode: 'navigation' })
+      await useLegacyStoreFetch('LoadAllLocalEventData', 'LoadAllLocalEventData')
     },
     data: function () {
       return {
