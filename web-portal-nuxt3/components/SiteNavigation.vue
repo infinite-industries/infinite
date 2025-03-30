@@ -24,17 +24,27 @@
     <li>
       <nuxt-link to="/contact">Contact</nuxt-link>
     </li>
-    <AuthState v-slot="{ loggedIn }">
+    <AuthState v-slot="{ loggedIn, user }">
       <li v-if="!loggedIn">
         <nuxt-link to="/login">Login</nuxt-link>
       </li>
-      <li v-if="loggedIn && $store.getters.IsUserAdmin">
+      <li v-if="loggedIn && user.isInfiniteAdmin">
         <nuxt-link to="/admin">Admin</nuxt-link>
       </li>
       <li v-if="loggedIn">
         <!-- TODO: does this need to call clear (exposed via v-slot)? -->
-        <nuxt-link to="/logout">Logout</nuxt-link>
+        <nuxt-link @click="onLogoutClick">Logout</nuxt-link>
       </li>
     </AuthState>
   </ul>
 </template>
+
+<script setup>
+const { clear } = useUserSession()
+const router = useRouter()
+
+const onLogoutClick = async () => {
+  await clear()
+  await router.push({ path: '/' })
+}
+</script>

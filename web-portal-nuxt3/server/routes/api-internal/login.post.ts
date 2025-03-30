@@ -23,9 +23,12 @@ export default defineEventHandler(async (event) => {
 
   const { token } = resp
 
+  const userInfo = await getDetailedUserInfoFromAPI(token);
+
   await setUserSession(event, {
     user: {
       login: username,
+      ...userInfo,
       token
     },
     loggedInAt: Date.now(),
@@ -33,3 +36,23 @@ export default defineEventHandler(async (event) => {
 
   return setResponseStatus(event, 201)
 })
+
+async function getDetailedUserInfoFromAPI(token: string): Promise<UserInformation> {
+  const config = useRuntimeConfig();
+  const apiUrl = config.public.apiUrl;
+
+  return await $fetch(`${apiUrl}/users/current`, {
+    method: 'GET',
+    headers: {
+      'x-access-token': token
+    }
+  });
+}
+
+export interface UserInformation {
+  id: string;
+  name: string,
+  nickname: string,
+  isInfiniteAdmin: boolean,
+  venueIDs: string []
+}

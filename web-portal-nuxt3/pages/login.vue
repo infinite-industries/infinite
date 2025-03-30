@@ -60,7 +60,7 @@ async function onLoginClick(event) {
   }).then(async () => {
     await fetch()
     console.debug('successfully authenticated')
-    router.push({ path: '/test-auth' })
+    await router.push({ path: '/' })
   }).catch((err) => {
     errorMessage.value = 'Sorry, could not authenticated';
     console.warn('Error authenticating:', err)
