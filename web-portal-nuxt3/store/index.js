@@ -104,19 +104,6 @@ export const actions = {
   Logout: function (context) {
     context.commit('LOGOUT')
   },
-  LoadAllUserData: function (context, payload) {
-    context.commit('USER_DATA_FETCH_START')
-
-    return this.$apiService.get('/users/current', payload.idToken)
-      .then(function (_response) {
-        context.commit('UPDATE_USER_DATA', _response.data)
-        return _response
-      }).catch((ex) => {
-        context.commit('USER_DATA_FETCH_FAIL', ex)
-
-        throw ex
-      })
-  },
   LoadAllLocalEventData: function (context) {
     context.commit('SET_LOADING_STATUS', true)
 

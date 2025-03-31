@@ -25,10 +25,20 @@
 </template>
 
 <script setup>
+import { useStore } from 'vuex'
 const { loggedIn, clear, user } = useUserSession()
 const config = useRuntimeConfig();
 
 const events = ref([])
+
+const store = useStore()
+
+await callOnce('LoadAdminPageDAta', async function () {
+  await store.dispatch('admin/LoadUnverifiedEvents')
+  await store.dispatch('admin/LoadCurrentEvents')
+  await store.dispatch('admin/LoadResourceEvents')
+}, { mode: 'navigation' })
+
 
 const { data, error } = await useAsyncData('apiData', async () => {
   if (loggedIn.value) {

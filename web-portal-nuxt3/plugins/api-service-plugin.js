@@ -1,48 +1,49 @@
 
 export default defineNuxtPlugin((nuxtApp) => {
+  const { user } = useUserSession()
+
   return {
     provide: {
-      'apiService': new ApiService(nuxtApp.$config.public.apiUrl)
+      'apiService': new ApiService(nuxtApp.$config.public.apiUrl, user)
     }
   }
 })
 
 class ApiService {
-  constructor(apiUrl) {
+  constructor(apiUrl, user) {
     console.log(apiUrl)
     this.apiUrl = apiUrl
+    this.user = user
   }
 
-  get(path, idToken) {
-    const userToken = formatToken(idToken)
+  async get(path) {
+    const userToken = this.user.value?.token
+    const headers = !!userToken ? { 'x-access-token': userToken } : undefined
 
-    // TODO: thread through the ID token (or rely on $fetch to thread it through?)
-    return $fetch(`${this.apiUrl}${path}`)
-    // return axios.get(this.apiUrl + path, idToken ? { headers: { 'x-access-token': userToken } } : null)
+    return await $fetch(`${this.apiUrl}${path}`, {
+      headers
+    })
   }
 
-  post(path, postBody, idToken) {
-    const userToken = formatToken(idToken)
+  post(path, postBody) {
+    const userToken = this.user.value?.token
+    const headers = !!userToken ? { 'x-access-token': userToken } : undefined
 
-    // TODO: thread through the ID token (or rely on $fetch to thread it through?)
-    return $fetch(`${this.apiUrl}/${path}`, { method: "POST", body: postBody })
-    // return axios.post(this.apiUrl + path, postBody, idToken ? { headers: { 'x-access-token': userToken } } : null)
+    return $fetch(`${this.apiUrl}/${path}`, { method: "POST", body: postBody ,headers })
   }
 
-  put(path, body, idToken) {
-    const userToken = formatToken(idToken)
+  put(path, body) {
+    const userToken = this.user.value?.token
+    const headers = !!userToken ? { 'x-access-token': userToken } : undefined
 
-    // TODO: thread through the ID token (or rely on $fetch to thread it through?)
-    return $fetch(`${this.apiUrl}/${path}`, { method: "PUT", body })
-    // return axios.put(this.apiUrl + path, body, idToken ? { headers: { 'x-access-token': userToken } } : null)
+    return $fetch(`${this.apiUrl}/${path}`, { method: "PUT", body, headers })
   }
 
-  delete(path, idToken) {
-    const userToken = formatToken(idToken)
+  delete(path) {
+    const userToken = this.user.value?.token
+    const headers = !!userToken ? { 'x-access-token': userToken } : undefined
 
-    // TODO: thread through the ID token (or rely on $fetch to thread it through?)
-    return $fetch(`${this.apiUrl}/${path}`, { method: "DELETE" })
-    // return axios.delete(this.apiUrl + path, idToken ? { headers: { 'x-access-token': userToken } } : null)
+    return $fetch(`${this.apiUrl}/${path}`, { method: "DELETE", headers })
   }
 
   // unclear if there's a $fetch equivalent for this
