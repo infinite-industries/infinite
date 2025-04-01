@@ -9,13 +9,6 @@ export const state = () => {
 const CURRENT_EVENTS_VERIFIED_PATH = '/events/current-verified'
 const EVENTS_NON_VERIFIED_PATH = '/authenticated/events/non-verified?embed=DATE_TIME&embed=ADMIN_META_DATA'
 
-// this may not be necessary
-export const plugins = [
-  function injectNuxtApp(store) {
-    store.$nuxt = useNuxtApp()
-  }
-]
-
 export const getters = {
   GetUnverifiedEvents: (state, getters) => {
     return state.unverified_events
@@ -35,7 +28,7 @@ export const actions = {
   LoadEvent: function (context, payload) {
     const id = payload.id
 
-    return this.$nuxt.$apiService.get('/authenticated/events/' + id)
+    return useNuxtApp().$apiService.get('/authenticated/events/' + id)
       .then((response) => {
         if (response.status === 'success') { context.commit('POPULATE_CURRENT_EVENT', response.event, { root: true }) }
       })
