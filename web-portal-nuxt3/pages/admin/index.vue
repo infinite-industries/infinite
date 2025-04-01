@@ -70,7 +70,7 @@
         await store.dispatch('admin/LoadResourceEvents')
       }, { mode: 'navigation' })
 
-      onMounted(() => {
+      onMounted(async () => {
         if (window) {
           this._mediaQueryListener = window.matchMedia('(max-width: 900px)')
           this.isLessWindowLessThan900px = this._mediaQueryListener.matches

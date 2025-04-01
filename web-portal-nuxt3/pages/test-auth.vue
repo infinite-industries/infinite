@@ -5,16 +5,20 @@
     </p>
 
     <div>
-      <NuxtLink v-if="loggedIn" to="#" @click="clear">logout</NuxtLink>
+      <NuxtLink @click="clear">logout</NuxtLink>
     </div>
 
-    <div>
+    <div class="test-class">
       <ul>
         <li v-for="event in events" :key="event.title">
           {{ event.title }}
         </li>
       </ul>
     </div>
+
+
+    <h2>Unverified Events</h2>
+    <admin-events-list :calendar_events="unverifiedEvents" class="unverified-events" />
   </div>
 
   <div v-else>
@@ -34,11 +38,14 @@ const events = ref([])
 const store = useStore()
 
 await callOnce('LoadAdminPageDAta', async function () {
-  await store.dispatch('admin/LoadUnverifiedEvents')
-  await store.dispatch('admin/LoadCurrentEvents')
-  await store.dispatch('admin/LoadResourceEvents')
+  store.dispatch('admin/LoadUnverifiedEvents')
+  store.dispatch('admin/LoadCurrentEvents')
+  store.dispatch('admin/LoadResourceEvents')
 }, { mode: 'navigation' })
 
+const unverifiedEvents = computed(() => {
+  return store.getters['admin/GetUnverifiedEvents']
+});
 
 const { data, error } = await useAsyncData('apiData', async () => {
   if (loggedIn.value) {
@@ -58,3 +65,7 @@ const { data, error } = await useAsyncData('apiData', async () => {
 const eventData = data?.value?.events || []
 events.value = eventData.sort((a, b) => a.id.localeCompare(b.id)).slice(0, 10)
 </script>
+
+<style>
+  .test-class { color: white }
+</style>

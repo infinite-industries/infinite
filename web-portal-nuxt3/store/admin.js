@@ -36,7 +36,7 @@ export const actions = {
   LoadUnverifiedEvents: function (context) {
     const isResponseSuccess = data => data && data.status === 'success'
 
-    this.$nuxt.$apiService.get(EVENTS_NON_VERIFIED_PATH).then(
+    return this.$nuxt.$apiService.get(EVENTS_NON_VERIFIED_PATH).then(
       (currentNonVerifiedEventsResponse) => {
         if (isResponseSuccess(currentNonVerifiedEventsResponse)) {
           const currentNonVerifiedEvents = currentNonVerifiedEventsResponse.events
@@ -54,7 +54,7 @@ export const actions = {
   LoadCurrentEvents: function (context) {
     const apiService = this.$nuxt.$apiService
 
-    apiService.get(CURRENT_EVENTS_VERIFIED_PATH)
+    return apiService.get(CURRENT_EVENTS_VERIFIED_PATH)
       .then((data) => {
         if (data.status === 'success') {
           return data.events
@@ -93,7 +93,7 @@ export const actions = {
       })
   },
   LoadResourceEvents: function (context) {
-    this.$nuxt.$apiService.get('/events/verified?category=online-resource&embed=ADMIN_META_DATA')
+    return this.$nuxt.$apiService.get('/events/verified?category=online-resource&embed=ADMIN_META_DATA')
       .then(function (response) {
         if (response.status === 'success') {
           context.commit('POPULATE_RESOURCE_LIST', response.events)
