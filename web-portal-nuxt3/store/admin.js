@@ -42,6 +42,7 @@ export const actions = {
         if (isResponseSuccess(currentNonVerifiedEventsResponse)) {
           console.debug('request: ' + EVENTS_NON_VERIFIED_PATH + ' - success');
           const currentNonVerifiedEvents = currentNonVerifiedEventsResponse.events
+          console.log('!!! events populated')
           context.commit('POPULATE_UNVERIFIED_LIST', currentNonVerifiedEvents)
         } else {
           console.debug( ' - failed');
@@ -149,7 +150,8 @@ export const actions = {
 
 export const mutations = {
   POPULATE_UNVERIFIED_LIST: (state, payload) => {
-    state.unverified_events = payload
+    console.log('!!! setting the events')
+    state.unverified_events = [...payload]
   },
   POPULATE_VERIFIED_LIST: (state, payload) => {
     state.verified_events = payload

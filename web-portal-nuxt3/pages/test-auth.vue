@@ -1,24 +1,26 @@
 <template>
   <template>
     <div class="container admin-page">
-      <h2>Unverified Events</h2>
-      <AdminEventsList :calendar_events="unverifiedEvents" class="unverified-events" />
-      <h2>Current Events</h2>
-      <Pagination
-        :items="verifiedEvents"
-        :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
-        class-name-page-list="ii-admin-page_current-events-pagination-list"
-      >
-        <AdminEventsList slot-scope="page" :calendar_events="page" class="current-events" />
-      </Pagination>
-      <h2>Resources</h2>
-      <Pagination
-        :items="resourceEvents"
-        :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
-        class-name-page-list="ii-admin-page_resources-pagination-list"
-      >
-        <admin-events-list slot-scope="page" :calendar_events="page" class="resources" />
-      </Pagination>
+      <ClientOnly fallback-tag="span" fallback="Loading Admin Page...">
+        <h2>Unverified Events</h2>
+        <AdminEventsList :calendar_events="unverifiedEvents" />
+        <h2>Current Events</h2>
+        <Pagination
+          :items="verifiedEvents"
+          :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
+          class-name-page-list="ii-admin-page_current-events-pagination-list"
+        >
+          <AdminEventsList slot-scope="page" :calendar_events="page" class="current-events" />
+        </Pagination>
+        <h2>Resources</h2>
+        <Pagination
+          :items="resourceEvents"
+          :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
+          class-name-page-list="ii-admin-page_resources-pagination-list"
+        >
+          <admin-events-list slot-scope="page" :calendar_events="page" class="resources" />
+        </Pagination>
+      </ClientOnly>
     </div>
   </template>
 </template>
@@ -27,17 +29,10 @@
 import { useStore } from 'vuex'
 const { user } = useUserSession();
 
-let isLessWindowLessThan900px = false;
-let _mediaQueryListener;
+useHead({ title: 'Event Management - Infinite Industries' })
 
-const events = ref([])
+const isLessWindowLessThan900px = ref(false);
 const store = useStore()
-
-// await callOnce('LoadAdminPageDAta', async function () {
-//   await store.dispatch('admin/LoadUnverifiedEvents')
-//   await store.dispatch('admin/LoadCurrentEvents')
-//   await store.dispatch('admin/LoadResourceEvents')
-// }, { mode: 'navigation' })
 
 const unverifiedEvents = computed(() => {
   return store.getters['admin/GetUnverifiedEvents']
@@ -52,39 +47,38 @@ const resourceEvents = computed(() => {
 });
 
 const maxNumberOfPageShortcuts = computed(() => {
-  if (isLessWindowLessThan900px) {
-    return 5
+  return isLessWindowLessThan900px.value ? 5: 25;
+});
+
+let mediaQueryListener;
+onMounted(async () => {
+  if (process.client) {
+    console.log('!!! on client')
+    // create a change handler for screen size
+    mediaQueryListener = window.matchMedia('(max-width: 900px)')
+    isLessWindowLessThan900px.value = mediaQueryListener.matches
+    mediaQueryListener.addEventListener('change', onMatchMediaChange)
+
+    // load data
+    await store.dispatch('admin/LoadUnverifiedEvents')
+    await store.dispatch('admin/LoadCurrentEvents')
+    await store.dispatch('admin/LoadResourceEvents')
   } else {
-    return 25
+    console.log('!!! on server')
   }
 });
 
- onMounted(async () => {
-   console.log('!!! mounted')
-   store.dispatch('admin/LoadUnverifiedEvents')
-   store.dispatch('admin/LoadCurrentEvents')
-   store.dispatch('admin/LoadResourceEvents')
+onUnmounted(() => {
+  if (mediaQueryListener) {
+    mediaQueryListener.removeEventListener('change', onMatchMediaChange)
+    mediaQueryListener = undefined
+  }
+});
 
 
-   console.log('!!! mounted done')
-   if (window) {
-     _mediaQueryListener = window.matchMedia('(max-width: 900px)')
-    isLessWindowLessThan900px = _mediaQueryListener.matches
-
-     _mediaQueryListener.addEventListener('change', onMatchMediaChange)
-   }
- });
-
- onUnmounted(() => {
-   if (_mediaQueryListener) {
-     _mediaQueryListener.removeEventListener('change', onMatchMediaChange)
-     _mediaQueryListener = undefined
-   }
- });
-
- function onMatchMediaChange() {
-   isLessWindowLessThan900px = t_mediaQueryListener.matches
- }
+function onMatchMediaChange() {
+ isLessWindowLessThan900px.value = mediaQueryListener.matches
+}
 </script>
 
 <style>
