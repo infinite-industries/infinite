@@ -1,28 +1,28 @@
 <template>
-  <template>
-    <div class="container admin-page">
-      <ClientOnly fallback-tag="span" fallback="Loading Admin Page...">
-        <h2>Unverified Events</h2>
-        <AdminEventsList :calendar_events="unverifiedEvents" />
-        <h2>Current Events</h2>
-        <Pagination
-          :items="verifiedEvents"
-          :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
-          class-name-page-list="ii-admin-page_current-events-pagination-list"
-        >
-          <AdminEventsList slot-scope="page" :calendar_events="page" class="current-events" />
-        </Pagination>
-        <h2>Resources</h2>
-        <Pagination
-          :items="resourceEvents"
-          :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
-          class-name-page-list="ii-admin-page_resources-pagination-list"
-        >
-          <admin-events-list slot-scope="page" :calendar_events="page" class="resources" />
-        </Pagination>
-      </ClientOnly>
-    </div>
-  </template>
+  <div class="container admin-page">
+    <ClientOnly fallback-tag="span" fallback="Loading Admin Page...">
+      <h2>Unverified Events</h2>
+      <AdminEventsList :calendar_events="unverifiedEvents" />
+      <h2>Current Events</h2>
+      <Pagination
+        :items="verifiedEvents"
+        v-slot="page"
+        :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
+        class-name-page-list="ii-admin-page_current-events-pagination-list"
+      >
+        <AdminEventsList :calendar_events="page" class="current-events" />
+      </Pagination>
+      <h2>Resources</h2>
+      <Pagination
+        :items="resourceEvents"
+        v-slot="page"
+        :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
+        class-name-page-list="ii-admin-page_resources-pagination-list"
+      >
+        <admin-events-list :calendar_events="page" class="resources" />
+      </Pagination>
+    </ClientOnly>
+  </div>
 </template>
 
 <script setup>

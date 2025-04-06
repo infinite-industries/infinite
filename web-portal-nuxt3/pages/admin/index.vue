@@ -5,18 +5,20 @@
     <h2>Current Events</h2>
     <ii-pagination
       :items="verified_events"
+      v-slot="page"
       :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
       class-name-page-list="ii-admin-page_current-events-pagination-list"
     >
-      <admin-events-list slot-scope="page" :calendar_events="page" class="current-events" />
+      <admin-events-list :calendar_events="page" class="current-events" />
     </ii-pagination>
     <h2>Resources</h2>
     <ii-pagination
       :items="resource_events"
+      v-slot="page"
       :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
       class-name-page-list="ii-admin-page_resources-pagination-list"
     >
-      <admin-events-list slot-scope="page" :calendar_events="page" class="resources" />
+      <admin-events-list :calendar_events="page" class="resources" />
     </ii-pagination>
   </div>
 </template>
