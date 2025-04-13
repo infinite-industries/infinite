@@ -51,7 +51,7 @@ let errorMessage = ref(null)
 async function onLoginClick(event) {
   const target = event.target
 
-  await $fetch('/api-internal/login', {
+  await $fetch('/internal-api/login', {
     method: 'POST',
     body: {
       username: target.username.value,

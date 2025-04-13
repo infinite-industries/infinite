@@ -62,10 +62,10 @@
 <style>
   @import url('https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,400i,600,600i,700');
 
-  /* TODO: this is related to upgrading Vuetify during the Nuxt refactor */
-  /* The version we used to use set the base font to 16px, but the current version uses 14px */
+  /* TODO: this is related to upgrading Vuetify during the Nuxt refactors */
   html {
     font-size: 16px;
+    line-height: normal;
   }
 
   body {
@@ -91,6 +91,48 @@
   main {
     padding-top: 55px;
   }
+
+  p {
+    margin-bottom: 16px
+  }
+
+  /* this styling used to come from Vuetify, but doesn't work the same way in v3 */
+  /* replicating here for backwards compatibility, will need to re-think some day */
+  /* See https://github.com/vuetifyjs/vuetify/blob/v1.5.24/packages/vuetify/src/stylus/components/_grid.styl */
+  /* and https://github.com/vuetifyjs/vuetify/blob/v1.5.24/packages/vuetify/src/stylus/settings/_variables.styl */
+  /* TODO: consider merging this into info-page */
+  .container {
+    flex: 1 1 100%;
+    margin: auto;
+    padding: 24px;
+    width: 100%;
+  }
+
+  @media only screen and (max-width: 959px) {
+    .container {
+      padding: 16px;
+    }
+  }
+
+  @media only screen and (min-width: 960px) {
+    .container {
+      max-width: 900px;
+    }
+  }
+
+  @media only screen and (min-width: 1264px) {
+    .container {
+      max-width: 1185px;
+    }
+  }
+
+  @media only screen and (min-width: 1904px) {
+    .container {
+      max-width: 1785px;
+    }
+  }
+
+  /* end temporary container styling */
 
   .info-page {
     background: white;
@@ -150,5 +192,6 @@
   .info-page p {
     font-family: "EB Garamond";
     font-size: 1.25em;
+    margin-bottom: 16px;
   }
 </style>

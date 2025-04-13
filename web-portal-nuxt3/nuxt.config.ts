@@ -1,3 +1,5 @@
+import colors from 'vuetify/util/colors'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
@@ -97,10 +99,7 @@ export default defineNuxtConfig({
 
   ** Nuxt.js modules
   */
-  modules: [
-    'nuxt-auth-utils',
-    'nuxt3-vuex-module'
-  ],
+  modules: ['nuxt-auth-utils', 'nuxt3-vuex-module', 'vuetify-nuxt-module'],
 
   /*
   ** Auth configuration
@@ -109,10 +108,41 @@ export default defineNuxtConfig({
   // },
   /*
   ** vuetify module configuration
-  ** https://github.com/nuxt-community/vuetify-module
+  ** https://nuxt.vuetifyjs.com/guide/#module-options
   */
-  // vuetify: {
-  // },
+  vuetify: {
+    vuetifyOptions: {
+      theme: {
+        defaultTheme: 'light',
+        themes: {
+          light: {
+            colors: {
+              primary: colors.blue.darken2,
+              accent: colors.grey.darken3,
+              secondary: colors.amber.darken3,
+              info: colors.teal.lighten1,
+              warning: colors.amber.base,
+              error: colors.deepOrange.accent4,
+              success: colors.green.accent3,
+            }
+          }
+        }
+      },
+      // overriding default props for easier backwards-compatibility for
+      // existing appearance
+      defaults: {
+        VRow: {
+          noGutters: true,
+        },
+        VTextField: {
+          variant: 'underlined'
+        },
+        VTextarea: {
+          variant: 'underlined'
+        }
+      },
+    },
+  },
   /*
   ** (Dev) Server configuration
   */
