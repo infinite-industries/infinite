@@ -9,7 +9,7 @@
       :is-disabled="!pageEntry.enabled"
       @decrementPageClicked="$emit('decrementPageClicked')"
       @incrementPage="$emit('incrementPage')"
-      @pageEntryClicked="$emit('pageEntryClicked', ...arguments)"
+      @pageEntryClicked="onPageEntryClicked"
     />
   </ul>
 </template>
@@ -18,6 +18,7 @@
   import PaginationListEntry from '@/components/pagination/PaginationListEntry.vue'
 
   export default {
+    emits: ['incrementPage', 'pageEntryClicked', 'decrementPageClicked'],
     props: {
       maxNumberOfPageShortcuts: {
         type: Number,
@@ -101,6 +102,9 @@
       }
     },
     methods: {
+      onPageEntryClicked() {
+        this.$emit('pageEntryClicked', ...arguments)
+      },
       createPreviousEntry(enabled) {
         return {
           entryType: 'previous',

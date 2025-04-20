@@ -1,106 +1,85 @@
 <template>
   <div class="container admin-page">
     <h2>Unverified Events</h2>
-    <admin-events-list :calendar_events="unverified_events" class="unverified-events" />
+    <AdminEventsList :calendar_events="unverifiedEvents" />
     <h2>Current Events</h2>
-    <ii-pagination
-      :items="verified_events"
+    <Pagination
+      :items="verifiedEvents"
       v-slot="page"
       :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
       class-name-page-list="ii-admin-page_current-events-pagination-list"
     >
-      <admin-events-list :calendar_events="page" class="current-events" />
-    </ii-pagination>
+      <AdminEventsList :calendar_events="page" class="current-events" />
+    </Pagination>
     <h2>Resources</h2>
-    <ii-pagination
-      :items="resource_events"
+    <Pagination
+      :items="resourceEvents"
       v-slot="page"
       :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
       class-name-page-list="ii-admin-page_resources-pagination-list"
     >
       <admin-events-list :calendar_events="page" class="resources" />
-    </ii-pagination>
+    </Pagination>
   </div>
 </template>
 
-<!--<script setup>-->
-<!--  import { useStore } from 'vuex'-->
+<script setup>
+import { useStore } from 'vuex'
 
-<!--</script>-->
+useHead({ title: 'Event Management - Infinite Industries' })
 
-<script>
-  import AdminEventsList from '../../components/AdminEventsList.vue'
-  import Pagination from '../../components/pagination/Pagination.vue'
-  import { useStore } from 'vuex'
+const isLessWindowLessThan900px = ref(false);
+const store = useStore()
 
-  export default {
-    name: 'Admin',
-    middleware: 'auth',
-    head: function () {
-      return {
-        title: 'Event Management - Infinite Industries'
-      }
-    },
-    data: function () {
-      return {
-        isLessWindowLessThan900px: false
-      }
-    },
-    computed: {
-      unverified_events: function () {
-        return this.$store.getters['admin/GetUnverifiedEvents']
-      },
-      verified_events: function () {
-        return this.$store.getters['admin/GetVerifiedEvents']
-      },
-      resource_events: function () {
-        return this.$store.getters['admin/GetResourceEvents']
-      },
-      maxNumberOfPageShortcuts() {
-        if (this.isLessWindowLessThan900px) {
-          return 5
-        } else {
-          return 25
-        }
-      }
-    },
-    setup: async function () {
-      const store = useStore()
-      await callOnce('LoadAllLocalEventData', async function () {
-        await store.dispatch('admin/LoadUnverifiedEvents')
-        await store.dispatch('admin/LoadCurrentEvents')
-        await store.dispatch('admin/LoadResourceEvents')
-      }, { mode: 'navigation' })
+const unverifiedEvents = computed(() => {
+  return store.getters['admin/GetUnverifiedEvents']
+});
 
-      onMounted(async () => {
-        if (window) {
-          this._mediaQueryListener = window.matchMedia('(max-width: 900px)')
-          this.isLessWindowLessThan900px = this._mediaQueryListener.matches
+const verifiedEvents = computed(() => {
+  return store.getters['admin/GetVerifiedEvents']
+});
 
-          this._mediaQueryListener.addEventListener('change', this.onMatchMediaChange)
-        }
-      })
+const resourceEvents = computed(() => {
+  return store.getters['admin/GetResourceEvents']
+});
 
-      onUnmounted(() => {
-        if (this._mediaQueryListener) {
-          this._mediaQueryListener.removeEventListener('change', this.onMatchMediaChange)
-          this._mediaQueryListener = undefined
-        }
-      })
-    },
-    components: {
-      'admin-events-list': AdminEventsList,
-      'ii-pagination': Pagination
-    },
-    methods: {
-      onMatchMediaChange() {
-        this.isLessWindowLessThan900px = this._mediaQueryListener.matches
-      }
-    }
+const maxNumberOfPageShortcuts = computed(() => {
+  return isLessWindowLessThan900px.value ? 5: 25;
+});
+
+let mediaQueryListener;
+onMounted(async () => {
+  if (process.client) {
+    // create a change handler for screen size
+    mediaQueryListener = window.matchMedia('(max-width: 900px)')
+    isLessWindowLessThan900px.value = mediaQueryListener.matches
+    mediaQueryListener.addEventListener('change', onMatchMediaChange)
+
+    // load data
+    await store.dispatch('admin/LoadUnverifiedEvents')
+    await store.dispatch('admin/LoadCurrentEvents')
+    await store.dispatch('admin/LoadResourceEvents')
   }
+});
+
+onUnmounted(() => {
+  if (mediaQueryListener) {
+    mediaQueryListener.removeEventListener('change', onMatchMediaChange)
+    mediaQueryListener = undefined
+  }
+});
+
+
+function onMatchMediaChange() {
+  isLessWindowLessThan900px.value = mediaQueryListener.matches
+}
 </script>
 
 <style>
+.calendar-events-table.unverified-events {
+  background: white;
+}
+
 .ii-pagination__list.ii-admin-page_current-events-pagination-list,
 .ii-pagination__list.ii-admin-page_resources-pagination-list {
   margin-left: auto;
