@@ -26,6 +26,12 @@
 <script setup>
 import { useStore } from 'vuex'
 
+definePageMeta({
+  middleware: [
+    'auth'
+  ]
+})
+
 useHead({ title: 'Event Management - Infinite Industries' })
 
 const isLessWindowLessThan900px = ref(false);

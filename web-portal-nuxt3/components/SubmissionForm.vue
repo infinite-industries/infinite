@@ -342,8 +342,8 @@
           <v-card-text>click Save too</v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" flat="flat" @click.native="dirtyOnVerifyDialog = false">Close</v-btn>
-            <v-btn color="green darken-1" @click.native="dirtyOnVerifyDialog = false; UpdateEvent()">Save Now</v-btn>
+            <v-btn color="green darken-1" flat="flat" @click="dirtyOnVerifyDialog = false">Close</v-btn>
+            <v-btn color="green darken-1" @click="dirtyOnVerifyDialog = false; UpdateEvent()">Save Now</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -455,19 +455,17 @@
             this.$refs.eventImage.files.length > 0
             // || this.$refs.eventSocialImage.files.length > 0
           ) {
-            this.$apiService.uploadEventImage(this.$refs.eventImage.files[0])
+            this.$nuxt.$apiService.uploadEventImage(this.$refs.eventImage.files[0])
               .then(resolve)
               .catch(reject)
           } else resolve({})
-        }).then((response) => {
+        }).then((data) => {
           // if response, update event prior to saving
-          const data = response.data
           if (data && data.imagePath) this.calendar_event.image = data.imagePath
 
           this.$store.dispatch('admin/UpdateEvent', {
             id: this.calendar_event.id,
             event_data: this.calendar_event,
-            idToken: getToken(this.$auth)
           }).finally(() => { this.showEventLoadingSpinner = false })
         }).catch((error) => {
           console.error(error)
@@ -485,7 +483,6 @@
         this.showEventLoadingSpinner = true
         this.$store.dispatch('admin/DeleteEvent', {
           id: this.calendar_event.id,
-          idToken: getToken(this.$auth)
         })
           .then(() => { this.$router.push('/admin') })
           .finally(() => { this.showEventLoadingSpinner = false })
@@ -497,7 +494,6 @@
 
         this.$store.dispatch('admin/VerifyEvent', {
           id: this.calendar_event.id,
-          idToken: getToken(this.$auth)
         })
           .then(() => {
             this.showEventLoadingSpinner = false
