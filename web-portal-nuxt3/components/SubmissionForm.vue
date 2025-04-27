@@ -431,9 +431,9 @@
         tags: new_event.tags ? new_event.tags.map(t => t) : []
       })
     },
-    // mounted() {
-    //   this.doTimeAndLocationExistingEventDetection()
-    // },
+    mounted() {
+      this.doTimeAndLocationExistingEventDetection()
+    },
     methods: {
       /** @public */
       isDirty: function () {
@@ -597,13 +597,13 @@
           duplicateDetectionPayload.excludeIds = [this.calendar_event.id]
         }
 
-        // this.$apiService.post('/events/detect-existing/by-time-and-location', duplicateDetectionPayload)
-        //   .then((resp) => {
-        //     this.duplicateEventsByStartTime = resp.data || null
-        //   })
-        //   .catch((err) => {
-        //     console.error('Error performing duplicate detection on start times: ', err)
-        //   })
+        this.$nuxt.$apiService.post('/events/detect-existing/by-time-and-location', duplicateDetectionPayload)
+          .then((data) => {
+            this.duplicateEventsByStartTime = data || null
+          })
+          .catch((err) => {
+            console.error('Error performing duplicate detection on start times: ', err)
+          })
       },
       sendEmails: function () {
         // Allan! Allan! ... Steve!

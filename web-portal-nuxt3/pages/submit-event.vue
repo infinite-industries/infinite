@@ -174,10 +174,6 @@
       onPreview: function (event) {
         this.previewEvent = event
         this.mode = 'preview'
-        // $nextTick no longer exposed as a method, needs to be imported
-        // https://v3-migration.vuejs.org/breaking-changes/global-api-treeshaking#_3-x-syntax
-        // import { nextTick } from 'vue'
-        // nextTick(() => ...)
         this.$nextTick(() => this.$scrollTo(this.$refs.previewHeading, { offset: -200 }))
       },
       submitEventForReal: function () {

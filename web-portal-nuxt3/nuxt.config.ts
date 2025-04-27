@@ -99,7 +99,12 @@ export default defineNuxtConfig({
 
   ** Nuxt.js modules
   */
-  modules: ['nuxt-auth-utils', 'nuxt3-vuex-module', 'vuetify-nuxt-module'],
+  modules: [
+    'nuxt-auth-utils',
+    'nuxt3-vuex-module',
+    'vuetify-nuxt-module',
+    // 'vue-scrollto/nuxt' // broken?
+  ],
 
   /*
   ** Auth configuration
