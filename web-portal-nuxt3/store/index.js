@@ -1,3 +1,4 @@
+import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
 const CURRENT_EVENTS_VERIFIED_PATH = '/events/current-verified'
 const EVENTS_VERIFIED_PATH = '/events/verified'
@@ -16,6 +17,8 @@ export const state = () => {
       loading: false
     },
 
+    calendar_event: {},
+
     user_data: {},
     user_data_loading: true,
     user_data_error: null,
@@ -30,6 +33,12 @@ export const state = () => {
 }
 
 export const getters = {
+  GetCurrentEvent: (state) => {
+    return state.calendar_event
+  },
+  GetActiveVenues: (state) => {
+    return state.venues.getActiveVenuesQuery.data
+  },
   GetLoadingStatus: (state) => {
     return state.util.loading
   },
@@ -84,6 +93,13 @@ export const mutations = {
     state.user_data_error = err
   },
 
+  POPULATE_CURRENT_EVENT: (state, payload) => {
+    state.calendar_event = payload
+  },
+
+  CREATE_NEW_EVENT: (state) => {
+    state.calendar_event = getEmptyCalendarEvent()
+  },
   UPDATE_LOCALIZED_EVENTS: (state, payload) => {
     state.all_local_events = payload
   },
@@ -104,6 +120,10 @@ export const actions = {
   Logout: function (context) {
     context.commit('LOGOUT')
   },
+  CreateNewEvent: function (context) {
+    context.commit('CREATE_NEW_EVENT')
+  },
+
   LoadAllLocalEventData: function (context) {
     context.commit('SET_LOADING_STATUS', true)
 

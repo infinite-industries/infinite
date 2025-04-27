@@ -1,22 +1,19 @@
 <template>
   <NuxtLayout>
-    <v-app>
-      <h1 v-if="error.statusCode === 404">
-        {{ pageNotFound }}
-      </h1>
-      <h1 v-else>
-        {{ otherError }}
-      </h1>
-      <div class="text-wrapper">
-        <span v-if="error.statusCode === 404">Hrmm... Something went wrong.</span> <br />
-        Please return to the
-        <NuxtLink to="/">
-          Home page
-        </NuxtLink>
-        <p> the Management </p>
-      </div>
-
-    </v-app>
+    <h1 v-if="error.statusCode === 404">
+      {{ pageNotFound }}
+    </h1>
+    <h1 v-else>
+      {{ otherError }}
+    </h1>
+    <div class="text-wrapper">
+      <span v-if="error.statusCode === 404">Hrmm... Something went wrong.</span> <br />
+      Please return to the
+      <NuxtLink to="/">
+        Home page
+      </NuxtLink>
+      <p> the Management </p>
+    </div>
   </NuxtLayout>
 </template>
 

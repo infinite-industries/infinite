@@ -1,10 +1,13 @@
 
-export default defineNuxtPlugin((nuxtApp) => {
-  const { user } = useUserSession()
+export default defineNuxtPlugin({
+  name: 'api-service',
+  async setup (nuxtApp) {
+    const { user } = useUserSession()
 
-  return {
-    provide: {
-      'apiService': new ApiService(nuxtApp.$config.public.apiUrl, user)
+    return {
+      provide: {
+        'apiService': new ApiService(nuxtApp.$config.public.apiUrl, user)
+      }
     }
   }
 })
@@ -29,21 +32,21 @@ class ApiService {
     const userToken = this.user.value?.token
     const headers = !!userToken ? { 'x-access-token': userToken } : undefined
 
-    return $fetch(`${this.apiUrl}/${path}`, { method: "POST", body: postBody ,headers })
+    return $fetch(`${this.apiUrl}${path}`, { method: "POST", body: postBody, headers })
   }
 
   put(path, body) {
     const userToken = this.user.value?.token
     const headers = !!userToken ? { 'x-access-token': userToken } : undefined
 
-    return $fetch(`${this.apiUrl}/${path}`, { method: "PUT", body, headers })
+    return $fetch(`${this.apiUrl}${path}`, { method: "PUT", body, headers })
   }
 
   delete(path) {
     const userToken = this.user.value?.token
     const headers = !!userToken ? { 'x-access-token': userToken } : undefined
 
-    return $fetch(`${this.apiUrl}/${path}`, { method: "DELETE", headers })
+    return $fetch(`${this.apiUrl}${path}`, { method: "DELETE", headers })
   }
 
   // unclear if there's a $fetch equivalent for this

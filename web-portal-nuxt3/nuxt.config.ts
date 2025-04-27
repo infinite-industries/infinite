@@ -131,6 +131,9 @@ export default defineNuxtConfig({
       // overriding default props for easier backwards-compatibility for
       // existing appearance
       defaults: {
+        VCombobox: {
+          variant: 'underlined'
+        },
         VRow: {
           noGutters: true,
         },

@@ -76,7 +76,7 @@
                   <option value="pm">PM</option>
                 </select>
                 <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
-                  <option v-for="(tz) in $config.TIMEZONE_OPTIONS.split(',')" :key="tz">
+                  <option v-for="(tz) in $config.public.timezoneOptions.split(',')" :key="tz">
                     {{ tz }}
                   </option>
                 </select>
@@ -183,14 +183,10 @@
         default: 'upload',
         validator: value => value === 'upload' || value === 'edit'
       },
-      value: {
+      modelValue: {
         type: Array,
         default: () => []
       }
-    },
-    model: {
-      prop: 'value',
-      event: 'change'
     },
     data: function () {
       return {
@@ -209,7 +205,7 @@
         end_minute: '',
         end_ampm: 'pm',
 
-        event_timezone: this.$config.TIMEZONE_DEFAULT
+        event_timezone: this.$config.public.timezoneDefault
       }
     },
     mounted: function () {
@@ -257,7 +253,7 @@
       EditTimeSegment: function (which_segment) {
         this.edit_mode = true
         this.time_segment_index = which_segment
-        const time_segment = this.value[which_segment]
+        const time_segment = this.modelValue[which_segment]
         this.event_timezone = time_segment.timezone
 
         const start_time = momenttz(time_segment.start_time).tz(this.event_timezone)
@@ -272,15 +268,15 @@
         this.end_ampm = end_time.format('a')
       },
       DeleteTimeSegment: function (which_segment) {
-        const newValue = [ ...this.value ]
+        const newValue = [ ...this.modelValue ]
         newValue.splice(which_segment, 1)
-        this.$emit('change', newValue)
+        this.$emit('update:modelValue', newValue)
       },
       AddTimeSegment: function () {
-        const newValue = [ ...this.value ]
+        const newValue = [ ...this.modelValue ]
         newValue.push(createTimeSegment(this.check_start_time, this.check_end_time, this.event_timezone))
         this.time_segment_index = newValue.length
-        this.$emit('change', newValue)
+        this.$emit('update:modelValue', newValue)
 
         this.picker = null
         this.introduction = false
@@ -291,9 +287,9 @@
         const formatted_end_time = this.check_end_time
         const event_timezone = this.event_timezone
 
-        const newValue = [ ...this.value ]
+        const newValue = [ ...this.modelValue ]
         newValue[which_segment] = createTimeSegment(formatted_start_time, formatted_end_time, event_timezone)
-        this.$emit('change', newValue)
+        this.$emit('update:modelValue', newValue)
 
         this.picker = null
         this.introduction = false
@@ -341,7 +337,7 @@
         }
       },
       dates_and_times: function () {
-        return this.value
+        return this.modelValue
       },
       check_start_time: function () {
         return momenttz.tz(`${this.picker} ${this.start_hour}:${this.start_minute}:${this.start_ampm}`,
@@ -446,6 +442,11 @@
   }
   .invalid {
     outline: 1px solid red;
+  }
+
+  /* this used to be exposed by Vuetify, not as of v3 */
+  .error--text {
+    color: #dd2c00 !important;
   }
 
   #all-confirmed-times-dates {

@@ -8,9 +8,7 @@ import 'flatpickr/dist/flatpickr.css'
 import 'flatpickr/dist/themes/dark.css'
 
 export default {
-  model: {
-    event: 'change'
-  },
+  emits: ['change'],
   data: function() {
     return {
       config: {
