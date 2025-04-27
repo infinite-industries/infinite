@@ -73,6 +73,10 @@ async function onLoginClick(event) {
   color: white;
 }
 
+.login-page input {
+  color: white;
+}
+
 .login-page .login-page__errors {
   color: red
 }
