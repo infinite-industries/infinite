@@ -186,7 +186,7 @@
           <h3>Description:</h3>
         </v-col>
         <v-col cols="12" sm="11">
-          <!-- <vue-editor id="vue-editor1" v-model="calendar_event.description" @blur="makeSuggestionsBasedOnDescription" /> -->
+          <rich-editor id="vue-editor1" v-model="calendar_event.description" @blur="makeSuggestionsBasedOnDescription" />
         </v-col>
       </v-row>
 
@@ -374,6 +374,7 @@
 </template>
 
 <script>
+  import RichEditor from './RichEditor.vue'
   import VenuePicker from './VenuePicker.vue'
   import DateTimePicker from './DateTimePicker.vue'
   import AddNewVenue from './AddNewVenue.vue'
@@ -788,7 +789,7 @@
     },
     components: {
       ExistingEventDetectionAlert,
-      // 'vue-editor': VueEditor,
+      'rich-editor': RichEditor,
       'venue-picker': VenuePicker,
       'add-new-venue': AddNewVenue,
       'date-time-picker': DateTimePicker,
