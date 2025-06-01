@@ -46,6 +46,11 @@ import VenueCard from "~/components/admin-venue-edit/VenueCard.vue";
 
 const store = useStore();
 
+definePageMeta({
+  layout: 'admin',
+  middleware: ['auth'],
+})
+
 const selectedList = ref(ACTIVE_VENUE_SELECTION)
 const searchByNameValue = ref('')
 const isWindowExtraSmall = ref(false)
@@ -150,7 +155,12 @@ onUnmounted(() => {
 
 function onFilter() {
   store.commit(COMMIT_VENUE_CHANGE_ACTIVE_FILTER_STATE, selectedList)
-  this.$fetch()
+
+  if (selectedList.value === 'Active Venues') {
+    store.dispatch(FETCH_ACTIVE_VENUES);
+  } else if (selectedList.value === 'Deleted Venues') {
+    store.dispatch(FETCH_DELETED_VENUES);
+  }
 }
 
 function sortMethod (venueA, venueB) {

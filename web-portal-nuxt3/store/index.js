@@ -150,13 +150,45 @@ export const actions = {
 
   LoadAnnouncements: function (context) {
     return useNuxtApp().$apiService.get('/announcements')
-      .then((data) => {
-        if (data.status === 'success') {
-          context.commit('POPULATE_ANNOUNCEMENTS', data.announcements)
-        } else console.error('Error processing announcements', data)
+      .then((response) => {
+        if (response.status === 'success') {
+          context.commit('POPULATE_ANNOUNCEMENTS', response.announcements)
+        } else console.error('Error processing announcements', response)
       })
       .catch((error) => {
         console.error('Unable to load announcements', error)
       })
   },
+
+  FindOrCreateActiveAnnouncement: function (context) {
+    return useNuxtApp().$apiService.post(
+      '/announcements/ensure-one-announcement',
+      { message: '' },
+    ).then((response) => {
+      if (response.status === 'success') {
+        context.commit('POPULATE_ANNOUNCEMENTS', response.announcements)
+      } else {
+        console.error('Unable to ensure announcement', response.error)
+      }
+    }).catch((error) => {
+      console.error('Failed making request to ensure announcements', error)
+      throw new Error('Failed ensuring the existence of an announcement entity') // pass error on to caller
+    })
+  },
+
+  UpdateActiveAnnouncement: function (context, payload) {
+    const announcement = payload.announcement
+
+    return useNuxtApp().$apiService.put(
+      `/announcements/${announcement.id}`,
+      { message: announcement.message }
+    ).then((response) => {
+      if (response.status !== 'success') {
+        console.error('Unable to ensure announcement', response.error)
+      }
+    }).catch((error) => {
+      console.error('Failed making request to ensure announcements', error)
+      throw new Error('Failed to update the message') // pass error on to caller
+    })
+  }
 }
