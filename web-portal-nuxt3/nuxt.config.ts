@@ -103,7 +103,7 @@ export default defineNuxtConfig({
     'nuxt-auth-utils',
     'nuxt3-vuex-module',
     'vuetify-nuxt-module',
-    // 'vue-scrollto/nuxt' // broken?
+    '@nuxt/test-utils/module',
   ],
 
   /*
