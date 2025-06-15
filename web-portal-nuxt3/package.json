@@ -24,6 +24,7 @@
     "@fullcalendar/timegrid": "^6.1.15",
     "@fullcalendar/vue3": "^6.1.15",
     "@vueup/vue-quill": "^1.2.0",
+    "fathom-client": "^3.7.2",
     "gsap": "^3.6.0",
     "h3": "^1.15.1",
     "moment": "^2.30.1",
