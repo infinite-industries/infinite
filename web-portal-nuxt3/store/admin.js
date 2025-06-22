@@ -36,20 +36,17 @@ export const actions = {
   LoadUnverifiedEvents: function (context) {
     const isResponseSuccess = data => data && data.status === 'success'
 
-    console.debug('request: ' + EVENTS_NON_VERIFIED_PATH);
     return this.$nuxt.$apiService.get(EVENTS_NON_VERIFIED_PATH).then(
       (currentNonVerifiedEventsResponse) => {
         if (isResponseSuccess(currentNonVerifiedEventsResponse)) {
-          console.debug('request: ' + EVENTS_NON_VERIFIED_PATH + ' - success');
           const currentNonVerifiedEvents = currentNonVerifiedEventsResponse.events
           context.commit('POPULATE_UNVERIFIED_LIST', currentNonVerifiedEvents)
         } else {
-          console.debug( ' - failed');
           context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Was not able to find unverified events.' }, { root: true })
         }
       }
     ).catch(function (error) {
-      console.log('request "' + EVENTS_NON_VERIFIED_PATH + '" Error: ' + error)
+      console.log(error)
       context.commit('ui/SHOW_NOTIFICATIONS',
         { open: true, message: 'API connection bit the dust. FiX!' }, { root: true })
     })

@@ -13,13 +13,11 @@
 </template>
 
 <script>
-  import { useStore } from 'vuex'
   import ListViewer from '../components/ListViewer.vue'
   import Jumbotron from '../components/Jumbotron.vue'
 
   export default defineNuxtComponent({
     async setup () {
-      // const config = useRuntimeConfig()
       const { $urlFor } = useNuxtApp()
       useHead({
         link: [
@@ -30,15 +28,6 @@
         'LoadAllLocalEventData',
         'LoadAllStreamingEventData'
       ])
-      // const { data, status } = await useFetch(`${config.public.API_URL}/events/verified`)
-      // const [
-      //   { data: eventsData },
-      //   { data: resourcesData }
-      // ] = await Promise.all([
-      //   useAsyncData('events', () => $apiService.get('events/verified?embed=Venue')),
-      //   useAsyncData('resources', () => nuxtApp.$apiService.get('/events/verified?category=online-resources'))
-      // ])
-
       return {}
     },
     computed: {

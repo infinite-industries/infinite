@@ -98,7 +98,6 @@
       .then(() => {
         setLoadSuccessState()
       }).catch((error) => {
-        console.warn(error);
         setLoadingFailState(error.toString());
       })
   }

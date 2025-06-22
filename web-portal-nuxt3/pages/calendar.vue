@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import { mapGetters, useStore } from 'vuex'
+  import { mapGetters } from 'vuex'
   import FullCalendar from '@fullcalendar/vue3'
   import dayGridPlugin from '@fullcalendar/daygrid'
   import interactionPlugin from '@fullcalendar/interaction'

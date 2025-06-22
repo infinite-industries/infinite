@@ -14,7 +14,6 @@ export default defineNuxtPlugin({
 
 class ApiService {
   constructor(apiUrl, user) {
-    console.log(apiUrl)
     this.apiUrl = apiUrl
     this.user = user
   }

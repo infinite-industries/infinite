@@ -48,7 +48,6 @@ describe('SubmissionForm component', () => {
   })
 
   it('event mode defaults to in-person', function () {
-    console.log(wrapper.html())
     expect(wrapper.find('.event-mode input[type="radio"][value="in-person"]').element.checked).toBe(true)
     expect(wrapper.vm.calendar_event.mode).toEqual('in-person')
   })
