@@ -35,7 +35,7 @@
   const url = $urlFor('/events/' + eventId)
   const defaultImage = $urlFor('/images/default.jpg')
 
-  const eventImage = event.value?.image && event.image !== 'none' ? event.value.image : defaultImage
+  const eventImage = event.value?.image && event.value.image !== 'none' ? event.value.image : defaultImage
   const socialImage = (event.value && event.value.social_image && event.value.social_image !== 'none'
     ? event.value.social_image
     : eventImage)
