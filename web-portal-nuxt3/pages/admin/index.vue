@@ -24,61 +24,61 @@
 </template>
 
 <script setup>
-import { useStore } from 'vuex'
+  import { useStore } from 'vuex'
 
-definePageMeta({
-  middleware: [
-    'auth'
-  ]
-})
+  definePageMeta({
+    middleware: [
+      'auth'
+    ]
+  })
 
-useHead({ title: 'Event Management - Infinite Industries' })
+  useHead({ title: 'Event Management - Infinite Industries' })
 
-const isLessWindowLessThan900px = ref(false);
-const store = useStore()
+  const isLessWindowLessThan900px = ref(false);
+  const store = useStore()
 
-const unverifiedEvents = computed(() => {
-  return store.getters['admin/GetUnverifiedEvents']
-});
+  const unverifiedEvents = computed(() => {
+    return store.getters['admin/GetUnverifiedEvents']
+  });
 
-const verifiedEvents = computed(() => {
-  return store.getters['admin/GetVerifiedEvents']
-});
+  const verifiedEvents = computed(() => {
+    return store.getters['admin/GetVerifiedEvents']
+  });
 
-const resourceEvents = computed(() => {
-  return store.getters['admin/GetResourceEvents']
-});
+  const resourceEvents = computed(() => {
+    return store.getters['admin/GetResourceEvents']
+  });
 
-const maxNumberOfPageShortcuts = computed(() => {
-  return isLessWindowLessThan900px.value ? 5: 25;
-});
+  const maxNumberOfPageShortcuts = computed(() => {
+    return isLessWindowLessThan900px.value ? 5: 25;
+  });
 
-let mediaQueryListener;
-onMounted(async () => {
-  if (process.client) {
-    // create a change handler for screen size
-    mediaQueryListener = window.matchMedia('(max-width: 900px)')
+  let mediaQueryListener;
+  onMounted(async () => {
+    if (import.meta.client) {
+      // create a change handler for screen size
+      mediaQueryListener = window.matchMedia('(max-width: 900px)')
+      isLessWindowLessThan900px.value = mediaQueryListener.matches
+      mediaQueryListener.addEventListener('change', onMatchMediaChange)
+
+      // load data
+      await store.dispatch('admin/LoadUnverifiedEvents')
+      await store.dispatch('admin/LoadCurrentEvents')
+      await store.dispatch('admin/LoadResourceEvents')
+    }
+  });
+
+  onUnmounted(() => {
+    if (mediaQueryListener) {
+      mediaQueryListener.removeEventListener('change', onMatchMediaChange)
+      mediaQueryListener = undefined
+    }
+  });
+
+
+  function onMatchMediaChange() {
     isLessWindowLessThan900px.value = mediaQueryListener.matches
-    mediaQueryListener.addEventListener('change', onMatchMediaChange)
-
-    // load data
-    await store.dispatch('admin/LoadUnverifiedEvents')
-    await store.dispatch('admin/LoadCurrentEvents')
-    await store.dispatch('admin/LoadResourceEvents')
   }
-});
-
-onUnmounted(() => {
-  if (mediaQueryListener) {
-    mediaQueryListener.removeEventListener('change', onMatchMediaChange)
-    mediaQueryListener = undefined
-  }
-});
-
-
-function onMatchMediaChange() {
-  isLessWindowLessThan900px.value = mediaQueryListener.matches
-}
 </script>
 
 <style>

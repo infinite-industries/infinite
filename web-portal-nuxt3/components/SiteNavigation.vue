@@ -32,9 +32,6 @@
         <nuxt-link to="/admin">Admin</nuxt-link>
       </li>
 
-      <li v-if="loggedIn && user.isInfiniteAdmin">
-        <nuxt-link to="/test-auth">Test Auth</nuxt-link>
-      </li>
       <li v-if="loggedIn">
         <!-- TODO: does this need to call clear (exposed via v-slot)? -->
         <nuxt-link @click="onLogoutClick">Logout</nuxt-link>
@@ -44,11 +41,11 @@
 </template>
 
 <script setup>
-const { clear } = useUserSession()
-const router = useRouter()
+  const { clear } = useUserSession()
+  const router = useRouter()
 
-const onLogoutClick = async () => {
-  await clear()
-  await router.push({ path: '/' })
-}
+  const onLogoutClick = async () => {
+    await clear()
+    await router.push({ path: '/' })
+  }
 </script>

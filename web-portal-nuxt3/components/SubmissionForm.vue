@@ -651,7 +651,7 @@
           this.calendar_event.multi_day = false
         }
       },
-      onDateTimeVenueChanged: function(data) {
+      onDateTimeVenueChanged: function() {
         this.doTimeAndLocationExistingEventDetection()
       },
       makeSuggestionsBasedOnDescription: function () {

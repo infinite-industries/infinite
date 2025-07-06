@@ -10,13 +10,13 @@ const CURRENT_EVENTS_VERIFIED_PATH = '/events/current-verified'
 const EVENTS_NON_VERIFIED_PATH = '/authenticated/events/non-verified?embed=DATE_TIME&embed=ADMIN_META_DATA'
 
 export const getters = {
-  GetUnverifiedEvents: (state, getters) => {
+  GetUnverifiedEvents: (state) => {
     return state.unverified_events
   },
-  GetVerifiedEvents: (state, getters) => {
+  GetVerifiedEvents: (state) => {
     return state.verified_events
   },
-  GetResourceEvents: (state, getters) => {
+  GetResourceEvents: (state) => {
     return state.resource_events
   },
   GetCurrentEvent: (state, getters, rootState) => {
@@ -108,7 +108,7 @@ export const actions = {
   },
   VerifyEvent: function (context, payload) {
     return this.$nuxt.$apiService.put(`/authenticated/events/verify/${payload.id}`, null)
-      .then(function (_response) {
+      .then(function () {
         context.commit('CHANGE_STATE_TO_VERIFIED', payload)
 
         context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Event was successfuly verified.' }, { root: true })
@@ -121,7 +121,7 @@ export const actions = {
 
   UpdateEvent: function (context, payload) {
     return this.$nuxt.$apiService.put(`/authenticated/events/${payload.id}`, { ...payload.event_data })
-      .then(function (_response) {
+      .then(function () {
         context.commit('ui/SHOW_NOTIFICATIONS', { open: true, message: 'Content of the event updated.' }, { root: true })
       })
       .catch(function (error) {

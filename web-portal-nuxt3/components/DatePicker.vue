@@ -3,45 +3,45 @@
 </template>
 
 <script>
-import flatPickr from 'vue-flatpickr-component'
-import 'flatpickr/dist/flatpickr.css'
-import 'flatpickr/dist/themes/dark.css'
+  import flatPickr from 'vue-flatpickr-component'
+  import 'flatpickr/dist/flatpickr.css'
+  import 'flatpickr/dist/themes/dark.css'
 
-export default {
-  emits: ['change'],
-  data: function() {
-    return {
-      config: {
-        inline: true,
-        enableTime: false,
-        minDate: this.allowPast ? null : 'today'
+  export default {
+    emits: ['change'],
+    data: function() {
+      return {
+        config: {
+          inline: true,
+          enableTime: false,
+          minDate: this.allowPast ? null : 'today'
+        }
       }
-    }
-  },
-  components: {
-    flatPickr
-  },
-  computed: {
-    dateValue: {
-      get() {
-        return this.date
-      },
-      set(newDate) {
-        this.$emit('change', newDate)
-      }
-    }
-  },
-  props: {
-    date: {
-      type: String,
-      default: null
     },
-    allowPast: {
-      type: Boolean,
-      default: false
+    components: {
+      flatPickr
+    },
+    computed: {
+      dateValue: {
+        get() {
+          return this.date
+        },
+        set(newDate) {
+          this.$emit('change', newDate)
+        }
+      }
+    },
+    props: {
+      date: {
+        type: String,
+        default: null
+      },
+      allowPast: {
+        type: Boolean,
+        default: false
+      }
     }
   }
-}
 </script>
 
 <style scoped>

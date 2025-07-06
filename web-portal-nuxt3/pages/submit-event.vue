@@ -108,9 +108,6 @@
   import PartnerService from '@/services/PartnerService'
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
-  import PaginationList from '@/components/pagination/PaginationList.vue'
-  import Pagination from "@/components/pagination/Pagination.vue"
-
   export default {
     async setup () {
       definePageMeta({
@@ -229,8 +226,6 @@
     },
     components: {
       'submission-form': SubmissionForm,
-      'ii-pagination': Pagination,
-      'ii-pagination-list': PaginationList,
       'submission-preview': SubmissionPreview
     }
   }

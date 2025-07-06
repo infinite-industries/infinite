@@ -1,11 +1,11 @@
 <template>
   <div id="cal-container">
     <div class="instructions">
-      <transition name="fade">
-        <p>
-          <span class="required-field">*</span>Pick the date for your event. If it's a multi-day event, like a festival or a series of theater performances, pick the first day and you will have a chance to add more later.
-        </p>
-      </transition>
+      <p>
+        <span class="required-field">*</span>
+        Pick the date for your event. If it's a multi-day event, like a festival or a series of theater performances,
+        pick the first day and you will have a chance to add more later.
+      </p>
     </div>
     <div class="time-date-control-wrapper">
       <div>

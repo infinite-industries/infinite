@@ -25,10 +25,7 @@
         default: ''
       }
     },
-    // this probably needs to be `emits`
-    model: {
-      event: 'click'
-    },
+    emits: ['click'],
     computed: {
       classes() {
         const classes = ['ii-form-button']

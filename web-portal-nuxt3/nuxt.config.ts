@@ -104,6 +104,7 @@ export default defineNuxtConfig({
     'nuxt3-vuex-module',
     'vuetify-nuxt-module',
     '@nuxt/test-utils/module',
+    '@nuxt/eslint'
   ],
 
   /*

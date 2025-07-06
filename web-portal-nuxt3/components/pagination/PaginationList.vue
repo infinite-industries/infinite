@@ -103,6 +103,7 @@
     },
     methods: {
       onPageEntryClicked() {
+        // eslint-disable-next-line prefer-rest-params
         this.$emit('pageEntryClicked', ...arguments)
       },
       createPreviousEntry(enabled) {

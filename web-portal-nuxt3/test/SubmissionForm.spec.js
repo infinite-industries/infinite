@@ -3,7 +3,6 @@ import { createStore } from 'vuex'
 import { shallowMount } from '@vue/test-utils'
 import SubmissionForm from '../components/SubmissionForm'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
-import Vuetify from 'vuetify'
 
 vi.mock('@/services/ImageUploadService')
 
@@ -122,7 +121,7 @@ describe('SubmissionForm component', () => {
   it('sets reviewed_by_org based on prop', async () => {
     const partner = 'wrfl'
 
-    const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn((route, body) => Promise.resolve({}))
+    const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn(() => Promise.resolve({}))
     wrapper.vm.$nuxt.$apiService.uploadEventImage = vi.fn().mockResolvedValue(
       { data: { imagePath: 'image.jpg' } }
     )
@@ -141,7 +140,7 @@ describe('SubmissionForm component', () => {
 
   it('strips query params off Facebook links', async () => {
     const link = 'https://facebook.com/events/1234567890/'
-    const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn((route, body) => Promise.resolve({}))
+    const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn(() => Promise.resolve({}))
     wrapper.vm.$nuxt.$apiService.uploadEventImage = vi.fn().mockResolvedValue(
       { data: { imagePath: 'image.jpg' } }
     )
@@ -155,7 +154,7 @@ describe('SubmissionForm component', () => {
 
   it('strips query params off Eventbrite links', async () => {
     const link = 'https://www.eventbrite.com/e/some-event-012345678910'
-    const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn((route, body) => Promise.resolve({}))
+    const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn(() => Promise.resolve({}))
     wrapper.vm.$nuxt.$apiService.uploadEventImage = vi.fn().mockResolvedValue(
       { data: { imagePath: 'image.jpg' } }
     )

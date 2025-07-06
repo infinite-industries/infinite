@@ -43,29 +43,29 @@
 </template>
 
 <script setup>
-const router = useRouter()
-const { user, fetch, loggedIn } = useUserSession()
+  const router = useRouter()
+  const { fetch, loggedIn } = useUserSession()
 
-let errorMessage = ref(null)
+  const errorMessage = ref(null)
 
-async function onLoginClick(event) {
-  const target = event.target
+  async function onLoginClick(event) {
+    const target = event.target
 
-  await $fetch('/internal-api/login', {
-    method: 'POST',
-    body: {
-      username: target.username.value,
-      password: target.password.value,
-    },
-  }).then(async () => {
-    await fetch()
-    console.debug('successfully authenticated')
-    await router.push({ path: '/' })
-  }).catch((err) => {
-    errorMessage.value = 'Sorry, could not authenticated';
-    console.warn('Error authenticating:', err)
-  })
-}
+    await $fetch('/internal-api/login', {
+      method: 'POST',
+      body: {
+        username: target.username.value,
+        password: target.password.value,
+      },
+    }).then(async () => {
+      await fetch()
+      console.debug('successfully authenticated')
+      await router.push({ path: '/' })
+    }).catch((err) => {
+      errorMessage.value = 'Sorry, could not authenticated';
+      console.warn('Error authenticating:', err)
+    })
+  }
 </script>
 
 <style scoped>

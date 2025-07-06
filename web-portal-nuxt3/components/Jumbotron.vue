@@ -17,8 +17,6 @@
 </template>
 
 <script>
-  import { useStore } from 'vuex'
-
   import Close from './vectors/Close.vue'
 
   const THROTTLE_INTERVAL = 5 * 60 * 1000 // 5 minutes
