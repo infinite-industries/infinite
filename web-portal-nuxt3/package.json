@@ -12,7 +12,8 @@
     "precommit": "npm run lint",
     "test": "vitest",
     "build": "nuxt build",
-    "start": "nuxt preview",
+    "start": "node .output/server/index.mjs",
+    "start:preview": "nuxt preview",
     "start:dev": "nuxt dev",
     "generate": "nuxt generate",
     "postinstall": "nuxt prepare"
