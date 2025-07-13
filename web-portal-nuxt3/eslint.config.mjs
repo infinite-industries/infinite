@@ -1,5 +1,6 @@
 // @ts-check
 import withNuxt from './.nuxt/eslint.config.mjs'
+import vitest from '@vitest/eslint-plugin'
 
 export default withNuxt({
   rules: {
@@ -31,12 +32,7 @@ export default withNuxt({
   },
   languageOptions: {
     globals: {
-      vi: 'readonly',
-      it: 'readonly',
-      test: 'readonly',
-      describe: 'readonly',
-      beforeEach: 'readonly',
-      expect: 'readonly'
+      ...vitest.environments.env.globals
     },
   },
 })

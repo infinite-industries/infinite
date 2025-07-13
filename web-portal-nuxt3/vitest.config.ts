@@ -4,7 +4,7 @@ export default defineVitestConfig({
   test: {
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     globals: true,
-    environment: 'jsdom',
+    environment: 'nuxt',
     environmentOptions: {
       nuxt: {
         domEnvironment: 'jsdom',
