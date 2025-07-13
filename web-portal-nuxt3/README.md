@@ -20,8 +20,8 @@ You will need the following tools:
 The following tools will make your life easier:
 
 - Vue.js devtools browser extension
-    - [Chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-    - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
+  - [Chrome](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
+  - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
 
 ### Setup
 
@@ -47,9 +47,9 @@ This application communicates with an [API server](https://github.com/infinite-i
  ```
 
 * The options you choose for your time zone variables should meet three criteria:
-    * They should exist in the `name` column of the `pg_timezone_names` table in your PostgreSQL database (which follows the [IANA](https://www.iana.org/time-zones) standard)
-    * They should account for daylight savings time changes (if relevant to your time zones)
-    * They should make sense to the humans using your website
+  * They should exist in the `name` column of the `pg_timezone_names` table in your PostgreSQL database (which follows the [IANA](https://www.iana.org/time-zones) standard)
+  * They should account for daylight savings time changes (if relevant to your time zones)
+  * They should make sense to the humans using your website
 * The query below demonstrates the time zone options you can choose from that have names starting with `US/`
 
 ```
