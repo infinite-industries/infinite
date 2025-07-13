@@ -150,7 +150,7 @@ export class SummarizationService {
       max_tokens: 300,
       system: systemPrompt,
       messages: [{ role: 'user', content: prompt }],
-      model: 'claude-3-sonnet-20240229',
+      model: 'claude-3-7-sonnet-20250219',
       temperature: 0.5,
     });
 
