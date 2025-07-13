@@ -1,6 +1,5 @@
 // @ts-check
 import withNuxt from './.nuxt/eslint.config.mjs'
-import jest from 'eslint-plugin-jest';
 
 export default withNuxt({
   rules: {
@@ -32,12 +31,12 @@ export default withNuxt({
   },
   languageOptions: {
     globals: {
-      ...jest.environments.globals.globals,
-      vi: 'readonly'
+      vi: 'readonly',
+      it: 'readonly',
+      test: 'readonly',
+      describe: 'readonly',
+      beforeEach: 'readonly',
+      expect: 'readonly'
     },
   },
-
-  plugins: {
-    jest: jest
-  }
 })

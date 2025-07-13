@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "web-portal",
   "type": "module",
   "version": "2.0.0",
   "description": "The web-portal for infinite.industries. A place for Kentucky to discover exciting cultural events.",
@@ -47,7 +47,6 @@
     "@nuxt/test-utils": "^3.19.1",
     "@vue/test-utils": "^2.4.6",
     "eslint": "^9.30.1",
-    "eslint-plugin-jest": "^29.0.1",
     "jsdom": "^26.1.0",
     "vitest": "^3.1.4"
   }
