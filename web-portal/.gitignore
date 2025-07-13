@@ -71,6 +71,9 @@ typings/
 # Nuxt generate
 dist
 
+# Nitro (Nuxt 3) build output
+.output
+
 # vuepress build output
 .vuepress/dist
 

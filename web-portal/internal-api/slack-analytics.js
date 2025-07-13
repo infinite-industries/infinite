@@ -1,7 +1,10 @@
+import slackNotify from 'slack-notify';
+import { logger } from '~/internal-api/utils.js'
+import { defineEventHandler } from 'h3'
+
 // set up channel to send notifications
 const SLACK_WEBHOOK_ANALYTICS = process.env.SLACK_WEBHOOK_ANALYTICS
-const contactChannel = require('slack-notify')(SLACK_WEBHOOK_ANALYTICS)
-const logger = require('./utils').logger
+const contactChannel = slackNotify(SLACK_WEBHOOK_ANALYTICS)
 
 if (!SLACK_WEBHOOK_ANALYTICS) {
   logger.warn('Slack webhook (analytics) is not configured; will not be able to send messages')
@@ -9,46 +12,57 @@ if (!SLACK_WEBHOOK_ANALYTICS) {
 
 export const ENV = process.env.ENV || 'dev'
 
-export default async function slackAnalyticsHandler(req, res) {
+export default defineEventHandler(async (event) => {
   logger.info('JavaScript HTTP trigger (analytics) function processed a request.')
 
   // deprecated now that we're also tracking brief description/"summary";
   // prefer "suggestion-feedback"
-  if (req.method === 'POST' && req.url.match(/\/?tag-feedback/i)) {
+  if (isMethod(event, 'POST') && event.path.match(/\/?tag-feedback/i)) {
     logger.info('Processing tag generation feedback')
-    if (req.body.suggested && req.body.submitted) {
+    const body = await readBody(event);
+
+    if (body.suggested && body.submitted) {
       try {
-        await PostToSlack('tag-feedback', req.body.suggested, req.body.submitted, req.body.eventId)
+        await PostToSlack('tag-feedback', body.suggested, body.submitted, body.eventId)
       } catch (e) {
         logger.error(e)
-        res.statusCode = 500
-        return res.end()
+
+        throw createError({
+          statusCode: 500,
+          statusMessage: 'could post tag-feedback analytics to slack channel'
+        })
       }
     } else {
-      res.statusCode = 400
-      return res.end()
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'invalid request for tag-feedback analytics'
+      })
     }
-  } else if (req.method === 'POST' && req.url.match(/\/?suggestion-feedback/i)) {
+  } else if (isMethod(event, 'POST') && event.path.match(/\/?suggestion-feedback/i)) {
     logger.info('Processing submission suggestion feedback')
-    if (req.body.suggested && req.body.submitted) {
+    const body = await readBody(event);
+
+    if (body.suggested && body.submitted) {
       try {
-        await PostToSlack('suggestion-feedback', req.body.suggested, req.body.submitted, req.body.eventId)
+        await PostToSlack('suggestion-feedback', body.suggested, body.submitted, body.eventId)
       } catch (e) {
         logger.error(e)
-        res.statusCode = 500
-        return res.end()
+        throw createError({
+          statusCode: 500,
+          statusMessage: 'could post suggestion-feedback analytics to slack channel'
+        })
       }
     } else {
-      res.statusCode = 400
-      return res.end()
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'invalid request for suggestion-feedback analytics'
+      })
     }
   }
 
   // more may be added here in the future
-
-  res.statusCode = 200
-  res.end()
-}
+  return "";
+})
 
 function PostToSlack(type, suggested, submitted, eventId) {
   return new Promise((resolve, reject) => {
