@@ -10,6 +10,15 @@ export default defineVitestConfig({
         domEnvironment: 'jsdom',
       }
     },
+    coverage: {
+      enabled: true,
+      include: [
+        'components/**/*.vue',
+        'composables/**/*.js',
+        'pages/**/*.vue',
+        'services/**/*.js'
+      ]
+    },
     watch: false
   }
 })
