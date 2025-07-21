@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <NuxtLayout>
     <h1 v-if="error.statusCode === 404">
       {{ pageNotFound }}
     </h1>
@@ -14,36 +14,34 @@
       </NuxtLink>
       <p> the Management </p>
     </div>
-
-  </v-app>
+  </NuxtLayout>
 </template>
 
 <script>
   export default {
-    layout: 'empty',
     props: {
       error: {
         type: Object,
         default: null
       }
     },
-    head() {
-      const title =
-        this.error.statusCode === 404 ? this.pageNotFound : this.otherError
-      return {
-        title,
+    setup ({ error }) {
+      const pageNotFound = '404 Page Not Found'
+      const otherError = 'An error occurred'
+
+      useHead({
+        title: error.statusCode === 404 ? pageNotFound : otherError,
         link: [
           {
             rel: 'stylesheet',
             href: 'https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap'
           }
         ]
-      }
-    },
-    data() {
+      })
+
       return {
-        pageNotFound: '404 Page Not Found',
-        otherError: 'An error occurred'
+        pageNotFound,
+        otherError
       }
     }
   }

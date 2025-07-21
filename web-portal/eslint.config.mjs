@@ -1,25 +1,8 @@
-module.exports = {
-  root: true,
-  env: {
-    browser: true,
-    'jest/globals': true,
-    node: true
-  },
-  globals: {
-    API_URL: true
-  },
-  parserOptions: {
-    parser: '@babel/eslint-parser',
-    requireConfigFile: false
-  },
-  extends: [
-    '@nuxtjs',
-    'plugin:nuxt/recommended'
-  ],
-  plugins: [
-    'jest'
-  ],
-  // add your custom rules here
+// @ts-check
+import withNuxt from './.nuxt/eslint.config.mjs'
+import vitest from '@vitest/eslint-plugin'
+
+export default withNuxt({
   rules: {
     "no-console": "off",
     "camelcase": "off",
@@ -43,12 +26,13 @@ module.exports = {
     'vue/multi-word-component-names': 'off',
     'vue/script-indent': ['error', 2, {
       baseIndent: 1
-    }]
+    }],
+    "no-unused-vars": ["error", { caughtErrors: "none" }],
+    "@typescript-eslint/no-unused-vars": ["error", { caughtErrors: "none" }],
   },
-  overrides: [
-    {
-      files: ['*.vue'],
-      rules: { indent: 'off' }
-    }
-  ],
-}
+  languageOptions: {
+    globals: {
+      ...vitest.environments.env.globals
+    },
+  },
+})

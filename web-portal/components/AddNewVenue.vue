@@ -1,100 +1,103 @@
 <template>
-  <v-layout row>
-    <v-flex xs0 sm3></v-flex>
-    <v-flex xs12 sm8>
-      <v-expansion-panel expand style="margin-bottom: 10px;" v-model="showAddVenue">
-        <v-expansion-panel-content style="padding: 0px 15px 0px 15px;">
-          <div slot="header">Add a New Venue:</div>
+  <v-row>
+    <v-col cols="0" sm="3"></v-col>
+    <v-col cols="12" sm="8">
+      <v-expansion-panels multiple v-model="showAddVenue">
+        <v-expansion-panel style="margin-bottom: 10px;" value="add-new">
+          <v-expansion-panel-title>
+            Add a New Venue:
+          </v-expansion-panel-title>
+          <v-expansion-panel-text style="padding: 0px 15px 0px 15px;">
+            <!-- Venue Name -->
+            <v-row wrap>
+              <v-col cols="12">
+                <v-text-field label="Venue Name*" v-model="new_venue.name" :rules="[v => !!v || 'Name is required']"></v-text-field>
+              </v-col>
+            </v-row>
 
-          <!-- Venue Name -->
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-text-field label="Venue Name*" v-model="new_venue.name" :rules="[v => !!v || 'Name is required']"></v-text-field>
-            </v-flex>
-          </v-layout>
+            <!-- Street Address -->
+            <v-row wrap>
+              <v-col cols="12">
+                <v-text-field label="Street Address*" v-model="new_venue.street" :rules="[v => !!v || 'Street Address is required']"></v-text-field>
+              </v-col>
+            </v-row>
 
-          <!-- Street Address -->
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-text-field label="Street Address*" v-model="new_venue.street" :rules="[v => !!v || 'Street Address is required']"></v-text-field>
-            </v-flex>
-          </v-layout>
+            <!-- City -->
+            <v-row wrap>
+              <v-col cols="12">
+                <v-combobox
+                  label="City*"
+                  v-model="new_venue.city"
+                  :items="suggestedCities"
+                  :rules="[v => !!v || 'City is required']"
+                />
+              </v-col>
+            </v-row>
 
-          <!-- City -->
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-combobox
-                label="City*"
-                value="Lexington"
-                v-model="new_venue.city"
-                :items="suggestedCities"
-                :rules="[v => !!v || 'City is required']"
-              />
-            </v-flex>
-          </v-layout>
+            <!-- State -->
+            <v-row wrap>
+              <v-col cols="12">
+                <v-combobox
+                  label="State*"
+                  v-model="new_venue.state"
+                  :items="suggestedStates"
+                  :rules="[v => !!v || 'State is required']"
+                />
+              </v-col>
+            </v-row>
 
-          <!-- State -->
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-combobox
-                label="State*"
-                value="Kentucky"
-                v-model="new_venue.state"
-                :items="suggestedStates"
-                :rules="[v => !!v || 'State is required']"
-              />
-            </v-flex>
-          </v-layout>
+            <!-- Zip -->
+            <v-row wrap>
+              <v-col cols="12">
+                <v-text-field label="Zip Code*" v-model="new_venue.zip" :rules="[v => !!v || 'Zip Code is required']"></v-text-field>
+              </v-col>
+            </v-row>
 
-          <!-- Zip -->
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-text-field label="Zip Code*" v-model="new_venue.zip" :rules="[v => !!v || 'Zip Code is required']"></v-text-field>
-            </v-flex>
-          </v-layout>
+            <!-- Neighborhood -->
+            <v-row wrap>
+              <v-col cols="12">
+                <v-text-field label="Neighborhood" v-model="new_venue.neighborhood"></v-text-field>
+              </v-col>
+            </v-row>
 
-          <!-- Neighborhood -->
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-text-field label="Neighborhood" v-model="new_venue.neighborhood"></v-text-field>
-            </v-flex>
-          </v-layout>
+            <!-- G-maps Link -->
+            <v-row wrap>
+              <v-col cols="12">
+                <v-text-field label="Google Maps Link" v-model="new_venue.g_map_link"></v-text-field>
+              </v-col>
+            </v-row>
 
-          <!-- G-maps Link -->
-          <v-layout row wrap>
-            <v-flex xs12>
-              <v-text-field label="Google Maps Link" v-model="new_venue.g_map_link"></v-text-field>
-            </v-flex>
-          </v-layout>
+            <v-row wrap>
+              <v-col cols="12" style="text-align: center">
+                <v-btn style="color: black" dark outline :disabled="!venueRequiredFields" @click="submitNewVenue()">Add Venue</v-btn>
+              </v-col>
+              <v-col cols="12" style="text-align: center">
+                <img v-if="showVenueLoadingSpinner" class="loading-spinner" src="~/assets/images/spinner.gif">
+              </v-col>
+            </v-row>
 
-          <v-layout row wrap>
-            <v-flex xs12 style="text-align: center">
-              <v-btn style="color: black" dark outline :disabled="!venueRequiredFields" @click="submitNewVenue()">Add Venue</v-btn>
-            </v-flex>
-            <v-flex xs12 style="text-align: center">
-              <img v-if="showVenueLoadingSpinner" class="loading-spinner" src="images/spinner.gif">
-            </v-flex>
-          </v-layout>
+          </v-expansion-panel-text>
 
-        </v-expansion-panel-content>
-
-      </v-expansion-panel>
-    </v-flex>
-  </v-layout>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
   export default {
+    emits: ['newVenue'],
     data: function () {
       return {
-        showAddVenue: [false],
+        showAddVenue: [],
         showVenueLoadingSpinner: false, // maybe
         new_venue: {
           name: '',
           street: '',
-          city: '',
+          city: null,
+          state: null,
           zip: '',
           neighborhood: '',
           g_map_link: ''
@@ -147,7 +150,11 @@
     },
     methods: {
       toggleVenueDropdown: function () {
-        this.showAddVenue[0] = !this.showAddVenue[0]
+        if (this.showAddVenue.length > 0) {
+          this.showAddVenue = []
+        } else {
+          this.showAddVenue = 'add-new'
+        }
       },
       closeVenueDropdown: function () {
         this.showAddVenue = []
@@ -171,13 +178,13 @@
           g_map_link: newVenue.g_map_link
         }
         this.showVenueLoadingSpinner = true
-        this.$apiService.post('/venues/', payload)
-          .then((response) => {
+        this.$nuxt.$apiService.post('/venues/', payload)
+          .then((data) => {
             this.showVenueLoadingSpinner = false
             this.closeVenueDropdown()
-            if (response.data.status === 'success') {
+            if (data.status === 'success') {
               this.$store.dispatch(FETCH_ACTIVE_VENUES)
-              this.$emit('newVenue', response.data.venue)
+              this.$emit('newVenue', data.venue)
             }
           }).catch((err) => {
             console.error(err)

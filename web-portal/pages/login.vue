@@ -6,12 +6,12 @@
       {{ errorMessage }}
     </div>
 
-    <form @submit.prevent="onLoginClick">
+    <form @submit.prevent="onLoginClick($event)">
       <div class="login-page__field">
         <label class="login-page__username-label">username: </label>
         <input
           class="login-page__username"
-          v-model="username"
+          name="username"
           type="text"
           placeholder="username"
         />
@@ -21,7 +21,7 @@
         <label class="login-page__password-label">password: </label>
         <input
           class="login-page__password"
-          v-model="password"
+          name="password"
           type="password"
           placeholder="password"
         />
@@ -34,55 +34,46 @@
           value="Login"
         >
       </div>
+
+      <div v-if="loggedIn">
+        logged in
+      </div>
     </form>
   </div>
 </template>
 
-<script>
-  import getToken from '../helpers/getToken'
+<script setup>
+  const router = useRouter()
+  const { fetch, loggedIn } = useUserSession()
 
-  export default {
-    name: 'LoginPage',
-    components: {},
-    data: function () {
-      return {
-        username: '',
-        password: '',
-        errorMessage: null
-      }
-    },
-    methods: {
-      onLoginClick: function () {
-        const creds = {
-          username: this.username,
-          password: this.password
-        }
+  const errorMessage = ref(null)
 
-        this.$auth.loginWith('local', {
-          data: creds,
-          // this is specified in the nuxt config file, but the full path gets
-          // baked in at build time, which makes it impossible to swap out the
-          // API source
-          // overriding the URL here allows us to use the runtime configuration
-          // to ensure we're targeting the correct API server
-          url: this.$config.API_URL + '/authentication/login'
-        }).then(() => {
-          const token = getToken(this.$auth)
+  async function onLoginClick(event) {
+    const target = event.target
 
-          this.$store.dispatch(
-            'LoadAllUserData',
-            { idToken: token })
-        }).catch((err) => {
-          console.error('error logging in:' + err)
-          this.errorMessage = err
-        })
-      }
-    }
+    await $fetch('/internal-api/login', {
+      method: 'POST',
+      body: {
+        username: target.username.value,
+        password: target.password.value,
+      },
+    }).then(async () => {
+      await fetch()
+      console.debug('successfully authenticated')
+      await router.push({ path: '/' })
+    }).catch((err) => {
+      errorMessage.value = 'Sorry, could not authenticate';
+      console.warn('Error authenticating:', err)
+    })
   }
 </script>
 
 <style scoped>
   .login-page {
+    color: white;
+  }
+
+  .login-page input {
     color: white;
   }
 

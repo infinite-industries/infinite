@@ -21,8 +21,7 @@
 </template>
 
 <script>
-  import { UPSERT_ADMIN_EVENT_METADATA } from '../store/event-admin-metadata'
-  import getToken from '../helpers/getToken'
+  import { UPSERT_ADMIN_EVENT_METADATA } from '../store/event-admin-metadata.js'
   import AdminEventsListRow from '~/components/AdminEventsListRow.vue'
 
   export default {
@@ -38,7 +37,6 @@
     },
     methods: {
       isProblemUpdatedChanged: function ({ id, checked }) {
-        const idToken = getToken(this.$auth)
         if (!this.metadata[id]) {
           this.metadata[id] = {}
         }
@@ -47,7 +45,7 @@
 
         this.$store.dispatch(
           UPSERT_ADMIN_EVENT_METADATA,
-          { eventId: id, isProblem: checked, idToken }
+          { eventId: id, isProblem: checked }
         )
       }
     }

@@ -1,19 +1,15 @@
-import { defineEventHandler  } from 'h3';
-
 import slackNotify from 'slack-notify';
-import { logger } from '~/internal-api/utils.js'
-
-// set up channel to send notifications
-const SLACK_WEBHOOK_CONTACT = process.env.SLACK_WEBHOOK_CONTACT
-
-const contactChannel = slackNotify(SLACK_WEBHOOK_CONTACT);
-
-if (!SLACK_WEBHOOK_CONTACT) {
-  logger.warn('Slack webhook is not configured; will not be able to send messages')
-}
+import { logger } from './utils.js'
 
 export default defineEventHandler(async (event) => {
+  const { slackWebhookContact } = useRuntimeConfig(event);
+
   logger.info('JavaScript HTTP trigger function processed a request.')
+
+  if (!slackWebhookContact) {
+    logger.warn('Slack webhook is not configured; will not be able to send messages')
+  }
+
   const body = await readBody(event);
 
   const name = body && body.name
@@ -22,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
   if (name && email && comment) {
     try {
-      await PostToSlack(name, email, comment)
+      await PostToSlack(name, email, comment, slackWebhookContact)
 
       logger.info('Posted message to Slack')
       return 'Message posted.'
@@ -42,16 +38,18 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-function PostToSlack(name, email, comment) {
+function PostToSlack(name, email, comment, slackWebhookContact) {
   return new Promise((resolve, reject) => {
     const messageToAdmin = `${name} says: "${comment}". Please respond back at ${email}`
 
     // slack-notify doesn't handle this gracefully
     // hopefully it isn't necessary in production but in dev it's useful
-    if (!SLACK_WEBHOOK_CONTACT) {
+    if (!slackWebhookContact) {
       return reject(new Error('No Slack URL configured'))
     }
 
+
+    const contactChannel = slackNotify(slackWebhookContact);
     contactChannel.send({
       channel: 'contact',
       icon_emoji: ':computer:',

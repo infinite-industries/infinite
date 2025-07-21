@@ -188,6 +188,7 @@
         default: () => []
       }
     },
+    emits: ['update:modelValue'],
     data: function () {
       return {
         introduction: true,

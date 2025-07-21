@@ -8,7 +8,7 @@
 const express = require('express');
 const { createProxyMiddleware } =  require('http-proxy-middleware');
 
-const PORT = 3003 || process.env.API_LOCAL_PORT;
+const PORT = process.env.API_LOCAL_PORT || 3003;
 const API_HOST = `http://api-server:${PORT}`;
 
 const server = express();

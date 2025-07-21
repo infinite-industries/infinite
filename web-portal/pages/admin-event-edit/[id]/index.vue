@@ -13,37 +13,43 @@
 </template>
 
 <script>
+  import { useStore } from "vuex"
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import { FETCH_ACTIVE_VENUES } from '../../../store/venues'
-  import getToken from '../../../helpers/getToken'
 
   export default {
     props: [
       'id'
     ],
-    middleware: 'auth',
-    layout: 'admin',
-    head: function () {
-      const event = this.$store.getters.GetCurrentEvent
-      return {
-        title: 'Edit event - ' + (event ? event.title : '')
-      }
-    },
-    validate: function ({ params }) {
-      return !!params.id
+    async setup () {
+      definePageMeta({
+        layout: 'admin',
+        middleware: ['auth'],
+        validate: function ({ params }) {
+          return !!params.id
+        }
+      })
+
+      const { params } = useRoute()
+      const store = useStore()
+      await callOnce('fetchEventEditData', async () => {
+        await Promise.all([
+          store.dispatch('admin/LoadEvent', { id: params.id }),
+          store.dispatch(FETCH_ACTIVE_VENUES)
+        ])
+      }, { mode: 'navigation' })
+
+      const eventTitle = store.getters.GetCurrentEvent?.title
+      useHead({
+        title: 'Edit event - ' + (eventTitle ?? "")
+      })
+
+      return {}
     },
     data: function () {
       return {
         venues: []
       }
-    },
-    fetch: function ({ store, params, app }) {
-      const idToken = getToken(app.$auth)
-
-      return Promise.all([
-        store.dispatch('admin/LoadEvent', { id: params.id, idToken }),
-        store.dispatch(FETCH_ACTIVE_VENUES)
-      ])
     },
     components: {
       'submission-form': SubmissionForm

@@ -3,7 +3,7 @@ import Logo from '@/components/vectors/Logo.vue'
 
 describe('Logo', () => {
   test('is a Vue instance', () => {
-    const wrapper = mount(Logo, { stubs: { NuxtLink: RouterLinkStub } })
+    const wrapper = mount(Logo, { global: { stubs: { RouterLink: RouterLinkStub } } })
 
     expect(wrapper.vm).toBeTruthy()
   })

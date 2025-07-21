@@ -9,46 +9,46 @@
     <v-container>
 
       <!-- Title -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Event Title<span class="required-field">*</span>:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <v-text-field v-model="calendar_event.title" :rules="[v => !!v || 'Title is required']" class="event-title"></v-text-field>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
-      <v-layout row wrap class="event-mode">
-        <v-flex xs12 sm3>
+      <v-row wrap class="event-mode">
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Is your event...<span class="required-field">*</span>:</h3>
-        </v-flex>
-        <v-flex xs12 />
-        <v-flex xs12 sm4 md3 offset-sm1>
+        </v-col>
+        <v-col cols="12" />
+        <v-col cols="12" sm="4" md="3" offset-sm="1">
           <label class="category-option">
             <input type="radio" v-model="calendar_event.mode" value="in-person">
             <strong>In-person</strong>
           </label>
-        </v-flex>
-        <v-flex xs12 sm3>
+        </v-col>
+        <v-col cols="12" sm="3">
           <label class="category-option">
             <input type="radio" v-model="calendar_event.mode" value="online">
             <strong>Online/On-air</strong>
           </label>
-        </v-flex>
-        <v-flex xs12 sm4>
+        </v-col>
+        <v-col cols="12" sm="4">
           <label class="category-option">
             <input type="radio" v-model="calendar_event.mode" value="hybrid">
             <strong>Hybrid</strong> both in-person and online elements
           </label>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
-      <v-layout row wrap class="event-category">
+      <v-row wrap class="event-category">
         <!-- <v-flex xs0 sm3 /> -->
-        <v-flex xs12 sm11 offset-sm1>
+        <v-col cols="12" sm="11" offset-sm="1">
           <h3 class="form-label" style="text-align: left">Which of these best describes your event?<span class="required-field">*</span></h3>
-        </v-flex>
-        <v-flex xs12 sm11 offset-sm1>
+        </v-col>
+        <v-col cols="12" sm="11" offset-sm="1">
           <label class="category-option">
             <input type="radio" v-model="eventCategory" name="eventCategory" value="single-day-event" />
             <strong>Single-day event</strong>, like a music concert or a poetry reading.
@@ -74,32 +74,34 @@
             <strong>Other</strong>. Surprise us.
             <v-text-field class="category-other-description" label="What type of event are you putting on?" v-model="eventCategoryOther" v-if="eventCategory === 'other'" />
           </label>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
-      <v-layout row wrap>
-        <v-flex xs12 sm11>
-          <v-expansion-panel expand v-model="showDateTimePicker">
-            <v-expansion-panel-content>
-              <date-time-picker v-model="calendar_event.date_times" :mode="user_action" @change="onDateTimeVenueChanged" />
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-flex>
-      </v-layout>
+      <v-row wrap>
+        <v-col cols="12" sm="11">
+          <v-expansion-panels multiple v-model="showDateTimePicker">
+            <v-expansion-panel value="date-time-picker">
+              <v-expansion-panel-text>
+                <date-time-picker v-model="calendar_event.date_times" :mode="user_action" @change="onDateTimeVenueChanged" />
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-col>
+      </v-row>
 
       <!-- Venue -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col col="12" sm="3">
           <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col col="12" sm="8">
           <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="calendar_event.venue_id" @selectVenue="selectVenue"></venue-picker>
-        </v-flex>
-        <v-flex xs0 sm3></v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col col="0" sm="3"></v-col>
+        <v-col col="12" sm="8">
           <p style="margin: 10px 0px 10px 0px; text-align: center;">OR</p>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- Add a Venue (collapsible content)-->
       <add-new-venue @newVenue="newVenue" />
@@ -110,11 +112,11 @@
       />
 
       <!-- Event Image -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Event Image<span class="required-field">*</span>:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <div v-if="user_action === 'edit' && !imageChosen" class="preview-image">
             <img v-if="calendar_event.image" :src="calendar_event.image" alt="">
           </div>
@@ -132,15 +134,15 @@
             small
             @click="onFileClear('event')"
           >Remove</v-btn>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- Event Social Image -->
-      <!-- <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <!-- <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Social Media Image:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <div v-if="user_action === 'edit' && !socialImageChosen" class="preview-image">
             <img v-if="calendar_event.social_image" :src="calendar_event.social_image" alt="">
             <span v-if="!calendar_event.social_image">Not provided</span>
@@ -159,40 +161,40 @@
             small
             @click="onFileClear('social')"
           >Remove</v-btn>
-        </v-flex>
-        <v-flex xs8 offset-xs3>
+        </v-col>
+        <v-col cols="8" offset="3">
           <em>Image optimized for social media sharing (recommended size 1024X512 under 1MB)</em>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <p><br></p> -->
 
       <!-- Admission Fee -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Admission Fee:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <v-text-field label="Make sure to include multiple admission fees if relevant (adult, child, senior,...)" v-model="calendar_event.admission_fee"></v-text-field>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- Full Event Description -->
-      <v-layout row wrap>
-        <v-flex xs12 sm11>
+      <v-row wrap>
+        <v-col cols="12" sm="11">
           <h3>Description:</h3>
-        </v-flex>
-        <v-flex xs12 sm11>
-          <vue-editor id="vue-editor1" v-model="calendar_event.description" @blur="makeSuggestionsBasedOnDescription" />
-        </v-flex>
-      </v-layout>
+        </v-col>
+        <v-col cols="12" sm="11">
+          <rich-editor id="vue-editor1" v-model="calendar_event.description" @blur="makeSuggestionsBasedOnDescription" />
+        </v-col>
+      </v-row>
 
       <!-- Brief Description -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Summary<span class="required-field">*</span>:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <v-text-field
             class="brief-description"
             label="A brief description for short-attention-span humans and webcrawlers"
@@ -201,106 +203,106 @@
             :messages="showingSuggestedBriefDescription ? 'This summary was generated from your full description using AI. Feel free to edit or replace it.' : ''"
             @change="showingSuggestedBriefDescription = false"
           />
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols=12 sm="3">
           <h3 class="form-label">Tags:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <v-combobox
             class="tags"
             v-model="calendar_event.tags"
             multiple
             chips
-            deletable-chips
+            closable-chips
             :items="suggestedTags"
             :messages="showingSuggestedTags ? 'These tags are generated from your description, using AI. Feel free to edit or remove them.' : ''"
             :loading="loadingSuggestedTags"
             @change="showingSuggestedTags = false"
           />
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- Event Website link: -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Event Website Link:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <v-text-field v-model="calendar_event.website_link"></v-text-field>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- Ticket Link -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Ticket Link:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <v-text-field v-model="calendar_event.ticket_link"></v-text-field>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- Facebook Event Link -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Facebook Event Link:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <v-text-field v-model="calendar_event.fb_event_link"></v-text-field>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- Eventbrite Link -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Eventbrite Link:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <v-text-field v-model="calendar_event.eventbrite_link"></v-text-field>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- Organizer Contact -->
-      <v-layout row wrap>
-        <v-flex xs12 sm3>
+      <v-row wrap>
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Your Contact Email<span class="required-field">*</span>:</h3>
-        </v-flex>
-        <v-flex xs12 sm8>
+        </v-col>
+        <v-col cols="12" sm="8">
           <v-text-field class="submitter-email" label="We will send you a confirmation when your event is added" v-model="calendar_event.organizer_contact" :rules="[v => !!v || 'Organizer Contact is required', v => isEmail(v) || 'Must be a valid email address']"></v-text-field>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- Status (postponed / cancelled / sold out) -->
-      <v-layout row wrap v-if="user_action==='edit'" class="status-container">
-        <v-flex xs12 sm3>
+      <v-row wrap v-if="user_action==='edit'" class="status-container">
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Status Flags:</h3>
-        </v-flex>
-        <v-flex xs12 sm3 md2>
+        </v-col>
+        <v-col cols="12" sm="3" md="2">
           <label class="status-option">
             <input type="checkbox" v-model="eventIsPostponed" value="postponed">
             Postponed
           </label>
-        </v-flex>
-        <v-flex xs12 sm3 md2>
+        </v-col>
+        <v-col cols="12" sm="3" md="2">
           <label class="status-option">
             <input type="checkbox" v-model="eventIsCancelled" value="cancelled">
             Cancelled
           </label>
-        </v-flex>
-        <v-flex xs12 sm3 md2>
+        </v-col>
+        <v-col cols="12" sm="3" md="2">
           <label class="status-option">
             <input type="checkbox" v-model="eventIsSoldOut" value="sold-out">
             Sold Out
           </label>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- SUBMIT BUTTON -->
-      <v-layout row wrap v-if="user_action==='upload'" class="submit-container">
-        <v-flex xs12>
+      <v-row wrap v-if="user_action==='upload'" class="submit-container">
+        <v-col cols="12">
           <div class="text-xs-center">
             <v-btn
               color="green"
@@ -311,47 +313,48 @@
               @click="e => e.shiftKey ? UploadEvent() : PreviewEvent()"
             >Preview Event</v-btn>
           </div>
-        </v-flex>
+        </v-col>
 
         <!-- LOADING INDICATOR -->
-        <v-flex xs12>
+        <v-col cols="12">
           <div class="col-12 text-xs-center">
             <img v-if="showEventLoadingSpinner" class="loading-spinner" src="~/assets/images/spinner.gif">
           </div>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- EDIT EVENT TOOLS -->
-      <v-layout row wrap v-if="user_action==='edit'" class="edit-container">
-        <v-flex xs12>
+      <v-row wrap v-if="user_action==='edit'" class="edit-container">
+        <v-col cols="12">
           <div class="text-xs-center">
             <v-btn @click="UpdateEvent()">Save</v-btn>
             <v-btn @click="VerifyEvent()" v-if="!calendar_event.verified && user_role==='admin'" class="btn-verify">Verify</v-btn>
             <v-btn @click="ConfirmDeleteEvent()">Delete</v-btn>
           </div>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
 
       <!-- PROMPT SAVE IF UNSAVED CHANGES ON VERIFICATION -->
-      <v-dialog v-model="dirtyOnVerifyDialog" persistent max-width="300">
+      <v-dialog v-model="dirtyOnVerifyDialog" persistent max-width="450">
         <v-card>
-          <v-card-title class="headline">Verifying event will not save your edits - click Save too</v-card-title>
+          <v-card-title class="headline">Verifying event will not save your edits</v-card-title>
+          <v-card-text>click Save too</v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn color="green darken-1" flat="flat" @click.native="dirtyOnVerifyDialog = false">Close</v-btn>
-            <v-btn color="green darken-1" @click.native="dirtyOnVerifyDialog = false; UpdateEvent()">Save Now</v-btn>
+            <v-btn color="green darken-1" flat="flat" @click="dirtyOnVerifyDialog = false">Close</v-btn>
+            <v-btn color="green darken-1" @click="dirtyOnVerifyDialog = false; UpdateEvent()">Save Now</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
 
       <!-- CONFIRM EVENT DELETION -->
-      <v-dialog v-model="dialog" persistent max-width="300">
+      <v-dialog v-model="dialog" persistent max-width="425">
         <v-card>
           <v-card-title class="headline">U sure you wanna delete the event?</v-card-title>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="green darken-1" flat="flat" @click.native="dialog = false">Cancel</v-btn>
-            <v-btn color="green darken-1" flat="flat" @click.native="DeleteEvent()">Kill</v-btn>
+            <v-btn color="green darken-1" flat="flat" @click="dialog = false">Cancel</v-btn>
+            <v-btn color="green darken-1" flat="flat" @click="DeleteEvent()">Kill</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -370,11 +373,11 @@
 </template>
 
 <script>
+  import RichEditor from './RichEditor.vue'
   import VenuePicker from './VenuePicker.vue'
   import DateTimePicker from './DateTimePicker.vue'
   import AddNewVenue from './AddNewVenue.vue'
   import ImageUploadService from '@/services/ImageUploadService'
-  import getToken from '../helpers/getToken'
   import ExistingEventDetectionAlert from '@/components/ExistingEventDetectionAlert.vue'
 
   const boolToCondition = condition_tag => ({
@@ -394,6 +397,7 @@
     props: ['event_id', 'user_role', 'user_action', 'reviewOrg'],
     // user_role --> admin, venue, regular
     // user_action --> upload, edit
+    emits: ['preview', 'submitted', 'error'],
     data: function () {
       return {
         dialog: false,
@@ -451,19 +455,17 @@
             this.$refs.eventImage.files.length > 0
             // || this.$refs.eventSocialImage.files.length > 0
           ) {
-            this.$apiService.uploadEventImage(this.$refs.eventImage.files[0])
+            this.$nuxt.$apiService.uploadEventImage(this.$refs.eventImage.files[0])
               .then(resolve)
               .catch(reject)
           } else resolve({})
-        }).then((response) => {
+        }).then((data) => {
           // if response, update event prior to saving
-          const data = response.data
           if (data && data.imagePath) this.calendar_event.image = data.imagePath
 
           this.$store.dispatch('admin/UpdateEvent', {
             id: this.calendar_event.id,
             event_data: this.calendar_event,
-            idToken: getToken(this.$auth)
           }).finally(() => { this.showEventLoadingSpinner = false })
         }).catch((error) => {
           console.error(error)
@@ -481,7 +483,6 @@
         this.showEventLoadingSpinner = true
         this.$store.dispatch('admin/DeleteEvent', {
           id: this.calendar_event.id,
-          idToken: getToken(this.$auth)
         })
           .then(() => { this.$router.push('/admin') })
           .finally(() => { this.showEventLoadingSpinner = false })
@@ -493,7 +494,6 @@
 
         this.$store.dispatch('admin/VerifyEvent', {
           id: this.calendar_event.id,
-          idToken: getToken(this.$auth)
         })
           .then(() => {
             this.showEventLoadingSpinner = false
@@ -535,10 +535,10 @@
         let eventCreationResponse = null
 
         try {
-          const uploadImageResponse = await this.$apiService.uploadEventImage(this.$refs.eventImage.files[0])
-          event.image = uploadImageResponse.data.imagePath
+          const uploadImageResponse = await this.$nuxt.$apiService.uploadEventImage(this.$refs.eventImage.files[0])
+          event.image = uploadImageResponse.imagePath
 
-          eventCreationResponse = await this.$apiService.post('/events', event)
+          eventCreationResponse = await this.$nuxt.$apiService.post('/events', event)
           this.showEventLoadingSpinner = false
           this.$emit('submitted')
         } catch (error) {
@@ -552,7 +552,7 @@
 
         try {
           if (eventCreationResponse !== null) {
-            await this.recordSuggestions(eventCreationResponse.data?.id)
+            await this.recordSuggestions(eventCreationResponse.id)
           }
         } catch (ex) {
           console.warn('could not submit tag analytics: ' + ex)
@@ -597,9 +597,9 @@
           duplicateDetectionPayload.excludeIds = [this.calendar_event.id]
         }
 
-        this.$apiService.post('/events/detect-existing/by-time-and-location', duplicateDetectionPayload)
-          .then((resp) => {
-            this.duplicateEventsByStartTime = resp.data || null
+        this.$nuxt.$apiService.post('/events/detect-existing/by-time-and-location', duplicateDetectionPayload)
+          .then((data) => {
+            this.duplicateEventsByStartTime = data || null
           })
           .catch((err) => {
             console.error('Error performing duplicate detection on start times: ', err)
@@ -650,7 +650,7 @@
           this.calendar_event.multi_day = false
         }
       },
-      onDateTimeVenueChanged: function(data) {
+      onDateTimeVenueChanged: function() {
         this.doTimeAndLocationExistingEventDetection()
       },
       makeSuggestionsBasedOnDescription: function () {
@@ -758,7 +758,7 @@
       },
 
       showDateTimePicker: function () {
-        return [this.calendar_event.category !== 'online-resource']
+        return this.calendar_event.category !== 'online-resource' ? ['date-time-picker'] : []
       },
 
       suggestedTags: function () {
@@ -788,7 +788,7 @@
     },
     components: {
       ExistingEventDetectionAlert,
-      // 'vue-editor': VueEditor,
+      'rich-editor': RichEditor,
       'venue-picker': VenuePicker,
       'add-new-venue': AddNewVenue,
       'date-time-picker': DateTimePicker,
@@ -848,6 +848,15 @@
 
 .event-category {
   margin-bottom: 2em;
+}
+
+/* adds a little space between radio buttons and labels
+  we used to get this for free but Vue 3 seems to handle space between
+  elements differently
+*/
+.event-mode label input[type="radio"],
+.event-category label input[type="radio"] {
+  margin-right: 0.25em;
 }
 
 #new-venue {
