@@ -32,6 +32,7 @@ services:
     image: infinite-industries/web-portal:latest
     environment:
       HOST: 0.0.0.0 # Needed to make nuxt work inside docker
+      PORT: 7779
       USE_PROXY: "true" # starts a proxy service in the container to allow server side requests against localhost to work inside the compose stack
       API_URL: "http://localhost:3003/v1" # These are defaulted for runtimeConfig but still need set here for server-side middleware
       APP_URL: "http://localhost:7779"
