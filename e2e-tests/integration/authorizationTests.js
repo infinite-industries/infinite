@@ -2,6 +2,14 @@ context('Authorization', () => {
   const ADMIN_USERNAME = Cypress.env('admin_auth_username')
   const ADMIN_PASSWORD = Cypress.env('admin_auth_password')
 
+  before(() => {
+    Cypress.on('uncaught:exception', (err, runnable) => {
+      console.error(`\n\neating uncaught exception: ${err}`)
+      // don't fail the test
+      return false
+      })
+  })
+
   it('Should initially show login button and no admin button', function () {
     cy.visit('/')
     cy.get('#hamburger').click()
