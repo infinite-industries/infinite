@@ -31,6 +31,7 @@
 
       useHead({
         title: error.statusCode === 404 ? pageNotFound : otherError,
+        titleTemplate: '%s - Infinite Industries',
         link: [
           {
             rel: 'stylesheet',
