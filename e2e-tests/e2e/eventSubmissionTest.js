@@ -60,7 +60,7 @@ context('Event Submission', () => {
     cy.get('.results-container > :first-child').click()
 
     // selectFile is a custom command; see cypress/support/commands.js
-    cy.get('#event-image').selectFile('images/event_sample_image.jpg')
+    cy.get('#event-image').selectFile('fixtures/images/event_sample_image.jpg')
 
     cy.get('.brief-description input').type('still testing')
     cy.get('.submitter-email input').type(EVENT_EMAIL)
