@@ -102,28 +102,41 @@
 </template>
 
 <script>
+  import { useStore } from 'vuex'
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import SubmissionPreview from '@/components/SubmissionPreview'
   import PartnerService from '@/services/PartnerService'
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
   export default {
-    layout: 'no-mobile-cta',
+    async setup () {
+      definePageMeta({
+        layout: 'no-mobile-cta',
+      })
+      const { query } = useRoute()
+      const store = useStore()
+
+      // scaffold event (this is a synchronous operation)
+      store.dispatch('CreateNewEvent')
+      // fetch venues to power venue selector
+      await useLegacyStoreFetch(FETCH_ACTIVE_VENUES, [
+        FETCH_ACTIVE_VENUES
+      ])
+
+      // display partner info if provided in query
+      if (query.partner) {
+        return {
+          partner: PartnerService.getPartnerForQuery(query.partner)
+        }
+      }
+    },
     data: function () {
       return {
         mode: 'edit',
         previewEvent: null,
         partner: null,
-        submissionErrorMessage: null
+        submissionErrorMessage: null,
       }
-    },
-    asyncData: function ({ query }) {
-      const partner = PartnerService.getPartnerForQuery(query.partner)
-      return partner ? { partner } : {}
-    },
-    fetch: function ({ store }) {
-      store.dispatch('CreateNewEvent')
-      return store.dispatch(FETCH_ACTIVE_VENUES)
     },
     // sometimes users navigate away without submitting
     // if the form is partially filled, we can try to warn them and give them
@@ -134,18 +147,25 @@
         window.addEventListener('beforeunload', this.promptIfInProgress)
       }
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       if (window) {
         window.removeEventListener('beforeunload', this.promptIfInProgress)
       }
     },
     // ...and beforeRouteLeave handles the SPA routing case
     beforeRouteLeave: function (from, to, next) {
+      // this _shouldn't_ be possible, but seems to be during hot reload in dev
+      if (!this) {
+        return next()
+      }
+
       if (this.isDirtyOrPending()) {
         console.log('warning user that incomplete is not submitted')
         const sure = window.confirm('You have unsaved changes. Sure?')
         next(sure ? undefined : false)
-      } else next()
+      } else {
+        next()
+      }
     },
     methods: {
       onPreview: function (event) {

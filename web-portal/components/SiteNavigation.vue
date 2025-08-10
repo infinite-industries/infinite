@@ -24,14 +24,27 @@
     <li>
       <nuxt-link to="/contact">Contact</nuxt-link>
     </li>
-    <li v-if="!$auth.loggedIn">
-      <nuxt-link to="/login">Login</nuxt-link>
-    </li>
-    <li v-if="$auth.loggedIn && $store.getters.IsUserAdmin">
-      <nuxt-link to="/admin">Admin</nuxt-link>
-    </li>
-    <li v-if="$auth.loggedIn">
-      <nuxt-link to="/logout">Logout</nuxt-link>
-    </li>
+    <AuthState v-slot="{ loggedIn, user }">
+      <li v-if="!loggedIn">
+        <nuxt-link to="/login">Login</nuxt-link>
+      </li>
+      <li v-if="loggedIn && user.isInfiniteAdmin">
+        <nuxt-link to="/admin">Admin</nuxt-link>
+      </li>
+
+      <li v-if="loggedIn">
+        <nuxt-link @click="onLogoutClick">Logout</nuxt-link>
+      </li>
+    </AuthState>
   </ul>
 </template>
+
+<script setup>
+  const { clear } = useUserSession()
+  const router = useRouter()
+
+  const onLogoutClick = async () => {
+    await clear()
+    await router.push({ path: '/' })
+  }
+</script>
