@@ -1,3 +1,5 @@
+import { logger } from './utils.js'
+
 const serviceUnavailableError = createError({
   statusCode: 503,
   message: 'Service Unavailable',
@@ -5,6 +7,8 @@ const serviceUnavailableError = createError({
 
 export default defineEventHandler(async (event) => {
   const { username, password } = (await readBody(event) || {});
+
+  logger.info(username, password)
 
   const config = useRuntimeConfig();
   const apiUrl = config.public.apiUrl;
