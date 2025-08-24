@@ -48,7 +48,6 @@ jobs:
           touch .env.test
           export NUXT_SESSION_PASSWORD=$(uuidgen | tr -d '-')
           echo NUXT_SESSION_PASSWORD=$NUXT_SESSION_PASSWORD >> .env.test
-          cat .env.test
       - name: Start stack
         run: ./startAll.sh test
       - name: Wait for stack to start
