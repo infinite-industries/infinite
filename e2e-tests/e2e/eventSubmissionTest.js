@@ -25,7 +25,7 @@ context('Event Submission', () => {
 
         // delete the event
         cy.get('.edit-container button').contains('Delete').click()
-        cy.get('.v-dialog.v-dialog--active button').contains('Kill').click()
+        cy.get('[role="dialog"] button').contains('Kill').click()
 
         // event should no longer be present
         cy.visit('/')
@@ -105,11 +105,12 @@ context('Event Submission', () => {
   it('Admin user can verify event', function () {
     cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/')
 
+    cy.wait(750) // hydration?
     cy.get('#hamburger').click()
-    cy.get('#nav-list li').contains('Admin').click()
+    cy.get('#nav-list li').contains('a', 'Admin').click()
     cy.location('pathname').should('include', 'admin')
-    cy.contains('.unverified-events tr:first-child td', EVENT_NAME)
-    cy.get('.unverified-events tr:first-child button').contains('Edit').click()
+    cy.get('.unverified-events').contains('tr', EVENT_NAME)
+    cy.get('.unverified-events').contains('tr', EVENT_NAME).contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
     cy.get('.submitter-email input').should('have.value', EVENT_EMAIL)
 

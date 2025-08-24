@@ -1,7 +1,7 @@
 <template>
   <div class="container admin-page">
     <h2>Unverified Events</h2>
-    <AdminEventsList :calendar_events="unverifiedEvents" />
+    <AdminEventsList :calendar_events="unverifiedEvents" class="unverified-events" />
     <h2>Current Events</h2>
     <Pagination
       :items="verifiedEvents"

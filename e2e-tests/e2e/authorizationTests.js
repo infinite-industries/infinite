@@ -21,7 +21,8 @@ context('Authorization', () => {
   it('Should logout and admin when logged in as admin and revert when logged out', function () {
     Cypress.Cookies.debug(true)
     cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/')
-    cy.get('#hamburger').click()
+    cy.wait(500) // seems necessary now for the click on the hamburger to work, maybe hydration?
+    cy.get('#hamburger').click({ force: true })
 
     cy.get('#nav-list li').contains('Admin')
     cy.get('#nav-list li').contains('Logout')

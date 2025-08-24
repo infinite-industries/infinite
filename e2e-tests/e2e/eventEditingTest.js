@@ -93,7 +93,7 @@ context('Event editing:', () => {
     cy.visit('/admin-event-edit/' + EVENT_ID)
     // delete the event
     cy.get('.edit-container button').contains('Delete').click()
-    cy.get('.v-dialog.v-dialog--active button').contains('Kill').click()
+    cy.get('[role="dialog"] button').contains('Kill').click()
 
     // verify event is gone
     cy.location('pathname').should('not.include', 'admin-event-edit/')
@@ -196,7 +196,7 @@ context('Event editing:', () => {
     cy.get('.preview-image img').should('have.attr', 'src', EVENT_IMG)
 
     // select new image
-    cy.get('#event-image').selectFile('images/event_sample_image.jpg')
+    cy.get('#event-image').selectFile('fixtures/images/event_sample_image.jpg')
 
     cy.get('.edit-container button').contains('Save').click()
     cy.contains('#notify', 'Content of the event updated.')
