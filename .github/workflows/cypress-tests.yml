@@ -46,6 +46,7 @@ jobs:
       - name: Prepare environment
         run: |
           touch .env.test
+          export NUXT_SESSION_PASSWORD=$(uuidgen | tr -d '-')
       - name: Start stack
         run: ./startAll.sh test
       - name: Wait for stack to start
