@@ -1,9 +1,6 @@
-import Vuex from 'vuex'
-import { createLocalVue, RouterLinkStub, shallowMount } from '@vue/test-utils'
+import { createStore } from 'vuex'
+import { RouterLinkStub, shallowMount } from '@vue/test-utils'
 import Card from '@/components/EventCard.vue'
-
-const localVue = createLocalVue()
-localVue.use(Vuex)
 
 const venueId = '5678'
 const venueName = 'The Venue'
@@ -36,20 +33,23 @@ describe('Card component', () => {
 
   beforeEach(() => {
     event = getEvent()
-    store = new Vuex.Store({
-      state: {},
+    store = createStore({
+      state: () => ({}),
       getters: { GetActiveVenues: () => [ getVenue() ] }
     })
     wrapper = shallowMount(Card, {
-      localVue,
-      store,
-      stubs: {
-        NuxtLink: RouterLinkStub
-      },
-      mocks: {
-        $config: {
-          TIMEZONE_DEFAULT: 'US/Eastern'
-        }
+      global: {
+        plugins: [store],
+        stubs: {
+          NuxtLink: RouterLinkStub
+        },
+        mocks: {
+          $config: {
+            public: {
+              timezoneDefault: 'US/Eastern'
+            }
+          }
+        },
       },
       propsData: {
         calendar_event: event
@@ -103,7 +103,7 @@ describe('Card component', () => {
 
   // TODO: not sure why this doesn't work but probably something weird with
   // Jest's DOM model; the background isn't being set but the other prop is
-  xtest('renders event image', () => {
+  test.skip('renders event image', () => {
     expect(wrapper.html()).toContain('background: url(\'' + event.image + '\')')
   })
 
@@ -113,10 +113,11 @@ describe('Card component', () => {
 
   test('omits venue when not set', () => {
     wrapper = shallowMount(Card, {
-      localVue,
-      store,
-      stubs: {
-        NuxtLink: RouterLinkStub
+      global: {
+        plugins: [store],
+        stubs: {
+          NuxtLink: RouterLinkStub
+        },
       },
       propsData: {
         calendar_event: Object.assign(getEvent(), {
@@ -136,10 +137,11 @@ describe('Card component', () => {
 
   test('omits time for events treated as online resources', () => {
     wrapper = shallowMount(Card, {
-      localVue,
-      store,
-      stubs: {
-        NuxtLink: RouterLinkStub
+      global: {
+        plugins: [store],
+        stubs: {
+          NuxtLink: RouterLinkStub
+        },
       },
       propsData: {
         calendar_event: Object.assign(getEvent(), {

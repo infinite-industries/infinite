@@ -20,190 +20,151 @@
     <div class="admin-event-edit-page_venue-list">
       <VenueSpinner :is-shown="isFetching">Loading Venues...</VenueSpinner>
 
-      <ii-pagination
+      <Pagination
+        v-slot="page"
         v-show="!isFetching"
-        :items="selectedVenueList"
+        :items="selectedVenueList || []"
         :max-number-of-page-shortcuts="maxNumberOfPageShortcuts"
         class-name-page-list="ii-admin-event-edit-page_pagination-list"
       >
-        <template slot-scope="page">
-          <venue-card
-            v-for="venue in page"
-            :venue="venue"
-            :key="venue.id"
-          />
-        </template>
-      </ii-pagination>
+        <venue-card v-for="venue in page" :venue="venue" :key="venue.id" />
+      </Pagination>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
+  import { useStore } from 'vuex'
   import {
     ACTIVE_VENUE_SELECTION,
     COMMIT_VENUE_CHANGE_ACTIVE_FILTER_STATE,
     FETCH_ACTIVE_VENUES,
     FETCH_DELETED_VENUES
-  } from '../../store/venues'
-  import VenueCard from '../../components/admin-venue-edit/VenueCard'
-  import VenueSpinner from '../../components/admin-venue-edit/VenueSpinner'
-  import Pagination from '../../components/pagination/Pagination.vue'
-  import getToken from '@/helpers/getToken'
-  const sortMethod = (venueA, venueB) => venueA.name > venueB.name ? 1 : -1
+  } from "~/store/venues.js";
+  import VenueSpinner from "~/components/admin-venue-edit/VenueSpinner.vue";
+  import VenueCard from "~/components/admin-venue-edit/VenueCard.vue";
 
-  export default {
-    components: { VenueSpinner, VenueCard, 'ii-pagination': Pagination },
+  const store = useStore();
+
+  definePageMeta({
     layout: 'admin',
-    middleware: 'auth',
-    fetch: function () {
-      if (this.isShowingActive) {
-        return this.$store.dispatch(FETCH_ACTIVE_VENUES)
-      } else {
-        return this.$store.dispatch(FETCH_DELETED_VENUES)
-      }
-    },
+    middleware: ['auth'],
+  })
 
-    mounted: function () {
-      if (window) {
-        this._mediaQueryListenerExtralSmall = window.matchMedia('(max-width: 500px)')
-        this._mediaQueryListenerSmall = window.matchMedia('(max-width: 900px)')
-        this._mediaQueryListenerMedium = window.matchMedia('(max-width: 1660px)')
+  const selectedList = ref(ACTIVE_VENUE_SELECTION)
+  const searchByNameValue = ref('')
+  const isWindowExtraSmall = ref(false)
+  const isWindowSmall = ref(false)
+  const isWindowMedium = ref(false)
 
-        this.onMatchMediaChange()
+  const mediaQueryListenerExtraSmall = ref(null);
+  const mediaQueryListenerSmall = ref(null);
+  const mediaQueryListenerMedium = ref(null);
 
-        this._mediaQueryListenerExtralSmall.addEventListener('change', this.onMatchMediaChange)
-        this._mediaQueryListenerSmall.addEventListener('change', this.onMatchMediaChange)
-        this._mediaQueryListenerMedium.addEventListener('change', this.onMatchMediaChange)
-      }
-    },
-    destroyed() {
-      if (this._mediaQueryListenerExtralSmall) {
-        this._mediaQueryListenerExtralSmall.removeEventListener('change', this.onMatchMediaChange)
-        this._mediaQueryListenerExtralSmall = undefined
-      }
+  const maxNumberOfPageShortcuts = computed(() => {
+    if (isWindowExtraSmall.value) {
+      return 2;
+    } else if (isWindowSmall.value) {
+      return 5;
+    } else if (isWindowMedium.value) {
+      return 10;
+    } else {
+      return 25;
+    }
+  });
 
-      if (this._mediaQueryListenerSmall) {
-        this._mediaQueryListenerSmall.removeEventListener('change', this.onMatchMediaChange)
-        this._mediaQueryListenerSmall = undefined
-      }
+  const isSearchEntered = computed(() => {
+    return searchByNameValue.value.trim().length > 0;
+  });
 
-      if (this._mediaQueryListenerMedium) {
-        this._mediaQueryListenerMedium.removeEventListener('change', this.onMatchMediaChange)
-        this._mediaQueryListenerMedium = undefined
-      }
-    },
+  const activeVenues = computed(() => {
+    return [...store.state.venues.getActiveVenuesQuery.data].sort(sortMethod);
+  });
 
-    methods: {
-      onFilter() {
-        this.$store.commit(COMMIT_VENUE_CHANGE_ACTIVE_FILTER_STATE, this.selectedList)
+  const deletedVenues = computed(() => {
+    return [...store.state.venues.getDeletedVenuesQuery.data].sort(sortMethod);
+  });
 
-        this.$fetch()
-      },
-      onMatchMediaChange() {
-        this.isWindowExtraSmall = this._mediaQueryListenerExtralSmall.matches
-        this.isWindowSmall = this._mediaQueryListenerSmall.matches
-        this.isWindowMedium = this._mediaQueryListenerMedium.matches
-      }
-    },
+  const isShowingActive = computed(() => {
+    return selectedList.value === 'Active Venues';
+  });
 
-    computed: {
-      isActiveVenuesFetching: function () {
-        return this.$store.state.venues.getActiveVenuesQuery.isFetching
-      },
+  const isFetching = computed(() => {
+    return store.state.venues.getDeletedVenuesQuery.isFetching ||
+      store.state.venues.getActiveVenuesQuery.isFetching;
+  });
 
-      isDeletedVenuesFetching: function () {
-        return this.$store.state.venues.getDeletedVenuesQuery.isFetching
-      },
+  const selectedVenueList = computed(() => {
+    const selectedList = isShowingActive.value
+      ? activeVenues.value
+      : deletedVenues.value;
 
-      maxNumberOfPageShortcuts() {
-        if (this.isWindowExtraSmall) {
-          return 2
-        } else if (this.isWindowSmall) {
-          return 5
-        } else if (this.isWindowMedium) {
-          return 10
-        } else {
-          return 25
-        }
-      },
+    if (isSearchEntered.value) {
+      return selectedList.filter(value =>
+        value.name.toLowerCase().includes(searchByNameValue.value.toLowerCase())
+      );
+    } else {
+      return selectedList || [];
+    }
+  });
 
-      selectedVenueList: function () {
-        const selectedList = this.isShowingActive
-          ? this.activeVenues
-          : this.deletedVenues
+  onMounted(async () => {
+    if (isShowingActive.value) {
+      store.dispatch(FETCH_ACTIVE_VENUES)
+    } else {
+      store.dispatch(FETCH_DELETED_VENUES)
+    }
 
-        if (this.isSearchEntered) {
-          return selectedList.filter(value => (
-            value.name.toLowerCase().includes(this.searchByNameValue.toLocaleLowerCase())))
-        } else {
-          return selectedList
-        }
-      },
+    mediaQueryListenerExtraSmall.value = window.matchMedia('(max-width: 500px)');
+    mediaQueryListenerSmall.value = window.matchMedia('(max-width: 900px)');
+    mediaQueryListenerMedium.value = window.matchMedia('(max-width: 1660px)');
 
-      isSearchEntered: function () {
-        return this.searchByNameValue.trim().length > 0
-      },
+    // Initial call to handle the current state
+    onMatchMediaChange();
 
-      activeVenues: function () {
-        return [...this.$store.state.venues.getActiveVenuesQuery.data].sort(sortMethod)
-      },
+    // Add event listeners
+    mediaQueryListenerExtraSmall.value.addEventListener('change', onMatchMediaChange);
+    mediaQueryListenerSmall.value.addEventListener('change', onMatchMediaChange);
+    mediaQueryListenerMedium.value.addEventListener('change', onMatchMediaChange);
+  });
 
-      deletedVenues: function () {
-        return [...this.$store.state.venues.getDeletedVenuesQuery.data].sort(sortMethod)
-      },
+  onUnmounted(() => {
+    if (mediaQueryListenerExtraSmall.value) {
+      mediaQueryListenerExtraSmall.value.removeEventListener('change', onMatchMediaChange);
+      mediaQueryListenerExtraSmall.value = null;
+    }
 
-      errorFetchingActiveVenues: function () {
-        return this.$store.state.venues.getActiveVenuesQuery.error
-      },
+    if (mediaQueryListenerSmall.value) {
+      mediaQueryListenerSmall.value.removeEventListener('change', onMatchMediaChange);
+      mediaQueryListenerSmall.value = null;
+    }
 
-      errorFetchingDeletedVenues: function () {
-        return this.$store.state.venues.getDeletedVenuesQuery.error
-      },
+    if (mediaQueryListenerMedium.value) {
+      mediaQueryListenerMedium.value.removeEventListener('change', onMatchMediaChange);
+      mediaQueryListenerMedium.value = null;
+    }
+  });
 
-      isShowingActive: function () {
-        return this.selectedList === 'Active Venues'
-      },
+  function onFilter() {
+    store.commit(COMMIT_VENUE_CHANGE_ACTIVE_FILTER_STATE, selectedList)
 
-      isFetching: function () {
-        return this.$store.state.venues.getDeletedVenuesQuery.isFetching ||
-          this.$store.state.venues.getActiveVenuesQuery.isFetching
-      }
-    },
-
-    data() {
-      return {
-        selectedList: ACTIVE_VENUE_SELECTION,
-        searchByNameValue: '',
-        isWindowExtraSmall: false,
-        isWindowSmall: false,
-        isWindowMedium: false
-      }
+    if (selectedList.value === 'Active Venues') {
+      store.dispatch(FETCH_ACTIVE_VENUES);
+    } else if (selectedList.value === 'Deleted Venues') {
+      store.dispatch(FETCH_DELETED_VENUES);
     }
   }
+
+  function sortMethod (venueA, venueB) {
+    return venueA.name > venueB.name ? 1 : -1
+  }
+
+  function onMatchMediaChange() {
+    isWindowExtraSmall.value = mediaQueryListenerExtraSmall.value.matches
+    isWindowSmall.value = mediaQueryListenerSmall.value.matches
+    isWindowMedium.value = mediaQueryListenerMedium.value.matches
+  }
 </script>
-
-<style scoped>
-  .admin-event-edit-page__list-filters {
-    margin-bottom: 1rem;
-    display: grid;
-    grid-template-columns: 1fr auto;
-  }
-
-  .admin-event-edit-page__list-filters input, .admin-event-edit-page__list-filters select {
-    border: 1px solid black;
-    padding: 0.2rem;
-  }
-
-  .admin-event-edit-page__list-filters, .admin-event-edit-page_venue-list {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  select.admin-event-edit-page__active-state-filter {
-    -moz-appearance: auto;
-    -webkit-appearance: auto;
-  }
-</style>
 
 <style>
 .ii-pagination__list.ii-admin-event-edit-page_pagination-list {
@@ -214,5 +175,9 @@
 
 .ii-pagination__list-wrapper {
   display: flex;
+}
+
+.container.admin-page.admin-event-edit-page {
+  max-width: 1446px;
 }
 </style>

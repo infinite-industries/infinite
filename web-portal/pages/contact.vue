@@ -15,23 +15,23 @@
 
     <div class="container">
       <v-form ref="form" v-model="valid" lazy-validation @submit.prevent="ContactUs()">
-        <v-layout row>
-          <v-flex xs12 sm11>
+        <v-row>
+          <v-col cols="12" sm="11">
             <v-text-field label="Your Name" v-model="name" :rules="nameRules" required></v-text-field>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
 
-        <v-layout row>
-          <v-flex xs12 sm11>
+        <v-row>
+          <v-col cols="12" sm="11">
             <v-text-field label="Your E-mail" v-model="email" :rules="emailRules" required></v-text-field>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
 
-        <v-layout row>
-          <v-flex xs12 sm11>
+        <v-row>
+          <v-col cols="12" sm="11">
             <v-textarea label="Your Text" v-model="comment" multi-line></v-textarea>
-          </v-flex>
-        </v-layout>
+          </v-col>
+        </v-row>
 
         <ii-form-button type="submit">Send</ii-form-button>
       </v-form>
@@ -110,5 +110,8 @@
   #close{
     text-align: right;
     padding-bottom: 10px;
+  }
+  label, input, textarea {
+    font-family: "Open Sans", sans-serif;
   }
 </style>

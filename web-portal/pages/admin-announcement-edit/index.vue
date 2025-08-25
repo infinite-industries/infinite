@@ -31,81 +31,75 @@
   </client-only>
 </template>
 
-<script>
-  import getToken from '../../helpers/getToken'
+<script setup>
+  import { useStore } from 'vuex'
 
-  export default {
-    name: 'admin-announcement-edit',
-    middleware: 'auth',
+  const store = useStore();
+
+  useHead({
+    title:  'Announcement Editor - Infinite Industries'
+  })
+
+  definePageMeta({
     layout: 'admin',
-    head: function () {
-      return {
-        title: 'Announcement Editor - Infinite Industries'
+    middleware: ['auth'],
+  })
+
+  const message = ref('')
+  const error = ref('')
+  const loading = ref(true)
+  const announcement = ref(null)
+
+  const currentAnnouncement = computed(() => {
+    return store.getters.GetActiveAnnouncement;
+  });
+
+  onMounted(async () => {
+    loading.value = true
+
+    try {
+      await store.dispatch('FindOrCreateActiveAnnouncement');
+
+      if (currentAnnouncement.value) {
+        message.value = currentAnnouncement.value.message
+        announcement.value = currentAnnouncement.value
+        setLoadSuccessState()
+      } else {
+        setLoadingFailState('could not establish the current active message')
       }
-    },
-    computed: {
-      currentAnnouncement: function () {
-        return this.$store.getters.GetActiveAnnouncement
-      }
-    },
-    data: function () {
-      return {
-        message: '',
-        error: '',
-        loading: true,
-        announcement: null
-      }
-    },
-    fetch: function () {
-      this.loading = true
-      const idToken = getToken(this.$auth)
-
-      return this.$store.dispatch('FindOrCreateActiveAnnouncement', { idToken })
-        .then(() => {
-          if (this.currentAnnouncement) {
-            this.message = this.currentAnnouncement.message
-            this.announcement = this.currentAnnouncement
-            this.setLoadSuccessState()
-          } else {
-            this.setLoadingFailState('could not establish the current active message')
-          }
-        })
-        .catch((error) => {
-          this.setLoadingFailState(error.toString())
-        })
-    },
-    methods: {
-      updateMessage: function uupdateMessage(event) {
-        this.loading = true
-        event.preventDefault()
-
-        const idToken = getToken(this.$auth)
-        const message = this.message
-
-        const announcement = { ...this.announcement, message }
-
-        return this.$store.dispatch('UpdateActiveAnnouncement', { announcement, idToken })
-          .then(() => {
-            this.setLoadSuccessState()
-          }).catch((error) => {
-            this.setLoadingFailState(error.toString())
-          })
-      },
-      clearMessage: function clearMessage(event) {
-        event.preventDefault()
-
-        this.message = ''
-        return this.updateMessage(event)
-      },
-      setLoadSuccessState() {
-        this.error = ''
-        this.loading = false
-      },
-      setLoadingFailState(errorMessage) {
-        this.error = errorMessage
-        this.loading = false
-      }
+    } catch (error) {
+      console.warn(error)
+      setLoadingFailState('could not establish the current active message')
     }
+  });
+
+  function setLoadingFailState(errorMessage) {
+    error.value = errorMessage;
+    loading.value = false;
+  }
+
+  function clearMessage(event) {
+    event.preventDefault();
+
+    message.value = '';
+    return updateMessage(event);
+  }
+
+  function setLoadSuccessState() {
+    error.value = '';
+    loading.value = false;
+  }
+
+  function updateMessage(event) {
+    loading.value = true;
+    event.preventDefault();
+
+    return store.dispatch('UpdateActiveAnnouncement', { announcement: { ...announcement.value, message: message.value } })
+      .then(() => {
+        setLoadSuccessState()
+      }).catch((error) => {
+        setLoadingFailState(error.toString());
+      })
   }
 </script>
 

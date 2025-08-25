@@ -93,10 +93,8 @@
               </a>
               <div
                 v-if="event.bitly_link"
-                v-clipboard:copy="event.bitly_link"
-                v-clipboard:success="onCopySuccess"
-                v-clipboard:error="onCopyError"
                 class="ii-social-button ii-copy-btn"
+                @click="copyBitlyLink"
               >
                 <ii-link-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
                 <span>Copy Link</span>
@@ -179,7 +177,7 @@
         } else return null
       },
       fullEncodedLinkForShare() {
-        return encodeURI(this.$config.APP_URL + '/events/' + this.event.id)
+        return encodeURI(this.$config.public.appUrl + '/events/' + this.event.id)
       },
       isRemote: function () {
         return this.event &&
@@ -226,9 +224,9 @@
         const date_time_elements = []
         for (const date_time of this.event.date_times) {
           date_time_elements.push({
-            start_date: momenttz(date_time.start_time).tz(date_time.timezone || this.$config.TIMEZONE_DEFAULT).format('dddd, MMMM Do'),
-            start_time: momenttz(date_time.start_time).tz(date_time.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma'),
-            end_time: momenttz(date_time.end_time).tz(date_time.timezone || this.$config.TIMEZONE_DEFAULT).format('h:mma'),
+            start_date: momenttz(date_time.start_time).tz(date_time.timezone || this.$config.public.timezoneDefault).format('dddd, MMMM Do'),
+            start_time: momenttz(date_time.start_time).tz(date_time.timezone || this.$config.public.timezoneDefault).format('h:mma'),
+            end_time: momenttz(date_time.end_time).tz(date_time.timezone || this.$config.public.timezoneDefault).format('h:mma'),
             timezone: momenttz(date_time.end_time).tz(date_time.timezone).format('z')
           })
         }
@@ -240,20 +238,24 @@
         this.showCalendarDropdown = !this.showCalendarDropdown
       },
       addToCalendar(type) {
-        CalendarService.generate(this.$config.API_URL, this.event, type)
+        CalendarService.generate(this.$config.public.apiUrl, this.event, type)
       },
       toggleShare() {
         this.showShareDropdown = !this.showShareDropdown
       },
-      onCopySuccess(e) {
-        console.info('Copied to clipboard:', e.text)
-        window.alert('Copied the URL. Now you can paste it into emails, tweets or any other announcements. Enjoy!')
+      copyBitlyLink() {
+        if ("clipboard" in navigator) {
+          navigator.clipboard.writeText(this.event.bitly_link).then(() => {
+            console.info('Copied to clipboard:', this.event.bitly_link)
+            window.alert('Copied the URL. Now you can paste it into emails, tweets or any other announcements. Enjoy!')
+          }).catch((e) => {
+            console.error('Copy error:', e)
+            window.alert('We were unable to copy URL. Here it is for reference:\n' + this.event.bitly_link)
+          })
+        } else {
+          window.alert('We were unable to copy URL. Here it is for reference:\n' + this.event.bitly_link)
+        }
       },
-      onCopyError(e) {
-        console.error('Action:', e.action)
-        console.error('Trigger:', e.trigger)
-        window.alert('We were unable to copy URL. Here it is for reference:\n' + this.event.bitly_link)
-      }
     },
     components: {
       'ii-calendar-icon': Calendar,

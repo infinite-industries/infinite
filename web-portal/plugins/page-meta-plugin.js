@@ -1,5 +1,11 @@
-export default ({ app }, inject) => {
-  inject('urlFor', function urlFor(route) {
-    return `${app.$config.APP_URL}${route}`
-  })
-}
+export default defineNuxtPlugin(() => {
+  const $config = useRuntimeConfig()
+
+  return {
+    provide: {
+      urlFor: function urlFor(route) {
+        return `${$config.public.appUrl}${route}`
+      }
+    }
+  }
+})

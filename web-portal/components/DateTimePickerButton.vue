@@ -22,8 +22,8 @@
         default: ''
       }
     },
-    model: {
-      event: 'click'
+    emits: {
+      click: null
     },
     methods: {
       onClick() {

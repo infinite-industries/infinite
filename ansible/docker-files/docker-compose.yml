@@ -19,6 +19,7 @@ services:
       - ./web-portal.env
     environment:
       HOST: 0.0.0.0 # Needed to make nuxt work inside docker
+      PORT: 7779
     depends_on:
       - api-server
     expose:

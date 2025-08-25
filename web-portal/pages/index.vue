@@ -16,18 +16,19 @@
   import ListViewer from '../components/ListViewer.vue'
   import Jumbotron from '../components/Jumbotron.vue'
 
-  export default {
-    head () {
-      return {
+  export default defineNuxtComponent({
+    async setup () {
+      const { $urlFor } = useNuxtApp()
+      useHead({
         link: [
-          { hid: 'canonical', rel: 'canonical', href: this.$urlFor('/') }
+          { rel: 'canonical', href: $urlFor('/') }
         ]
-      }
-    },
-    data: function () {
-      return {
-        // venues: []
-      }
+      })
+      await useLegacyStoreFetch('fetchHomeData', [
+        'LoadAllLocalEventData',
+        'LoadAllStreamingEventData'
+      ])
+      return {}
     },
     computed: {
       events: function () {
@@ -37,17 +38,11 @@
         return this.$store.getters.GetAllStreamEvents
       }
     },
-    fetch: function ({ store }) {
-      return Promise.all([
-        store.dispatch('LoadAllLocalEventData'),
-        store.dispatch('LoadAllStreamingEventData')
-      ])
-    },
     components: {
       'ii-list-viewer': ListViewer,
       'ii-jumbotron': Jumbotron
     }
-  }
+  })
 </script>
 
 <style scoped>

@@ -1,0 +1,39 @@
+context('Authorization', () => {
+  const ADMIN_USERNAME = Cypress.env('admin_auth_username')
+  const ADMIN_PASSWORD = Cypress.env('admin_auth_password')
+
+  before(() => {
+    Cypress.on('uncaught:exception', (err, runnable) => {
+      console.error(`\n\neating uncaught exception: ${err}`)
+      // don't fail the test
+      return false
+      })
+  })
+
+  it('Should initially show login button and no admin button', function () {
+    cy.visit('/')
+    cy.get('#hamburger').click()
+
+    cy.get('#nav-list li').contains('Admin').should('not.exist')
+    cy.get('#nav-list li').contains('Login')
+  })
+
+  it('Should logout and admin when logged in as admin and revert when logged out', function () {
+    Cypress.Cookies.debug(true)
+    cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/')
+    cy.wait(500) // seems necessary now for the click on the hamburger to work, maybe hydration?
+    cy.get('#hamburger').click({ force: true })
+
+    cy.get('#nav-list li').contains('Admin')
+    cy.get('#nav-list li').contains('Logout')
+    cy.get('#nav-list li').contains('Login').should('not.exist')
+
+    // logout
+    cy.get('#nav-list li').contains('Logout').click()
+
+    cy.get('#hamburger').click()
+    cy.get('#nav-list li').contains('Login')
+    cy.get('#nav-list li').contains('Logout').should('not.exist')
+    cy.get('#nav-list li').contains('Admin').should('not.exist')
+  })
+})

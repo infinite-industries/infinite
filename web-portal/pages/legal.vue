@@ -173,6 +173,7 @@
     font-family: "EB Garamond";
     font-size: 1.25em;
     margin-bottom: 20px;
+    padding-left: 24px;
   }
 
   .info-list li {

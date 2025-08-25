@@ -4,7 +4,7 @@
       :class="getLinkClasses()"
       v-if="entryType === 'page-number'"
       :disabled="isDisabled"
-      @click="$emit('pageEntryClicked', parseInt(label))"
+      @click="pageEntryClicked"
     >
       {{ label }}
     </button>
@@ -39,6 +39,7 @@
 
 <script>
   export default {
+    emits: ['incrementPage', 'pageEntryClicked', 'decrementPageClicked'],
     props: {
       label: {
         type: String,
@@ -69,6 +70,9 @@
         }
 
         return classes.join(' ').trimEnd()
+      },
+      pageEntryClicked: function () {
+        this.$emit('pageEntryClicked', parseInt(this.label))
       }
     }
   }

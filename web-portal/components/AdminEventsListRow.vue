@@ -58,6 +58,7 @@
       'ii-form-button': FormButton
     },
     props: ['calendarEvent', 'isProblemUpdated'],
+    emits: ['hasProblemsChanged'],
     computed: {
       isProblem: function() {
         // TODO (THIS IS NOT WORKING FOR UN-VERIFIED EVENTS OR RESOURCES BECAUSE THEY ARE FETCHED WITHOUT METADATA)
@@ -86,9 +87,6 @@
         const value = event.currentTarget.checked
         this.$emit('hasProblemsChanged', { id: data.id, checked: value })
       }
-    },
-    model: {
-      event: 'hasProblemsChanged'
     }
   }
 </script>

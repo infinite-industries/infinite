@@ -200,7 +200,6 @@
     UPDATE_VENUE
   } from '@/store/venues'
   import VenueSpinner from './VenueSpinner'
-  import getToken from '../../helpers/getToken'
   import { FETCH_GPS_COORDINATES_FROM_URL } from '../../store/venues'
 
   export default {
@@ -218,24 +217,21 @@
         const venue = {
           ...this.venue
         }
-        const idToken = this.idToken
 
-        this.$store.dispatch(UPDATE_VENUE, { venue, idToken })
+        this.$store.dispatch(UPDATE_VENUE, { venue })
       },
       onVenueReplaceClick: function () {
         const oldVenue = this.venue
         const newVenue = {
           ...this.venue
         }
-        const idToken = this.idToken
 
-        this.$store.dispatch(REPLACE_VENUE, { newVenue, oldVenue, idToken })
+        this.$store.dispatch(REPLACE_VENUE, { newVenue, oldVenue })
       },
       onDeleteVenueClick: function () {
         const id = this.venue.id
-        const idToken = this.idToken
 
-        this.$store.dispatch(DELETE_VENUE, { id, idToken })
+        this.$store.dispatch(DELETE_VENUE, { id })
       },
       onFindUsingMapLinksClick: function () {
         this.fetchingGpsCoordinates = true
@@ -284,9 +280,8 @@
       },
       onUndoDeleteVenueClick: function () {
         const id = this.venue.id
-        const idToken = this.idToken
 
-        this.$store.dispatch(ACTIVATE_VENUE, { id, idToken })
+        this.$store.dispatch(ACTIVATE_VENUE, { id })
       }
     },
     computed: {
@@ -311,9 +306,6 @@
         const queryEntry = this.$store.state.venues.venueUpdateQueries[this.venue.id]
 
         return queryEntry && queryEntry.error
-      },
-      idToken: function () {
-        return getToken(this.$auth)
       },
       isPristine: function () {
         return !this.$store.state.venues.venuesEdited[this.venue.id]

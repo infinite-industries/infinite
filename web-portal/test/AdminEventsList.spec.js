@@ -1,7 +1,5 @@
-import { createLocalVue, RouterLinkStub, mount } from '@vue/test-utils'
+import { RouterLinkStub, mount } from '@vue/test-utils'
 import AdminEventsList from '@/components/AdminEventsList.vue'
-
-const localVue = createLocalVue()
 
 const getEventList = () => {
   return [
@@ -13,9 +11,10 @@ const getEventList = () => {
 describe('AdminEventsList component', () => {
   test('renders a list of events', () => {
     const wrapper = mount(AdminEventsList, {
-      localVue,
-      stubs: {
-        NuxtLink: RouterLinkStub
+      global: {
+        stubs: {
+          NuxtLink: RouterLinkStub
+        },
       },
       propsData: {
         calendar_events: getEventList()

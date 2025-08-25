@@ -1,5 +1,5 @@
 <template>
-  <nuxt-child />
+  <NuxtPage />
 </template>
 
 <script>
@@ -10,6 +10,10 @@
    * (See https://nuxtjs.org/guide/routing#nested-routes)
    */
   export default {
-    layout: 'admin'
+    setup () {
+      definePageMeta({
+        layout: 'admin'
+      })
+    }
   }
 </script>

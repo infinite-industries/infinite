@@ -138,9 +138,9 @@ export const actions = {
   FetchActiveVenues: function (context) {
     context.commit('ACTIVE_VENUES_FETCH_START')
 
-    return this.$apiService.get('/venues?includeDeleted=no')
-      .then((_response) => {
-        context.commit('ACTIVE_VENUES_FETCH_SUCCESS', _response.data.venues)
+    return useNuxtApp().$apiService.get('/venues?includeDeleted=no')
+      .then((data) => {
+        context.commit('ACTIVE_VENUES_FETCH_SUCCESS', data.venues)
       })
       .catch((error) => {
         context.commit('ACTIVE_VENUES_FETCH_FAIL', error)
@@ -161,9 +161,9 @@ export const actions = {
   FetchDeletedVenues: function (context) {
     context.commit('DELETED_VENUES_FETCH_START')
 
-    return this.$apiService.get('/venues?includeDeleted=only')
+    return useNuxtApp().$apiService.get('/venues?includeDeleted=only')
       .then((_response) => {
-        context.commit('DELETED_VENUES_FETCH_SUCCESS', _response.data.venues)
+        context.commit('DELETED_VENUES_FETCH_SUCCESS', _response.venues)
       })
       .catch((error) => {
         context.commit('DELETED_VENUES_FETCH_FAIL', error)
@@ -173,13 +173,14 @@ export const actions = {
   FetchGpsCoordinatesFromUrl: function (context, { street, city, state, zip }) {
     context.commit('GPS_COORDINATES_FETCH_START')
 
-    return this.$apiService.post('/venues/get-gps-from-address', { street, city, state, zip })
+    return useNuxtApp().$apiService.post('/venues/get-gps-from-address', { street, city, state, zip })
       .then((response) => {
-        context.commit('GPS_COORDINATES_FETCH_SUCCESS', response.data.gpsCoordinates)
+        context.commit('GPS_COORDINATES_FETCH_SUCCESS', response.gpsCoordinates)
 
-        return response.data.gpsCoordinates
+        return response.gpsCoordinates
       })
       .catch((error) => {
+        console.error('error fetching gps coordinates: ', error);
         context.commit('GPS_COORDINATES_FETCH_FAIL', error)
         context.commit(
           'ui/SHOW_NOTIFICATIONS',
@@ -194,9 +195,9 @@ export const actions = {
   DeleteVenue: function (context, { id, idToken }) {
     context.commit('VENUE_DELETE_START')
 
-    return this.$apiService.delete(`/authenticated/venues/${id}`, idToken)
+    return useNuxtApp().$apiService.delete(`/authenticated/venues/${id}`, idToken)
       .then((response) => {
-        context.commit('VENUE_DELETE_SUCCESS', { id, venue: response.data.venue })
+        context.commit('VENUE_DELETE_SUCCESS', { id, venue: response.venue })
       })
       .catch((error) => {
         context.commit(
@@ -212,9 +213,9 @@ export const actions = {
   ActivateVenue: function (context, { id, idToken }) {
     context.commit('VENUE_ACTIVATE_START')
 
-    return this.$apiService.put(`/authenticated/venues/${id}/activate`, null, idToken)
+    return useNuxtApp().$apiService.put(`/authenticated/venues/${id}/activate`, null, idToken)
       .then((response) => {
-        context.commit('VENUE_ACTIVATE_SUCCESS', { id, venue: response.data.venue })
+        context.commit('VENUE_ACTIVATE_SUCCESS', { id, venue: response.venue })
       })
       .catch((error) => {
         context.commit(
@@ -230,9 +231,9 @@ export const actions = {
   UpdateVenue: function (context, { venue, idToken }) {
     context.commit('VENUE_UPDATE_START', { id: venue.id })
 
-    return this.$apiService.put(`/authenticated/venues/${venue.id}`, venue, idToken)
+    return useNuxtApp().$apiService.put(`/authenticated/venues/${venue.id}`, venue, idToken)
       .then((response) => {
-        context.commit('VENUE_UPDATE_SUCCESS', { venue: response.data.venue })
+        context.commit('VENUE_UPDATE_SUCCESS', { venue: response.venue })
       })
       .catch((error) => {
         context.commit(
@@ -250,11 +251,11 @@ export const actions = {
 
     context.commit('VENUE_REPLACE_START', { id: oldVenue.id })
 
-    this.$apiService.delete(`/authenticated/venues/${id}`, idToken)
+    useNuxtApp().$apiService.delete(`/authenticated/venues/${id}`, idToken)
       .then(() => {
-        return this.$apiService.post('/venues', newVenue, idToken)
+        return useNuxtApp().$apiService.post('/venues', newVenue, idToken)
       }).then((response) => {
-        context.commit('VENUE_REPLACE_SUCCESS', { oldVenue, newVenue: response.data.venue })
+        context.commit('VENUE_REPLACE_SUCCESS', { oldVenue, newVenue: response.venue })
       })
       .catch((error) => {
         context.commit(

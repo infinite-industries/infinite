@@ -9,10 +9,17 @@ import {
 /**
  * Central place for enabling analytics suites
  */
-export default ({ $config }, inject) => {
-  const FATHOM_SITE_ID = $config.FATHOM_SITE_ID
-  inject('analytics', new Analytics(FATHOM_SITE_ID))
-}
+export default defineNuxtPlugin({
+  name: 'analytics',
+  async setup (nuxtApp) {
+    const FATHOM_SITE_ID = nuxtApp.$config.public.fathomSiteId
+    nuxtApp.vueApp.use({
+      install(app) {
+        app.config.globalProperties.$analytics = new Analytics(FATHOM_SITE_ID)
+      }
+    })
+  }
+})
 
 class Analytics {
   constructor(fathomSiteId) {

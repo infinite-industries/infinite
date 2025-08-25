@@ -1,7 +1,5 @@
-import { createLocalVue, mount } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import Pagination from '@/components/pagination/Pagination.vue'
-
-const localVue = createLocalVue()
 
 describe('Pagination component', () => {
   let wrapper
@@ -10,7 +8,6 @@ describe('Pagination component', () => {
 
   beforeEach(() => {
     wrapper = mount(Pagination, {
-      localVue,
       propsData: {
         items
       }
@@ -195,14 +192,14 @@ describe('Pagination component', () => {
 
   function assertLeftBookendDisabledAndRightEnabled(wrapper) {
     const bookends = wrapper.findAll('.ii-pagination__entry-bookend')
-    expect(bookends.at(0).attributes().disabled).toEqual('disabled')
-    expect(bookends.at(1).attributes().disabled).toBeFalsy()
+    expect(bookends.at(0).attributes()).toHaveProperty('disabled')
+    expect(bookends.at(1).attributes()).not.toHaveProperty('disabled')
   }
 
   function assertRightBookendDisabledAndLeftEnabled(wrapper) {
     const bookends = wrapper.findAll('.ii-pagination__entry-bookend')
-    expect(bookends.at(1).attributes().disabled).toEqual('disabled')
-    expect(bookends.at(0).attributes().disabled).toBeFalsy()
+    expect(bookends.at(1).attributes()).toHaveProperty('disabled')
+    expect(bookends.at(0).attributes()).not.toHaveProperty('disabled')
   }
 
   function assertBothBookendsEnabled(wrapper) {
@@ -225,7 +222,7 @@ describe('Pagination component', () => {
     const paginationEntries = paginationButtonList.findAll('.ii-pagination__entry')
 
     const selectedPageButton = paginationEntries.at(currentPageIndex).find('button')
-    expect(selectedPageButton.attributes().disabled).toEqual('disabled')
+    expect(selectedPageButton.attributes()).toHaveProperty('disabled')
 
     for (let i = 0; i < paginationEntries.length; i++) {
       const entry = paginationEntries.at(i)
@@ -236,7 +233,7 @@ describe('Pagination component', () => {
         entry.text() !== '>'
       ) {
         const entryButton = entry.find('button')
-        expect(entryButton.attributes().disabled).toBeFalsy()
+        expect(entryButton.attributes()).not.toHaveProperty('disabled')
       }
     }
   }

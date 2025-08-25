@@ -10,7 +10,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import FullCalendar from '@fullcalendar/vue'
+  import FullCalendar from '@fullcalendar/vue3'
   import dayGridPlugin from '@fullcalendar/daygrid'
   import interactionPlugin from '@fullcalendar/interaction'
   import timeGridPlugin from '@fullcalendar/timegrid'
@@ -18,6 +18,9 @@
   export default {
     components: {
       FullCalendar
+    },
+    setup: async function () {
+      await useLegacyStoreFetch('LoadAllLocalEventData', 'LoadAllLocalEventData')
     },
     data: function () {
       return {
@@ -45,9 +48,6 @@
           height: 'auto'
         }
       }
-    },
-    async fetch({ store }) {
-      await store.dispatch('LoadAllLocalEventData')
     },
     computed: {
       ...mapGetters({ getAllLocalEvents: 'GetAllLocalEvents' }),
@@ -89,7 +89,7 @@
         this.$router.push({ path: `/events/${info.event.extendedProps.originId}` })
       }
     },
-    beforeDestroy() {
+    beforeUnmount() {
       if (this.timeInterval) { window.clearInterval(this.timeInterval) }
     }
   }

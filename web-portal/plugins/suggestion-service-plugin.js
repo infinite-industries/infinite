@@ -1,8 +1,16 @@
-import axios from 'axios'
 
-export default ({ app }, inject) => {
-  inject('suggestionService', new SuggestionService(app.$apiService))
-}
+export default defineNuxtPlugin({
+  name: 'suggestion-service',
+  dependsOn: ['api-service'],
+  async setup (nuxtApp) {
+    const suggestionService = new SuggestionService(nuxtApp.$apiService)
+    nuxtApp.vueApp.use({
+      install(app) {
+        app.config.globalProperties.$suggestionService = suggestionService
+      }
+    })
+  }
+})
 
 class SuggestionService {
   constructor(apiService) {
@@ -33,8 +41,8 @@ class SuggestionService {
    */
   async getSuggestionsForDescription(description) {
     try {
-      const response = await this.$apiService.post('/summarization/get-tags', { description })
-      return response.data?.length > 0 ? response.data : null
+      const data = await this.$apiService.post('/summarization/get-tags', { description })
+      return data?.length > 0 ? data : null
     } catch (e) {
       return null
     }
@@ -42,8 +50,8 @@ class SuggestionService {
 
   async getBriefDescriptionFromFullDescription(description) {
     try {
-      const response = await this.$apiService.post('/summarization/get-brief-description', { description })
-      return response.data
+      const data = await this.$apiService.post('/summarization/get-brief-description', { description })
+      return data
     } catch (e) {
       console.warn(e)
       return null
@@ -51,6 +59,6 @@ class SuggestionService {
   }
 
   async submitFeedback(suggested, submitted, eventId) {
-    await axios.post('/internal-api/analytics/suggestion-feedback', { suggested, submitted, eventId })
+    await this.$apiService.post('/internal-api/analytics/suggestion-feedback', { suggested, submitted, eventId })
   }
 }
