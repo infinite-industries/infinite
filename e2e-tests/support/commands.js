@@ -4,7 +4,7 @@ Cypress.Commands.add('visitAsUser', {}, (username, password, url) => {
   })
 
   cy.visit("/login")
-  cy.wait(2000)
+  cy.wait(500)
   cy.get("input.login-page__username").type(username)
   cy.get("input.login-page__password").type(password)
   cy.get(".login-page__login-btn").click()
