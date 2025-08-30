@@ -128,12 +128,27 @@ export class EventsService {
         include: VenueModel,
       });
 
+      // Batch fetch event_admin_metadata for all events in the current page
+      const eventAdminMetadata = await this.eventAdminMetadataModel.findAll({
+        where: {
+          event_id: {
+            [Op.or]: paginatedRows.map(({ id }) => id),
+          },
+        },
+      });
+
       paginatedRows.forEach((event) => {
         const dateTimesForEvent = dateTimes.filter(
           ({ event_id }) => event_id === event.id,
         );
 
+        // Find and assign the corresponding admin metadata
+        const adminMetadataForEvent = eventAdminMetadata.find(
+          ({ event_id }) => event_id === event.id,
+        );
+
         event.date_times = dateTimesForEvent;
+        event.event_admin_metadata = adminMetadataForEvent;
       });
 
       const totalCount = await this.getEventCountWithFilters(

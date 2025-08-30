@@ -96,4 +96,18 @@ export default class EventDTO {
 
   @ApiProperty()
   venue: VenueModel;
+
+  @ApiProperty({
+    example: {
+      is_problem: false,
+      createdAt: EXAMPLE_DATE,
+      updatedAt: EXAMPLE_DATE,
+    },
+    required: false,
+  })
+  event_admin_metadata?: {
+    is_problem: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  };
 }

@@ -140,5 +140,5 @@ export class EventModel extends Model<EventModel> {
   venues: VenueModel[];
 
   @HasOne(() => EventAdminMetadataModel)
-  event_admin_meta_data?: EventAdminMetadataModel;
+  event_admin_metadata?: EventAdminMetadataModel;
 }

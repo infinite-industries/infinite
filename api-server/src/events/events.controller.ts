@@ -39,6 +39,10 @@ import {
   PaginationDto,
 } from './dto/pagination-dto';
 import { isNullOrUndefined } from '../utils';
+import { VenueModel } from 'src/venues/models/venue.model';
+import { DatetimeVenueModel } from './models/datetime-venue.model';
+import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
+import isAdminUser from 'src/authentication/is-admin-user';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -63,20 +67,19 @@ export class EventsController {
     description: 'current verified events',
     type: EventsResponse,
   })
-  getAllCurrentVerified(
-    @Query('embed') embed: string[] | string = [],
+  async getAllCurrentVerified(
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Req() request: Request,
   ): Promise<EventsResponse> {
-    if (typeof embed === 'string') {
-      embed = [embed, 'DATE_TIME'];
-    } else {
-      embed.push('DATE_TIME');
-    }
+    const isAdmin = await isAdminUser(request);
+
+    const include = isAdmin
+      ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel]
+      : [VenueModel, DatetimeVenueModel]
 
     const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+      include,
       where: {
         [Op.and]: [
           getCommonQueryTermsForEvents(true, tags, category),
