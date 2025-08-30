@@ -60,11 +60,10 @@
     props: ['calendarEvent', 'isProblemUpdated'],
     computed: {
       isProblem: function() {
-        // TODO (THIS IS NOT WORKING FOR UN-VERIFIED EVENTS OR RESOURCES BECAUSE THEY ARE FETCHED WITHOUT METADATA)
-        if (!this.calendarEvent.event_admin_meta_data) {
+        if (!this.calendarEvent.event_admin_metadata) {
           return false
         } else {
-          return this.calendarEvent.event_admin_meta_data.is_problem
+          return this.calendarEvent.event_admin_metadata.is_problem
         }
       },
       ownerLogo: function () {

@@ -48,5 +48,12 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
     venue: isNotNullOrUndefined(eventModel.venues)
       ? eventModel.venues[0]
       : null,
+    event_admin_metadata: isNotNullOrUndefined(eventModel.event_admin_metadata)
+      ? {
+          is_problem: eventModel.event_admin_metadata.is_problem,
+          createdAt: eventModel.event_admin_metadata.createdAt,
+          updatedAt: eventModel.event_admin_metadata.updatedAt,
+        }
+      : undefined,
   };
 }
