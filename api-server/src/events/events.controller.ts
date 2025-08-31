@@ -131,13 +131,15 @@ export class EventsController {
     required: false,
     type: Number,
   })
-  getAllVerified(
+  async getAllVerified(
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
+    @Req() request: Request,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
 
+    const isUserAdmin  = await isAdminUser(request);
     return this.eventsService
       .findAllPaginated({
         tags,
@@ -145,6 +147,7 @@ export class EventsController {
         pageSize,
         requestedPage: page,
         verifiedOnly: true,
+        isUserAdmin,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
