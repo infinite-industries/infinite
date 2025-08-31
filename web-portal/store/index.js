@@ -4,6 +4,13 @@ const CURRENT_EVENTS_VERIFIED_PATH = '/events/current-verified'
 const EVENTS_VERIFIED_PATH = '/events/verified'
 const EMBED_VENUE = 'embed=Venue'
 
+// this may not be necessary
+export const plugins = [
+  function injectNuxtApp(store) {
+    store.$nuxt = useNuxtApp()
+  }
+]
+
 export const state = () => {
   return {
     util: {
@@ -57,18 +64,6 @@ export const getters = {
     if (state.announcements && state.announcements.length > 0) {
       return state.announcements[state.announcements.length - 1]
     }
-  },
-
-  GetUser: (state) => {
-    return state.user_data
-  },
-
-  GetUserDataLoading: (state) => {
-    return state.user_data_loading
-  },
-
-  GetUserDataError: (state) => {
-    return state.user_data_error
   },
 
   IsUserAdmin: (state) => {
@@ -129,24 +124,12 @@ export const actions = {
     context.commit('CREATE_NEW_EVENT')
   },
 
-  LoadAllUserData: function (context, payload) {
-    context.commit('USER_DATA_FETCH_START')
-
-    return this.$apiService.get('/users/current', payload.idToken)
-      .then(function (_response) {
-        context.commit('UPDATE_USER_DATA', _response.data)
-      }).catch((ex) => {
-        context.commit('USER_DATA_FETCH_FAIL', ex)
-
-        throw ex
-      })
-  },
   LoadAllLocalEventData: function (context) {
     context.commit('SET_LOADING_STATUS', true)
 
-    return this.$apiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
-      .then((_response) => {
-        context.commit('UPDATE_LOCALIZED_EVENTS', _response.data.events)
+    return useNuxtApp().$apiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
+      .then((data) => {
+        context.commit('UPDATE_LOCALIZED_EVENTS', data.events)
         context.commit('SET_LOADING_STATUS', false)
       })
       .catch((error) => {
@@ -155,9 +138,9 @@ export const actions = {
       })
   },
   LoadAllStreamingEventData: function (context) {
-    return this.$apiService.get(`${EVENTS_VERIFIED_PATH}?category=online-resource&${EMBED_VENUE}`)
-      .then((_response) => {
-        context.commit('UPDATE_STREAMING_EVENTS', _response.data.events)
+    return useNuxtApp().$apiService.get(`${EVENTS_VERIFIED_PATH}?category=online-resource&${EMBED_VENUE}`)
+      .then((data) => {
+        context.commit('UPDATE_STREAMING_EVENTS', data.events)
       })
       .catch((error) => {
         console.error(error)
@@ -166,46 +149,42 @@ export const actions = {
   },
 
   LoadAnnouncements: function (context) {
-    return this.$apiService.get('/announcements')
-      .then((_response) => {
-        if (_response.data.status === 'success') {
-          context.commit('POPULATE_ANNOUNCEMENTS', _response.data.announcements)
-        } else console.error('Error processing announcements', _response.data)
+    return useNuxtApp().$apiService.get('/announcements')
+      .then((response) => {
+        if (response.status === 'success') {
+          context.commit('POPULATE_ANNOUNCEMENTS', response.announcements)
+        } else console.error('Error processing announcements', response)
       })
       .catch((error) => {
         console.error('Unable to load announcements', error)
       })
   },
 
-  FindOrCreateActiveAnnouncement: function (context, payload) {
-    const idToken = payload.idToken
-
-    return this.$apiService.post(
+  FindOrCreateActiveAnnouncement: function (context) {
+    return useNuxtApp().$apiService.post(
       '/announcements/ensure-one-announcement',
       { message: '' },
-      idToken
     ).then((response) => {
-      if (response.data.status === 'success') {
-        context.commit('POPULATE_ANNOUNCEMENTS', response.data.announcements)
+      if (response.status === 'success') {
+        context.commit('POPULATE_ANNOUNCEMENTS', response.announcements)
       } else {
-        console.error('Unable to ensure announcement', response.data.error)
+        console.error('Unable to ensure announcement', response.error)
       }
     }).catch((error) => {
       console.error('Failed making request to ensure announcements', error)
       throw new Error('Failed ensuring the existence of an announcement entity') // pass error on to caller
     })
   },
+
   UpdateActiveAnnouncement: function (context, payload) {
-    const idToken = payload.idToken
     const announcement = payload.announcement
 
-    return this.$apiService.put(
+    return useNuxtApp().$apiService.put(
       `/announcements/${announcement.id}`,
-      { message: announcement.message },
-      idToken
+      { message: announcement.message }
     ).then((response) => {
-      if (response.data.status !== 'success') {
-        console.error('Unable to ensure announcement', response.data.error)
+      if (response.status !== 'success') {
+        console.error('Unable to ensure announcement', response.error)
       }
     }).catch((error) => {
       console.error('Failed making request to ensure announcements', error)

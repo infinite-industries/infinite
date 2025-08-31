@@ -1,15 +1,10 @@
-import Vuex from 'vuex'
+import { createStore } from 'vuex'
 // import moment from 'moment'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import SubmissionForm from '../components/SubmissionForm'
 import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
-import Vuetify from 'vuetify'
 
-jest.mock('@/services/ImageUploadService')
-
-const localVue = createLocalVue()
-localVue.use(Vuex)
-localVue.use(Vuetify)
+vi.mock('@/services/ImageUploadService')
 
 /**
  * When submission was refactored (Nov 2021) the only test case here
@@ -21,7 +16,7 @@ describe('SubmissionForm component', () => {
   let wrapper = null
 
   beforeEach(() => {
-    store = new Vuex.Store({
+    store = createStore({
       state: {},
       getters: {
         GetCurrentEvent: () => {
@@ -31,18 +26,22 @@ describe('SubmissionForm component', () => {
     })
 
     wrapper = shallowMount(SubmissionForm, {
-      localVue,
-      store,
       propsData: {
         user_action: 'edit',
         user_role: 'regular'
       },
-      stubs: {
-        'vue-editor': true
-      },
-      mocks: {
-        $apiService: { },
-        $suggestionService: { getBaseTagSet () { return [] } }
+      global: {
+        plugins: [store],
+        renderStubDefaultSlot: true,
+        stubs: {
+          'vue-editor': true
+        },
+        mocks: {
+          $nuxt: {
+            $apiService: { },
+          },
+          $suggestionService: { getBaseTagSet () { return [] } }
+        }
       }
     })
   })
@@ -122,8 +121,8 @@ describe('SubmissionForm component', () => {
   it('sets reviewed_by_org based on prop', async () => {
     const partner = 'wrfl'
 
-    const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
-    wrapper.vm.$apiService.uploadEventImage = jest.fn().mockResolvedValue(
+    const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn(() => Promise.resolve({}))
+    wrapper.vm.$nuxt.$apiService.uploadEventImage = vi.fn().mockResolvedValue(
       { data: { imagePath: 'image.jpg' } }
     )
 
@@ -141,8 +140,8 @@ describe('SubmissionForm component', () => {
 
   it('strips query params off Facebook links', async () => {
     const link = 'https://facebook.com/events/1234567890/'
-    const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
-    wrapper.vm.$apiService.uploadEventImage = jest.fn().mockResolvedValue(
+    const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn(() => Promise.resolve({}))
+    wrapper.vm.$nuxt.$apiService.uploadEventImage = vi.fn().mockResolvedValue(
       { data: { imagePath: 'image.jpg' } }
     )
 
@@ -155,8 +154,8 @@ describe('SubmissionForm component', () => {
 
   it('strips query params off Eventbrite links', async () => {
     const link = 'https://www.eventbrite.com/e/some-event-012345678910'
-    const apiPost = wrapper.vm.$apiService.post = jest.fn((route, body) => Promise.resolve({}))
-    wrapper.vm.$apiService.uploadEventImage = jest.fn().mockResolvedValue(
+    const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn(() => Promise.resolve({}))
+    wrapper.vm.$nuxt.$apiService.uploadEventImage = vi.fn().mockResolvedValue(
       { data: { imagePath: 'image.jpg' } }
     )
 
@@ -177,11 +176,11 @@ describe('SubmissionForm component', () => {
 
   it('conditions can be changed', async () => {
     expect(wrapper.vm.calendar_event.condition).toEqual([])
-    await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(true)
+    await wrapper.find('.status-container input[type="checkbox"][value="postponed"]').setChecked(true)
     expect(wrapper.vm.calendar_event.condition).toEqual(['postponed'])
-    await wrapper.findComponent('.status-container input[type="checkbox"][value="sold-out"]').setChecked(true)
+    await wrapper.find('.status-container input[type="checkbox"][value="sold-out"]').setChecked(true)
     expect(wrapper.vm.calendar_event.condition).toEqual(['postponed', 'sold-out'])
-    await wrapper.findComponent('.status-container input[type="checkbox"][value="postponed"]').setChecked(false)
+    await wrapper.find('.status-container input[type="checkbox"][value="postponed"]').setChecked(false)
     expect(wrapper.vm.calendar_event.condition).toEqual(['sold-out'])
   })
 

@@ -1,4 +1,8 @@
-import Vue from 'vue'
 import VueScrollTo from 'vue-scrollto'
 
-Vue.use(VueScrollTo)
+export default defineNuxtPlugin({
+  name: 'vue-scrollto',
+  async setup (nuxtApp) {
+    nuxtApp.vueApp.use(VueScrollTo)
+  }
+})

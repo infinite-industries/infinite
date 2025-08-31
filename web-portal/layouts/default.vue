@@ -5,11 +5,13 @@
 
     <!-- Toolbar and Nav -->
     <ii-toolbar>
-      <ii-site-navigation slot="navigation" />
+      <template #navigation>
+        <ii-site-navigation />
+      </template>
     </ii-toolbar>
     <main>
       <!-- Content -->
-      <nuxt />
+      <slot />
     </main>
     <!-- PopUps and Modals -->
     <!-- Regular Old Modal -->
@@ -27,7 +29,6 @@
   import Submit from '../components/Submit.vue'
   import Modal from '../components/Modal.vue'
   import SiteNavigation from '../components/SiteNavigation.vue'
-  import getToken from '../helpers/getToken'
 
   export default {
     components: {
@@ -38,32 +39,32 @@
       'ii-submit': Submit
     },
 
-    mounted: async function () {
-      // Inhale mock user data
-      // TODO: does this belong in the layout, or should it be in route-level component?
-      //       Looks like the answer is route-level, because this doesn't run if you change this to `fetch`
-      if (this.$auth.loggedIn) {
-        try {
-          await this.$store.dispatch('LoadAllUserData', { idToken: getToken(this.$auth) })
-        } catch (error) {
-          console.log(`error fetching user data: "${error}"`)
-          if (error.response && error.response.status === 403) {
-            // clear tokens they are not valid
-            this.$auth.logout()
-          }
-        }
-      }
-    }
+    // mounted: async function () {
+    //   // Inhale mock user data
+    //   // TODO: does this belong in the layout, or should it be in route-level component?
+    //   //       Looks like the answer is route-level, because this doesn't run if you change this to `fetch`
+    //   if (this.$auth.loggedIn) {
+    //     try {
+    //       await this.$store.dispatch('LoadAllUserData', { idToken: getToken(this.$auth) })
+    //     } catch (error) {
+    //       console.log(`error fetching user data: "${error}"`)
+    //       if (error.response && error.response.status === 403) {
+    //         // clear tokens they are not valid
+    //         this.$auth.logout()
+    //       }
+    //     }
+    //   }
+    // }
   }
 </script>
 
 <style>
   @import url('https://fonts.googleapis.com/css?family=EB+Garamond|Open+Sans:400,400i,600,600i,700');
 
-  /* TODO: this is related to upgrading Vuetify during the Nuxt refactor */
-  /* The version we used to use set the base font to 16px, but the current version uses 14px */
+  /* TODO: this is related to upgrading Vuetify during the Nuxt refactors */
   html {
     font-size: 16px;
+    line-height: normal;
   }
 
   body {
@@ -89,6 +90,48 @@
   main {
     padding-top: 55px;
   }
+
+  p {
+    margin-bottom: 16px
+  }
+
+  /* this styling used to come from Vuetify, but doesn't work the same way in v3 */
+  /* replicating here for backwards compatibility, will need to re-think some day */
+  /* See https://github.com/vuetifyjs/vuetify/blob/v1.5.24/packages/vuetify/src/stylus/components/_grid.styl */
+  /* and https://github.com/vuetifyjs/vuetify/blob/v1.5.24/packages/vuetify/src/stylus/settings/_variables.styl */
+  /* TODO: consider merging this into info-page */
+  .container {
+    flex: 1 1 100%;
+    margin: auto;
+    padding: 24px;
+    width: 100%;
+  }
+
+  @media only screen and (max-width: 959px) {
+    .container {
+      padding: 16px;
+    }
+  }
+
+  @media only screen and (min-width: 960px) {
+    .container {
+      max-width: 900px;
+    }
+  }
+
+  @media only screen and (min-width: 1264px) {
+    .container {
+      max-width: 1185px;
+    }
+  }
+
+  @media only screen and (min-width: 1904px) {
+    .container {
+      max-width: 1785px;
+    }
+  }
+
+  /* end temporary container styling */
 
   .info-page {
     background: white;
@@ -148,5 +191,6 @@
   .info-page p {
     font-family: "EB Garamond";
     font-size: 1.25em;
+    margin-bottom: 16px;
   }
 </style>

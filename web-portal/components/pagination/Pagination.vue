@@ -10,7 +10,7 @@
         :page-count="pageCount"
         @decrementPageClicked="decrementPage()"
         @incrementPage="incrementPage()"
-        @pageEntryClicked="setPage(...arguments)"
+        @pageEntryClicked="setPage"
       />
     </div>
   </div>
