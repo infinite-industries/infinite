@@ -59,6 +59,6 @@ class SuggestionService {
   }
 
   async submitFeedback(suggested, submitted, eventId) {
-    await this.$apiService.post('/internal-api/analytics/suggestion-feedback', { suggested, submitted, eventId })
+    await $fetch('/internal-api/analytics/suggestion-feedback', { method: 'POST', body: { suggested, submitted, eventId } })
   }
 }

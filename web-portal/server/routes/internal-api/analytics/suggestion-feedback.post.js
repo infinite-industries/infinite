@@ -1,5 +1,5 @@
 import slackNotify from 'slack-notify';
-import { logger } from './utils.js'
+import { logger } from '../utils.js'
 
 export const ENV = process.env.ENV || 'dev'
 
