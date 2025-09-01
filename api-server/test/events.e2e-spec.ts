@@ -742,43 +742,113 @@ describe('Events API', () => {
   }
 
   it('/verified should filter events by date range when startDate and endDate are provided', async () => {
-    // Create events with different date ranges
-    const [[event1]] = await createListOfFutureEventsInChronologicalOrder(1, {
-      verified: true,
-    });
+    //  === event1, event2, and event3 in range -- should be included ===
+    const event1 = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [{
+        id: uuidv4(),
+        start_time: new Date('2024-06-15T10:00:00.000Z'),
+        end_time: new Date('2024-06-15T14:00:00.000Z'),
+        timezone: 'UTC',
+        optional_title: 'Event 1',
+      }]
+    );
 
-    const [[event2]] = await createListOfFutureEventsInChronologicalOrder(1, {
-      verified: true,
-    });
+    // event2: Starts before range, ends within range (should be included)
+    const event2 = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [{
+        id: uuidv4(),
+        start_time: new Date('2024-06-01T00:00:00.000'),
+        end_time: new Date('2024-06-15T16:00:00.000Z'),
+        timezone: 'UTC',
+        optional_title: 'Event 2',
+      }]
+    );
 
-    // Update the datetime_venue entries to have specific dates
-    const event1DateTime = await DatetimeVenueModel.findOne({
-      where: { event_id: event1.id },
-    });
-    await event1DateTime.update({
-      start_time: new Date('2024-06-01T10:00:00.000Z'),
-      end_time: new Date('2024-06-01T12:00:00.000Z'),
-    });
+    // event3: Starts within range, ends in range (should be included)
+    const event3 = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [{
+        id: uuidv4(),
+        start_time: new Date('2024-06-25T18:00:00.000Z'),
+        end_time: new Date('2024-06-29T22:00:00.000Z'),
+        timezone: 'UTC',
+        optional_title: 'Event 3',
+      }]
+    );
 
-    const event2DateTime = await DatetimeVenueModel.findOne({
-      where: { event_id: event2.id },
-    });
-    await event2DateTime.update({
-      start_time: new Date('2024-08-01T10:00:00.000Z'),
-      end_time: new Date('2024-08-01T12:00:00.000Z'),
-    });
+    // event4: Completely outside range - before (should NOT be included)
+    const event4 = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [{
+        id: uuidv4(),
+        start_time: new Date('2024-05-15T10:00:00.000Z'),
+        end_time: new Date('2024-05-15T14:00:00.000Z'),
+        timezone: 'UTC',
+        optional_title: 'Event 4',
+      }]
+    );
 
-    // Test filtering with date range that includes only event1
+    // event5: Completely outside range - after (should NOT be included)
+    const event5 = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [{
+        id: uuidv4(),
+        start_time: new Date('2024-07-15T10:00:00.000Z'),
+        end_time: new Date('2024-07-15T14:00:00.000Z'),
+        timezone: 'UTC',
+        optional_title: 'Event 5',
+      }]
+    );
+
+    // Test filtering with date range that should include events 1, 2, and 3
+
+
+
+    // Test filtering with date range that should include events 1, 2, and 3
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/events/verified?startDate=2024-05-01T00:00:00.000Z&endDate=2024-07-01T23:59:59.999Z`,
+        `/${CURRENT_VERSION_URI}/events/verified?startDate=2024-06-01T00:00:00.000Z&endDate=2024-06-30T00:00:00.000Z`,
       )
       .expect(200)
       .then(async ({ body }) => {
         const { events } = body;
 
-        expect(events.length).toEqual(1);
-        expect(events[0].id).toEqual(event1.id);
+        console.log('!!! got back: ' + JSON.stringify(events, null, 4));
+        console.log(
+          'Returned events: ',
+          events.map((e) => ({ id: e.id, title: e.title })),
+        );
+        console.log('Expected events:', [event1.id, event2.id, event3.id]);
+        console.log('Unexpected events:', [event4.id, event5.id]);
+
+        expect(events.length).toEqual(3);
+
+        // Check that the correct events are included
+        const eventIds = events.map((event) => event.id);
+        expect(eventIds).toContain(event1.id);
+        expect(eventIds).toContain(event2.id);
+        expect(eventIds).toContain(event3.id);
+
+        // Check that the wrong events are NOT included
+        expect(eventIds).not.toContain(event4.id);
+        expect(eventIds).not.toContain(event5.id);
       });
   });
 
@@ -790,7 +860,9 @@ describe('Events API', () => {
       )
       .expect(400)
       .then(async ({ body }) => {
-        expect(body.message).toContain('Both startDate and endDate must be provided together');
+        expect(body.message).toContain(
+          'Both startDate and endDate must be provided together',
+        );
       });
   });
 
@@ -802,7 +874,9 @@ describe('Events API', () => {
       )
       .expect(400)
       .then(async ({ body }) => {
-        expect(body.message).toContain('Both startDate and endDate must be provided together');
+        expect(body.message).toContain(
+          'Both startDate and endDate must be provided together',
+        );
       });
   });
 });

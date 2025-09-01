@@ -1,4 +1,9 @@
-import { Inject, Injectable, LoggerService, BadRequestException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  LoggerService,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   FindOptions,
@@ -85,23 +90,28 @@ export class EventsService {
     endDate?: Date;
   }): Promise<{ count: number; rows: EventModel[] }> {
     // Validate that both startDate and endDate are provided together
-    if ((!isNullOrUndefined(startDate) && isNullOrUndefined(endDate)) ||
-        (isNullOrUndefined(startDate) && !isNullOrUndefined(endDate))) {
-      throw new BadRequestException('Both startDate and endDate must be provided together');
+    if (
+      (!isNullOrUndefined(startDate) && isNullOrUndefined(endDate)) ||
+      (isNullOrUndefined(startDate) && !isNullOrUndefined(endDate))
+    ) {
+      throw new BadRequestException(
+        'Both startDate and endDate must be provided together',
+      );
     }
     return this.sequelize.transaction(async (_) => {
       const tagClauseParams = this.getTagsClauseParams(tags);
       const whereClause = this.getWhereClause(
         tagClauseParams,
         category,
-        verifiedOnly
+        verifiedOnly,
       );
 
       // optional filter for events in a date range
-      const havingClause = startDate && endDate
-        ? `HAVING min(dv.start_time) >= :startDate
+      const havingClause =
+        startDate && endDate
+          ? `HAVING min(dv.start_time) >= :startDate
             AND max(dv.end_time) < :endDate`
-        : '';
+          : '';
 
       // Sort events by the first start_time and apply pagination
       // Note, we have to sort by first_start_time in our common table expression to apply pagination correctly, but we
@@ -109,7 +119,8 @@ export class EventsService {
       // guaranteed to stay the same.
       // We've also added a secondary order by on created_at to ensure that events with with not start_time like
       // online resources at least sort consistently
-      const paginatedRows: EventModel[] = await this.sequelize.query(`
+      const paginatedRows: EventModel[] = await this.sequelize.query(
+        `
               with compressed_event as (
                 SELECT
                   events.*,
@@ -136,7 +147,7 @@ export class EventsService {
             startDate,
             endDate,
           },
-        }
+        },
       );
 
       // Fill back in nested models date_times and venues
@@ -162,7 +173,7 @@ export class EventsService {
         whereClause,
         havingClause,
         startDate,
-        endDate
+        endDate,
       );
 
       return { count: totalCount, rows: paginatedRows };
@@ -363,7 +374,7 @@ export class EventsService {
   private getWhereClause(
     tagClauseParams: Nullable<string>,
     category: Nullable<string>,
-    verifiedOnly: boolean
+    verifiedOnly: boolean,
   ): string {
     const tagClause = isNotNullOrUndefined(tagClauseParams)
       ? `:tagFilter && events.tags`
