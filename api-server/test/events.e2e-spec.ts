@@ -742,7 +742,7 @@ describe('Events API', () => {
   }
 
   it('/verified should filter events by date range when startDate and endDate are provided', async () => {
-    //  === event1, event2, and event3 in range -- should be included ===
+    //  === event1, event2, event3, and event4 in range -- should be included ===
     const event1 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
@@ -793,8 +793,30 @@ describe('Events API', () => {
       ],
     );
 
-    // event4: Completely outside range - before (should NOT be included)
+    // last end date is still in range, included
     const event4 = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-06-17T18:00:00.000Z'),
+          end_time: new Date('2024-06-17T22:00:00.000Z'),
+          timezone: 'UTC',
+        },
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-06-29T10:00:00.000Z'),
+          end_time: new Date('2024-06-29T12:00:00.000Z'),
+          timezone: 'UTC',
+        },
+      ],
+    );
+
+    // event5: Completely outside range - before (should NOT be included)
+    const event5 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
       datetimeVenueModel,
@@ -805,13 +827,13 @@ describe('Events API', () => {
           start_time: new Date('2024-05-15T10:00:00.000Z'),
           end_time: new Date('2024-05-15T14:00:00.000Z'),
           timezone: 'UTC',
-          optional_title: 'Event 4',
+          optional_title: 'Event 5',
         },
       ],
     );
 
-    // event5: Completely outside range - after (should NOT be included)
-    const event5 = await createRandomEventWithDateTime(
+    // event6: Completely outside range - after (should NOT be included)
+    const event6 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
       datetimeVenueModel,
@@ -822,14 +844,57 @@ describe('Events API', () => {
           start_time: new Date('2024-07-15T10:00:00.000Z'),
           end_time: new Date('2024-07-15T14:00:00.000Z'),
           timezone: 'UTC',
-          optional_title: 'Event 5',
+          optional_title: 'Event 6',
         },
       ],
     );
 
-    // Test filtering with date range that should include events 1, 2, and 3
+    // last end date is out of range
+    const event7 = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-06-17T18:00:00.000Z'),
+          end_time: new Date('2024-06-17T22:00:00.000Z'),
+          timezone: 'UTC',
+        },
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-06-29T10:00:00.000Z'),
+          end_time: new Date('2024-07-01T12:00:00.000Z'),
+          timezone: 'UTC',
+        },
+      ],
+    );
 
-    // Test filtering with date range that should include events 1, 2, and 3
+    // first start date is out of range
+    const event8 = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-05-30T18:00:00.000Z'),
+          end_time: new Date('2024-06-17T22:00:00.000Z'),
+          timezone: 'UTC',
+        },
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-06-29T10:00:00.000Z'),
+          end_time: new Date('2024-06-29T12:00:00.000Z'),
+          timezone: 'UTC',
+        },
+      ],
+    );
+    //               HAVING min(dv.start_time) >= '2024-05-31 20:00:00.000 -04:00'
+    //             AND max(dv.end_time) < '2024-06-30 19:59:59.999 -04:00'
+
     return server
       .get(
         `/${CURRENT_VERSION_URI}/events/verified?startDate=2024-06-01T00:00:00.000Z&endDate=2024-06-30T00:00:00.000Z`,
@@ -838,25 +903,32 @@ describe('Events API', () => {
       .then(async ({ body }) => {
         const { events } = body;
 
-        console.log('!!! got back: ' + JSON.stringify(events, null, 4));
         console.log(
           'Returned events: ',
           events.map((e) => ({ id: e.id, title: e.title })),
         );
-        console.log('Expected events:', [event1.id, event2.id, event3.id]);
+        console.log('Expected events:', [
+          event1.id,
+          event2.id,
+          event3.id,
+          event4.id,
+        ]);
         console.log('Unexpected events:', [event4.id, event5.id]);
 
-        expect(events.length).toEqual(3);
+        expect(events.length).toEqual(4);
 
         // Check that the correct events are included
         const eventIds = events.map((event) => event.id);
         expect(eventIds).toContain(event1.id);
         expect(eventIds).toContain(event2.id);
         expect(eventIds).toContain(event3.id);
+        expect(eventIds).toContain(event4.id);
 
         // Check that the wrong events are NOT included
-        expect(eventIds).not.toContain(event4.id);
         expect(eventIds).not.toContain(event5.id);
+        expect(eventIds).not.toContain(event6.id);
+        expect(eventIds).not.toContain(event7.id);
+        expect(eventIds).not.toContain(event8.id);
       });
   });
 
