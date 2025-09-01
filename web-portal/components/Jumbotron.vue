@@ -35,8 +35,11 @@
     }
   }
 
-  export default {
+  export default defineNuxtComponent({
     name: 'Jumbotron',
+    async setup () {
+      await useLegacyStoreFetch('announcements', 'LoadAnnouncements')
+    },
     data: function () {
       return {
         open: false
@@ -47,24 +50,22 @@
         return this.$store.getters.GetActiveAnnouncement
       }
     },
-    fetch: function () {
-      return this.$store.dispatch('LoadAnnouncements').then(() => {
-        if (this.currentAnnouncement && this.currentAnnouncement.message.trim().length !== 0) {
-          const lastViewed = getLastViewed()
-          if (!lastViewed || (Date.now() - parseFloat(lastViewed)) > THROTTLE_INTERVAL) {
-            setLastViewed()
-            this.open = true
-          }
-        }
-      })
-    },
     mounted: function () {
+      // see if jumbotron needs to open
+      if (this.currentAnnouncement && this.currentAnnouncement.message.trim().length !== 0) {
+        const lastViewed = getLastViewed()
+        if (!lastViewed || (Date.now() - parseFloat(lastViewed)) > THROTTLE_INTERVAL) {
+          setLastViewed()
+          this.open = true
+        }
+      }
+
       // close jumbotron if user presses escape
       if (typeof window !== 'undefined' && window.addEventListener) {
         window.addEventListener('keydown', this.onKeyDown)
       }
     },
-    destroyed: function () {
+    unmounted: function () {
       if (typeof window !== 'undefined' && window.removeEventListener) {
         window.removeEventListener('keydown', this.onKeyDown)
       }
@@ -82,7 +83,7 @@
     components: {
       'ii-close': Close
     }
-  }
+  })
 </script>
 
 <style scoped>

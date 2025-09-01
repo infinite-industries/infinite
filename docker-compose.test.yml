@@ -44,6 +44,7 @@ services:
     environment:
       ENV: test
       HOST: 0.0.0.0
+      PORT: 7779
       API_URL: http://localhost:3003/v1
       APP_URL: http://localhost:7779
       AUTH0_CLIENT_ID: PYKhof4U0jKE3v4h8xKSgihHz9atBE5O
@@ -51,5 +52,6 @@ services:
       AUTH0_AUDIENCE: https://1nfinite.auth0.com/api/v2/
       SLACK_WEBHOOK_CONTACT: "${SLACK_WEBHOOK_CONTACT}"
       AWS_S3_UPLOADS_BUCKET:
+      NUXT_SESSION_PASSWORD: "${NUXT_SESSION_PASSWORD}"
     ports:
     - "7779:7779"

@@ -25,9 +25,7 @@
         default: ''
       }
     },
-    model: {
-      event: 'click'
-    },
+    emits: ['click'],
     computed: {
       classes() {
         const classes = ['ii-form-button']

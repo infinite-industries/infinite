@@ -58,6 +58,7 @@
       'ii-form-button': FormButton
     },
     props: ['calendarEvent', 'isProblemUpdated'],
+    emits: ['hasProblemsChanged'],
     computed: {
       isProblem: function() {
         if (!this.calendarEvent.event_admin_metadata) {
@@ -85,9 +86,6 @@
         const value = event.currentTarget.checked
         this.$emit('hasProblemsChanged', { id: data.id, checked: value })
       }
-    },
-    model: {
-      event: 'hasProblemsChanged'
     }
   }
 </script>

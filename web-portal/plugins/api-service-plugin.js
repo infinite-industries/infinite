@@ -1,41 +1,57 @@
-import axios from 'axios'
 
-export default ({ app }, inject) => {
-  inject('apiService', new ApiService(app.$config.API_URL))
-}
+export default defineNuxtPlugin({
+  name: 'api-service',
+  async setup (nuxtApp) {
+    const { user } = useUserSession()
+
+    return {
+      provide: {
+        'apiService': new ApiService(nuxtApp.$config.public.apiUrl, user)
+      }
+    }
+  }
+})
 
 class ApiService {
-  constructor(apiUrl) {
+  constructor(apiUrl, user) {
     this.apiUrl = apiUrl
+    this.user = user
   }
 
-  get(path, idToken) {
-    const userToken = formatToken(idToken)
+  async get(path) {
+    const userToken = this.user.value?.token
+    const headers = userToken ? { 'x-access-token': userToken } : undefined
 
-    return axios.get(this.apiUrl + path, idToken ? { headers: { 'x-access-token': userToken } } : null)
+    return await $fetch(`${this.apiUrl}${path}`, {
+      headers
+    })
   }
 
-  post(path, postBody, idToken) {
-    const userToken = formatToken(idToken)
+  post(path, postBody) {
+    const userToken = this.user.value?.token
+    const headers = userToken ? { 'x-access-token': userToken } : undefined
 
-    return axios.post(this.apiUrl + path, postBody, idToken ? { headers: { 'x-access-token': userToken } } : null)
+    return $fetch(`${this.apiUrl}${path}`, { method: "POST", body: postBody, headers })
   }
 
-  put(path, body, idToken) {
-    const userToken = formatToken(idToken)
+  put(path, body) {
+    const userToken = this.user.value?.token
+    const headers = userToken ? { 'x-access-token': userToken } : undefined
 
-    return axios.put(this.apiUrl + path, body, idToken ? { headers: { 'x-access-token': userToken } } : null)
+    return $fetch(`${this.apiUrl}${path}`, { method: "PUT", body, headers })
   }
 
-  delete(path, idToken) {
-    const userToken = formatToken(idToken)
+  delete(path) {
+    const userToken = this.user.value?.token
+    const headers = userToken ? { 'x-access-token': userToken } : undefined
 
-    return axios.delete(this.apiUrl + path, idToken ? { headers: { 'x-access-token': userToken } } : null)
+    return $fetch(`${this.apiUrl}${path}`, { method: "DELETE", headers })
   }
 
-  all(calls) {
-    return axios.all(calls)
-  }
+  // unclear if there's a $fetch equivalent for this
+  // all(calls) {
+  //   return axios.all(calls)
+  // }
 
   uploadEventImage(file) {
     const data = new FormData()
@@ -44,12 +60,4 @@ class ApiService {
 
     return this.post('/uploads/event-image', data)
   }
-}
-
-function formatToken(idToken) {
-  if (typeof idToken !== 'string') {
-    return null
-  }
-
-  return idToken.replace('Bearer ', '')
 }

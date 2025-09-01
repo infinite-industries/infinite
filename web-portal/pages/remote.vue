@@ -10,11 +10,12 @@
 <script>
   import ListViewer from '../components/ListViewer.vue'
 
-  export default {
-    data: function () {
-      return {
-        // venues: []
-      }
+  export default defineNuxtComponent({
+    async setup () {
+      await useLegacyStoreFetch('fetchRemoteData', [
+        'LoadAllLocalEventData',
+        'LoadAllStreamingEventData'
+      ])
     },
     computed: {
       events: function () {
@@ -24,16 +25,10 @@
         return this.$store.getters.GetAllStreamEvents
       }
     },
-    fetch: function ({ store }) {
-      return Promise.all([
-        store.dispatch('LoadAllLocalEventData'),
-        store.dispatch('LoadAllStreamingEventData')
-      ])
-    },
     components: {
       'ii-list-viewer': ListViewer
     }
-  }
+  })
 </script>
 
 <style scoped>
