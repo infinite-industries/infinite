@@ -73,20 +73,30 @@ export class EventsService {
     verifiedOnly = true,
     pageSize,
     requestedPage,
+    startDate,
+    endDate,
   }: {
     tags: string[] | string;
     category?: string;
     verifiedOnly?: boolean;
     pageSize: number;
     requestedPage: number;
+    startDate?: Date;
+    endDate?: Date;
   }): Promise<{ count: number; rows: EventModel[] }> {
     return this.sequelize.transaction(async (_) => {
       const tagClauseParams = this.getTagsClauseParams(tags);
       const whereClause = this.getWhereClause(
         tagClauseParams,
         category,
-        verifiedOnly,
+        verifiedOnly
       );
+
+      // optional filter for events in a date range
+      const havingClause = startDate && endDate
+        ? `HAVING min(dv.start_time) >= :startDate
+            AND max(dv.end_time) < :endDate`
+        : '';
 
       // Sort events by the first start_time and apply pagination
       // Note, we have to sort by first_start_time in our common table expression to apply pagination correctly, but we
@@ -94,13 +104,17 @@ export class EventsService {
       // guaranteed to stay the same.
       // We've also added a secondary order by on created_at to ensure that events with with not start_time like
       // online resources at least sort consistently
-      const paginatedRows: EventModel[] = await this.sequelize.query(
-        `
-              with compressed_event as (SELECT events.*, min(dv.start_time) as first_start_time
-                                        FROM events
-                                                 LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
+      const paginatedRows: EventModel[] = await this.sequelize.query(`
+              with compressed_event as (
+                SELECT
+                  events.*,
+                  min(dv.start_time) as first_start_time,
+                  max(dv.end_time) as last_end_time
+                FROM events
+                LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
                   ${whereClause}
               GROUP BY (events.id)
+              ${havingClause}
               ORDER BY first_start_time DESC, "createdAt" DESC
               OFFSET ${(requestedPage - 1) * pageSize} LIMIT ${pageSize} )
               SELECT events.*
@@ -114,8 +128,10 @@ export class EventsService {
           replacements: {
             tagFilter: tagClauseParams,
             categoryFilter: category,
+            startDate,
+            endDate,
           },
-        },
+        }
       );
 
       // Fill back in nested models date_times and venues
@@ -125,7 +141,7 @@ export class EventsService {
             [Op.or]: paginatedRows.map(({ id }) => id),
           },
         },
-        include: VenueModel,
+        include: [VenueModel],
       });
 
       paginatedRows.forEach((event) => {
@@ -139,6 +155,9 @@ export class EventsService {
       const totalCount = await this.getEventCountWithFilters(
         tagClauseParams,
         whereClause,
+        havingClause,
+        startDate,
+        endDate
       );
 
       return { count: totalCount, rows: paginatedRows };
@@ -339,7 +358,7 @@ export class EventsService {
   private getWhereClause(
     tagClauseParams: Nullable<string>,
     category: Nullable<string>,
-    verifiedOnly: boolean,
+    verifiedOnly: boolean
   ): string {
     const tagClause = isNotNullOrUndefined(tagClauseParams)
       ? `:tagFilter && events.tags`
@@ -365,14 +384,32 @@ export class EventsService {
   private async getEventCountWithFilters(
     tagClauseParams: string,
     whereClause: string,
+    havingClause: string,
+    startDate?: Date,
+    endDate?: Date,
   ): Promise<number> {
     const results: { count: string }[] = await this.sequelize.query(
-      `SELECT COUNT(id)
-       FROM events ${whereClause}`,
+      `
+      with compressed_event as (
+        SELECT
+          events.*,
+          min(dv.start_time) as first_start_time,
+          max(dv.end_time) as last_end_time
+        FROM events
+        LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
+        ${whereClause}
+        GROUP BY (events.id)
+        ${havingClause}
+      )
+      SELECT COUNT(compressed_event.id)
+      FROM compressed_event
+      `,
       {
         type: QueryTypes.SELECT,
         replacements: {
           tagFilter: tagClauseParams,
+          startDate,
+          endDate,
         },
       },
     );

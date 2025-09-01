@@ -740,4 +740,127 @@ describe('Events API', () => {
 
     return [event1, event2];
   }
+
+  it('/verified should filter events by date range when startDate and endDate are provided', async () => {
+    // Create events with different date ranges
+    const [event1] = await createListOfFutureEventsInChronologicalOrder(1, {
+      verified: true,
+    });
+
+    const [event2] = await createListOfFutureEventsInChronologicalOrder(1, {
+      verified: true,
+    });
+
+    // Update the datetime_venue entries to have specific dates
+    const event1DateTime = await DatetimeVenueModel.findOne({
+      where: { event_id: event1.id },
+    });
+    await event1DateTime.update({
+      start_time: new Date('2024-06-01T10:00:00.000Z'),
+      end_time: new Date('2024-06-01T12:00:00.000Z'),
+    });
+
+    const event2DateTime = await DatetimeVenueModel.findOne({
+      where: { event_id: event2.id },
+    });
+    await event2DateTime.update({
+      start_time: new Date('2024-08-01T10:00:00.000Z'),
+      end_time: new Date('2024-08-01T12:00:00.000Z'),
+    });
+
+    // Test filtering with date range that includes only event1
+    return server
+      .get(
+        `/${CURRENT_VERSION_URI}/events/verified?startDate=2024-05-01T00:00:00.000Z&endDate=2024-07-01T23:59:59.999Z`,
+      )
+      .expect(200)
+      .then(async ({ body }) => {
+        const { events } = body;
+
+        expect(events.length).toEqual(1);
+        expect(events[0].id).toEqual(event1.id);
+      });
+  });
+
+  it('/verified should filter events by startDate only', async () => {
+    // Create events with different date ranges
+    const [event1] = await createListOfFutureEventsInChronologicalOrder(1, {
+      verified: true,
+    });
+
+    const [event2] = await createListOfFutureEventsInChronologicalOrder(1, {
+      verified: true,
+    });
+
+    // Update the datetime_venue entries to have specific dates
+    const event1DateTime = await DatetimeVenueModel.findOne({
+      where: { event_id: event1.id },
+    });
+    await event1DateTime.update({
+      start_time: new Date('2024-06-01T10:00:00.000Z'),
+      end_time: new Date('2024-06-01T12:00:00.000Z'),
+    });
+
+    const event2DateTime = await DatetimeVenueModel.findOne({
+      where: { event_id: event2.id },
+    });
+    await event2DateTime.update({
+      start_time: new Date('2024-08-01T10:00:00.000Z'),
+      end_time: new Date('2024-08-01T12:00:00.000Z'),
+    });
+
+    // Test filtering with startDate only
+    return server
+      .get(
+        `/${CURRENT_VERSION_URI}/events/verified?startDate=2024-07-01T00:00:00.000Z`,
+      )
+      .expect(200)
+      .then(async ({ body }) => {
+        const { events } = body;
+
+        expect(events.length).toEqual(1);
+        expect(events[0].id).toEqual(event2.id);
+      });
+  });
+
+  it('/verified should filter events by endDate only', async () => {
+    // Create events with different date ranges
+    const [event1] = await createListOfFutureEventsInChronologicalOrder(1, {
+      verified: true,
+    });
+
+    const [event2] = await createListOfFutureEventsInChronologicalOrder(1, {
+      verified: true,
+    });
+
+    // Update the datetime_venue entries to have specific dates
+    const event1DateTime = await DatetimeVenueModel.findOne({
+      where: { event_id: event1.id },
+    });
+    await event1DateTime.update({
+      start_time: new Date('2024-06-01T10:00:00.000Z'),
+      end_time: new Date('2024-06-01T12:00:00.000Z'),
+    });
+
+    const event2DateTime = await DatetimeVenueModel.findOne({
+      where: { event_id: event2.id },
+    });
+    await event2DateTime.update({
+      start_time: new Date('2024-08-01T10:00:00.000Z'),
+      end_time: new Date('2024-08-01T12:00:00.000Z'),
+    });
+
+    // Test filtering with endDate only
+    return server
+      .get(
+        `/${CURRENT_VERSION_URI}/events/verified?endDate=2024-07-01T23:59:59.999Z`,
+      )
+      .expect(200)
+      .then(async ({ body }) => {
+        const { events } = body;
+
+        expect(events.length).toEqual(1);
+        expect(events[0].id).toEqual(event1.id);
+      });
+  });
 });

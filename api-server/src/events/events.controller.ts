@@ -33,11 +33,12 @@ import { eventModelToEventDTO } from './dto/eventModelToEventDTO';
 import EventDTO from './dto/eventDTO';
 import { ENV } from '../constants';
 import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
+import { ApiQuery } from '@nestjs/swagger';
 import {
   EVENT_PAGINATION_DEFAULT_PAGE,
   EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
   PaginationDto,
-} from './dto/pagination-dto';
+} from './dto/pagination-dto'
 import { isNullOrUndefined } from '../utils';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -128,10 +129,32 @@ export class EventsController {
     required: false,
     type: Number,
   })
+  @ApiImplicitQuery({
+    name: 'startDate',
+    description: 'Start date for filtering events (ISO 8601 format)',
+    example: '2024-01-01T00:00:00.000Z',
+    required: false,
+    type: String,
+  })
+  @ApiImplicitQuery({
+    name: 'endDate',
+    description: 'End date for filtering events (ISO 8601 format)',
+    example: '2024-12-31T23:59:59.999Z',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'category',
+    required: false,
+    type: String,
+    description: 'Filter events by category'
+  })
   getAllVerified(
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
 
@@ -142,6 +165,8 @@ export class EventsController {
         pageSize,
         requestedPage: page,
         verifiedOnly: true,
+        startDate: startDate ? new Date(startDate) : undefined,
+        endDate: endDate ? new Date(endDate) : undefined
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
