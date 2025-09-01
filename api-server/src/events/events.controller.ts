@@ -4,7 +4,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
   NotFoundException,
   Param,
   Post,
