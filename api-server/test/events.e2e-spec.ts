@@ -743,11 +743,11 @@ describe('Events API', () => {
 
   it('/verified should filter events by date range when startDate and endDate are provided', async () => {
     // Create events with different date ranges
-    const [event1] = await createListOfFutureEventsInChronologicalOrder(1, {
+    const [[event1]] = await createListOfFutureEventsInChronologicalOrder(1, {
       verified: true,
     });
 
-    const [event2] = await createListOfFutureEventsInChronologicalOrder(1, {
+    const [[event2]] = await createListOfFutureEventsInChronologicalOrder(1, {
       verified: true,
     });
 
@@ -784,11 +784,11 @@ describe('Events API', () => {
 
   it('/verified should filter events by startDate only', async () => {
     // Create events with different date ranges
-    const [event1] = await createListOfFutureEventsInChronologicalOrder(1, {
+    const [[event1]] = await createListOfFutureEventsInChronologicalOrder(1, {
       verified: true,
     });
 
-    const [event2] = await createListOfFutureEventsInChronologicalOrder(1, {
+    const [[event2]] = await createListOfFutureEventsInChronologicalOrder(1, {
       verified: true,
     });
 
@@ -825,11 +825,11 @@ describe('Events API', () => {
 
   it('/verified should filter events by endDate only', async () => {
     // Create events with different date ranges
-    const [event1] = await createListOfFutureEventsInChronologicalOrder(1, {
+    const [[event1]] = await createListOfFutureEventsInChronologicalOrder(1, {
       verified: true,
     });
 
-    const [event2] = await createListOfFutureEventsInChronologicalOrder(1, {
+    const [[event2]] = await createListOfFutureEventsInChronologicalOrder(1, {
       verified: true,
     });
 
