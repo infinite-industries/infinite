@@ -748,13 +748,15 @@ describe('Events API', () => {
       venueModel,
       datetimeVenueModel,
       { verified: true },
-      [{
-        id: uuidv4(),
-        start_time: new Date('2024-06-15T10:00:00.000Z'),
-        end_time: new Date('2024-06-15T14:00:00.000Z'),
-        timezone: 'UTC',
-        optional_title: 'Event 1',
-      }]
+      [
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-06-15T10:00:00.000Z'),
+          end_time: new Date('2024-06-15T14:00:00.000Z'),
+          timezone: 'UTC',
+          optional_title: 'Event 1',
+        },
+      ],
     );
 
     // event2: Starts before range, ends within range (should be included)
@@ -763,13 +765,15 @@ describe('Events API', () => {
       venueModel,
       datetimeVenueModel,
       { verified: true },
-      [{
-        id: uuidv4(),
-        start_time: new Date('2024-06-01T00:00:00.000'),
-        end_time: new Date('2024-06-15T16:00:00.000Z'),
-        timezone: 'UTC',
-        optional_title: 'Event 2',
-      }]
+      [
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-06-01T00:00:00.000'),
+          end_time: new Date('2024-06-15T16:00:00.000Z'),
+          timezone: 'UTC',
+          optional_title: 'Event 2',
+        },
+      ],
     );
 
     // event3: Starts within range, ends in range (should be included)
@@ -778,13 +782,15 @@ describe('Events API', () => {
       venueModel,
       datetimeVenueModel,
       { verified: true },
-      [{
-        id: uuidv4(),
-        start_time: new Date('2024-06-25T18:00:00.000Z'),
-        end_time: new Date('2024-06-29T22:00:00.000Z'),
-        timezone: 'UTC',
-        optional_title: 'Event 3',
-      }]
+      [
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-06-25T18:00:00.000Z'),
+          end_time: new Date('2024-06-29T22:00:00.000Z'),
+          timezone: 'UTC',
+          optional_title: 'Event 3',
+        },
+      ],
     );
 
     // event4: Completely outside range - before (should NOT be included)
@@ -793,13 +799,15 @@ describe('Events API', () => {
       venueModel,
       datetimeVenueModel,
       { verified: true },
-      [{
-        id: uuidv4(),
-        start_time: new Date('2024-05-15T10:00:00.000Z'),
-        end_time: new Date('2024-05-15T14:00:00.000Z'),
-        timezone: 'UTC',
-        optional_title: 'Event 4',
-      }]
+      [
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-05-15T10:00:00.000Z'),
+          end_time: new Date('2024-05-15T14:00:00.000Z'),
+          timezone: 'UTC',
+          optional_title: 'Event 4',
+        },
+      ],
     );
 
     // event5: Completely outside range - after (should NOT be included)
@@ -808,18 +816,18 @@ describe('Events API', () => {
       venueModel,
       datetimeVenueModel,
       { verified: true },
-      [{
-        id: uuidv4(),
-        start_time: new Date('2024-07-15T10:00:00.000Z'),
-        end_time: new Date('2024-07-15T14:00:00.000Z'),
-        timezone: 'UTC',
-        optional_title: 'Event 5',
-      }]
+      [
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-07-15T10:00:00.000Z'),
+          end_time: new Date('2024-07-15T14:00:00.000Z'),
+          timezone: 'UTC',
+          optional_title: 'Event 5',
+        },
+      ],
     );
 
     // Test filtering with date range that should include events 1, 2, and 3
-
-
 
     // Test filtering with date range that should include events 1, 2, and 3
     return server

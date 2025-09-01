@@ -38,7 +38,7 @@ import {
   EVENT_PAGINATION_DEFAULT_PAGE,
   EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
   PaginationDto,
-} from './dto/pagination-dto'
+} from './dto/pagination-dto';
 import { isNullOrUndefined } from '../utils';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -131,14 +131,16 @@ export class EventsController {
   })
   @ApiImplicitQuery({
     name: 'startDate',
-    description: 'Start date for filtering events (ISO 8601 format). Must be provided together with endDate.',
+    description:
+      'Start date for filtering events (ISO 8601 format). Must be provided together with endDate.',
     example: '2024-01-01T00:00:00.000Z',
     required: false,
     type: String,
   })
   @ApiImplicitQuery({
     name: 'endDate',
-    description: 'End date for filtering events (ISO 8601 format). Must be provided together with startDate.',
+    description:
+      'End date for filtering events (ISO 8601 format). Must be provided together with startDate.',
     example: '2024-12-31T23:59:59.999Z',
     required: false,
     type: String,
@@ -147,7 +149,7 @@ export class EventsController {
     name: 'category',
     required: false,
     type: String,
-    description: 'Filter events by category'
+    description: 'Filter events by category',
   })
   getAllVerified(
     @Query('tags') tags: string[] | string = [],
@@ -166,7 +168,7 @@ export class EventsController {
         requestedPage: page,
         verifiedOnly: true,
         startDate: startDate ? new Date(startDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined
+        endDate: endDate ? new Date(endDate) : undefined,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
