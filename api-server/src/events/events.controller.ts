@@ -131,14 +131,14 @@ export class EventsController {
   })
   @ApiImplicitQuery({
     name: 'startDate',
-    description: 'Start date for filtering events (ISO 8601 format)',
+    description: 'Start date for filtering events (ISO 8601 format). Must be provided together with endDate.',
     example: '2024-01-01T00:00:00.000Z',
     required: false,
     type: String,
   })
   @ApiImplicitQuery({
     name: 'endDate',
-    description: 'End date for filtering events (ISO 8601 format)',
+    description: 'End date for filtering events (ISO 8601 format). Must be provided together with startDate.',
     example: '2024-12-31T23:59:59.999Z',
     required: false,
     type: String,

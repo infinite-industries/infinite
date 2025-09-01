@@ -1,4 +1,4 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Inject, Injectable, LoggerService, BadRequestException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   FindOptions,
@@ -84,6 +84,11 @@ export class EventsService {
     startDate?: Date;
     endDate?: Date;
   }): Promise<{ count: number; rows: EventModel[] }> {
+    // Validate that both startDate and endDate are provided together
+    if ((!isNullOrUndefined(startDate) && isNullOrUndefined(endDate)) ||
+        (isNullOrUndefined(startDate) && !isNullOrUndefined(endDate))) {
+      throw new BadRequestException('Both startDate and endDate must be provided together');
+    }
     return this.sequelize.transaction(async (_) => {
       const tagClauseParams = this.getTagsClauseParams(tags);
       const whereClause = this.getWhereClause(
