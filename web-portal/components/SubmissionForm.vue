@@ -828,6 +828,9 @@
   margin: 0 auto;
   text-align: center;
 }
+.text-xs-center button {
+  margin: 0 1rem;
+}
 .some-padding-top {
   padding-top: 22px;
 }
