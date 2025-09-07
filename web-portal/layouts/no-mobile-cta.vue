@@ -5,12 +5,14 @@
 
     <!-- Toolbar and Nav -->
     <ii-toolbar>
-      <ii-site-navigation slot="navigation" />
+      <template #navigation>
+        <ii-site-navigation />
+      </template>
     </ii-toolbar>
 
     <main>
       <!-- Content -->
-      <nuxt />
+      <slot />
     </main>
     <!-- PopUps and Modals -->
     <!-- Regular Old Modal -->

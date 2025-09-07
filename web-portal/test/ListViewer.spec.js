@@ -1,9 +1,6 @@
-import Vuex from 'vuex'
-import { createLocalVue, shallowMount } from '@vue/test-utils'
+import { createStore } from 'vuex'
+import { shallowMount } from '@vue/test-utils'
 import ListViewer from '@/components/ListViewer.vue'
-
-const localVue = createLocalVue()
-localVue.use(Vuex)
 
 const getEventList = () => {
   return [
@@ -17,13 +14,13 @@ describe('ListViewer component', () => {
 
   beforeEach(() => {
     events = getEventList()
-    store = new Vuex.Store({
-      state: {},
+    store = createStore({
       getters: { GetLoadingStatus: () => false }
     })
     wrapper = shallowMount(ListViewer, {
-      localVue,
-      store,
+      global: {
+        plugins: [store]
+      },
       propsData: {
         calendar_events: events
       }
@@ -36,7 +33,7 @@ describe('ListViewer component', () => {
     // verify that the list contains two "cards" and that they
     // were each passed the correct event as a prop
     // (cards are stubbed out since component is shallow mounted)
-    const cards = wrapper.findAllComponents({ name: 'Card' })
+    const cards = wrapper.findAllComponents({ name: 'EventCard' })
     expect(cards.length).toBe(2)
     expect(cards.at(0).props('calendar_event')).toEqual(events[0])
     expect(cards.at(1).props('calendar_event')).toEqual(events[1])

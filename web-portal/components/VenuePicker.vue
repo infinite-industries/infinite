@@ -105,7 +105,7 @@
   background-color: #f9f9f9;
   min-width: 200px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 2;
   max-height: 250px;
   overflow: scroll;
 }
