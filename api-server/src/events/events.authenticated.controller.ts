@@ -33,7 +33,6 @@ import {
 } from './dto/event-admin-metadata-response';
 import { EventsResponse } from './dto/events-response';
 import { getOptionsForEventsServiceFromEmbedsQueryParam } from '../utils/get-options-for-events-service-from-embeds-query-param';
-import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
 import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
 import {
   EVENT_PAGINATION_DEFAULT_PAGE,

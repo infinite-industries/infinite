@@ -19,7 +19,6 @@ import { createListOfFutureEventsInChronologicalOrder as _createListOfFutureEven
 import { ApiOkResponse } from '@nestjs/swagger';
 import { Nullable } from '../src/utils/NullableOrUndefinable';
 import { assertEventsEqual } from './test-helpers/assert-events';
-import EventDTO from '../src/events/dto/eventDTO';
 import { assertOrderedByFirstStartTimeDescending } from './test-helpers/assertOrderedByFirstStartTimeDescending';
 import { createRandomEventWithDateTime } from './fakers/event.faker';
 import { v4 as uuidv4 } from 'uuid';

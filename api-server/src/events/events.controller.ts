@@ -1,7 +1,6 @@
 import moment from 'moment';
 import { Op, literal } from 'sequelize';
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,

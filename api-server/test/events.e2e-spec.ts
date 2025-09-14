@@ -16,8 +16,6 @@ import {
   createRandomEventWithVenue,
 } from './fakers/event.faker';
 import { CURRENT_VERSION_URI } from '../src/utils/versionts';
-import EventDTO from '../src/events/dto/eventDTO';
-import { Nullable } from '../src/utils/NullableOrUndefinable';
 import faker from 'faker';
 import { assertEventsEqual } from './test-helpers/assert-events';
 import bringUpStackAndEstablishDbEntities from './test-helpers/bring-up-stack-and-establish-db-entities';
