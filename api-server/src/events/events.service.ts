@@ -56,7 +56,7 @@ export class EventsService {
   async findById(id: string, findOptions?: FindOptions): Promise<EventModel> {
     let options = {
       where: { id },
-      include: [DatetimeVenueModel, VenueModel], // TODO -- This should be determined by embed flags
+      include: [DatetimeVenueModel, VenueModel],
     };
 
     if (findOptions) {
@@ -383,7 +383,7 @@ export class EventsService {
 
     const dateRangeFilter =
       startDate && endDate
-        ? 'start_time >= :startDate AND end_time < :endDate'
+        ? 'start_time >= :startDate AND start_time < :endDate'
         : null;
 
     const clauses = [

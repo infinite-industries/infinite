@@ -742,7 +742,7 @@ describe('Events API', () => {
   }
 
   it('/verified should filter events by date range when startDate and endDate are provided', async () => {
-    //  === event1, event2, event3, and event4 in range -- should be included ===
+    //  === event1, event2, event3, event4, and event5 in range -- should be included ===
     const event1 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
@@ -815,7 +815,6 @@ describe('Events API', () => {
       ],
     );
 
-    // !!! 5-new startDate=2024-06-01T00:00:00.000Z&endDate=2024-06-30T00:00:00.000Z
     const event5 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
@@ -863,7 +862,7 @@ describe('Events API', () => {
       ],
     );
 
-    // event6: Completely outside range - after (should NOT be included)
+    // start dates all outside range
     const event7 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
@@ -880,7 +879,7 @@ describe('Events API', () => {
       ],
     );
 
-    // end dates are all out of range
+    // start dates all outside range
     const event8 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
@@ -889,20 +888,20 @@ describe('Events API', () => {
       [
         {
           id: uuidv4(),
-          start_time: new Date('2024-06-17T18:00:00.000Z'),
+          start_time: new Date('2024-07-02T11:00:00.000Z'),
           end_time: new Date('2024-07-02T12:00:00.000Z'),
           timezone: 'UTC',
         },
         {
           id: uuidv4(),
-          start_time: new Date('2024-06-29T10:00:00.000Z'),
+          start_time: new Date('2024-07-01T11:00:00.000Z'),
           end_time: new Date('2024-07-01T12:00:00.000Z'),
           timezone: 'UTC',
         },
       ],
     );
 
-    // first start date is out of range as well as second end date
+    // first start date is out of range as well as second
     const event9 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
@@ -917,18 +916,16 @@ describe('Events API', () => {
         },
         {
           id: uuidv4(),
-          start_time: new Date('2024-06-29T10:00:00.000Z'),
-          end_time: new Date('2024-06-30T12:00:00.000Z'),
+          start_time: new Date('2024-07-01T10:00:00.000Z'),
+          end_time: new Date('2024-07-01T11:00:00.000Z'),
           timezone: 'UTC',
         },
       ],
     );
-    //               HAVING min(dv.start_time) >= '2024-05-31 20:00:00.000 -04:00'
-    //             AND max(dv.end_time) < '2024-06-30 19:59:59.999 -04:00'
 
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/events/verified?startDate=2024-06-01T00:00:00.000Z&endDate=2024-06-30T00:00:00.000Z`,
+        `/${CURRENT_VERSION_URI}/events/verified?dateRange=2024-06-01T00:00:00.000Z/2024-06-30T00:00:00.000Z`,
       )
       .expect(200)
       .then(async ({ body }) => {
@@ -970,30 +967,58 @@ describe('Events API', () => {
       });
   });
 
-  it('/verified should return bad request when only startDate is provided', async () => {
-    // Test filtering with startDate only - should return 400 Bad Request
+  it('/verified should return bad request when dateRange has invalid format', async () => {
+    // Test filtering with invalid dateRange format - should return 400 Bad Request
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/events/verified?startDate=2024-07-01T00:00:00.000Z`,
+        `/${CURRENT_VERSION_URI}/events/verified?dateRange=2024-07-01T00:00:00.000Z`,
       )
       .expect(400)
       .then(async ({ body }) => {
         expect(body.message).toContain(
-          'Both startDate and endDate must be provided together',
+          'Invalid dateRange format. Expected format: startDate/endDate',
         );
       });
   });
 
-  it('/verified should return bad request when only endDate is provided', async () => {
-    // Test filtering with endDate only - should return 400 Bad Request
+  it('/verified should return bad request when dateRange has empty dates', async () => {
+    // Test filtering with empty dates in dateRange - should return 400 Bad Request
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/events/verified?endDate=2024-07-01T23:59:59.999Z`,
+        `/${CURRENT_VERSION_URI}/events/verified?dateRange=/2024-07-01T23:59:59.999Z`,
       )
       .expect(400)
       .then(async ({ body }) => {
         expect(body.message).toContain(
-          'Both startDate and endDate must be provided together',
+          'Both startDate and endDate must be provided in dateRange parameter',
+        );
+      });
+  });
+
+  it('/verified should return bad request when dateRange has invalid date format', async () => {
+    // Test filtering with invalid date format in dateRange - should return 400 Bad Request
+    return server
+      .get(
+        `/${CURRENT_VERSION_URI}/events/verified?dateRange=invalid-date/2024-07-01T23:59:59.999Z`,
+      )
+      .expect(400)
+      .then(async ({ body }) => {
+        expect(body.message).toContain(
+          'Invalid date format in dateRange. Ensure dates are in ISO 8601 format.',
+        );
+      });
+  });
+
+  it('/verified should return bad request when startDate is after endDate in dateRange', async () => {
+    // Test filtering with startDate after endDate - should return 400 Bad Request
+    return server
+      .get(
+        `/${CURRENT_VERSION_URI}/events/verified?dateRange=2024-07-01T23:59:59.999Z/2024-06-01T00:00:00.000Z`,
+      )
+      .expect(400)
+      .then(async ({ body }) => {
+        expect(body.message).toContain(
+          'startDate must be before endDate in dateRange parameter',
         );
       });
   });

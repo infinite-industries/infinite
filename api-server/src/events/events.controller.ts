@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { Op, literal } from 'sequelize';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -129,18 +130,11 @@ export class EventsController {
     type: Number,
   })
   @ApiImplicitQuery({
-    name: 'startDate',
+    name: 'dateRange',
     description:
-      'Start date for filtering events (ISO 8601 format). Must be provided together with endDate.',
-    example: '2024-01-01T00:00:00.000Z',
-    required: false,
-    type: String,
-  })
-  @ApiImplicitQuery({
-    name: 'endDate',
-    description:
-      'End date for filtering events (ISO 8601 format). Must be provided together with startDate.',
-    example: '2024-12-31T23:59:59.999Z',
+      'Date range for filtering events (ISO 8601 format). Format: startDate/endDate. This will return all events having ' +
+      'one or more start times that fall within the range provided (>= startDate & < endDate)',
+    example: '2024-01-01T00:00:00.000Z/2024-12-31T23:59:59.999Z',
     required: false,
     type: String,
   })
@@ -154,10 +148,13 @@ export class EventsController {
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
-    @Query('startDate') startDate?: string,
-    @Query('endDate') endDate?: string,
+    @Query('dateRange') dateRange?: string,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
+
+    // Parse dateRange parameter
+    const [startDate, endDate] =
+      this.validateAndExtractOptionalDateTimeFilters(dateRange);
 
     return this.eventsService
       .findAllPaginated({
@@ -166,8 +163,8 @@ export class EventsController {
         pageSize,
         requestedPage: page,
         verifiedOnly: true,
-        startDate: startDate ? new Date(startDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined,
+        startDate,
+        endDate,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
@@ -250,5 +247,45 @@ export class EventsController {
     } catch (exSlack) {
       this.logger.error(`error notifying slack of new event: ${exSlack}`);
     }
+  }
+
+  private validateAndExtractOptionalDateTimeFilters(
+    dateRange?: string,
+  ): [Date | undefined, Date | undefined] {
+    if (!dateRange) {
+      return [undefined, undefined];
+    }
+
+    const dates = dateRange.split('/');
+    if (dates.length !== 2) {
+      throw new BadRequestException(
+        'Invalid dateRange format. Expected format: startDate/endDate (e.g., 2024-01-01T00:00:00.000Z/2024-12-31T23:59:59.999Z)',
+      );
+    }
+
+    const [startDateStr, endDateStr] = dates;
+
+    if (!startDateStr || !endDateStr) {
+      throw new BadRequestException(
+        'Both startDate and endDate must be provided in dateRange parameter',
+      );
+    }
+
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new BadRequestException(
+        'Invalid date format in dateRange. Ensure dates are in ISO 8601 format.',
+      );
+    }
+
+    if (startDate >= endDate) {
+      throw new BadRequestException(
+        'startDate must be before endDate in dateRange parameter',
+      );
+    }
+
+    return [startDate, endDate];
   }
 }
