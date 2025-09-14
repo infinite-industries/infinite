@@ -73,12 +73,14 @@ export class EventsService {
     verifiedOnly = true,
     pageSize,
     requestedPage,
+    isUserAdmin = false,
   }: {
     tags: string[] | string;
     category?: string;
     verifiedOnly?: boolean;
     pageSize: number;
     requestedPage: number;
+    isUserAdmin?: boolean;
   }): Promise<{ count: number; rows: EventModel[] }> {
     return this.sequelize.transaction(async (_) => {
       const tagClauseParams = this.getTagsClauseParams(tags);
@@ -128,12 +130,30 @@ export class EventsService {
         include: VenueModel,
       });
 
+      // Only fetch event_admin_metadata if user is admin
+      let eventAdminMetadata: any[] = [];
+      if (isUserAdmin) {
+        eventAdminMetadata = await this.eventAdminMetadataModel.findAll({
+          where: {
+            event_id: {
+              [Op.or]: paginatedRows.map(({ id }) => id),
+            },
+          },
+        });
+      }
+
       paginatedRows.forEach((event) => {
         const dateTimesForEvent = dateTimes.filter(
           ({ event_id }) => event_id === event.id,
         );
 
+        // Find and assign the corresponding admin metadata only if user is admin
+        const adminMetadataForEvent = isUserAdmin 
+          ? eventAdminMetadata.find(({ event_id }) => event_id === event.id)
+          : undefined;
+
         event.date_times = dateTimesForEvent;
+        event.event_admin_metadata = adminMetadataForEvent;
       });
 
       const totalCount = await this.getEventCountWithFilters(
