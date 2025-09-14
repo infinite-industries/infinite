@@ -815,8 +815,39 @@ describe('Events API', () => {
       ],
     );
 
-    // event5: Completely outside range - before (should NOT be included)
+    // !!! 5-new startDate=2024-06-01T00:00:00.000Z&endDate=2024-06-30T00:00:00.000Z
     const event5 = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [
+        // outside range, lower end
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-05-29T00:00:00.000Z'),
+          end_time: new Date('2024-05-29T11:00:00.000Z'),
+          timezone: 'UTC',
+        },
+        // outside range, upper end
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-07-01T00:00:00.000Z'),
+          end_time: new Date('2024-07-01T10:00:00.000Z'),
+          timezone: 'UTC',
+        },
+        // inside range
+        {
+          id: uuidv4(),
+          start_time: new Date('2024-06-02T00:00:00.000Z'),
+          end_time: new Date('2024-06-02T10:00:00.000Z'),
+          timezone: 'UTC',
+        },
+      ],
+    );
+
+    // event5: Completely outside range - before (should NOT be included)
+    const event6 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
       datetimeVenueModel,
@@ -833,7 +864,7 @@ describe('Events API', () => {
     );
 
     // event6: Completely outside range - after (should NOT be included)
-    const event6 = await createRandomEventWithDateTime(
+    const event7 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
       datetimeVenueModel,
@@ -849,8 +880,8 @@ describe('Events API', () => {
       ],
     );
 
-    // last end date is out of range
-    const event7 = await createRandomEventWithDateTime(
+    // end dates are all out of range
+    const event8 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
       datetimeVenueModel,
@@ -859,7 +890,7 @@ describe('Events API', () => {
         {
           id: uuidv4(),
           start_time: new Date('2024-06-17T18:00:00.000Z'),
-          end_time: new Date('2024-06-17T22:00:00.000Z'),
+          end_time: new Date('2024-07-02T12:00:00.000Z'),
           timezone: 'UTC',
         },
         {
@@ -871,8 +902,8 @@ describe('Events API', () => {
       ],
     );
 
-    // first start date is out of range
-    const event8 = await createRandomEventWithDateTime(
+    // first start date is out of range as well as second end date
+    const event9 = await createRandomEventWithDateTime(
       eventModel,
       venueModel,
       datetimeVenueModel,
@@ -881,13 +912,13 @@ describe('Events API', () => {
         {
           id: uuidv4(),
           start_time: new Date('2024-05-30T18:00:00.000Z'),
-          end_time: new Date('2024-06-17T22:00:00.000Z'),
+          end_time: new Date('2024-05-30T22:00:00.000Z'),
           timezone: 'UTC',
         },
         {
           id: uuidv4(),
           start_time: new Date('2024-06-29T10:00:00.000Z'),
-          end_time: new Date('2024-06-29T12:00:00.000Z'),
+          end_time: new Date('2024-06-30T12:00:00.000Z'),
           timezone: 'UTC',
         },
       ],
@@ -912,10 +943,16 @@ describe('Events API', () => {
           event2.id,
           event3.id,
           event4.id,
+          event5.id,
         ]);
-        console.log('Unexpected events:', [event4.id, event5.id]);
+        console.log('Unexpected events:', [
+          event6.id,
+          event7.id,
+          event8.id,
+          event9.id,
+        ]);
 
-        expect(events.length).toEqual(4);
+        expect(events.length).toEqual(5);
 
         // Check that the correct events are included
         const eventIds = events.map((event) => event.id);
@@ -923,12 +960,13 @@ describe('Events API', () => {
         expect(eventIds).toContain(event2.id);
         expect(eventIds).toContain(event3.id);
         expect(eventIds).toContain(event4.id);
+        expect(eventIds).toContain(event5.id);
 
         // Check that the wrong events are NOT included
-        expect(eventIds).not.toContain(event5.id);
         expect(eventIds).not.toContain(event6.id);
         expect(eventIds).not.toContain(event7.id);
         expect(eventIds).not.toContain(event8.id);
+        expect(eventIds).not.toContain(event9.id);
       });
   });
 

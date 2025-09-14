@@ -104,20 +104,15 @@ export class EventsService {
         tagClauseParams,
         category,
         verifiedOnly,
+        startDate,
+        endDate,
       );
-
-      // optional filter for events in a date range
-      const havingClause =
-        startDate && endDate
-          ? `HAVING min(dv.start_time) >= :startDate
-            AND max(dv.end_time) < :endDate`
-          : '';
 
       // Sort events by the first start_time and apply pagination
       // Note, we have to sort by first_start_time in our common table expression to apply pagination correctly, but we
       // also have to sort again over our page in the final join with events, because the order after joining is not
       // guaranteed to stay the same.
-      // We've also added a secondary order by on created_at to ensure that events with with not start_time like
+      // We've also added a secondary order by on created_at to ensure that events without start_time like
       // online resources at least sort consistently
       const paginatedRows: EventModel[] = await this.sequelize.query(
         `
@@ -130,7 +125,6 @@ export class EventsService {
                 LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
                   ${whereClause}
               GROUP BY (events.id)
-              ${havingClause}
               ORDER BY first_start_time DESC, "createdAt" DESC
               OFFSET ${(requestedPage - 1) * pageSize} LIMIT ${pageSize} )
               SELECT events.*
@@ -171,7 +165,6 @@ export class EventsService {
       const totalCount = await this.getEventCountWithFilters(
         tagClauseParams,
         whereClause,
-        havingClause,
         startDate,
         endDate,
       );
@@ -375,6 +368,8 @@ export class EventsService {
     tagClauseParams: Nullable<string>,
     category: Nullable<string>,
     verifiedOnly: boolean,
+    startDate?: Date,
+    endDate?: Date,
   ): string {
     const tagClause = isNotNullOrUndefined(tagClauseParams)
       ? `:tagFilter && events.tags`
@@ -386,9 +381,17 @@ export class EventsService {
 
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
-    const clauses = [tagClause, categoryClause, verifiedOnlyClause].filter(
-      (clause) => isNotNullOrUndefined(clause),
-    );
+    const dateRangeFilter =
+      startDate && endDate
+        ? 'start_time >= :startDate AND end_time < :endDate'
+        : null;
+
+    const clauses = [
+      tagClause,
+      categoryClause,
+      verifiedOnlyClause,
+      dateRangeFilter,
+    ].filter((clause) => isNotNullOrUndefined(clause));
 
     if (clauses.length === 0) {
       return '';
@@ -400,7 +403,6 @@ export class EventsService {
   private async getEventCountWithFilters(
     tagClauseParams: string,
     whereClause: string,
-    havingClause: string,
     startDate?: Date,
     endDate?: Date,
   ): Promise<number> {
@@ -415,7 +417,6 @@ export class EventsService {
         LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
         ${whereClause}
         GROUP BY (events.id)
-        ${havingClause}
       )
       SELECT COUNT(compressed_event.id)
       FROM compressed_event
