@@ -152,7 +152,6 @@ export class EventsController {
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
 
-    // Parse dateRange parameter
     const [startDate, endDate] =
       this.validateAndExtractOptionalDateTimeFilters(dateRange);
 

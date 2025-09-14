@@ -968,7 +968,6 @@ describe('Events API', () => {
   });
 
   it('/verified should return bad request when dateRange has invalid format', async () => {
-    // Test filtering with invalid dateRange format - should return 400 Bad Request
     return server
       .get(
         `/${CURRENT_VERSION_URI}/events/verified?dateRange=2024-07-01T00:00:00.000Z`,
@@ -982,7 +981,6 @@ describe('Events API', () => {
   });
 
   it('/verified should return bad request when dateRange has empty dates', async () => {
-    // Test filtering with empty dates in dateRange - should return 400 Bad Request
     return server
       .get(
         `/${CURRENT_VERSION_URI}/events/verified?dateRange=/2024-07-01T23:59:59.999Z`,
@@ -996,7 +994,6 @@ describe('Events API', () => {
   });
 
   it('/verified should return bad request when dateRange has invalid date format', async () => {
-    // Test filtering with invalid date format in dateRange - should return 400 Bad Request
     return server
       .get(
         `/${CURRENT_VERSION_URI}/events/verified?dateRange=invalid-date/2024-07-01T23:59:59.999Z`,
@@ -1010,7 +1007,6 @@ describe('Events API', () => {
   });
 
   it('/verified should return bad request when startDate is after endDate in dateRange', async () => {
-    // Test filtering with startDate after endDate - should return 400 Bad Request
     return server
       .get(
         `/${CURRENT_VERSION_URI}/events/verified?dateRange=2024-07-01T23:59:59.999Z/2024-06-01T00:00:00.000Z`,
