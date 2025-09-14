@@ -19,6 +19,8 @@ import { createListOfFutureEventsInChronologicalOrder as _createListOfFutureEven
 import { ApiOkResponse } from '@nestjs/swagger';
 import { Nullable } from '../src/utils/NullableOrUndefinable';
 import { assertEventsEqual } from './test-helpers/assert-events';
+import EventDTO from '../src/events/dto/eventDTO';
+import { assertOrderedByFirstStartTimeDescending } from './test-helpers/assertOrderedByFirstStartTimeDescending';
 
 describe('Authenticated Events API', () => {
   const server = request('http://localhost:' + PORT);
@@ -189,6 +191,191 @@ describe('Authenticated Events API', () => {
         }
       });
   });
+
+  it('/authenticated/events should return paginated results with default page size', async () => {
+    const givenTotalNumEvents = 40;
+    const expectedDefaultPageSize = 20;
+
+    const [allEvents] = await createListOfFutureEventsInChronologicalOrder(
+      givenTotalNumEvents,
+      { verified: true },
+    );
+
+    const token = await login();
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/authenticated/events`)
+      .set('x-access-token', token)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+        expect(totalPages).toEqual(2);
+        expect(nextPage).toEqual(2);
+        expect(page).toEqual(1);
+        expect(pageSize).toEqual(expectedDefaultPageSize);
+        expect(events.length).toEqual(expectedDefaultPageSize);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = allEvents[i];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+  });
+
+  it('/authenticated/events should return second page with default page size', async () => {
+    const givenTotalNumEvents = 40;
+    const expectedDefaultPageSize = 20;
+
+    const [allEvents] = await createListOfFutureEventsInChronologicalOrder(
+      givenTotalNumEvents,
+      { verified: false },
+    );
+
+    const token = await login();
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/authenticated/events?page=2`)
+      .set('x-access-token', token)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+        expect(totalPages).toEqual(2);
+        expect(nextPage).toBeUndefined();
+        expect(page).toEqual(2);
+        expect(pageSize).toEqual(expectedDefaultPageSize);
+        expect(events.length).toEqual(20);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = allEvents[i + 20];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+  });
+
+  it('/authenticated/events should return paginated results with custom page size', async () => {
+    const givenTotalNumEvents = 30;
+    const customPageSize = 10;
+
+    const [allEvents] = await createListOfFutureEventsInChronologicalOrder(
+      givenTotalNumEvents,
+      { verified: false },
+    );
+
+    const token = await login();
+
+    return server
+      .get(
+        `/${CURRENT_VERSION_URI}/authenticated/events?page=1&pageSize=${customPageSize}`,
+      )
+      .set('x-access-token', token)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+        expect(totalPages).toEqual(3);
+        expect(nextPage).toEqual(2);
+        expect(page).toEqual(1);
+        expect(pageSize).toEqual(customPageSize);
+        expect(events.length).toEqual(customPageSize);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = allEvents[i];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+  });
+
+  it('/authenticated/events should return second page with custom page size', async () => {
+    const givenTotalNumEvents = 30;
+    const customPageSize = 10;
+
+    const [allEvents] = await createListOfFutureEventsInChronologicalOrder(
+      givenTotalNumEvents,
+      { verified: false },
+    );
+
+    const token = await login();
+
+    return server
+      .get(
+        `/${CURRENT_VERSION_URI}/authenticated/events?page=2&pageSize=${customPageSize}`,
+      )
+      .set('x-access-token', token)
+      .expect(200)
+      .then(async ({ body }) => {
+        const {
+          status,
+          paginated,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events,
+        } = body;
+
+        expect(status).toEqual('success');
+        expect(paginated).toEqual(true);
+        expect(totalPages).toEqual(3);
+        expect(nextPage).toEqual(3);
+        expect(page).toEqual(2);
+        expect(pageSize).toEqual(customPageSize);
+        expect(events.length).toEqual(customPageSize);
+
+        assertOrderedByFirstStartTimeDescending(events);
+
+        for (let i = 0; i < events.length; i++) {
+          const paginatedEventReturned = events[i];
+          const expectedEvent = allEvents[i + customPageSize];
+
+          assertEventsEqual(paginatedEventReturned, expectedEvent);
+        }
+      });
+  });
+
   async function createListOfFutureEventsInChronologicalOrder(
     numEvents = 30,
     overrides: EventModelConstructorProps = {},
