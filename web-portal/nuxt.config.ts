@@ -25,10 +25,10 @@ export default defineNuxtConfig({
 
         { property: 'og:title', content: 'Infinite Industries' },
         { property: 'og:site_name', content: 'Infinite Industries' },
-        { property: 'og:url', content: process.env.APP_URL },
+        { property: 'og:url', content: process.env.NUXT_PUBLIC_APP_URL },
         { property: 'og:type', content: 'article' },
         { property: 'og:description', content: 'Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.' },
-        { property: 'og:image', content: process.env.APP_URL + '/images/default.jpg' },
+        { property: 'og:image', content: process.env.NUXT_PUBLIC_APP_URL + '/images/default.jpg' },
         { property: 'og:image:alt', content: 'Infinite Industries' },
 
         { name: 'twitter:card', content: 'summary_large_image' },
@@ -36,7 +36,7 @@ export default defineNuxtConfig({
         { name: 'twitter:creator', content: '@1nfinite_1' },
         { name: 'twitter:title', content: 'Infinite Industries' },
         { name: 'twitter:description', content: 'Infinite Industries is an experimental digital platform that makes high quality contemporary culture accessible to everyone.' },
-        { name: 'twitter:image:src', content: process.env.APP_URL + '/images/default.jpg' },
+        { name: 'twitter:image:src', content: process.env.NUXT_PUBLIC_APP_URL + '/images/default.jpg' },
 
         { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
