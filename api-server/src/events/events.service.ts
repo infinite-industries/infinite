@@ -1,4 +1,9 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  LoggerService,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
   FindOptions,
@@ -51,7 +56,7 @@ export class EventsService {
   async findById(id: string, findOptions?: FindOptions): Promise<EventModel> {
     let options = {
       where: { id },
-      include: [DatetimeVenueModel, VenueModel], // TODO -- This should be determined by embed flags
+      include: [DatetimeVenueModel, VenueModel],
     };
 
     if (findOptions) {
@@ -73,6 +78,8 @@ export class EventsService {
     verifiedOnly = true,
     pageSize,
     requestedPage,
+    startDate,
+    endDate,
     isUserAdmin = false,
   }: {
     tags: string[] | string;
@@ -80,27 +87,44 @@ export class EventsService {
     verifiedOnly?: boolean;
     pageSize: number;
     requestedPage: number;
+    startDate?: Date;
+    endDate?: Date;
     isUserAdmin?: boolean;
   }): Promise<{ count: number; rows: EventModel[] }> {
+    // Validate that both startDate and endDate are provided together
+    if (
+      (!isNullOrUndefined(startDate) && isNullOrUndefined(endDate)) ||
+      (isNullOrUndefined(startDate) && !isNullOrUndefined(endDate))
+    ) {
+      throw new BadRequestException(
+        'Both startDate and endDate must be provided together',
+      );
+    }
     return this.sequelize.transaction(async (_) => {
       const tagClauseParams = this.getTagsClauseParams(tags);
       const whereClause = this.getWhereClause(
         tagClauseParams,
         category,
         verifiedOnly,
+        startDate,
+        endDate,
       );
 
       // Sort events by the first start_time and apply pagination
       // Note, we have to sort by first_start_time in our common table expression to apply pagination correctly, but we
       // also have to sort again over our page in the final join with events, because the order after joining is not
       // guaranteed to stay the same.
-      // We've also added a secondary order by on created_at to ensure that events with with not start_time like
+      // We've also added a secondary order by on created_at to ensure that events without start_time like
       // online resources at least sort consistently
       const paginatedRows: EventModel[] = await this.sequelize.query(
         `
-              with compressed_event as (SELECT events.*, min(dv.start_time) as first_start_time
-                                        FROM events
-                                                 LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
+              with compressed_event as (
+                SELECT
+                  events.*,
+                  min(dv.start_time) as first_start_time,
+                  max(dv.end_time) as last_end_time
+                FROM events
+                LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
                   ${whereClause}
               GROUP BY (events.id)
               ORDER BY first_start_time DESC, "createdAt" DESC
@@ -116,6 +140,8 @@ export class EventsService {
           replacements: {
             tagFilter: tagClauseParams,
             categoryFilter: category,
+            startDate,
+            endDate,
           },
         },
       );
@@ -127,7 +153,7 @@ export class EventsService {
             [Op.or]: paginatedRows.map(({ id }) => id),
           },
         },
-        include: VenueModel,
+        include: [VenueModel],
       });
 
       // Only fetch event_admin_metadata if user is admin
@@ -148,7 +174,7 @@ export class EventsService {
         );
 
         // Find and assign the corresponding admin metadata only if user is admin
-        const adminMetadataForEvent = isUserAdmin 
+        const adminMetadataForEvent = isUserAdmin
           ? eventAdminMetadata.find(({ event_id }) => event_id === event.id)
           : undefined;
 
@@ -159,6 +185,8 @@ export class EventsService {
       const totalCount = await this.getEventCountWithFilters(
         tagClauseParams,
         whereClause,
+        startDate,
+        endDate,
       );
 
       return { count: totalCount, rows: paginatedRows };
@@ -360,6 +388,8 @@ export class EventsService {
     tagClauseParams: Nullable<string>,
     category: Nullable<string>,
     verifiedOnly: boolean,
+    startDate?: Date,
+    endDate?: Date,
   ): string {
     const tagClause = isNotNullOrUndefined(tagClauseParams)
       ? `:tagFilter && events.tags`
@@ -371,9 +401,17 @@ export class EventsService {
 
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
-    const clauses = [tagClause, categoryClause, verifiedOnlyClause].filter(
-      (clause) => isNotNullOrUndefined(clause),
-    );
+    const dateRangeFilter =
+      startDate && endDate
+        ? 'start_time >= :startDate AND start_time < :endDate'
+        : null;
+
+    const clauses = [
+      tagClause,
+      categoryClause,
+      verifiedOnlyClause,
+      dateRangeFilter,
+    ].filter((clause) => isNotNullOrUndefined(clause));
 
     if (clauses.length === 0) {
       return '';
@@ -385,14 +423,30 @@ export class EventsService {
   private async getEventCountWithFilters(
     tagClauseParams: string,
     whereClause: string,
+    startDate?: Date,
+    endDate?: Date,
   ): Promise<number> {
     const results: { count: string }[] = await this.sequelize.query(
-      `SELECT COUNT(id)
-       FROM events ${whereClause}`,
+      `
+      with compressed_event as (
+        SELECT
+          events.*,
+          min(dv.start_time) as first_start_time,
+          max(dv.end_time) as last_end_time
+        FROM events
+        LEFT OUTER JOIN datetime_venue dv on events.id = dv.event_id
+        ${whereClause}
+        GROUP BY (events.id)
+      )
+      SELECT COUNT(compressed_event.id)
+      FROM compressed_event
+      `,
       {
         type: QueryTypes.SELECT,
         replacements: {
           tagFilter: tagClauseParams,
+          startDate,
+          endDate,
         },
       },
     );

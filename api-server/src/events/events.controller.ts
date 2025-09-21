@@ -1,10 +1,10 @@
 import moment from 'moment';
 import { Op, literal } from 'sequelize';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
-  HttpException,
   NotFoundException,
   Param,
   Post,
@@ -33,6 +33,7 @@ import { eventModelToEventDTO } from './dto/eventModelToEventDTO';
 import EventDTO from './dto/eventDTO';
 import { ENV } from '../constants';
 import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
+import { ApiQuery } from '@nestjs/swagger';
 import {
   EVENT_PAGINATION_DEFAULT_PAGE,
   EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
@@ -76,7 +77,7 @@ export class EventsController {
 
     const include = isAdmin
       ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel]
-      : [VenueModel, DatetimeVenueModel]
+      : [VenueModel, DatetimeVenueModel];
 
     const findOptions = {
       include,
@@ -131,15 +132,35 @@ export class EventsController {
     required: false,
     type: Number,
   })
+  @ApiImplicitQuery({
+    name: 'dateRange',
+    description:
+      'Date range for filtering events (ISO 8601 format). Format: startDate/endDate. This will return all events having ' +
+      'one or more start times that fall within the range provided (>= startDate & < endDate)',
+    example: '2024-01-01T00:00:00.000Z/2024-12-31T23:59:59.999Z',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'category',
+    required: false,
+    type: String,
+    description: 'Filter events by category',
+  })
   async getAllVerified(
+    @Req() request: Request,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
-    @Req() request: Request,
+    @Query('dateRange') dateRange?: string,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
 
-    const isUserAdmin  = await isAdminUser(request);
+    const isUserAdmin = await isAdminUser(request);
+
+    const [startDate, endDate] =
+      this.validateAndExtractOptionalDateTimeFilters(dateRange);
+
     return this.eventsService
       .findAllPaginated({
         tags,
@@ -147,6 +168,8 @@ export class EventsController {
         pageSize,
         requestedPage: page,
         verifiedOnly: true,
+        startDate,
+        endDate,
         isUserAdmin,
       })
       .then((paginatedEventResp) => {
@@ -230,5 +253,45 @@ export class EventsController {
     } catch (exSlack) {
       this.logger.error(`error notifying slack of new event: ${exSlack}`);
     }
+  }
+
+  private validateAndExtractOptionalDateTimeFilters(
+    dateRange?: string,
+  ): [Date | undefined, Date | undefined] {
+    if (!dateRange) {
+      return [undefined, undefined];
+    }
+
+    const dates = dateRange.split('/');
+    if (dates.length !== 2) {
+      throw new BadRequestException(
+        'Invalid dateRange format. Expected format: startDate/endDate (e.g., 2024-01-01T00:00:00.000Z/2024-12-31T23:59:59.999Z)',
+      );
+    }
+
+    const [startDateStr, endDateStr] = dates;
+
+    if (!startDateStr || !endDateStr) {
+      throw new BadRequestException(
+        'Both startDate and endDate must be provided in dateRange parameter',
+      );
+    }
+
+    const startDate = new Date(startDateStr);
+    const endDate = new Date(endDateStr);
+
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      throw new BadRequestException(
+        'Invalid date format in dateRange. Ensure dates are in ISO 8601 format.',
+      );
+    }
+
+    if (startDate >= endDate) {
+      throw new BadRequestException(
+        'startDate must be before endDate in dateRange parameter',
+      );
+    }
+
+    return [startDate, endDate];
   }
 }
