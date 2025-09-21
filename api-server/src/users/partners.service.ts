@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { PartnerModel } from './models/partner.model';
 import { CreatePartnerRequest } from './dto/create-partner-request';
@@ -19,10 +19,19 @@ export class PartnersService {
   async create(
     createPartnerRequest: CreatePartnerRequest,
   ): Promise<PartnerModel> {
-    return this.partnersModel.create({
-      id: v4(),
-      name: createPartnerRequest.name,
-      logo_url: createPartnerRequest.logo_url || null,
-    });
+    try {
+      return await this.partnersModel.create({
+        id: v4(),
+        name: createPartnerRequest.name,
+        logo_url: createPartnerRequest.logo_url || null,
+      });
+    } catch (error) {
+      // Check if it's a unique constraint violation
+      if (error.name === 'SequelizeUniqueConstraintError') {
+        throw new ConflictException('Partner with this name already exists');
+      }
+      // Re-throw other errors
+      throw error;
+    }
   }
 }
