@@ -40,6 +40,7 @@ import {
   PaginationDto,
 } from './dto/pagination-dto';
 import { isNullOrUndefined } from '../utils';
+import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
 import { VenueModel } from 'src/venues/models/venue.model';
 import { DatetimeVenueModel } from './models/datetime-venue.model';
 import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
@@ -159,7 +160,7 @@ export class EventsController {
     const isUserAdmin = await isAdminUser(request);
 
     const [startDate, endDate] =
-      this.validateAndExtractOptionalDateTimeFilters(dateRange);
+      validateAndExtractOptionalDateTimeFilters(dateRange);
 
     return this.eventsService
       .findAllPaginated({

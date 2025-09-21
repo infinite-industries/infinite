@@ -12,6 +12,7 @@ import { VERSION_1_URI } from '../utils/versionts';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -32,7 +33,13 @@ import {
 } from './dto/event-admin-metadata-response';
 import { EventsResponse } from './dto/events-response';
 import { getOptionsForEventsServiceFromEmbedsQueryParam } from '../utils/get-options-for-events-service-from-embeds-query-param';
-import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
+import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
+import {
+  EVENT_PAGINATION_DEFAULT_PAGE,
+  EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
+  PaginationDto,
+} from './dto/pagination-dto';
+import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
 @UseGuards(AuthGuard)
@@ -46,20 +53,78 @@ export default class EventsAuthenticatedController {
   @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiBearerAuth()
+  @ApiImplicitQuery({
+    name: 'tags',
+    description: 'filter by associated tags',
+    example: ['music'],
+    required: false,
+    isArray: true,
+    type: String,
+  })
+  @ApiImplicitQuery({
+    name: 'page',
+    description: `the requested page (default ${EVENT_PAGINATION_DEFAULT_PAGE})`,
+    example: 1,
+    required: false,
+    type: Number,
+  })
+  @ApiImplicitQuery({
+    name: 'pageSize',
+    description: `the number of events included per page (default ${EVENT_PAGINATION_DEFAULT_PAGE_SIZE})`,
+    example: 20,
+    required: false,
+    type: Number,
+  })
+  @ApiImplicitQuery({
+    name: 'dateRange',
+    description:
+      'Date range for filtering events (ISO 8601 format). Format: startDate/endDate. This will return all events having ' +
+      'one or more start times that fall within the range provided (>= startDate & < endDate)',
+    example: '2024-01-01T00:00:00.000Z/2024-12-31T23:59:59.999Z',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'category',
+    required: false,
+    type: String,
+    description: 'Filter events by category',
+  })
   getAll(
-    @Query('embed') embed: string[] | string = [],
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
+    @Query() pagination: PaginationDto,
+    @Query('dateRange') dateRange?: string,
   ): Promise<EventsResponse> {
-    const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: getCommonQueryTermsForEvents(null, tags, category),
-    };
+    const { page, pageSize } = pagination;
+
+    const [startDate, endDate] =
+      validateAndExtractOptionalDateTimeFilters(dateRange);
 
     return this.eventsService
-      .findAll(findOptions)
-      .then((events) => events.map(eventModelToEventDTO))
-      .then((events) => new EventsResponse({ events }));
+      .findAllPaginated({
+        tags,
+        category,
+        pageSize,
+        requestedPage: page,
+        verifiedOnly: false,
+        startDate,
+        endDate,
+      })
+      .then((paginatedEventResp) => {
+        const totalEntries = paginatedEventResp.count;
+        const totalPages = Math.ceil(totalEntries / pageSize);
+        const nextPage = page + 1 <= totalPages ? page + 1 : undefined;
+
+        return new EventsResponse({
+          paginated: true,
+          totalPages,
+          nextPage,
+          pageSize,
+          page,
+          events: paginatedEventResp.rows.map(eventModelToEventDTO),
+        });
+      });
   }
 
   // this probably shouldn't be needed long term, we should just fetch this with the event
