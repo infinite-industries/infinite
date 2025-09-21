@@ -63,24 +63,6 @@ export const actions = {
         }
       })
       .then((events) => {
-        if (events == null) {
-          return null
-        } else {
-          /* this is a hack to mix metadata into current-events. Once current-events is fixed to return events this
-             can be cleaned up
-           */
-          return apiService.get('/authenticated/events/admin-metadata')
-            .then((allAdminMetaDataResponse) => {
-              const adminMetaData = allAdminMetaDataResponse.eventAdminMetadata || []
-
-              return events.map(event => ({
-                ...event,
-                event_admin_meta_data: adminMetaData.find(metaData => metaData.event_id === event.id) || null
-              }))
-            })
-        }
-      })
-      .then((events) => {
         if (events !== null) {
           context.commit('POPULATE_VERIFIED_LIST', events)
         } else {

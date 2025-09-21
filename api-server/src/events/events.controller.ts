@@ -40,6 +40,10 @@ import {
   PaginationDto,
 } from './dto/pagination-dto';
 import { isNullOrUndefined } from '../utils';
+import { VenueModel } from 'src/venues/models/venue.model';
+import { DatetimeVenueModel } from './models/datetime-venue.model';
+import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
+import isAdminUser from 'src/authentication/is-admin-user';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -64,20 +68,19 @@ export class EventsController {
     description: 'current verified events',
     type: EventsResponse,
   })
-  getAllCurrentVerified(
-    @Query('embed') embed: string[] | string = [],
+  async getAllCurrentVerified(
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Req() request: Request,
   ): Promise<EventsResponse> {
-    if (typeof embed === 'string') {
-      embed = [embed, 'DATE_TIME'];
-    } else {
-      embed.push('DATE_TIME');
-    }
+    const isAdmin = await isAdminUser(request);
+
+    const include = isAdmin
+      ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel]
+      : [VenueModel, DatetimeVenueModel];
 
     const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+      include,
       where: {
         [Op.and]: [
           getCommonQueryTermsForEvents(true, tags, category),
@@ -144,13 +147,16 @@ export class EventsController {
     type: String,
     description: 'Filter events by category',
   })
-  getAllVerified(
+  async getAllVerified(
+    @Req() request: Request,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
     @Query('dateRange') dateRange?: string,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
+
+    const isUserAdmin = await isAdminUser(request);
 
     const [startDate, endDate] =
       this.validateAndExtractOptionalDateTimeFilters(dateRange);
@@ -164,6 +170,7 @@ export class EventsController {
         verifiedOnly: true,
         startDate,
         endDate,
+        isUserAdmin,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
