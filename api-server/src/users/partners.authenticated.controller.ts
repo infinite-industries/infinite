@@ -40,8 +40,10 @@ export class PartnersAuthenticatedController {
     type: PartnersListResponse,
   })
   async getAll(@Req() request: Request): Promise<PartnersListResponse> {
+    console.log('!!! try to get empty list');
     const isAdmin = await isAdminUser(request);
     if (!isAdmin) {
+      console.log('!!! FAILED');
       throw new ForbiddenException(FORBIDDEN_ERROR_MESSAGE);
     }
 

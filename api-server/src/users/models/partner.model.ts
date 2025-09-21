@@ -4,7 +4,6 @@ import {
   Model,
   PrimaryKey,
   Table,
-  Unique,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -26,8 +25,7 @@ export class PartnerModel extends Model<PartnerModel> {
   @Column
   id: string;
 
-  @Column
-  @Unique
+  @Column({ unique: true })
   name: string;
 
   @Column
