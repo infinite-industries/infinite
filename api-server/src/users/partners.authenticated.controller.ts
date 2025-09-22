@@ -99,15 +99,16 @@ export class PartnersAuthenticatedController {
   async associateUserWithPartner(
     @Body() associateRequest: AssociateUserPartnerRequest,
     @Req() request: Request,
-  ): Promise<{ message: string }> {
+  ): Promise<{ status: string; message: string }> {
     const isAdmin = await isAdminUser(request);
     if (!isAdmin) {
       throw new ForbiddenException(FORBIDDEN_ERROR_MESSAGE);
     }
 
     await this.partnersService.associateUserWithPartner(associateRequest);
-    
+
     return {
+      status: 'success',
       message: `User ${associateRequest.user_id} successfully associated with partner ${associateRequest.partner_id}`,
     };
   }

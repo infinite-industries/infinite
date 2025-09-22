@@ -101,6 +101,8 @@ describe('Users (e2e)', () => {
           expect(response.body.name).toBeDefined();
           expect(response.body.nickname).toBeDefined();
           expect(response.body.isInfiniteAdmin).toEqual(true);
+          expect(response.body.partners).toBeDefined();
+          expect(response.body.partners).toEqual([]);
 
           // Verify user exists in database
           const createdUser = await userModel.findByPk(response.body.id);
@@ -166,6 +168,23 @@ describe('Users (e2e)', () => {
         .expect(200)
         .then(async (response) => {
           expect(response.body.id).toEqual(userId);
+
+          // Verify partners are included in the response
+          expect(response.body.partners).toBeDefined();
+          expect(response.body.partners).toHaveLength(2);
+          expect(response.body.partners.map((p: any) => p.id)).toContain(
+            partner1.id,
+          );
+          expect(response.body.partners.map((p: any) => p.id)).toContain(
+            partner2.id,
+          );
+
+          // Verify partner structure in response
+          expect(response.body.partners[0]).toHaveProperty('id');
+          expect(response.body.partners[0]).toHaveProperty('name');
+          expect(response.body.partners[0]).toHaveProperty('logo_url');
+          expect(response.body.partners[0]).toHaveProperty('createdAt');
+          expect(response.body.partners[0]).toHaveProperty('updatedAt');
 
           // Verify user has partners associated in the database
           const userWithPartners = await userModel.findByPk(userId, {
