@@ -7,6 +7,7 @@ import { ChildProcessWithoutNullStreams } from 'child_process';
 import { StartedTestContainer } from 'testcontainers';
 import { TestingModule } from '@nestjs/testing';
 import { PartnerModel } from '../src/users/models/partner.model';
+import { UserModel } from '../src/users/models/user.model';
 import killApp from './test-helpers/e2e-stack/kill-app';
 import stopDatabase from './test-helpers/e2e-stack/stop-database';
 import isNotNullOrUndefined from '../src/utils/is-not-null-or-undefined';
@@ -23,6 +24,7 @@ let appUnderTest: ChildProcessWithoutNullStreams;
 let dbContainer: StartedTestContainer;
 
 let partnerModel: typeof PartnerModel;
+let userModel: typeof UserModel;
 let testingModule: TestingModule;
 
 let dbHostPort: number;
@@ -43,6 +45,7 @@ describe('Partners Authenticated (e2e)', () => {
     const databaseModels = await buildDbConnectionsForTests(dbHostPort);
 
     partnerModel = databaseModels.partnerModel;
+    userModel = databaseModels.userModel;
     testingModule = databaseModels.testingModule;
 
     console.info('test suite ready');
@@ -68,7 +71,7 @@ describe('Partners Authenticated (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await deleteAllPartners();
+    await deleteAllUsersAndPartners();
   });
 
   describe('GET /authenticated/partners', () => {
@@ -243,11 +246,173 @@ describe('Partners Authenticated (e2e)', () => {
     });
   });
 
+  describe('POST /authenticated/partners/associate', () => {
+    it('should return 403 when user is not authenticated', async () => {
+      const associationRequest = {
+        user_id: uuidv4(),
+        partner_id: uuidv4(),
+      };
+
+      return server
+        .post(`/${CURRENT_VERSION_URI}/authenticated/partners/associate`)
+        .send(associationRequest)
+        .expect(403);
+    });
+
+    it('should return 403 when user is authenticated but not admin', async () => {
+      const nonAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+      const associationRequest = {
+        user_id: uuidv4(),
+        partner_id: uuidv4(),
+      };
+
+      return server
+        .post(`/${CURRENT_VERSION_URI}/authenticated/partners/associate`)
+        .set({ 'x-access-token': nonAdminToken })
+        .send(associationRequest)
+        .expect(403);
+    });
+
+    it('should return 404 when user does not exist', async () => {
+      const adminToken = await createJwtForRandomUser();
+      const partner = await createPartner(generatePartnerRequest());
+
+      const associationRequest = {
+        user_id: uuidv4(), // Non-existent user
+        partner_id: partner.id,
+      };
+
+      return server
+        .post(`/${CURRENT_VERSION_URI}/authenticated/partners/associate`)
+        .set({ 'x-access-token': adminToken })
+        .send(associationRequest)
+        .expect(404)
+        .then((response) => {
+          expect(response.body.message).toContain('User with ID');
+          expect(response.body.message).toContain('not found');
+        });
+    });
+
+    it('should return 404 when partner does not exist', async () => {
+      const adminToken = await createJwtForRandomUser();
+      const user = await createUser();
+
+      const associationRequest = {
+        user_id: user.id,
+        partner_id: uuidv4(), // Non-existent partner
+      };
+
+      return server
+        .post(`/${CURRENT_VERSION_URI}/authenticated/partners/associate`)
+        .set({ 'x-access-token': adminToken })
+        .send(associationRequest)
+        .expect(404)
+        .then((response) => {
+          expect(response.body.message).toContain('Partner with ID');
+          expect(response.body.message).toContain('not found');
+        });
+    });
+
+    it('should successfully associate user with partner', async () => {
+      const adminToken = await createJwtForRandomUser();
+      const user = await createUser();
+      const partner = await createPartner(generatePartnerRequest());
+
+      const associationRequest = {
+        user_id: user.id,
+        partner_id: partner.id,
+      };
+
+      return server
+        .post(`/${CURRENT_VERSION_URI}/authenticated/partners/associate`)
+        .set({ 'x-access-token': adminToken })
+        .send(associationRequest)
+        .expect(201)
+        .then(async (response) => {
+          expect(response.body.message).toContain('successfully associated');
+          expect(response.body.message).toContain(user.id);
+          expect(response.body.message).toContain(partner.id);
+
+          // Verify the association was created in the database
+          const userWithPartners = await userModel.findByPk(user.id, {
+            include: [
+              {
+                model: PartnerModel,
+                as: 'partners',
+                through: { attributes: [] },
+              },
+            ],
+          });
+
+          expect(userWithPartners.partners).toHaveLength(1);
+          expect(userWithPartners.partners[0].id).toEqual(partner.id);
+        });
+    });
+
+    it('should return 409 when association already exists', async () => {
+      const adminToken = await createJwtForRandomUser();
+      const user = await createUser();
+      const partner = await createPartner(generatePartnerRequest());
+
+      const associationRequest = {
+        user_id: user.id,
+        partner_id: partner.id,
+      };
+
+      // Create the association first
+      await server
+        .post(`/${CURRENT_VERSION_URI}/authenticated/partners/associate`)
+        .set({ 'x-access-token': adminToken })
+        .send(associationRequest)
+        .expect(201);
+
+      // Try to create the same association again
+      return server
+        .post(`/${CURRENT_VERSION_URI}/authenticated/partners/associate`)
+        .set({ 'x-access-token': adminToken })
+        .send(associationRequest)
+        .expect(409)
+        .then((response) => {
+          expect(response.body.message).toContain('already associated');
+        });
+    });
+
+    it('should return 400 for invalid UUID format', async () => {
+      const adminToken = await createJwtForRandomUser();
+
+      const associationRequest = {
+        user_id: 'invalid-uuid',
+        partner_id: 'invalid-uuid',
+      };
+
+      return server
+        .post(`/${CURRENT_VERSION_URI}/authenticated/partners/associate`)
+        .set({ 'x-access-token': adminToken })
+        .send(associationRequest)
+        .expect(400);
+    });
+  });
+
+  function createUser(): Promise<UserModel> {
+    return userModel.create({
+      id: uuidv4(),
+      name: 'Test User',
+      nickname: 'testuser',
+      picture: 'https://example.com/avatar.jpg',
+    });
+  }
+
   function createPartner(partner: CreatePartnerRequest): Promise<PartnerModel> {
     return partnerModel.create({ ...partner, id: uuidv4() });
   }
 
-  function deleteAllPartners(): Promise<number> {
-    return partnerModel.destroy({ where: {} });
+  async function deleteAllUsersAndPartners(): Promise<void> {
+    // Delete all users first (this will cascade delete the mappings due to foreign key constraints)
+    await userModel.destroy({ where: {} });
+
+    // Delete all partners
+    await partnerModel.destroy({ where: {} });
   }
 });

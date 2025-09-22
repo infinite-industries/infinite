@@ -18,6 +18,7 @@ import { AdminAuthGuard } from '../authentication/AdminAuth.guard';
 import isAdminUser from '../authentication/is-admin-user';
 import { PartnersService } from './partners.service';
 import { CreatePartnerRequest } from './dto/create-partner-request';
+import { AssociateUserPartnerRequest } from './dto/associate-user-partner-request';
 import { PartnerDTO } from './dto/partner-dto';
 import { PartnersListResponse } from './dto/partners-list-response';
 import { Request } from 'express';
@@ -75,5 +76,39 @@ export class PartnersAuthenticatedController {
 
     const partner = await this.partnersService.create(createPartnerRequest);
     return new PartnerDTO(partner);
+  }
+
+  @Post('associate')
+  @ApiOperation({ summary: 'Associate a user with a partner (admin only)' })
+  @ApiResponse({
+    status: 201,
+    description: 'User successfully associated with partner',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - validation failed',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User or partner not found',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'User is already associated with this partner',
+  })
+  async associateUserWithPartner(
+    @Body() associateRequest: AssociateUserPartnerRequest,
+    @Req() request: Request,
+  ): Promise<{ message: string }> {
+    const isAdmin = await isAdminUser(request);
+    if (!isAdmin) {
+      throw new ForbiddenException(FORBIDDEN_ERROR_MESSAGE);
+    }
+
+    await this.partnersService.associateUserWithPartner(associateRequest);
+    
+    return {
+      message: `User ${associateRequest.user_id} successfully associated with partner ${associateRequest.partner_id}`,
+    };
   }
 }
