@@ -8,6 +8,7 @@ import { VenuesService } from '../../../src/venues/venues.service';
 import { AnnouncementModel } from '../../../src/announcements/models/announcement.model';
 import { AnnouncementsService } from '../../../src/announcements/announcements.service';
 import { PartnerModel } from '../../../src/users/models/partner.model';
+import { UserModel } from '../../../src/users/models/user.model';
 import BitlyService from '../../../src/events/bitly.service';
 import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston';
@@ -40,6 +41,7 @@ async function buildDbConnectionsForTests(
           DatetimeVenueModel,
           EventAdminMetadataModel,
           PartnerModel,
+          UserModel,
         ],
       }),
       SequelizeModule.forFeature([
@@ -49,6 +51,7 @@ async function buildDbConnectionsForTests(
         DatetimeVenueModel,
         EventAdminMetadataModel,
         PartnerModel,
+        UserModel,
       ]),
       WinstonModule.forRoot({
         transports: [
@@ -90,6 +93,9 @@ async function buildDbConnectionsForTests(
   const partnerModel = testingModule.get(
     `PartnerModel${NUXT_INTERNAL_POSTFIX}`,
   ) as typeof PartnerModel;
+  const userModel = testingModule.get(
+    `UserModel${NUXT_INTERNAL_POSTFIX}`,
+  ) as typeof UserModel;
 
   return {
     eventModel,
@@ -97,6 +103,7 @@ async function buildDbConnectionsForTests(
     datetimeVenueModel,
     announcementModel,
     partnerModel,
+    userModel,
     testingModule,
   };
 }
@@ -109,5 +116,6 @@ export type DatabaseModels = {
   datetimeVenueModel: typeof DatetimeVenueModel;
   announcementModel: typeof AnnouncementModel;
   partnerModel: typeof PartnerModel;
+  userModel: typeof UserModel;
   testingModule: TestingModule;
 };

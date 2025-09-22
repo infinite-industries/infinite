@@ -1,4 +1,5 @@
 import {
+  BelongsToMany,
   Column,
   IsUUID,
   Model,
@@ -6,6 +7,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserModel } from './user.model';
 
 const SAMPLE_DATE = new Date();
 
@@ -38,4 +40,13 @@ export class PartnerModel extends Model<PartnerModel> {
   @Column
   @ApiProperty({ example: SAMPLE_DATE })
   updatedAt: Date;
+
+  // Many-to-many association with users
+  @BelongsToMany(() => UserModel, {
+    through: 'users_partners_mappings',
+    foreignKey: 'partner_id',
+    otherKey: 'user_id',
+    as: 'users',
+  })
+  users: UserModel[];
 }

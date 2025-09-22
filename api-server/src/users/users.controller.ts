@@ -30,8 +30,11 @@ export class UsersController {
   async getCurrentUser(
     @Req() request: RequestWithUserInfo,
   ): Promise<UserInfoResp> {
+    console.log('!!! much here');
     const userInfo: UserInformation = request.userInformation;
     const userInfoToPersist = buildFromUserInfo(userInfo);
+
+    console.log('!!! user info: ' + JSON.stringify(userInfo, null, 4));
 
     // TODO There's no real need to persist user info to db at this point, this was done when we were going to have
     // user curated lists and such
