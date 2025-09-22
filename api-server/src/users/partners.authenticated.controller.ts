@@ -14,7 +14,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from '../authentication/auth.guard';
+import { AdminAuthGuard } from '../authentication/AdminAuth.guard';
 import isAdminUser from '../authentication/is-admin-user';
 import { PartnersService } from './partners.service';
 import { CreatePartnerRequest } from './dto/create-partner-request';
@@ -25,7 +25,7 @@ import { Request } from 'express';
 const FORBIDDEN_ERROR_MESSAGE = 'User does not have admin privileges';
 
 @Controller(`${VERSION_1_URI}/authenticated/partners`)
-@UseGuards(AuthGuard)
+@UseGuards(AdminAuthGuard)
 @ApiTags('partners -- authenticated')
 @ApiBearerAuth()
 @ApiResponse({ status: 403, description: 'Forbidden' })
@@ -40,10 +40,8 @@ export class PartnersAuthenticatedController {
     type: PartnersListResponse,
   })
   async getAll(@Req() request: Request): Promise<PartnersListResponse> {
-    console.log('!!! try to get empty list');
     const isAdmin = await isAdminUser(request);
     if (!isAdmin) {
-      console.log('!!! FAILED');
       throw new ForbiddenException(FORBIDDEN_ERROR_MESSAGE);
     }
 

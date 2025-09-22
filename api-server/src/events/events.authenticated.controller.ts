@@ -16,7 +16,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from '../authentication/auth.guard';
+import { AdminAuthGuard } from '../authentication/AdminAuth.guard';
 import { EventIdResponse } from './dto/event-id-response';
 import { SingleEventResponse } from './dto/single-event-response';
 import { EventsService } from './events.service';
@@ -42,7 +42,7 @@ import {
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
-@UseGuards(AuthGuard)
+@UseGuards(AdminAuthGuard)
 @ApiTags('events -- authenticated')
 @ApiBearerAuth()
 @ApiResponse({ status: 403, description: 'Forbidden' })

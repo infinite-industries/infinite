@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { VERSION_1_URI } from '../utils/versionts';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from '../authentication/auth.guard';
+import { AdminAuthGuard } from '../authentication/AdminAuth.guard';
 import { AnnouncementsService } from './announcements.service';
 import { CreateOrUpdateAnnouncementRequest } from './dto/create-or-update-announcement-request';
 import { AnnouncementResponse } from './dto/announcement-response';
@@ -31,7 +31,7 @@ export class AnnouncementsController {
   }
 
   @Post('/ensure-one-announcement')
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({
     summary:
       'Create an announcement if it does not exist or update the current one if present.',
@@ -48,7 +48,7 @@ export class AnnouncementsController {
   }
 
   @Put('/:id')
-  @UseGuards(AuthGuard)
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'update an existing announcement' })
   updateAnnouncement(
     @Param() params: FindByIdParams,

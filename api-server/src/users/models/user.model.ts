@@ -1,5 +1,5 @@
 import {
-   BelongsToMany,
+  BelongsToMany,
   Column,
   DataType,
   IsUUID,

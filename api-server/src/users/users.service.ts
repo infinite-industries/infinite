@@ -18,8 +18,8 @@ export default class UsersService {
     };
 
     return this.usersModel
-      .findOrCreate({ 
-        where: { name }, 
+      .findOrCreate({
+        where: { name },
         defaults: userToInsert,
         include: [
           {
