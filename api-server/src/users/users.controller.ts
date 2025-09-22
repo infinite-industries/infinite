@@ -6,7 +6,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from '../authentication/auth.guard';
+import { AuthenticatedUserGuard } from '../authentication/authenticated-user.guard';
 import { Request } from 'express';
 import { UserInformation } from '../authentication/parse-jwt';
 import UsersService from './users.service';
@@ -19,7 +19,7 @@ export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
   @Get('current')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthenticatedUserGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Return information about the authenticated user' })
   @ApiResponse({
