@@ -236,6 +236,137 @@ describe('Users (e2e)', () => {
     });
   });
 
+  describe('GET /users/current/partners', () => {
+    it('should return 403 when user is not authenticated', async () => {
+      return server.get(`/${CURRENT_VERSION_URI}/users/current/partners`).expect(403);
+    });
+
+    it('should return empty partners list for user with no partners', async () => {
+      const userToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': true,
+      });
+
+      // Create a user first
+      await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': userToken })
+        .expect(200);
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/users/current/partners`)
+        .set({ 'x-access-token': userToken })
+        .expect(200)
+        .then((response) => {
+          // Verify response structure
+          expect(response.body).toBeDefined();
+          expect(response.body.partners).toBeDefined();
+          expect(response.body.partners).toEqual([]);
+        });
+    });
+
+    it('should return partners list for user with associated partners', async () => {
+      const userToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': true,
+      });
+
+      // Create a user first
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': userToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Create some partners
+      const partner1 = await createPartner(generatePartnerRequest());
+      const partner2 = await createPartner(generatePartnerRequest());
+
+      // Associate user with partners
+      await associateUserWithPartners(userId, [partner1.id, partner2.id]);
+
+      // Call the partners endpoint
+      return server
+        .get(`/${CURRENT_VERSION_URI}/users/current/partners`)
+        .set({ 'x-access-token': userToken })
+        .expect(200)
+        .then(async (response) => {
+          // Verify response structure
+          expect(response.body).toBeDefined();
+          expect(response.body.partners).toBeDefined();
+          expect(response.body.partners).toHaveLength(2);
+
+          // Verify correct partners are returned
+          expect(response.body.partners.map((p: any) => p.id)).toContain(
+            partner1.id,
+          );
+          expect(response.body.partners.map((p: any) => p.id)).toContain(
+            partner2.id,
+          );
+
+          // Verify partner structure in response
+          expect(response.body.partners[0]).toHaveProperty('id');
+          expect(response.body.partners[0]).toHaveProperty('name');
+          expect(response.body.partners[0]).toHaveProperty('logo_url');
+          expect(response.body.partners[0]).toHaveProperty('createdAt');
+          expect(response.body.partners[0]).toHaveProperty('updatedAt');
+
+          // Verify partner data matches what was created
+          const returnedPartner1 = response.body.partners.find(
+            (p: any) => p.id === partner1.id,
+          );
+          const returnedPartner2 = response.body.partners.find(
+            (p: any) => p.id === partner2.id,
+          );
+
+          expect(returnedPartner1.name).toEqual(partner1.name);
+          expect(returnedPartner1.logo_url).toEqual(partner1.logo_url);
+          expect(returnedPartner2.name).toEqual(partner2.name);
+          expect(returnedPartner2.logo_url).toEqual(partner2.logo_url);
+        });
+    });
+
+    it('should work for both admin and non-admin users', async () => {
+      const adminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': true,
+      });
+
+      const nonAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create users
+      await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': adminToken })
+        .expect(200);
+
+      await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': nonAdminToken })
+        .expect(200);
+
+      // Test admin user can access partners endpoint
+      await server
+        .get(`/${CURRENT_VERSION_URI}/users/current/partners`)
+        .set({ 'x-access-token': adminToken })
+        .expect(200)
+        .then((response) => {
+          expect(response.body.partners).toBeDefined();
+          expect(response.body.partners).toEqual([]);
+        });
+
+      // Test non-admin user can access partners endpoint
+      await server
+        .get(`/${CURRENT_VERSION_URI}/users/current/partners`)
+        .set({ 'x-access-token': nonAdminToken })
+        .expect(200)
+        .then((response) => {
+          expect(response.body.partners).toBeDefined();
+          expect(response.body.partners).toEqual([]);
+        });
+    });
+  });
+
   async function createPartner(partnerData: any): Promise<PartnerModel> {
     return partnerModel.create({
       ...partnerData,
