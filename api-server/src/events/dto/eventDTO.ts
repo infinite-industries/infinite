@@ -17,6 +17,9 @@ export default class EventDTO {
   @ApiProperty({ example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa' })
   venue_id: string;
 
+  @ApiProperty({ example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa', required: false })
+  owning_partner_id?: string;
+
   @ApiProperty({ example: 'Infinite Gallery Opening' })
   title: string;
 

@@ -1,4 +1,5 @@
 import {
+  BelongsTo,
   BelongsToMany,
   Column,
   DataType,
@@ -14,6 +15,7 @@ import { VenueModel } from '../../venues/models/venue.model';
 import { ApiProperty } from '@nestjs/swagger';
 import { DatetimeVenueModel } from './datetime-venue.model';
 import { EventAdminMetadataModel } from './event-admin-metadata.model';
+import { PartnerModel } from '../../users/models/partner.model';
 import { Optional, Utils } from 'sequelize';
 
 const EXAMPLE_DATE = new Date();
@@ -35,6 +37,11 @@ export class EventModel extends Model<EventModel> {
   @ApiProperty({ example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa' })
   @ForeignKey(() => VenueModel)
   venue_id: string;
+
+  @Column
+  @ApiProperty({ example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa', required: false })
+  @ForeignKey(() => PartnerModel)
+  owning_partner_id: string | null;
 
   @Column
   @ApiProperty({ example: 'Infinite Gallery Opening' })
@@ -141,4 +148,7 @@ export class EventModel extends Model<EventModel> {
 
   @HasOne(() => EventAdminMetadataModel)
   event_admin_metadata?: EventAdminMetadataModel;
+
+  @BelongsTo(() => PartnerModel)
+  owning_partner?: PartnerModel;
 }

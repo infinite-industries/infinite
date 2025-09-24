@@ -1,6 +1,7 @@
 import {
   BelongsToMany,
   Column,
+  HasMany,
   IsUUID,
   Model,
   PrimaryKey,
@@ -8,6 +9,7 @@ import {
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserModel } from './user.model';
+import { EventModel } from '../../events/models/event.model';
 
 const SAMPLE_DATE = new Date();
 
@@ -49,4 +51,11 @@ export class PartnerModel extends Model<PartnerModel> {
     as: 'users',
   })
   users: UserModel[];
+
+  // One-to-many association with events
+  @HasMany(() => EventModel, {
+    foreignKey: 'owning_partner_id',
+    as: 'events',
+  })
+  events: EventModel[];
 }
