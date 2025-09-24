@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { VenueModel } from '../../venues/models/venue.model';
 import { StartEndTimePairs } from '../../shared-types/start-end-time-pairs';
+import { PartnerDTO } from '../../users/dto/partner-dto';
 
 const EXAMPLE_DATE = new Date();
 const EXAMPLE_START_DATE = new Date(
@@ -99,6 +100,21 @@ export default class EventDTO {
 
   @ApiProperty()
   venue: VenueModel;
+
+  @ApiProperty({ 
+    type: () => PartnerDTO, 
+    nullable: true,
+    required: false,
+    description: 'The partner that owns this event',
+    example: {
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      name: 'TechCorp Inc.',
+      logo_url: 'https://example.com/logo.png',
+      createdAt: '2024-01-15T10:30:00.000Z',
+      updatedAt: '2024-01-15T10:30:00.000Z'
+    }
+  })
+  owning_partner?: PartnerDTO;
 
   @ApiProperty({
     example: {
