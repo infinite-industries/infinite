@@ -8,6 +8,7 @@ import {
 } from '../src/events/models/event.model';
 import { VenueModel } from '../src/venues/models/venue.model';
 import { DatetimeVenueModel } from '../src/events/models/datetime-venue.model';
+import { PartnerModel } from '../src/users/models/partner.model';
 import { TestingModule } from '@nestjs/testing';
 import { afterAllStackShutdown } from './test-helpers/after-all-stack-shutdown';
 import {
@@ -33,6 +34,7 @@ describe('Events API', () => {
   let eventModel: typeof EventModel;
   let venueModel: typeof VenueModel;
   let datetimeVenueModel: typeof DatetimeVenueModel;
+  let partnerModel: typeof PartnerModel;
   let testingModule: TestingModule;
 
   let dbHostPort: number;
@@ -46,6 +48,7 @@ describe('Events API', () => {
       eventModel,
       venueModel,
       datetimeVenueModel,
+      partnerModel,
       testingModule,
       dbHostPort,
     } = await bringUpStackAndEstablishDbEntities());
@@ -62,6 +65,7 @@ describe('Events API', () => {
       datetimeVenueModel,
       eventModel,
       venueModel,
+      partnerModel,
     });
   });
 
@@ -989,6 +993,119 @@ describe('Events API', () => {
         expect(body.message).toContain(
           'startDate must be before endDate in dateRange parameter',
         );
+      });
+  });
+
+  it('/events/{eventId} should include owning_partner when event has a partner', async () => {
+    // Create a partner
+    const partner = await partnerModel.create({
+      id: uuidv4(),
+      name: 'Test Partner Organization',
+      logo_url: 'https://example.com/logo.png',
+    });
+
+    // Create an event with the partner
+    const event = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { 
+        verified: true,
+        owning_partner_id: partner.id,
+      },
+    );
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/${event.id}`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const { event: eventReturned, status } = body;
+        
+        expect(status).toEqual('success');
+        expect(eventReturned).toHaveProperty('owning_partner_id', partner.id);
+        expect(eventReturned).toHaveProperty('owning_partner');
+        expect(eventReturned.owning_partner).toHaveProperty('id', partner.id);
+        expect(eventReturned.owning_partner).toHaveProperty('name', partner.name);
+        expect(eventReturned.owning_partner).toHaveProperty('logo_url', partner.logo_url);
+        expect(eventReturned.owning_partner).toHaveProperty('createdAt');
+        expect(eventReturned.owning_partner).toHaveProperty('updatedAt');
+      });
+  });
+
+  it('/events/{eventId} should not include owning_partner when event has no partner', async () => {
+    // Create an event without a partner
+    const event = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+    );
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/${event.id}`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const { event: eventReturned, status } = body;
+        
+        expect(status).toEqual('success');
+        expect(eventReturned).toHaveProperty('owning_partner_id', null);
+        expect(eventReturned.owning_partner).toBeUndefined();
+      });
+  });
+
+  it('/events/verified should include owning_partner in paginated results when events have partners', async () => {
+    // Create a partner
+    const partner = await partnerModel.create({
+      id: uuidv4(),
+      name: 'Test Partner for Pagination',
+      logo_url: 'https://example.com/pagination-logo.png',
+    });
+
+    // Create events with the partner
+    const [eventsWithPartner] = await createListOfFutureEventsInChronologicalOrder(
+      3,
+      { 
+        verified: true,
+        owning_partner_id: partner.id,
+      },
+    );
+
+    // Create events without partners
+    await createListOfFutureEventsInChronologicalOrder(
+      2,
+      { verified: true },
+    );
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/verified?page=1&pageSize=10`)
+      .expect(200)
+      .then(async ({ body }) => {
+        const { events, status } = body;
+        
+        expect(status).toEqual('success');
+        expect(events.length).toBeGreaterThanOrEqual(3);
+
+        // Find events with partners
+        const eventsWithPartners = events.filter(event => event.owning_partner_id);
+        expect(eventsWithPartners.length).toBeGreaterThanOrEqual(3);
+
+        // Verify partner data is included
+        eventsWithPartners.forEach(event => {
+          expect(event).toHaveProperty('owning_partner_id', partner.id);
+          expect(event).toHaveProperty('owning_partner');
+          expect(event.owning_partner).toHaveProperty('id', partner.id);
+          expect(event.owning_partner).toHaveProperty('name', partner.name);
+          expect(event.owning_partner).toHaveProperty('logo_url', partner.logo_url);
+        });
+
+        // Find events without partners
+        const eventsWithoutPartners = events.filter(event => !event.owning_partner_id);
+        expect(eventsWithoutPartners.length).toBeGreaterThanOrEqual(2);
+
+        // Verify no partner data for events without partners
+        eventsWithoutPartners.forEach(event => {
+          expect(event.owning_partner).toBeUndefined();
+        });
       });
   });
 });
