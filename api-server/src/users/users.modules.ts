@@ -6,10 +6,11 @@ import { UserModel } from './models/user.model';
 import { PartnerModel } from './models/partner.model';
 import { PartnersService } from './partners.service';
 import { PartnersAuthenticatedController } from './partners.authenticated.controller';
+import { PartnersController } from './partners.controller';
 
 @Module({
   imports: [SequelizeModule.forFeature([UserModel, PartnerModel])],
-  controllers: [UsersController, PartnersAuthenticatedController],
+  controllers: [UsersController, PartnersAuthenticatedController, PartnersController],
   providers: [UsersService, PartnersService],
 })
 export class UsersModules {}

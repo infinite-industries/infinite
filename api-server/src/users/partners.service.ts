@@ -23,6 +23,12 @@ export class PartnersService {
     });
   }
 
+  async findByName(name: string): Promise<PartnerModel | null> {
+    return this.partnersModel.findOne({
+      where: { name },
+    });
+  }
+
   async create(
     createPartnerRequest: CreatePartnerRequest,
   ): Promise<PartnerModel> {
