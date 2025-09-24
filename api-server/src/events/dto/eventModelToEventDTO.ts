@@ -2,6 +2,7 @@ import { EventModel } from '../models/event.model';
 import EventDTO from './eventDTO';
 import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';
 import { DatetimeVenueModel } from '../models/datetime-venue.model';
+import { PartnerDTO } from '../../users/dto/partner-dto';
 
 export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
   const date_times: DatetimeVenueModel[] = isNotNullOrUndefined(
@@ -41,6 +42,7 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
     title: eventModel.title,
     updatedAt: eventModel.updatedAt,
     venue_id: eventModel.venue_id,
+    owning_partner_id: eventModel.owning_partner_id,
     verified: eventModel.verified,
     website_link: eventModel.website_link,
     multi_day: eventModel.multi_day,
@@ -54,6 +56,15 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
           createdAt: eventModel.event_admin_metadata.createdAt,
           updatedAt: eventModel.event_admin_metadata.updatedAt,
         }
+      : undefined,
+    owning_partner: isNotNullOrUndefined(eventModel.owning_partner)
+      ? new PartnerDTO({
+          id: eventModel.owning_partner.id,
+          name: eventModel.owning_partner.name,
+          logo_url: eventModel.owning_partner.logo_url,
+          createdAt: eventModel.owning_partner.createdAt,
+          updatedAt: eventModel.owning_partner.updatedAt,
+        })
       : undefined,
   };
 }
