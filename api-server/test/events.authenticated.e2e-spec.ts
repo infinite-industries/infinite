@@ -23,6 +23,7 @@ import { assertEventsEqual } from './test-helpers/assert-events';
 import { assertOrderedByFirstStartTimeDescending } from './test-helpers/assertOrderedByFirstStartTimeDescending';
 import { createRandomEventWithDateTime } from './fakers/event.faker';
 import { v4 as uuidv4 } from 'uuid';
+import createJwtForRandomUser from './test-helpers/creaeteJwt';
 
 describe('Authenticated Events API', () => {
   const server = request('http://localhost:' + PORT);
@@ -901,6 +902,122 @@ describe('Authenticated Events API', () => {
         expect(eventReturned).toHaveProperty('owning_partner_id', null);
         expect(eventReturned.owning_partner).toBeUndefined();
       });
+  });
+
+  describe('Non-Admin Access Tests', () => {
+    let nonAdminToken: string;
+
+    beforeEach(async () => {
+      // Create a non-admin user token
+      nonAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing GET /authenticated/events', async () => {
+      await createListOfFutureEventsInChronologicalOrder(3);
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/authenticated/events`)
+        .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing GET /authenticated/events/admin-metadata', async () => {
+      return server
+        .get(`/${CURRENT_VERSION_URI}/authenticated/events/admin-metadata`)
+        .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing GET /authenticated/events/non-verified', async () => {
+      await createListOfFutureEventsInChronologicalOrder(3);
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/authenticated/events/non-verified`)
+        .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing GET /authenticated/events/:id', async () => {
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1);
+      const eventId = events[0].id;
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/authenticated/events/${eventId}`)
+        .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing PUT /authenticated/events/:id', async () => {
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1);
+      const eventId = events[0].id;
+
+      const updateData = {
+        title: 'Updated Event Title',
+        description: 'Updated event description',
+      };
+
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/${eventId}`)
+        .set('x-access-token', nonAdminToken)
+        .send(updateData)
+        .expect(403);
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing PUT /authenticated/events/verify/:id', async () => {
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1);
+      const eventId = events[0].id;
+
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${eventId}`)
+        .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing DELETE /authenticated/events/:id', async () => {
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1);
+      const eventId = events[0].id;
+
+      return server
+        .delete(`/${CURRENT_VERSION_URI}/authenticated/events/${eventId}`)
+        .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing PUT /authenticated/events/:id/admin-metadata', async () => {
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1);
+      const eventId = events[0].id;
+
+      const adminMetadata = {
+        reviewed_by_org: true,
+        accessibility_notes: 'Updated accessibility information',
+      };
+
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/${eventId}/admin-metadata`)
+        .set('x-access-token', nonAdminToken)
+        .send(adminMetadata)
+        .expect(403);
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing GET /authenticated/events with query parameters', async () => {
+      await createListOfFutureEventsInChronologicalOrder(5);
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/authenticated/events?page=1&pageSize=10&tags=music&category=concert`)
+        .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
+
+    it('should return 403 Forbidden for non-admin user accessing GET /authenticated/events with dateRange filter', async () => {
+      await createListOfFutureEventsInChronologicalOrder(3);
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/authenticated/events?dateRange=2024-01-01T00:00:00.000Z/2024-12-31T23:59:59.999Z`)
+        .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
   });
 
   async function createListOfFutureEventsInChronologicalOrder(

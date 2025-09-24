@@ -6,6 +6,7 @@ import {
   Param,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { VERSION_1_URI } from '../utils/versionts';
@@ -40,16 +41,24 @@ import {
   PaginationDto,
 } from './dto/pagination-dto';
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
+import { AuthenticatedUserGuard } from '../authentication/authenticated-user.guard';
+import { PartnerAdminGuard } from '../authentication/PartnerAdmin.guard';
+import UsersService from '../users/users.service';
+import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
-@UseGuards(AdminAuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('events -- authenticated')
 @ApiBearerAuth()
 @ApiResponse({ status: 403, description: 'Forbidden' })
 export default class EventsAuthenticatedController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    private readonly eventsService: EventsService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Get()
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiBearerAuth()
@@ -129,6 +138,7 @@ export default class EventsAuthenticatedController {
 
   // this probably shouldn't be needed long term, we should just fetch this with the event
   @Get('/admin-metadata')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Get all admin metadata for all events' })
   getEventAdminMetadata(): Promise<EventAdminMetadataListResponse> {
     return this.eventsService
@@ -140,6 +150,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Get('non-verified')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({
     summary: 'Get events that have not yet been verified (admin only)',
   })
@@ -159,7 +170,34 @@ export default class EventsAuthenticatedController {
       .then((events) => new EventsResponse({ events }));
   }
 
+  @Get('non-verified-for-partners')
+  @UseGuards(PartnerAdminGuard)
+  @ApiOperation({
+    summary: `Get events that have not yet been verified filtered by the partners you belong
+    to (partner-admin or admin only). If you are an infinite admin this will act just like non-verified`,
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiBearerAuth()
+  getAllNonVerifiedForPartnersBelongToTheCurrentUser(
+    @Query('embed') embed: string[] | string = [],
+    @Req() request: RequestWithUserInfo,
+  ): Promise<EventsResponse> {
+    const user = this.userService.ensureCurrentUserByName(request);
+
+    // !!! TODO -- ADD OUR FILTER HERE
+    const findOptions = {
+      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+      where: { verified: false },
+    };
+
+    return this.eventsService
+      .findAll(findOptions)
+      .then((events) => events.map(eventModelToEventDTO))
+      .then((events) => new EventsResponse({ events }));
+  }
+
   @Get('/:id')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({
     summary: 'Get a single event with no filters applied (authenticated only)',
   })
@@ -177,6 +215,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Put(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Update fields on an existing event' })
   @ApiImplicitParam({ name: 'id', type: String })
   updateEvent(
@@ -196,6 +235,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Put('/verify/:id')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({
     summary: 'Verify the event, making it visible to the public',
   })
@@ -209,6 +249,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Delete the event' })
   @ApiImplicitParam({ name: 'id', type: String })
   deleteEvent(@Param() params: FindByIdParams): Promise<EventIdResponse> {
@@ -220,6 +261,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Put(':id/admin-metadata')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Set admin metadata information for an event' })
   @ApiImplicitParam({ name: 'id', type: String })
   upsertAdminMetadata(

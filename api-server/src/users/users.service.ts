@@ -2,14 +2,42 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserModel } from './models/user.model';
 import { PartnerModel } from './models/partner.model';
-import NewUser from './dto/new-user';
+import NewUser, { buildFromUserInfo } from './dto/new-user';
 import { v4 as uuidv4 } from 'uuid';
+import { RequestWithUserInfo } from './dto/RequestWithUserInfo';
+import { UserInformation } from '../authentication/parse-jwt';
+import { UserInfoResp } from './dto/user-info-resp';
+import { PartnerDTO } from './dto/partner-dto';
+import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 
 @Injectable()
 export default class UsersService {
   constructor(@InjectModel(UserModel) private usersModel: typeof UserModel) {}
 
-  async ensureByName(user: NewUser): Promise<UserModel> {
+  async ensureCurrentUserByName(
+    request: RequestWithUserInfo,
+  ): Promise<UserInfoResp> {
+    const userInfo: UserInformation = request.userInformation;
+    const userInfoToPersist = buildFromUserInfo(userInfo);
+
+    const persistedUserInfo = await this.ensureByName(userInfoToPersist);
+
+    return new UserInfoResp({
+      id: persistedUserInfo.id,
+      name: userInfo.decodedToken.name,
+      nickname: userInfo.decodedToken.nickname,
+      isInfiniteAdmin: userInfo.isInfiniteAdmin,
+      isOwnerAdmin: isNotNullOrUndefined(persistedUserInfo.partners)
+        ? persistedUserInfo.partners.length > 0
+        : false,
+      venueIDs: userInfo.venueIds,
+      partners:
+        persistedUserInfo.partners?.map((partner) => new PartnerDTO(partner)) ||
+        [],
+    });
+  }
+
+  private async ensureByName(user: NewUser): Promise<UserModel> {
     const name = user.name;
 
     const userToInsert = {

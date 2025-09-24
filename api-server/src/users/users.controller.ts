@@ -14,6 +14,7 @@ import { buildFromUserInfo } from './dto/new-user';
 import { UserInfoResp } from './dto/user-info-resp';
 import { PartnerDTO } from './dto/partner-dto';
 import { PartnersListResponse } from './dto/partners-list-response';
+import { RequestWithUserInfo } from './dto/RequestWithUserInfo';
 
 @Controller(`${VERSION_1_URI}/users`)
 @ApiTags('users')
@@ -32,23 +33,7 @@ export class UsersController {
   async getCurrentUser(
     @Req() request: RequestWithUserInfo,
   ): Promise<UserInfoResp> {
-    const userInfo: UserInformation = request.userInformation;
-    const userInfoToPersist = buildFromUserInfo(userInfo);
-
-    const persistedUserInfo = await this.userService.ensureByName(
-      userInfoToPersist,
-    );
-
-    return new UserInfoResp({
-      id: persistedUserInfo.id,
-      name: userInfo.decodedToken.name,
-      nickname: userInfo.decodedToken.nickname,
-      isInfiniteAdmin: userInfo.isInfiniteAdmin,
-      venueIDs: userInfo.venueIds,
-      partners:
-        persistedUserInfo.partners?.map((partner) => new PartnerDTO(partner)) ||
-        [],
-    });
+    return await this.userService.ensureCurrentUserByName(request);
   }
 
   @Get('current/partners')
@@ -71,11 +56,8 @@ export class UsersController {
   async getPartnersForUser(
     @Req() request: RequestWithUserInfo,
   ): Promise<PartnersListResponse> {
-    const userInfo: UserInformation = request.userInformation;
-    const userInfoToPersist = buildFromUserInfo(userInfo);
-
-    const persistedUserInfo = await this.userService.ensureByName(
-      userInfoToPersist,
+    const persistedUserInfo = await this.userService.ensureCurrentUserByName(
+      request,
     );
 
     return new PartnersListResponse(
@@ -83,8 +65,4 @@ export class UsersController {
         [],
     );
   }
-}
-
-interface RequestWithUserInfo extends Request {
-  userInformation: UserInformation;
 }
