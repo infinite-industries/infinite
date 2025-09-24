@@ -36,6 +36,7 @@ import UpsertEventAdminMetadataRequest from './dto/upsert-event-admin-metadata-r
 import { ensureEmbedQueryStringIsArray } from '../utils/get-options-for-events-service-from-embeds-query-param';
 import { Nullable } from '../utils/NullableOrUndefinable';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
+import { PartnerModel } from '../users/models/partner.model';
 
 @Injectable()
 export class EventsService {
@@ -47,6 +48,8 @@ export class EventsService {
     private dateTimeVenueModel: typeof DatetimeVenueModel,
     @InjectModel(VenueModel)
     private venueModel: typeof VenueModel,
+    @InjectModel(PartnerModel)
+    private partnerModel: typeof PartnerModel,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
     private readonly bitlyService: BitlyService,
@@ -56,7 +59,7 @@ export class EventsService {
   async findById(id: string, findOptions?: FindOptions): Promise<EventModel> {
     let options = {
       where: { id },
-      include: [DatetimeVenueModel, VenueModel],
+      include: [DatetimeVenueModel, VenueModel, PartnerModel],
     };
 
     if (findOptions) {
@@ -69,7 +72,15 @@ export class EventsService {
   }
 
   findAll(findOptions?: FindOptions): Promise<EventModel[]> {
-    return this.eventModel.findAll(findOptions);
+    const defaultOptions = {
+      include: [DatetimeVenueModel, VenueModel, PartnerModel],
+    };
+    
+    const mergedOptions = findOptions 
+      ? { ...defaultOptions, ...findOptions }
+      : defaultOptions;
+      
+    return this.eventModel.findAll(mergedOptions);
   }
 
   async findAllPaginated({
@@ -168,6 +179,21 @@ export class EventsService {
         });
       }
 
+      // Fetch partners for events that have owning_partner_id
+      const partnerIds = paginatedRows
+        .map(({ owning_partner_id }) => owning_partner_id)
+        .filter(isNotNullOrUndefined);
+      
+      const partners = partnerIds.length > 0 
+        ? await this.partnerModel.findAll({
+            where: {
+              id: {
+                [Op.or]: partnerIds,
+              },
+            },
+          })
+        : [];
+
       paginatedRows.forEach((event) => {
         const dateTimesForEvent = dateTimes.filter(
           ({ event_id }) => event_id === event.id,
@@ -178,8 +204,14 @@ export class EventsService {
           ? eventAdminMetadata.find(({ event_id }) => event_id === event.id)
           : undefined;
 
+        // Find and assign the corresponding partner
+        const partnerForEvent = event.owning_partner_id
+          ? partners.find(({ id }) => id === event.owning_partner_id)
+          : undefined;
+
         event.date_times = dateTimesForEvent;
         event.event_admin_metadata = adminMetadataForEvent;
+        event.owning_partner = partnerForEvent;
       });
 
       const totalCount = await this.getEventCountWithFilters(
