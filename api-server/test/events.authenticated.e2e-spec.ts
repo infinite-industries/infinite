@@ -8,6 +8,7 @@ import {
 } from '../src/events/models/event.model';
 import { VenueModel } from '../src/venues/models/venue.model';
 import { DatetimeVenueModel } from '../src/events/models/datetime-venue.model';
+import { PartnerModel } from '../src/users/models/partner.model';
 import { TestingModule } from '@nestjs/testing';
 import startDatabase from './test-helpers/e2e-stack/start-database';
 import runMigrations from './test-helpers/e2e-stack/run-migrations';
@@ -32,6 +33,7 @@ describe('Authenticated Events API', () => {
   let eventModel: typeof EventModel;
   let venueModel: typeof VenueModel;
   let datetimeVenueModel: typeof DatetimeVenueModel;
+  let partnerModel: typeof PartnerModel;
   let testingModule: TestingModule;
 
   let dbHostPort: number;
@@ -53,6 +55,7 @@ describe('Authenticated Events API', () => {
     eventModel = databaseModels.eventModel;
     venueModel = databaseModels.venueModel;
     datetimeVenueModel = databaseModels.datetimeVenueModel;
+    partnerModel = databaseModels.partnerModel;
 
     testingModule = databaseModels.testingModule;
 
@@ -65,6 +68,7 @@ describe('Authenticated Events API', () => {
     await datetimeVenueModel.destroy({ where: {} });
     await eventModel.destroy({ where: {} });
     await venueModel.destroy({ where: {} });
+    await partnerModel.destroy({ where: {} });
 
     return Promise.resolve();
   });
@@ -715,6 +719,187 @@ describe('Authenticated Events API', () => {
 
           assertEventsEqual(paginatedEventReturned, expectedEvent);
         }
+      });
+  });
+
+  it('/authenticated/events should include owning_partner in paginated results when events have partners', async () => {
+    // Create a partner
+    const partner = await partnerModel.create({
+      id: uuidv4(),
+      name: 'Test Partner for Authenticated Events',
+      logo_url: 'https://example.com/auth-events-logo.png',
+    });
+
+    // Create events with the partner
+    const [eventsWithPartner] = await createListOfFutureEventsInChronologicalOrder(
+      3,
+      {
+        verified: true,
+        owning_partner_id: partner.id,
+      },
+    );
+
+    // Create events without partners
+    await createListOfFutureEventsInChronologicalOrder(
+      2,
+      { verified: true },
+    );
+
+    const token = await login();
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/authenticated/events?page=1&pageSize=10`)
+      .set('x-access-token', token)
+      .expect(200)
+      .then(async ({ body }) => {
+        const { events, status } = body;
+
+        expect(status).toEqual('success');
+        expect(events.length).toBeGreaterThanOrEqual(3);
+
+        // Find events with partners
+        const eventsWithPartners = events.filter(event => event.owning_partner_id);
+        expect(eventsWithPartners.length).toBeGreaterThanOrEqual(3);
+
+        // Verify partner data is included
+        eventsWithPartners.forEach(event => {
+          expect(event).toHaveProperty('owning_partner_id', partner.id);
+          expect(event).toHaveProperty('owning_partner');
+          expect(event.owning_partner).toHaveProperty('id', partner.id);
+          expect(event.owning_partner).toHaveProperty('name', partner.name);
+          expect(event.owning_partner).toHaveProperty('logo_url', partner.logo_url);
+        });
+
+        // Find events without partners
+        const eventsWithoutPartners = events.filter(event => !event.owning_partner_id);
+        expect(eventsWithoutPartners.length).toBeGreaterThanOrEqual(2);
+
+        // Verify no partner data for events without partners
+        eventsWithoutPartners.forEach(event => {
+          expect(event.owning_partner).toBeUndefined();
+        });
+      });
+  });
+
+  it('/authenticated/events/non-verified should include owning_partner when non-verified events have partners', async () => {
+    // Create a partner
+    const partner = await partnerModel.create({
+      id: uuidv4(),
+      name: 'Test Partner for Non-Verified Events',
+      logo_url: 'https://example.com/non-verified-logo.png',
+    });
+
+    // Create non-verified events with the partner
+    const [eventsWithPartner] = await createListOfFutureEventsInChronologicalOrder(
+      2,
+      {
+        verified: false,
+        owning_partner_id: partner.id,
+      },
+    );
+
+    // Create non-verified events without partners
+    await createListOfFutureEventsInChronologicalOrder(
+      1,
+      { verified: false },
+    );
+
+    const token = await login();
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/authenticated/events/non-verified`)
+      .set('x-access-token', token)
+      .expect(200)
+      .then(async ({ body }) => {
+        const { events, status } = body;
+
+        expect(status).toEqual('success');
+        expect(events.length).toEqual(3);
+
+        // Find events with partners
+        const eventsWithPartners = events.filter(event => event.owning_partner_id);
+        expect(eventsWithPartners.length).toEqual(2);
+
+        // Verify partner data is included
+        eventsWithPartners.forEach(event => {
+          expect(event).toHaveProperty('owning_partner_id', partner.id);
+          expect(event).toHaveProperty('owning_partner');
+          expect(event.owning_partner).toHaveProperty('id', partner.id);
+          expect(event.owning_partner).toHaveProperty('name', partner.name);
+          expect(event.owning_partner).toHaveProperty('logo_url', partner.logo_url);
+        });
+
+        // Find events without partners
+        const eventsWithoutPartners = events.filter(event => !event.owning_partner_id);
+        expect(eventsWithoutPartners.length).toEqual(1);
+
+        // Verify no partner data for events without partners
+        eventsWithoutPartners.forEach(event => {
+          expect(event.owning_partner).toBeUndefined();
+        });
+      });
+  });
+
+  it('/authenticated/events/{id} should include owning_partner when event has a partner', async () => {
+    // Create a partner
+    const partner = await partnerModel.create({
+      id: uuidv4(),
+      name: 'Test Partner for Single Event',
+      logo_url: 'https://example.com/single-event-logo.png',
+    });
+
+    // Create an event with the partner
+    const event = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      {
+        verified: true,
+        owning_partner_id: partner.id,
+      },
+    );
+
+    const token = await login();
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/authenticated/events/${event.id}`)
+      .set('x-access-token', token)
+      .expect(200)
+      .then(async ({ body }) => {
+        const { event: eventReturned, status } = body;
+
+        expect(status).toEqual('success');
+        expect(eventReturned).toHaveProperty('owning_partner_id', partner.id);
+        expect(eventReturned).toHaveProperty('owning_partner');
+        expect(eventReturned.owning_partner).toHaveProperty('id', partner.id);
+        expect(eventReturned.owning_partner).toHaveProperty('name', partner.name);
+        expect(eventReturned.owning_partner).toHaveProperty('logo_url', partner.logo_url);
+        expect(eventReturned.owning_partner).toHaveProperty('createdAt');
+        expect(eventReturned.owning_partner).toHaveProperty('updatedAt');
+      });
+  });
+
+  it('/authenticated/events/{id} should not include owning_partner when event has no partner', async () => {
+    // Create an event without a partner
+    const event = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+    );
+
+    const token = await login();
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/authenticated/events/${event.id}`)
+      .set('x-access-token', token)
+      .expect(200)
+      .then(async ({ body }) => {
+        const { event: eventReturned, status } = body;
+
+        expect(status).toEqual('success');
+        expect(eventReturned).toHaveProperty('owning_partner_id', null);
+        expect(eventReturned.owning_partner).toBeUndefined();
       });
   });
 
