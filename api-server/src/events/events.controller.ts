@@ -42,6 +42,7 @@ import { isNullOrUndefined } from '../utils';
 import { VenueModel } from 'src/venues/models/venue.model';
 import { DatetimeVenueModel } from './models/datetime-venue.model';
 import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
+import { PartnerModel } from '../users/models/partner.model';
 import isAdminUser from 'src/authentication/is-admin-user';
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
 
@@ -76,8 +77,8 @@ export class EventsController {
     const isAdmin = await isAdminUser(request);
 
     const include = isAdmin
-      ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel]
-      : [VenueModel, DatetimeVenueModel];
+      ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel, PartnerModel]
+      : [VenueModel, DatetimeVenueModel, PartnerModel];
 
     const findOptions = {
       include,
