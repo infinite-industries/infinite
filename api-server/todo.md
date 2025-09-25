@@ -6,3 +6,4 @@ Todo -- Partner Integration Feature
   * When fetching an event we will return the partner it belongs to
 * Allow filtering on partner name
 * Delete this file
+* !!! ALOW OWNERS TO APPROVE
