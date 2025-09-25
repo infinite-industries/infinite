@@ -21,7 +21,7 @@ export class UserInfoResp {
   isInfiniteAdmin: boolean;
 
   @ApiProperty({ example: false })
-  isOwnerAdmin: boolean;
+  isPartnerAdmin: boolean;
 
   @ApiProperty({ example: [SAMPLE_GUID_2] })
   venueIDs?: string[];

@@ -45,6 +45,7 @@ import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
 import { PartnerModel } from '../users/models/partner.model';
 import isAdminUser from 'src/authentication/is-admin-user';
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
+import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -72,9 +73,9 @@ export class EventsController {
   async getAllCurrentVerified(
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
-    @Req() request: Request,
+    @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
-    const isAdmin = await isAdminUser(request);
+    const isAdmin = request.userInformation?.isInfiniteAdmin || false;
 
     const include = isAdmin
       ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel, PartnerModel]
@@ -149,7 +150,7 @@ export class EventsController {
     description: 'Filter events by category',
   })
   async getAllVerified(
-    @Req() request: Request,
+    @Req() request: RequestWithUserInfo,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
@@ -157,7 +158,7 @@ export class EventsController {
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
 
-    const isUserAdmin = await isAdminUser(request);
+    const isUserAdmin = request.userInformation?.isInfiniteAdmin || false;
 
     const [startDate, endDate] =
       validateAndExtractOptionalDateTimeFilters(dateRange);
@@ -198,7 +199,7 @@ export class EventsController {
   getEventById(
     @Param() params: FindByIdParams,
     @Query('embed') embed: string[] | string = [],
-    @Req() request: Request,
+    @Req() request: RequestWithUserInfo,
   ): Promise<SingleEventResponse> {
     const id = params.id;
     const findOptions = {

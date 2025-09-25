@@ -1009,7 +1009,7 @@ describe('Events API', () => {
       eventModel,
       venueModel,
       datetimeVenueModel,
-      { 
+      {
         verified: true,
         owning_partner_id: partner.id,
       },
@@ -1020,13 +1020,19 @@ describe('Events API', () => {
       .expect(200)
       .then(async ({ body }) => {
         const { event: eventReturned, status } = body;
-        
+
         expect(status).toEqual('success');
         expect(eventReturned).toHaveProperty('owning_partner_id', partner.id);
         expect(eventReturned).toHaveProperty('owning_partner');
         expect(eventReturned.owning_partner).toHaveProperty('id', partner.id);
-        expect(eventReturned.owning_partner).toHaveProperty('name', partner.name);
-        expect(eventReturned.owning_partner).toHaveProperty('logo_url', partner.logo_url);
+        expect(eventReturned.owning_partner).toHaveProperty(
+          'name',
+          partner.name,
+        );
+        expect(eventReturned.owning_partner).toHaveProperty(
+          'logo_url',
+          partner.logo_url,
+        );
         expect(eventReturned.owning_partner).toHaveProperty('createdAt');
         expect(eventReturned.owning_partner).toHaveProperty('updatedAt');
       });
@@ -1046,7 +1052,7 @@ describe('Events API', () => {
       .expect(200)
       .then(async ({ body }) => {
         const { event: eventReturned, status } = body;
-        
+
         expect(status).toEqual('success');
         expect(eventReturned).toHaveProperty('owning_partner_id', null);
         expect(eventReturned.owning_partner).toBeUndefined();
@@ -1062,48 +1068,50 @@ describe('Events API', () => {
     });
 
     // Create events with the partner
-    const [eventsWithPartner] = await createListOfFutureEventsInChronologicalOrder(
-      3,
-      { 
+    const [eventsWithPartner] =
+      await createListOfFutureEventsInChronologicalOrder(3, {
         verified: true,
         owning_partner_id: partner.id,
-      },
-    );
+      });
 
     // Create events without partners
-    await createListOfFutureEventsInChronologicalOrder(
-      2,
-      { verified: true },
-    );
+    await createListOfFutureEventsInChronologicalOrder(2, { verified: true });
 
     return server
       .get(`/${CURRENT_VERSION_URI}/events/verified?page=1&pageSize=10`)
       .expect(200)
       .then(async ({ body }) => {
         const { events, status } = body;
-        
+
         expect(status).toEqual('success');
         expect(events.length).toBeGreaterThanOrEqual(3);
 
         // Find events with partners
-        const eventsWithPartners = events.filter(event => event.owning_partner_id);
+        const eventsWithPartners = events.filter(
+          (event) => event.owning_partner_id,
+        );
         expect(eventsWithPartners.length).toBeGreaterThanOrEqual(3);
 
         // Verify partner data is included
-        eventsWithPartners.forEach(event => {
+        eventsWithPartners.forEach((event) => {
           expect(event).toHaveProperty('owning_partner_id', partner.id);
           expect(event).toHaveProperty('owning_partner');
           expect(event.owning_partner).toHaveProperty('id', partner.id);
           expect(event.owning_partner).toHaveProperty('name', partner.name);
-          expect(event.owning_partner).toHaveProperty('logo_url', partner.logo_url);
+          expect(event.owning_partner).toHaveProperty(
+            'logo_url',
+            partner.logo_url,
+          );
         });
 
         // Find events without partners
-        const eventsWithoutPartners = events.filter(event => !event.owning_partner_id);
+        const eventsWithoutPartners = events.filter(
+          (event) => !event.owning_partner_id,
+        );
         expect(eventsWithoutPartners.length).toBeGreaterThanOrEqual(2);
 
         // Verify no partner data for events without partners
-        eventsWithoutPartners.forEach(event => {
+        eventsWithoutPartners.forEach((event) => {
           expect(event.owning_partner).toBeUndefined();
         });
       });

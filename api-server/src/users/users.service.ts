@@ -1,43 +1,66 @@
-import { Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  LoggerService,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserModel } from './models/user.model';
 import { PartnerModel } from './models/partner.model';
 import NewUser, { buildFromUserInfo } from './dto/new-user';
 import { v4 as uuidv4 } from 'uuid';
-import { RequestWithUserInfo } from './dto/RequestWithUserInfo';
-import { parseJwt, UserInformation } from '../authentication/parse-jwt';
+import {
+  getTokenFromHeader,
+  parseJwt,
+  UserInformation,
+} from '../authentication/parse-jwt';
 import { UserInfoResp } from './dto/user-info-resp';
 import { PartnerDTO } from './dto/partner-dto';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
+import { Request } from 'express';
+import { Nullable } from '../utils/NullableOrUndefinable';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { isNullOrUndefined } from '../utils';
 
 @Injectable()
 export default class UsersService {
-  constructor(@InjectModel(UserModel) private usersModel: typeof UserModel) {}
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
+    @InjectModel(UserModel) private usersModel: typeof UserModel,
+  ) {}
 
   async ensureCurrentUserByName(
-    request: RequestWithUserInfo,
-  ): Promise<UserInfoResp> {
-    const userInfo: UserInformation = await parseJwt(request);
+    request: Request,
+  ): Promise<Nullable<UserInfoResp>> {
+    if (isNullOrUndefined(getTokenFromHeader(request))) {
+      // user is not authenticated, no need to do anything or log anything
+      // this is fine :-)
+      this.logger.debug('no user set -- unauthenticated request');
+      return null;
+    }
 
-    // issue is likely unserInfomration on request
-    console.log(
-      '!!! request: ' + JSON.stringify(request.userInformation, null, 4),
-    );
+    let userInfo: UserInformation;
+    try {
+      userInfo = await parseJwt(request);
+      this.logger.debug('successfully parsed jwt');
+    } catch (ex) {
+      this.logger.error(ex);
+      throw new HttpException('invalid auth token', HttpStatus.FORBIDDEN);
+    }
+
     const userInfoToPersist = buildFromUserInfo(userInfo);
 
     const persistedUserInfo = await this.ensureByName(userInfoToPersist);
 
-    console.log('!!! userInfo: ' + JSON.stringify(userInfo, null, 4));
-    console.log(
-      '!!! persisted Info: ' + JSON.stringify(persistedUserInfo, null, 4),
-    );
-    // !!! TODO ALSO MAKE SURE WE STRIP EMAILS OR MAYBE NOT MAKE SURE WE SHOW THEM
+    this.logger.log('userInofrmation set on request -- authenticated requests');
     return new UserInfoResp({
       id: persistedUserInfo.id,
       name: userInfo.decodedToken.name,
       nickname: userInfo.decodedToken.nickname,
       isInfiniteAdmin: userInfo.isInfiniteAdmin,
-      isOwnerAdmin: isNotNullOrUndefined(persistedUserInfo.partners)
+      isPartnerAdmin: isNotNullOrUndefined(persistedUserInfo.partners)
         ? persistedUserInfo.partners.length > 0
         : false,
       venueIDs: userInfo.venueIds,
@@ -63,7 +86,7 @@ export default class UsersService {
           {
             model: PartnerModel,
             as: 'partners',
-            through: { attributes: [] }, // Exclude join table attributes
+            through: { attributes: [] }, // Exclude join table attributes, for example owner_partner_id
           },
         ],
       })

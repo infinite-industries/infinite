@@ -5,9 +5,6 @@ async function isAdminUser(req: Request): Promise<boolean> {
   try {
     const userInformation: UserInformation = await parseJwt(req);
 
-    console.log(
-      '!!! userInformation: ' + JSON.stringify(userInformation, null, 4),
-    );
     return userInformation.isInfiniteAdmin;
   } catch (ex) {
     return false;

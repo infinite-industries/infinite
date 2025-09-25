@@ -6,6 +6,7 @@ import { AnnouncementsModule } from './announcements/announcements.module';
 import { UsersModules } from './users/users.modules';
 import { NotificationsModule } from './notifications/notifications.module';
 import LoggingMiddleware from './logging/logging.middleware';
+import { UserInformationMiddleware } from './authentication/user-information.middleware';
 import { WinstonModule } from 'nest-winston';
 import { format, transports } from 'winston';
 import { CalendaringModule } from './calendaring/calendaring.module';
@@ -84,10 +85,15 @@ const dialectOptions = SQL_IS_USING_SSL
       provide: APP_FILTER,
       useClass: ExceptionLogger,
     },
+    UserInformationMiddleware,
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(LoggingMiddleware).forRoutes('/**');
+    consumer
+      .apply(UserInformationMiddleware) // attaches userInformation to the Request object
+      .forRoutes('*')
+      .apply(LoggingMiddleware)
+      .forRoutes('/**');
   }
 }

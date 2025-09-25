@@ -1,8 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  HttpException,
-  HttpStatus,
   Inject,
   Injectable,
   LoggerService,
@@ -20,18 +18,9 @@ export class PartnerAdminGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-
-    try {
-      const userInformation = await this.userService.ensureCurrentUserByName(
-        request,
-      );
-
-      request.userInformation = userInformation;
-
-      return userInformation.isInfiniteAdmin || userInformation.isOwnerAdmin;
-    } catch (ex) {
-      this.logger.error(ex);
-      throw new HttpException('invalid auth token', HttpStatus.FORBIDDEN);
-    }
+    return (
+      request.userInformation?.isInfiniteAdmin ||
+      request.userInformation?.isPartnerAdmin
+    );
   }
 }
