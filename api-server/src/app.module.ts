@@ -91,7 +91,9 @@ const dialectOptions = SQL_IS_USING_SSL
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(UserInformationMiddleware, LoggingMiddleware) // both apply to all routes
+      // for all routes, including root, attach user information to the request
+      // and run request logging middleware
+      .apply(UserInformationMiddleware, LoggingMiddleware)
       .forRoutes('*');
   }
 }
