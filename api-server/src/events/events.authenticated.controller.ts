@@ -43,7 +43,6 @@ import {
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
 import { AuthenticatedUserGuard } from '../authentication/auth-guards/authenticated-user.guard';
 import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
-import UsersService from '../users/users.service';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 import { Op } from 'sequelize';
 
@@ -53,10 +52,7 @@ import { Op } from 'sequelize';
 @ApiBearerAuth()
 @ApiResponse({ status: 403, description: 'Forbidden' })
 export default class EventsAuthenticatedController {
-  constructor(
-    private readonly eventsService: EventsService,
-    private readonly userService: UsersService,
-  ) {}
+  constructor(private readonly eventsService: EventsService) {}
 
   @Get()
   @UseGuards(AdminAuthGuard)
