@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { VERSION_1_URI } from '../utils/versionts';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AdminAuthGuard } from '../authentication/AdminAuth.guard';
+import { AdminAuthGuard } from '../authentication/auth-guards/admin-auth.guard';
 import { AnnouncementsService } from './announcements.service';
 import { CreateOrUpdateAnnouncementRequest } from './dto/create-or-update-announcement-request';
 import { AnnouncementResponse } from './dto/announcement-response';

@@ -6,7 +6,7 @@ import {
   LoggerService,
 } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import UsersService from '../users/users.service';
+import UsersService from '../../users/users.service';
 
 @Injectable()
 export class PartnerAdminGuard implements CanActivate {

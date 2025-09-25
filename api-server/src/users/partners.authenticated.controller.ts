@@ -14,7 +14,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminAuthGuard } from '../authentication/AdminAuth.guard';
+import { AdminAuthGuard } from '../authentication/auth-guards/admin-auth.guard';
 import isAdminUser from '../authentication/is-admin-user';
 import { PartnersService } from './partners.service';
 import { CreatePartnerRequest } from './dto/create-partner-request';

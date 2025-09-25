@@ -17,7 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminAuthGuard } from '../authentication/AdminAuth.guard';
+import { AdminAuthGuard } from '../authentication/auth-guards/admin-auth.guard';
 import { EventIdResponse } from './dto/event-id-response';
 import { SingleEventResponse } from './dto/single-event-response';
 import { EventsService } from './events.service';
@@ -41,8 +41,8 @@ import {
   PaginationDto,
 } from './dto/pagination-dto';
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
-import { AuthenticatedUserGuard } from '../authentication/authenticated-user.guard';
-import { PartnerAdminGuard } from '../authentication/PartnerAdmin.guard';
+import { AuthenticatedUserGuard } from '../authentication/auth-guards/authenticated-user.guard';
+import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
 import UsersService from '../users/users.service';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 import { Op } from 'sequelize';

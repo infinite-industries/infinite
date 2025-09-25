@@ -6,7 +6,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthenticatedUserGuard } from '../authentication/authenticated-user.guard';
+import { AuthenticatedUserGuard } from '../authentication/auth-guards/authenticated-user.guard';
 import UsersService from './users.service';
 import { UserInfoResp } from './dto/user-info-resp';
 import { PartnerDTO } from './dto/partner-dto';

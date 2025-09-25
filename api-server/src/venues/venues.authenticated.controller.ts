@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { VERSION_1_URI } from '../utils/versionts';
-import { AdminAuthGuard } from '../authentication/AdminAuth.guard';
+import { AdminAuthGuard } from '../authentication/auth-guards/admin-auth.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
