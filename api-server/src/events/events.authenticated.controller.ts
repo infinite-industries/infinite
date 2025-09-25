@@ -101,6 +101,7 @@ export default class EventsAuthenticatedController {
     description: 'Filter events by category',
   })
   getAll(
+    @Req() request: RequestWithUserInfo,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
@@ -120,6 +121,7 @@ export default class EventsAuthenticatedController {
         verifiedOnly: false,
         startDate,
         endDate,
+        request,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;

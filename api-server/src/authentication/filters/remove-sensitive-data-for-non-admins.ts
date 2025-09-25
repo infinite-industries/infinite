@@ -3,6 +3,7 @@ import isAdminUser from '../is-admin-user';
 import EventDTO from '../../events/dto/eventDTO';
 import { RequestWithUserInfo } from '../../users/dto/RequestWithUserInfo';
 import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';
+import { EventModel } from '../../events/models/event.model';
 
 type EventOrEventList = EventDTO | EventDTO[];
 
@@ -40,31 +41,36 @@ function removeSensitiveDataForSingleEvent(
   request: RequestWithUserInfo,
   infiniteEvent: EventDTO,
 ): EventDTO {
-  const isPartnerAdmin = request.userInformation?.isPartnerAdmin;
-
-  if (isPartnerAdmin) {
-    // if the user is a partner admin check if this even belongs to them before
-    // filtering
-    console.log(
-      '!!! partners: ' +
-        JSON.stringify(request.userInformation.partners, null, 4),
-    );
-
-    const isOwner: boolean = isNotNullOrUndefined(
-      request.userInformation.partners.find(
-        (p) => p.id === infiniteEvent.owning_partner_id,
-      ),
-    );
-
-    if (isOwner) {
-      // they own it, just return the unfiltered event
-      return infiniteEvent;
-    }
+  if (isOwner(infiniteEvent, request)) {
+    // they own it, just return the unfiltered event
+    return infiniteEvent;
   }
 
   // strip the organizer_contact, we keep this internal and don't expose
   // it over the api or via the ui to un-authenticated users
   return { ...infiniteEvent, organizer_contact: undefined };
+}
+
+export function isOwner(
+  event: EventDTO | EventModel,
+  request: RequestWithUserInfo,
+) {
+  if (request.userInformation?.isInfiniteAdmin) {
+    // infinite admins own all events
+    return true;
+  }
+
+  if (!request.userInformation?.isPartnerAdmin) {
+    // not a partner admin can't own anything
+    return false;
+  }
+
+  // check if the event belongs to own of their partnerships
+  return isNotNullOrUndefined(
+    request.userInformation.partners.find(
+      (p) => p.id === event.owning_partner_id,
+    ),
+  );
 }
 
 function isGenericEventList(arg: EventOrEventList): arg is EventDTO[] {

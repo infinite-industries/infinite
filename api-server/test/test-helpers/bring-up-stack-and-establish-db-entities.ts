@@ -20,6 +20,7 @@ export default async function bringUpStackAndEstablishDbEntities() {
   const venueModel = databaseModels.venueModel;
   const datetimeVenueModel = databaseModels.datetimeVenueModel;
   const partnerModel = databaseModels.partnerModel;
+  const userModel = databaseModels.userModel;
 
   const testingModule = databaseModels.testingModule;
 
@@ -33,6 +34,7 @@ export default async function bringUpStackAndEstablishDbEntities() {
     venueModel,
     datetimeVenueModel,
     partnerModel,
+    userModel,
     testingModule,
   };
 }

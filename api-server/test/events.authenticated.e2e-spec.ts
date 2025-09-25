@@ -772,6 +772,9 @@ describe('Authenticated Events API', () => {
             'logo_url',
             partner.logo_url,
           );
+          // Partner admins should see organizer_contact for their own events
+          expect(event).toHaveProperty('organizer_contact');
+          expect(event.organizer_contact).toBeDefined();
         });
 
         // Find events without partners
@@ -833,6 +836,9 @@ describe('Authenticated Events API', () => {
             'logo_url',
             partner.logo_url,
           );
+          // Partner admins should see organizer_contact for their own events
+          expect(event).toHaveProperty('organizer_contact');
+          expect(event.organizer_contact).toBeDefined();
         });
 
         // Find events without partners
@@ -890,6 +896,9 @@ describe('Authenticated Events API', () => {
         );
         expect(eventReturned.owning_partner).toHaveProperty('createdAt');
         expect(eventReturned.owning_partner).toHaveProperty('updatedAt');
+        // Partner admins should see organizer_contact for their own events
+        expect(eventReturned).toHaveProperty('organizer_contact');
+        expect(eventReturned.organizer_contact).toBeDefined();
       });
   });
 

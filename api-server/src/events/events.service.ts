@@ -37,6 +37,8 @@ import { ensureEmbedQueryStringIsArray } from '../utils/get-options-for-events-s
 import { Nullable } from '../utils/NullableOrUndefinable';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 import { PartnerModel } from '../users/models/partner.model';
+import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
+import { isOwner } from '../authentication/filters/remove-sensitive-data-for-non-admins';
 
 @Injectable()
 export class EventsService {
@@ -75,15 +77,16 @@ export class EventsService {
     const defaultOptions = {
       include: [DatetimeVenueModel, VenueModel, PartnerModel],
     };
-    
-    const mergedOptions = findOptions 
+
+    const mergedOptions = findOptions
       ? { ...defaultOptions, ...findOptions }
       : defaultOptions;
-      
+
     return this.eventModel.findAll(mergedOptions);
   }
 
   async findAllPaginated({
+    request,
     tags = [],
     category,
     verifiedOnly = true,
@@ -91,17 +94,10 @@ export class EventsService {
     requestedPage,
     startDate,
     endDate,
-    isUserAdmin = false,
-  }: {
-    tags: string[] | string;
-    category?: string;
-    verifiedOnly?: boolean;
-    pageSize: number;
-    requestedPage: number;
-    startDate?: Date;
-    endDate?: Date;
-    isUserAdmin?: boolean;
-  }): Promise<{ count: number; rows: EventModel[] }> {
+  }: FindAllPaginatedArgs): Promise<{ count: number; rows: EventModel[] }> {
+    const isInfiniteAdmin = request.userInformation?.isInfiniteAdmin;
+    const isPartnerAdmin = request.userInformation?.isPartnerAdmin;
+
     // Validate that both startDate and endDate are provided together
     if (
       (!isNullOrUndefined(startDate) && isNullOrUndefined(endDate)) ||
@@ -167,9 +163,10 @@ export class EventsService {
         include: [VenueModel],
       });
 
-      // Only fetch event_admin_metadata if user is admin
+      // Only fetch event_admin_metadata if user is infinite-admin or possibe
+      // owner
       let eventAdminMetadata: any[] = [];
-      if (isUserAdmin) {
+      if (isInfiniteAdmin || isPartnerAdmin) {
         eventAdminMetadata = await this.eventAdminMetadataModel.findAll({
           where: {
             event_id: {
@@ -183,34 +180,43 @@ export class EventsService {
       const partnerIds = paginatedRows
         .map(({ owning_partner_id }) => owning_partner_id)
         .filter(isNotNullOrUndefined);
-      
-      const partners = partnerIds.length > 0 
-        ? await this.partnerModel.findAll({
-            where: {
-              id: {
-                [Op.or]: partnerIds,
+
+      const partners =
+        partnerIds.length > 0
+          ? await this.partnerModel.findAll({
+              where: {
+                id: {
+                  [Op.or]: partnerIds,
+                },
               },
-            },
-          })
-        : [];
+            })
+          : [];
 
       paginatedRows.forEach((event) => {
         const dateTimesForEvent = dateTimes.filter(
           ({ event_id }) => event_id === event.id,
         );
 
-        // Find and assign the corresponding admin metadata only if user is admin
-        const adminMetadataForEvent = isUserAdmin
-          ? eventAdminMetadata.find(({ event_id }) => event_id === event.id)
-          : undefined;
-
         // Find and assign the corresponding partner
         const partnerForEvent = event.owning_partner_id
           ? partners.find(({ id }) => id === event.owning_partner_id)
           : undefined;
 
+        // will always be true for infinite-admin, otherwise depends on the
+        // users partner associations
+        if (isOwner(event, request)) {
+          // Find and assign the corresponding admin metadata only if user is admin
+          // This is where we store information such as whether the event has been
+          // flagged as have problems in the admin UI
+          event.event_admin_metadata = eventAdminMetadata.find(
+            ({ event_id }) => event_id === event.id,
+          );
+        } else {
+          // they do not own this even so we should filter sensitive data
+          event.organizer_contact = undefined;
+        }
+
         event.date_times = dateTimesForEvent;
-        event.event_admin_metadata = adminMetadataForEvent;
         event.owning_partner = partnerForEvent;
       });
 
@@ -485,4 +491,15 @@ export class EventsService {
 
     return Number(results[0].count);
   }
+}
+
+interface FindAllPaginatedArgs {
+  request: RequestWithUserInfo;
+  tags: string[] | string;
+  category?: string;
+  verifiedOnly?: boolean;
+  pageSize: number;
+  requestedPage: number;
+  startDate?: Date;
+  endDate?: Date;
 }

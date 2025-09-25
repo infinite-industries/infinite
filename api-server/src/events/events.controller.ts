@@ -24,7 +24,6 @@ import SlackNotificationService, {
 } from '../notifications/slack-notification.service';
 import { EventsResponse } from './dto/events-response';
 import { SingleEventResponse } from './dto/single-event-response';
-import { Request } from 'express';
 import { removeSensitiveDataForNonAdmins } from '../authentication/filters/remove-sensitive-data-for-non-admins';
 import FindByIdParams from '../dto/find-by-id-params';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -172,7 +171,7 @@ export class EventsController {
         verifiedOnly: true,
         startDate,
         endDate,
-        isUserAdmin,
+        request,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;

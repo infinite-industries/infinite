@@ -24,6 +24,8 @@ import clearDatabaseEntries from './test-helpers/clear-database-entries';
 import { v4 as uuidv4 } from 'uuid';
 import generateVenue from './fakers/venue.faker';
 import { assertOrderedByFirstStartTimeDescending } from './test-helpers/assertOrderedByFirstStartTimeDescending';
+import createJwtForRandomUser from './test-helpers/creaeteJwt';
+import { UserModel } from '../src/users/models/user.model';
 
 describe('Events API', () => {
   const server = request('http://localhost:' + PORT);
@@ -35,6 +37,7 @@ describe('Events API', () => {
   let venueModel: typeof VenueModel;
   let datetimeVenueModel: typeof DatetimeVenueModel;
   let partnerModel: typeof PartnerModel;
+  let userModel: typeof UserModel;
   let testingModule: TestingModule;
 
   let dbHostPort: number;
@@ -49,6 +52,7 @@ describe('Events API', () => {
       venueModel,
       datetimeVenueModel,
       partnerModel,
+      userModel,
       testingModule,
       dbHostPort,
     } = await bringUpStackAndEstablishDbEntities());
@@ -66,6 +70,7 @@ describe('Events API', () => {
       eventModel,
       venueModel,
       partnerModel,
+      userModel,
     });
   });
 
@@ -111,7 +116,7 @@ describe('Events API', () => {
           const paginatedEventReturned = events[i];
           const expectedEvent = allEvents[i];
 
-          assertEventsEqual(paginatedEventReturned, expectedEvent);
+          assertEventsEqual(paginatedEventReturned, expectedEvent, false);
         }
       });
   });
@@ -153,7 +158,7 @@ describe('Events API', () => {
           const paginatedEventReturned = events[i];
           const expectedEvent = allEvents[i + 20];
 
-          assertEventsEqual(paginatedEventReturned, expectedEvent);
+          assertEventsEqual(paginatedEventReturned, expectedEvent, false);
         }
       });
   });
@@ -233,7 +238,7 @@ describe('Events API', () => {
           const paginatedEventReturned = events[i];
           const expectedEvent = allVerifiedEvents[i];
 
-          assertEventsEqual(paginatedEventReturned, expectedEvent);
+          assertEventsEqual(paginatedEventReturned, expectedEvent, false);
         }
       });
   });
@@ -293,7 +298,7 @@ describe('Events API', () => {
           const paginatedEventReturned = events[i];
           const expectedEvent = allVerifiedEvents[i];
 
-          assertEventsEqual(paginatedEventReturned, expectedEvent);
+          assertEventsEqual(paginatedEventReturned, expectedEvent, false);
         }
 
         // first 2 entries should have no date_times
@@ -348,7 +353,7 @@ describe('Events API', () => {
           const paginatedEventReturned = events[i];
           const expectedEvent = eventsWithTag2[i];
 
-          assertEventsEqual(paginatedEventReturned, expectedEvent);
+          assertEventsEqual(paginatedEventReturned, expectedEvent, false);
         }
       });
 
@@ -384,7 +389,7 @@ describe('Events API', () => {
           const paginatedEventReturned = events[i];
           const expectedEvent = eventsWithTag2[i + 20];
 
-          assertEventsEqual(paginatedEventReturned, expectedEvent);
+          assertEventsEqual(paginatedEventReturned, expectedEvent, false);
         }
       });
 
@@ -420,7 +425,7 @@ describe('Events API', () => {
           const paginatedEventReturned = events[i];
           const expectedEvent = eventsWithTag2[i + 40];
 
-          assertEventsEqual(paginatedEventReturned, expectedEvent);
+          assertEventsEqual(paginatedEventReturned, expectedEvent, false);
         }
       });
   });
@@ -497,7 +502,7 @@ describe('Events API', () => {
           const paginatedEventReturned = events[i];
           const expectedEvent = allEventsExpectedToBeInResults[i];
 
-          assertEventsEqual(paginatedEventReturned, expectedEvent);
+          assertEventsEqual(paginatedEventReturned, expectedEvent, false);
         }
       });
 
@@ -534,7 +539,7 @@ describe('Events API', () => {
           const paginatedEventReturned = events[i];
           const expectedEvent = allEventsExpectedToBeInResults[i + 20];
 
-          assertEventsEqual(paginatedEventReturned, expectedEvent);
+          assertEventsEqual(paginatedEventReturned, expectedEvent, false);
         }
       });
   });
@@ -621,7 +626,7 @@ describe('Events API', () => {
       id: '600405bb-b9f8-49bc-b62d-f2a16ec226e2',
       image: 'http://amiya.com',
       links: [],
-      organizer_contact: 'Gay66@hotmail.com',
+      organizer_contact: 'Guy66@hotmail.com',
       reviewed_by_org: 'some-org-1',
       slug: 'quibusdam-architecto-eos',
       social_image: 'https://kelsi.net',
@@ -1116,4 +1121,255 @@ describe('Events API', () => {
         });
       });
   });
+
+  describe('Organizer Contact Filtering Tests', () => {
+    it('/events/verified should strip organizer_contact for unauthenticated users', async () => {
+      // Create events with organizer contact
+      await createListOfFutureEventsInChronologicalOrder(3, {
+        verified: true,
+        organizer_contact: 'test@example.com',
+      });
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/events/verified?page=1&pageSize=10`)
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events: returnedEvents, status } = body;
+
+          expect(status).toEqual('success');
+          expect(returnedEvents.length).toBeGreaterThanOrEqual(3);
+
+          // All events should have organizer_contact stripped for unauthenticated users
+          returnedEvents.forEach((event) => {
+            expect(event.organizer_contact).toBeUndefined();
+          });
+        });
+    });
+
+    it('/events/verified should show organizer_contact for partner admin on their own events', async () => {
+      // Create partners
+      const userPartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'User Partner',
+        logo_url: 'https://example.com/user-partner.png',
+      });
+
+      const otherPartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Other Partner',
+        logo_url: 'https://example.com/other-partner.png',
+      });
+
+      // Create a user with JWT token (partner admin)
+      const userToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': userToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with their partner
+      await associateUserWithPartners(userId, [userPartner.id]);
+
+      // Create events with organizer contact
+      const userPartnerEvent = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        {
+          verified: true,
+          owning_partner_id: userPartner.id,
+          organizer_contact: 'user-partner@example.com',
+        },
+      );
+
+      const otherPartnerEvent = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        {
+          verified: true,
+          owning_partner_id: otherPartner.id,
+          organizer_contact: 'other-partner@example.com',
+        },
+      );
+
+      const noPartnerEvent = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        {
+          verified: true,
+          organizer_contact: 'no-partner@example.com',
+        },
+      );
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/events/verified?page=1&pageSize=10`)
+        .set({ 'x-access-token': userToken })
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+          expect(events.length).toBeGreaterThanOrEqual(3);
+
+          // Find the specific events
+          const userPartnerEventReturned = events.find(
+            (e) => e.id === userPartnerEvent.id,
+          );
+          const otherPartnerEventReturned = events.find(
+            (e) => e.id === otherPartnerEvent.id,
+          );
+          const noPartnerEventReturned = events.find(
+            (e) => e.id === noPartnerEvent.id,
+          );
+
+          // Partner admin should see organizer_contact for their own events
+          expect(userPartnerEventReturned).toHaveProperty('organizer_contact');
+          expect(userPartnerEventReturned.organizer_contact).toEqual(
+            'user-partner@example.com',
+          );
+
+          // Partner admin should NOT see organizer_contact for other partner's events
+          expect(otherPartnerEventReturned.organizer_contact).toBeUndefined();
+
+          // Partner admin should NOT see organizer_contact for events without partners
+          expect(noPartnerEventReturned.organizer_contact).toBeUndefined();
+        });
+    });
+
+    it('/events/{id} should show organizer_contact for partner admin on their own events', async () => {
+      // Create a partner
+      const userPartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'User Partner',
+        logo_url: 'https://example.com/user-partner.png',
+      });
+
+      // Create a user with JWT token (partner admin)
+      const userToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': userToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with their partner
+      await associateUserWithPartners(userId, [userPartner.id]);
+
+      // Create an event with organizer contact
+      const event = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        {
+          verified: true,
+          owning_partner_id: userPartner.id,
+          organizer_contact: 'user-partner@example.com',
+        },
+      );
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/events/${event.id}`)
+        .set({ 'x-access-token': userToken })
+        .expect(200)
+        .then(async ({ body }) => {
+          const { event: eventReturned, status } = body;
+
+          expect(status).toEqual('success');
+          // Partner admin should see organizer_contact for their own events
+          expect(eventReturned).toHaveProperty('organizer_contact');
+          expect(eventReturned.organizer_contact).toEqual(
+            'user-partner@example.com',
+          );
+        });
+    });
+
+    it('/events/{id} should strip organizer_contact for partner admin on events they do not own', async () => {
+      // Create partners
+      const userPartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'User Partner',
+        logo_url: 'https://example.com/user-partner.png',
+      });
+
+      const otherPartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Other Partner',
+        logo_url: 'https://example.com/other-partner.png',
+      });
+
+      // Create a user with JWT token (partner admin)
+      const userToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': userToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with their partner
+      await associateUserWithPartners(userId, [userPartner.id]);
+
+      // Create an event with organizer contact owned by other partner
+      const event = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        {
+          verified: true,
+          owning_partner_id: otherPartner.id,
+          organizer_contact: 'other-partner@example.com',
+        },
+      );
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/events/${event.id}`)
+        .set({ 'x-access-token': userToken })
+        .expect(200)
+        .then(async ({ body }) => {
+          const { event: eventReturned, status } = body;
+
+          expect(status).toEqual('success');
+          // Partner admin should NOT see organizer_contact for events they don't own
+          expect(eventReturned.organizer_contact).toBeUndefined();
+        });
+    });
+  });
+
+  async function createPartner(partnerData: any): Promise<PartnerModel> {
+    return partnerModel.create({
+      ...partnerData,
+      id: uuidv4(),
+    });
+  }
+
+  async function associateUserWithPartners(
+    userId: string,
+    partnerIds: string[],
+  ): Promise<void> {
+    // Use Sequelize's association methods to create the many-to-many relationship
+    const user = await userModel.findByPk(userId);
+    const partners = await partnerModel.findAll({
+      where: { id: partnerIds },
+    });
+
+    // Use the association method to set partners
+    await (user as any).setPartners(partners);
+  }
 });
