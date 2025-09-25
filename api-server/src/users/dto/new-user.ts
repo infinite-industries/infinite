@@ -13,10 +13,6 @@ export default interface NewUser {
 export function buildFromUserInfo(userInfo: UserInformation): NewUser {
   const decodedTokenInfo = userInfo.decodedToken;
 
-  console.log(
-    '!!! decodedTokenInfo: ' + JSON.stringify(decodedTokenInfo, null, 4),
-  );
-
   return {
     name: decodedTokenInfo.name,
     nickname: decodedTokenInfo.nickname,
