@@ -1073,11 +1073,10 @@ describe('Events API', () => {
     });
 
     // Create events with the partner
-    const [eventsWithPartner] =
-      await createListOfFutureEventsInChronologicalOrder(3, {
-        verified: true,
-        owning_partner_id: partner.id,
-      });
+    await createListOfFutureEventsInChronologicalOrder(3, {
+      verified: true,
+      owning_partner_id: partner.id,
+    });
 
     // Create events without partners
     await createListOfFutureEventsInChronologicalOrder(2, { verified: true });
@@ -1351,13 +1350,6 @@ describe('Events API', () => {
         });
     });
   });
-
-  async function createPartner(partnerData: any): Promise<PartnerModel> {
-    return partnerModel.create({
-      ...partnerData,
-      id: uuidv4(),
-    });
-  }
 
   async function associateUserWithPartners(
     userId: string,

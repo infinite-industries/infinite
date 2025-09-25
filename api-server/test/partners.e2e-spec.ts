@@ -66,7 +66,9 @@ describe('Partners API (e2e)', () => {
     });
 
     return server
-      .get(`/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partner.name)}`)
+      .get(
+        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partner.name)}`,
+      )
       .expect(200)
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);
@@ -81,10 +83,16 @@ describe('Partners API (e2e)', () => {
     const nonExistentName = 'Non Existent Partner';
 
     return server
-      .get(`/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(nonExistentName)}`)
+      .get(
+        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(
+          nonExistentName,
+        )}`,
+      )
       .expect(404)
       .then(async ({ body }) => {
-        expect(body.message).toContain(`Partner with name "${nonExistentName}" not found`);
+        expect(body.message).toContain(
+          `Partner with name "${nonExistentName}" not found`,
+        );
       });
   });
 
@@ -98,7 +106,9 @@ describe('Partners API (e2e)', () => {
     });
 
     return server
-      .get(`/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partnerName)}`)
+      .get(
+        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partnerName)}`,
+      )
       .expect(200)
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);
@@ -117,7 +127,9 @@ describe('Partners API (e2e)', () => {
     });
 
     return server
-      .get(`/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partnerName)}`)
+      .get(
+        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partnerName)}`,
+      )
       .expect(200)
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);
@@ -136,7 +148,9 @@ describe('Partners API (e2e)', () => {
 
     // Test without any authentication headers
     return server
-      .get(`/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partner.name)}`)
+      .get(
+        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partner.name)}`,
+      )
       .expect(200)
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);
@@ -154,7 +168,9 @@ describe('Partners API (e2e)', () => {
     });
 
     return server
-      .get(`/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partner.name)}`)
+      .get(
+        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partner.name)}`,
+      )
       .expect(200)
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);

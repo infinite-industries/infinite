@@ -107,7 +107,7 @@ export class EventsService {
         'Both startDate and endDate must be provided together',
       );
     }
-    return this.sequelize.transaction(async (_) => {
+    return this.sequelize.transaction(async () => {
       const tagClauseParams = this.getTagsClauseParams(tags);
       const whereClause = this.getWhereClause(
         tagClauseParams,

@@ -39,7 +39,10 @@ export class EventModel extends Model<EventModel> {
   venue_id: string;
 
   @Column
-  @ApiProperty({ example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa', required: false })
+  @ApiProperty({
+    example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa',
+    required: false,
+  })
   @ForeignKey(() => PartnerModel)
   owning_partner_id: string | null;
 

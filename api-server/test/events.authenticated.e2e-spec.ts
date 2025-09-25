@@ -735,11 +735,10 @@ describe('Authenticated Events API', () => {
     });
 
     // Create events with the partner
-    const [eventsWithPartner] =
-      await createListOfFutureEventsInChronologicalOrder(3, {
-        verified: true,
-        owning_partner_id: partner.id,
-      });
+    await createListOfFutureEventsInChronologicalOrder(3, {
+      verified: true,
+      owning_partner_id: partner.id,
+    });
 
     // Create events without partners
     await createListOfFutureEventsInChronologicalOrder(2, { verified: true });
@@ -799,11 +798,10 @@ describe('Authenticated Events API', () => {
     });
 
     // Create non-verified events with the partner
-    const [eventsWithPartner] =
-      await createListOfFutureEventsInChronologicalOrder(2, {
-        verified: false,
-        owning_partner_id: partner.id,
-      });
+    await createListOfFutureEventsInChronologicalOrder(2, {
+      verified: false,
+      owning_partner_id: partner.id,
+    });
 
     // Create non-verified events without partners
     await createListOfFutureEventsInChronologicalOrder(1, { verified: false });

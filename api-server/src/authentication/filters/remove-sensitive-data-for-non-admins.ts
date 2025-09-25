@@ -1,5 +1,3 @@
-import { Request } from 'express';
-import isAdminUser from '../is-admin-user';
 import EventDTO from '../../events/dto/eventDTO';
 import { RequestWithUserInfo } from '../../users/dto/RequestWithUserInfo';
 import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';

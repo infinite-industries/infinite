@@ -314,7 +314,7 @@ describe('CurrentEvents (e2e)', () => {
           futureTime.end_time.toISOString(),
         );
       });
-  }); 
+  });
 
   it('handles mixed events with and without partners in current-events', async () => {
     const futureTime1 = getDateTimePair(getTimePlusX(today, 1));
@@ -329,9 +329,9 @@ describe('CurrentEvents (e2e)', () => {
     });
 
     // Create event with partner
-    const eventWithPartner = await createEvent(
-      generateEvent(eventModel, { 
-        venue_id: venue.id, 
+    await createEvent(
+      generateEvent(eventModel, {
+        venue_id: venue.id,
         verified: true,
         owning_partner_id: partner.id,
       }),
@@ -339,9 +339,9 @@ describe('CurrentEvents (e2e)', () => {
     );
 
     // Create event without partner
-    const eventWithoutPartner = await createEvent(
-      generateEvent(eventModel, { 
-        venue_id: venue.id, 
+    await createEvent(
+      generateEvent(eventModel, {
+        venue_id: venue.id,
         verified: true,
       }),
       [futureTime2],
@@ -354,17 +354,33 @@ describe('CurrentEvents (e2e)', () => {
         expect(response.body.events.length).toEqual(2);
 
         // Find events with and without partners
-        const eventWithPartnerData = response.body.events.find(e => e.owning_partner_id);
-        const eventWithoutPartnerData = response.body.events.find(e => !e.owning_partner_id);
+        const eventWithPartnerData = response.body.events.find(
+          (e) => e.owning_partner_id,
+        );
+        const eventWithoutPartnerData = response.body.events.find(
+          (e) => !e.owning_partner_id,
+        );
 
         // Verify event with partner has partner data
-        expect(eventWithPartnerData).toHaveProperty('owning_partner_id', partner.id);
+        expect(eventWithPartnerData).toHaveProperty(
+          'owning_partner_id',
+          partner.id,
+        );
         expect(eventWithPartnerData).toHaveProperty('owning_partner');
-        expect(eventWithPartnerData.owning_partner).toHaveProperty('id', partner.id);
-        expect(eventWithPartnerData.owning_partner).toHaveProperty('name', partner.name);
+        expect(eventWithPartnerData.owning_partner).toHaveProperty(
+          'id',
+          partner.id,
+        );
+        expect(eventWithPartnerData.owning_partner).toHaveProperty(
+          'name',
+          partner.name,
+        );
 
         // Verify event without partner has no partner data
-        expect(eventWithoutPartnerData).toHaveProperty('owning_partner_id', null);
+        expect(eventWithoutPartnerData).toHaveProperty(
+          'owning_partner_id',
+          null,
+        );
         expect(eventWithoutPartnerData.owning_partner).toBeUndefined();
       });
   });

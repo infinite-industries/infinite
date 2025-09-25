@@ -238,7 +238,9 @@ describe('Users (e2e)', () => {
 
   describe('GET /users/current/partners', () => {
     it('should return 403 when user is not authenticated', async () => {
-      return server.get(`/${CURRENT_VERSION_URI}/users/current/partners`).expect(403);
+      return server
+        .get(`/${CURRENT_VERSION_URI}/users/current/partners`)
+        .expect(403);
     });
 
     it('should return empty partners list for user with no partners', async () => {
