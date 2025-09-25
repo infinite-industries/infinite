@@ -5,7 +5,7 @@ import { PartnerModel } from './models/partner.model';
 import NewUser, { buildFromUserInfo } from './dto/new-user';
 import { v4 as uuidv4 } from 'uuid';
 import { RequestWithUserInfo } from './dto/RequestWithUserInfo';
-import { UserInformation } from '../authentication/parse-jwt';
+import { parseJwt, UserInformation } from '../authentication/parse-jwt';
 import { UserInfoResp } from './dto/user-info-resp';
 import { PartnerDTO } from './dto/partner-dto';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
@@ -17,11 +17,21 @@ export default class UsersService {
   async ensureCurrentUserByName(
     request: RequestWithUserInfo,
   ): Promise<UserInfoResp> {
-    const userInfo: UserInformation = request.userInformation;
+    const userInfo: UserInformation = await parseJwt(request);
+
+    // issue is likely unserInfomration on request
+    console.log(
+      '!!! request: ' + JSON.stringify(request.userInformation, null, 4),
+    );
     const userInfoToPersist = buildFromUserInfo(userInfo);
 
     const persistedUserInfo = await this.ensureByName(userInfoToPersist);
 
+    console.log('!!! userInfo: ' + JSON.stringify(userInfo, null, 4));
+    console.log(
+      '!!! persisted Info: ' + JSON.stringify(persistedUserInfo, null, 4),
+    );
+    // !!! TODO ALSO MAKE SURE WE STRIP EMAILS OR MAYBE NOT MAKE SURE WE SHOW THEM
     return new UserInfoResp({
       id: persistedUserInfo.id,
       name: userInfo.decodedToken.name,

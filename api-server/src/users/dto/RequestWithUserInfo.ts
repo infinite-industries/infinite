@@ -1,6 +1,6 @@
 import { Request } from 'express';
-import { UserInformation } from '../../authentication/parse-jwt';
+import { UserInfoResp } from './user-info-resp';
 
 export interface RequestWithUserInfo extends Request {
-  userInformation: UserInformation;
+  userInformation: UserInfoResp;
 }

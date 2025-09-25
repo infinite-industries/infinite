@@ -7,10 +7,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthenticatedUserGuard } from '../authentication/authenticated-user.guard';
-import { Request } from 'express';
-import { UserInformation } from '../authentication/parse-jwt';
 import UsersService from './users.service';
-import { buildFromUserInfo } from './dto/new-user';
 import { UserInfoResp } from './dto/user-info-resp';
 import { PartnerDTO } from './dto/partner-dto';
 import { PartnersListResponse } from './dto/partners-list-response';

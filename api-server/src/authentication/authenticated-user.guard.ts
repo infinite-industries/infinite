@@ -8,25 +8,29 @@ import {
   LoggerService,
 } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { parseJwt, UserInformation } from './parse-jwt';
+import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
+import UsersService from '../users/users.service';
 
+// Only check if user is authenticated, not if they're admin
 @Injectable()
 export class AuthenticatedUserGuard implements CanActivate {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
+    private userService: UsersService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
     try {
-      const userInformation: UserInformation = await parseJwt(request);
+      const userInformation = await this.userService.ensureCurrentUserByName(
+        request,
+      );
 
       request.userInformation = userInformation;
 
-      // Only check if user is authenticated, not if they're admin
-      return true;
+      return isNotNullOrUndefined(userInformation);
     } catch (ex) {
       this.logger.error(ex);
       throw new HttpException('invalid auth token', HttpStatus.FORBIDDEN);

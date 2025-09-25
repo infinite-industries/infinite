@@ -8,20 +8,23 @@ import {
   LoggerService,
 } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
-import { parseJwt, UserInformation } from './parse-jwt';
+import UsersService from '../users/users.service';
 
 @Injectable()
 export class AdminAuthGuard implements CanActivate {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
+    private readonly userService: UsersService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
 
     try {
-      const userInformation: UserInformation = await parseJwt(request);
+      const userInformation = await this.userService.ensureCurrentUserByName(
+        request,
+      );
 
       request.userInformation = userInformation;
 

@@ -12,6 +12,8 @@ import { VenueModel } from '../venues/models/venue.model';
 import { PartnerModel } from '../users/models/partner.model';
 import ExistingEventDetectionService from './existing-event-detection-service';
 import { ExistingEventDetectionController } from './existing-event-detection-controller';
+import { UserModel } from '../users/users.modules';
+import UsersService from '../users/users.service';
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { ExistingEventDetectionController } from './existing-event-detection-con
       EventAdminMetadataModel,
       VenueModel,
       PartnerModel,
+      UserModel,
     ]),
     NotificationsModule,
   ],
@@ -29,6 +32,11 @@ import { ExistingEventDetectionController } from './existing-event-detection-con
     EventsAuthenticatedController,
     EventsController,
   ],
-  providers: [EventsService, BitlyService, ExistingEventDetectionService],
+  providers: [
+    EventsService,
+    BitlyService,
+    ExistingEventDetectionService,
+    UsersService,
+  ],
 })
 export class EventsModule {}

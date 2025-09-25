@@ -6,9 +6,10 @@ import { VenueModel } from './models/venue.model';
 import { NotificationsModule } from '../notifications/notifications.module';
 import VenuesAuthenticatedController from './venues.authenticated.controller';
 import { GpsService } from './gps.services';
+import { UsersModules } from '../users/users.modules';
 
 @Module({
-  imports: [SequelizeModule.forFeature([VenueModel]), NotificationsModule],
+  imports: [SequelizeModule.forFeature([VenueModel]), NotificationsModule, UsersModules],
   controllers: [VenuesController, VenuesAuthenticatedController],
   providers: [VenuesService, GpsService],
 })

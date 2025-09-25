@@ -45,6 +45,7 @@ import { AuthenticatedUserGuard } from '../authentication/authenticated-user.gua
 import { PartnerAdminGuard } from '../authentication/PartnerAdmin.guard';
 import UsersService from '../users/users.service';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
+import { Op } from 'sequelize';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
 @UseGuards(AuthenticatedUserGuard)
@@ -178,16 +179,31 @@ export default class EventsAuthenticatedController {
   })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiBearerAuth()
-  getAllNonVerifiedForPartnersBelongToTheCurrentUser(
+  async getAllNonVerifiedForPartnersBelongToTheCurrentUser(
     @Query('embed') embed: string[] | string = [],
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
-    const user = this.userService.ensureCurrentUserByName(request);
+    const user = request.userInformation;
+    // await this.userService.ensureCurrentUserByName(request);
 
-    // !!! TODO -- ADD OUR FILTER HERE
+    if (user.isInfiniteAdmin) {
+      // infinite admins have access to all partners, it may be useful for admins
+      // to filter by a given partner, but we can implement that as a separate filter
+      // somewhere, this event is specifically a convenience to give an easy way
+      // to get all un-verified events a partner-admin has access to
+      return this.getAllNonVerified(embed);
+    }
+
+    const partnerIds = user.partners?.map((partner) => partner.id) || [];
+
     const findOptions = {
       ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: { verified: false },
+      where: {
+        verified: false,
+        owning_partner_id: {
+          [Op.in]: partnerIds,
+        },
+      },
     };
 
     return this.eventsService
