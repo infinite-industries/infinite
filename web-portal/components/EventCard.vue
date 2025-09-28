@@ -84,7 +84,7 @@
         const event = this.calendar_event && this.calendar_event.venue
           ? this.calendar_event
           : Object.assign({}, this.calendar_event, { venue: this.venue })
-        CalendarService.generate(this.$config.API_URL, event, calType)
+        CalendarService.generate(this.$config.public.apiUrl, event, calType)
       },
       truncate(fullText, truncationLength) {
         if (!fullText) {
