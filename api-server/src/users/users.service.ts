@@ -44,6 +44,7 @@ export default class UsersService {
     let userInfo: UserInformation;
     try {
       userInfo = await parseJwt(request);
+
       this.logger.debug('successfully parsed jwt');
     } catch (ex) {
       this.logger.error(ex);
@@ -54,7 +55,7 @@ export default class UsersService {
 
     const persistedUserInfo = await this.ensureByName(userInfoToPersist);
 
-    this.logger.log('userInofrmation set on request -- authenticated requests');
+    this.logger.log('userInformation set on request -- authenticated requests');
     return new UserInfoResp({
       id: persistedUserInfo.id,
       name: userInfo.decodedToken.name,

@@ -9,7 +9,7 @@ import { PartnerDTO } from './dto/partner-dto';
 export class PartnersController {
   constructor(private readonly partnersService: PartnersService) {}
 
-  @Get(':name')
+  @Get('name/:name')
   @ApiOperation({
     summary: 'Get a partner by name',
     description:

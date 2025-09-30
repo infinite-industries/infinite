@@ -57,7 +57,7 @@ describe('Partners API (e2e)', () => {
     30000,
   );
 
-  it('/partners/{name} should return a partner when found', async () => {
+  it('/partners/name/{name} should return a partner when found', async () => {
     // Create a partner
     const partner = await partnerModel.create({
       id: uuidv4(),
@@ -67,7 +67,9 @@ describe('Partners API (e2e)', () => {
 
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partner.name)}`,
+        `/${CURRENT_VERSION_URI}/partners/name/${encodeURIComponent(
+          partner.name,
+        )}`,
       )
       .expect(200)
       .then(async ({ body }) => {
@@ -79,12 +81,12 @@ describe('Partners API (e2e)', () => {
       });
   });
 
-  it('/partners/{name} should return 404 when partner not found', async () => {
+  it('/partners/name/{name} should return 404 when partner not found', async () => {
     const nonExistentName = 'Non Existent Partner';
 
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(
+        `/${CURRENT_VERSION_URI}/partners/name/${encodeURIComponent(
           nonExistentName,
         )}`,
       )
@@ -96,7 +98,7 @@ describe('Partners API (e2e)', () => {
       });
   });
 
-  it('/partners/{name} should handle URL-encoded partner names', async () => {
+  it('/partners/name/{name} should handle URL-encoded partner names', async () => {
     // Create a partner with special characters in the name
     const partnerName = 'TechCorp & Associates LLC';
     const partner = await partnerModel.create({
@@ -107,7 +109,9 @@ describe('Partners API (e2e)', () => {
 
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partnerName)}`,
+        `/${CURRENT_VERSION_URI}/partners/name/${encodeURIComponent(
+          partnerName,
+        )}`,
       )
       .expect(200)
       .then(async ({ body }) => {
@@ -117,7 +121,7 @@ describe('Partners API (e2e)', () => {
       });
   });
 
-  it('/partners/{name} should handle partner names with spaces', async () => {
+  it('/partners/name/{name} should handle partner names with spaces', async () => {
     // Create a partner with spaces in the name
     const partnerName = 'Global Tech Solutions Inc';
     const partner = await partnerModel.create({
@@ -128,7 +132,9 @@ describe('Partners API (e2e)', () => {
 
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partnerName)}`,
+        `/${CURRENT_VERSION_URI}/partners/name/${encodeURIComponent(
+          partnerName,
+        )}`,
       )
       .expect(200)
       .then(async ({ body }) => {
@@ -138,7 +144,7 @@ describe('Partners API (e2e)', () => {
       });
   });
 
-  it('/partners/{name} should not require authentication', async () => {
+  it('/partners/name/{name} should not require authentication', async () => {
     // Create a partner
     const partner = await partnerModel.create({
       id: uuidv4(),
@@ -149,7 +155,9 @@ describe('Partners API (e2e)', () => {
     // Test without any authentication headers
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partner.name)}`,
+        `/${CURRENT_VERSION_URI}/partners/name/${encodeURIComponent(
+          partner.name,
+        )}`,
       )
       .expect(200)
       .then(async ({ body }) => {
@@ -159,7 +167,7 @@ describe('Partners API (e2e)', () => {
       });
   });
 
-  it('/partners/{name} should return partner with null logo_url when not set', async () => {
+  it('/partners/name/{name} should return partner with null logo_url when not set', async () => {
     // Create a partner without logo_url
     const partner = await partnerModel.create({
       id: uuidv4(),
@@ -169,7 +177,9 @@ describe('Partners API (e2e)', () => {
 
     return server
       .get(
-        `/${CURRENT_VERSION_URI}/partners/${encodeURIComponent(partner.name)}`,
+        `/${CURRENT_VERSION_URI}/partners/name/${encodeURIComponent(
+          partner.name,
+        )}`,
       )
       .expect(200)
       .then(async ({ body }) => {
