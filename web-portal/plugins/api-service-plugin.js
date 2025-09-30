@@ -19,7 +19,7 @@ class ApiService {
   }
 
   async get(path) {
-    const userToken = this.user.value?.token
+    const userToken = this.user?.value?.token
     const headers = userToken ? { 'x-access-token': userToken } : undefined
 
     return await $fetch(`${this.apiUrl}${path}`, {
@@ -28,21 +28,21 @@ class ApiService {
   }
 
   post(path, postBody) {
-    const userToken = this.user.value?.token
+    const userToken = this.user?.value?.token
     const headers = userToken ? { 'x-access-token': userToken } : undefined
 
     return $fetch(`${this.apiUrl}${path}`, { method: "POST", body: postBody, headers })
   }
 
   put(path, body) {
-    const userToken = this.user.value?.token
+    const userToken = this.user?.value?.token
     const headers = userToken ? { 'x-access-token': userToken } : undefined
 
     return $fetch(`${this.apiUrl}${path}`, { method: "PUT", body, headers })
   }
 
   delete(path) {
-    const userToken = this.user.value?.token
+    const userToken = this.user?.value?.token
     const headers = userToken ? { 'x-access-token': userToken } : undefined
 
     return $fetch(`${this.apiUrl}${path}`, { method: "DELETE", headers })

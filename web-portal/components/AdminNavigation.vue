@@ -7,6 +7,9 @@
       <nuxt-link to="/admin">Events</nuxt-link>
     </li>
     <li>
+      <nuxt-link to="/partner-admins">Partner Events</nuxt-link>
+    </li>
+    <li>
       <nuxt-link to="/admin-announcement-edit">Announcements</nuxt-link>
     </li>
 

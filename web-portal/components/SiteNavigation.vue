@@ -4,7 +4,7 @@
       <nuxt-link to="/">Home</nuxt-link>
     </li>
     <li>
-      <nuxt-link to="/submit-event">Submit Event</nuxt-link>
+      <nuxt-link :to="{ path: '/submit-event', query: { partner: 'wrfl' } }">Partner Admin</nuxt-link>
     </li>
     <li>
       <nuxt-link to="/calendar">Calendar</nuxt-link>
@@ -31,6 +31,9 @@
       <li v-if="loggedIn && user.isInfiniteAdmin">
         <nuxt-link to="/admin">Admin</nuxt-link>
       </li>
+      <li v-if="loggedIn && (user.isPartnerAdmin || user.isInfiniteAdmin)">
+        <nuxt-link to="/partner-admins">Partner Admin</nuxt-link>
+      </li>
 
       <li v-if="loggedIn">
         <nuxt-link @click="onLogoutClick">Logout</nuxt-link>
@@ -40,7 +43,7 @@
 </template>
 
 <script setup>
-  const { clear } = useUserSession()
+  const { clear, user } = useUserSession()
   const router = useRouter()
 
   const onLogoutClick = async () => {

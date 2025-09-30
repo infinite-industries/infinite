@@ -529,7 +529,7 @@
           fb_event_link: this.calendar_event.fb_event_link ? this.calendar_event.fb_event_link.split('?')[0] : null,
           eventbrite_link: this.calendar_event.eventbrite_link ? this.calendar_event.eventbrite_link.split('?')[0] : null,
           organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
-          reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
+          owning_partner_id: this.reviewOrg ? this.reviewOrg : null
         }
 
         let eventCreationResponse = null
