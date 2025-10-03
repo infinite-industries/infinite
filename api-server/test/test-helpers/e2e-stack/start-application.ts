@@ -20,12 +20,14 @@ async function startApplication(
     {
       env: {
         ...process.env,
+        foo: 'bar',
         DB_HOST,
         DB_PORT: dbPort + '',
         DB_USER_NAME: DB_USERNAME,
         DB_PASSWORD,
         DB_NAME,
         JWT_PEM: testPem,
+        AUTH_USE_TEST_USERS: 'true',
       },
     },
   );

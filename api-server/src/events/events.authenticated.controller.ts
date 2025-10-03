@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Put,
   Query,
@@ -20,7 +19,6 @@ import {
 } from '@nestjs/swagger';
 import { AdminAuthGuard } from '../authentication/auth-guards/admin-auth.guard';
 import { EventIdResponse } from './dto/event-id-response';
-import { SingleEventResponse } from './dto/single-event-response';
 import { EventsService } from './events.service';
 import { UpdateEventRequest } from './dto/update-event-request';
 import { EventModel } from './models/event.model';
@@ -46,9 +44,6 @@ import { AuthenticatedUserGuard } from '../authentication/auth-guards/authentica
 import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 import { Op } from 'sequelize';
-import { request } from 'express';
-import { isNullOrUndefined } from 'src/utils/is-null-or-undefined';
-import { isOwner } from 'src/authentication/filters/remove-sensitive-data-for-non-admins';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
 @UseGuards(AuthenticatedUserGuard)
@@ -102,7 +97,8 @@ export default class EventsAuthenticatedController {
   })
   @ApiQuery({
     name: 'owning_partner_id',
-    description: 'Filter events by owning partner ID. Can be specified multiple times.',
+    description:
+      'Filter events by owning partner ID. Can be specified multiple times.',
     required: false,
     type: [String],
     isArray: true,
@@ -250,7 +246,10 @@ export default class EventsAuthenticatedController {
     summary: 'Verify the event, making it visible to the public',
   })
   @ApiImplicitParam({ name: 'id', type: String })
-  verifyEvent(@Req() request: RequestWithUserInfo, @Param() params: FindByIdParams): Promise<EventModel> {
+  verifyEvent(
+    @Req() request: RequestWithUserInfo,
+    @Param() params: FindByIdParams,
+  ): Promise<EventModel> {
     const id = params.id;
 
     return this.eventsService

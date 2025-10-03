@@ -1121,6 +1121,286 @@ describe('Events API', () => {
       });
   });
 
+  describe('Partner ID Filtering Tests', () => {
+    it('/verified should filter events by single owning_partner_id', async () => {
+      // Create partners
+      const partner1 = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Partner 1',
+        logo_url: 'https://example.com/partner-1.png',
+      });
+
+      const partner2 = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Partner 2',
+        logo_url: 'https://example.com/partner-2.png',
+      });
+
+      // Create events for partner1
+      const [partner1Events] =
+        await createListOfFutureEventsInChronologicalOrder(3, {
+          verified: true,
+          owning_partner_id: partner1.id,
+        });
+
+      // Create events for partner2
+      await createListOfFutureEventsInChronologicalOrder(2, {
+        verified: true,
+        owning_partner_id: partner2.id,
+      });
+
+      // Create events without partners
+      await createListOfFutureEventsInChronologicalOrder(2, {
+        verified: true,
+      });
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner1.id}`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(3);
+
+          // All returned events should belong to partner1
+          events.forEach((event) => {
+            expect(event.owning_partner_id).toEqual(partner1.id);
+            expect(event.owning_partner).toHaveProperty('id', partner1.id);
+            expect(event.owning_partner).toHaveProperty('name', partner1.name);
+          });
+
+          // Verify we got the correct events
+          const returnedEventIds = events.map((e) => e.id);
+          partner1Events.forEach((expectedEvent) => {
+            expect(returnedEventIds).toContain(expectedEvent.id);
+          });
+        });
+    });
+
+    it('/verified should filter events by multiple owning_partner_id parameters', async () => {
+      // Create partners
+      const partner1 = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Partner 1',
+        logo_url: 'https://example.com/partner-1.png',
+      });
+
+      const partner2 = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Partner 2',
+        logo_url: 'https://example.com/partner-2.png',
+      });
+
+      const partner3 = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Partner 3',
+        logo_url: 'https://example.com/partner-3.png',
+      });
+
+      // Create events for partner1
+      const [partner1Events] =
+        await createListOfFutureEventsInChronologicalOrder(2, {
+          verified: true,
+          owning_partner_id: partner1.id,
+        });
+
+      // Create events for partner2
+      const [partner2Events] =
+        await createListOfFutureEventsInChronologicalOrder(3, {
+          verified: true,
+          owning_partner_id: partner2.id,
+        });
+
+      // Create events for partner3 (should not be included)
+      await createListOfFutureEventsInChronologicalOrder(2, {
+        verified: true,
+        owning_partner_id: partner3.id,
+      });
+
+      // Create events without partners (should not be included)
+      await createListOfFutureEventsInChronologicalOrder(2, {
+        verified: true,
+      });
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner1.id}&owning_partner_id=${partner2.id}`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(5);
+
+          // All returned events should belong to either partner1 or partner2
+          events.forEach((event) => {
+            expect([partner1.id, partner2.id]).toContain(
+              event.owning_partner_id,
+            );
+            expect(event.owning_partner).toBeDefined();
+            expect([partner1.name, partner2.name]).toContain(
+              event.owning_partner.name,
+            );
+          });
+
+          // Verify we got the correct events
+          const returnedEventIds = events.map((e) => e.id);
+          const expectedEventIds = [...partner1Events, ...partner2Events].map(
+            (e) => e.id,
+          );
+          expectedEventIds.forEach((expectedId) => {
+            expect(returnedEventIds).toContain(expectedId);
+          });
+        });
+    });
+
+    it('/verified should return empty results when filtering by non-existent partner ID', async () => {
+      // Create some events
+      await createListOfFutureEventsInChronologicalOrder(3, {
+        verified: true,
+      });
+
+      const nonExistentPartnerId = uuidv4();
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${nonExistentPartnerId}`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(0);
+        });
+    });
+
+    it('/verified should filter by partner ID combined with other query parameters', async () => {
+      // Create a partner
+      const partner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Test Partner',
+        logo_url: 'https://example.com/test-partner.png',
+      });
+
+      // Create events for the partner with specific tags
+      const [partnerEventsWithTag] =
+        await createListOfFutureEventsInChronologicalOrder(2, {
+          verified: true,
+          owning_partner_id: partner.id,
+          tags: ['music'],
+        });
+
+      // Create events for the partner with different tags (should be filtered out)
+      await createListOfFutureEventsInChronologicalOrder(2, {
+        verified: true,
+        owning_partner_id: partner.id,
+        tags: ['art'],
+      });
+
+      // Create events for other partners with the same tag (should be filtered out)
+      const otherPartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Other Partner',
+        logo_url: 'https://example.com/other-partner.png',
+      });
+
+      await createListOfFutureEventsInChronologicalOrder(2, {
+        verified: true,
+        owning_partner_id: otherPartner.id,
+        tags: ['music'],
+      });
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner.id}&tags=music`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(2);
+
+          // All returned events should belong to the specified partner AND have the music tag
+          events.forEach((event) => {
+            expect(event.owning_partner_id).toEqual(partner.id);
+            expect(event.tags).toContain('music');
+            expect(event.owning_partner).toHaveProperty('id', partner.id);
+          });
+
+          // Verify we got the correct events
+          const returnedEventIds = events.map((e) => e.id);
+          partnerEventsWithTag.forEach((expectedEvent) => {
+            expect(returnedEventIds).toContain(expectedEvent.id);
+          });
+        });
+    });
+
+    it('/verified should filter by partner ID with pagination', async () => {
+      // Create a partner
+      const partner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Test Partner',
+        logo_url: 'https://example.com/test-partner.png',
+      });
+
+      // Create more events than the default page size
+      const [partnerEvents] =
+        await createListOfFutureEventsInChronologicalOrder(25, {
+          verified: true,
+          owning_partner_id: partner.id,
+        });
+
+      // Create events for other partners
+      const otherPartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Other Partner',
+        logo_url: 'https://example.com/other-partner.png',
+      });
+
+      await createListOfFutureEventsInChronologicalOrder(10, {
+        verified: true,
+        owning_partner_id: otherPartner.id,
+      });
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner.id}&page=1&pageSize=10`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const {
+            events,
+            status,
+            paginated,
+            totalPages,
+            nextPage,
+            page,
+            pageSize,
+          } = body;
+
+          expect(status).toEqual('success');
+          expect(paginated).toEqual(true);
+          expect(totalPages).toEqual(3); // 25 events / 10 per page = 3 pages
+          expect(nextPage).toEqual(2);
+          expect(page).toEqual(1);
+          expect(pageSize).toEqual(10);
+          expect(events).toHaveLength(10);
+
+          // All returned events should belong to the specified partner
+          events.forEach((event) => {
+            expect(event.owning_partner_id).toEqual(partner.id);
+            expect(event.owning_partner).toHaveProperty('id', partner.id);
+          });
+        });
+    });
+  });
+
   describe('Organizer Contact Filtering Tests', () => {
     it('/events/verified should strip organizer_contact for unauthenticated users', async () => {
       // Create events with organizer contact

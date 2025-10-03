@@ -23,7 +23,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "AUTH_TEST_USERS=true node ./test/clearLogFile.js && nest build && jest --config ./test/jest-e2e.json --runInBand",
+    "test:e2e": "node ./test/clearLogFile.js && nest build && jest --config ./test/jest-e2e.json --runInBand",
     "db:migrate": "sequelize-cli db:migrate",
     "db:migrate:down-one": "sequelize-cli db:migrate:undo",
     "db:migrate:generate": "sequelize-cli migration:generate",
