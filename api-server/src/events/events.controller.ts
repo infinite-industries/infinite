@@ -197,6 +197,7 @@ export class EventsController {
     @Query('embed') embed: string[] | string = [],
     @Req() request: RequestWithUserInfo,
   ): Promise<SingleEventResponse> {
+    console.log('!!! MUCH events/id ' + params.id);
     const id = params.id;
     const findOptions = {
       ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
@@ -205,7 +206,6 @@ export class EventsController {
 
     return this.eventsService
       .findById(id, findOptions)
-      .then((event) => Promise.resolve(event))
       .then((event) => {
         if (isNullOrUndefined(event)) {
           throw new NotFoundException('Could not find event: ' + id);

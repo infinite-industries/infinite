@@ -852,78 +852,6 @@ describe('Authenticated Events API', () => {
       });
   });
 
-  it('/authenticated/events/{id} should include owning_partner when event has a partner', async () => {
-    // Create a partner
-    const partner = await partnerModel.create({
-      id: uuidv4(),
-      name: 'Test Partner for Single Event',
-      logo_url: 'https://example.com/single-event-logo.png',
-    });
-
-    // Create an event with the partner
-    const event = await createRandomEventWithDateTime(
-      eventModel,
-      venueModel,
-      datetimeVenueModel,
-      {
-        verified: true,
-        owning_partner_id: partner.id,
-      },
-    );
-
-    const token = await login();
-
-    return server
-      .get(`/${CURRENT_VERSION_URI}/authenticated/events/${event.id}`)
-      .set('x-access-token', token)
-      .expect(200)
-      .then(async ({ body }) => {
-        const { event: eventReturned, status } = body;
-
-        expect(status).toEqual('success');
-        expect(eventReturned).toHaveProperty('owning_partner_id', partner.id);
-        expect(eventReturned).toHaveProperty('owning_partner');
-        expect(eventReturned.owning_partner).toHaveProperty('id', partner.id);
-        expect(eventReturned.owning_partner).toHaveProperty(
-          'name',
-          partner.name,
-        );
-        expect(eventReturned.owning_partner).toHaveProperty(
-          'logo_url',
-          partner.logo_url,
-        );
-        expect(eventReturned.owning_partner).toHaveProperty('createdAt');
-        expect(eventReturned.owning_partner).toHaveProperty('updatedAt');
-        // Partner admins should see organizer_contact for their own events
-        expect(eventReturned).toHaveProperty('organizer_contact');
-        expect(eventReturned.organizer_contact).toBeDefined();
-      });
-  });
-
-  it('/authenticated/events/{id} should not include owning_partner when event has no partner', async () => {
-    // Create an event without a partner
-    const event = await createRandomEventWithDateTime(
-      eventModel,
-      venueModel,
-      datetimeVenueModel,
-      { verified: true },
-    );
-
-    const token = await login();
-
-    return server
-      .get(`/${CURRENT_VERSION_URI}/authenticated/events/${event.id}`)
-      .set('x-access-token', token)
-      .expect(200)
-      .then(async ({ body }) => {
-        const { event: eventReturned, status } = body;
-
-        expect(status).toEqual('success');
-        expect(eventReturned).toHaveProperty('owning_partner_id', null);
-        expect(eventReturned.owning_partner).toBeUndefined();
-      });
-  });
-
   describe('GET /authenticated/events/non-verified-for-partners', () => {
     it('should return 403 when user is not authenticated', async () => {
       await createListOfFutureEventsInChronologicalOrder(3);
@@ -1233,16 +1161,6 @@ describe('Authenticated Events API', () => {
 
       return server
         .get(`/${CURRENT_VERSION_URI}/authenticated/events/non-verified`)
-        .set('x-access-token', nonAdminToken)
-        .expect(403);
-    });
-
-    it('should return 403 Forbidden for non-admin user accessing GET /authenticated/events/:id', async () => {
-      const [events] = await createListOfFutureEventsInChronologicalOrder(1);
-      const eventId = events[0].id;
-
-      return server
-        .get(`/${CURRENT_VERSION_URI}/authenticated/events/${eventId}`)
         .set('x-access-token', nonAdminToken)
         .expect(403);
     });

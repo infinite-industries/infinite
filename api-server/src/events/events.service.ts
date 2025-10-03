@@ -3,6 +3,7 @@ import {
   Injectable,
   LoggerService,
   BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
@@ -58,18 +59,29 @@ export class EventsService {
     private sequelize: Sequelize,
   ) {}
 
+  // TODO '!!! unify, bascially this should always return no auth, but filter as needed
+  // then we can delete authenticated only single event fetch and authenticated and fineOne
+  // goes away
   async findById(id: string, findOptions?: FindOptions): Promise<EventModel> {
     let options = {
       where: { id },
-      include: [DatetimeVenueModel, VenueModel, PartnerModel],
     };
 
     if (findOptions) {
       options = { ...findOptions, ...options };
     }
 
-    return this.eventModel.findOne(options).then((result) => {
+    return this.findOne(options).then((result) => {
       return result;
+    });
+  }
+
+  // just a prviate utility with no auth checks for use internally
+  // it automatically applies includes
+  private async findOne(findOptions: FindOptions): Promise<EventModel> {
+    return await this.eventModel.findOne({
+      include: [DatetimeVenueModel, VenueModel, PartnerModel],
+      ...findOptions  
     });
   }
 
@@ -232,6 +244,7 @@ export class EventsService {
   }
 
   async update(
+    request: RequestWithUserInfo,
     id: string,
     values: Partial<UpdateEventRequest>,
   ): Promise<DbUpdateResponse<EventModel>> {
@@ -243,6 +256,12 @@ export class EventsService {
           returning: true,
           transaction,
         };
+
+        // validate ownership before updating (infinite admins own anything and everything)
+        const event = await this.findOne({ where: { id }});
+        if (!isOwner(event, request)) {
+          throw new ForbiddenException("You do not have access to edit this event");
+        }
 
         const updatedEvent = await this.eventModel.update(
           values as Partial<EventModel>,

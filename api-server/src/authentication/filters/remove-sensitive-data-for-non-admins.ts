@@ -10,7 +10,9 @@ export async function removeSensitiveDataForNonAdmins<
 >(request: RequestWithUserInfo, events: T): Promise<T> {
   const isAdmin = request.userInformation?.isInfiniteAdmin;
 
+  console.log('!!! in logic: ' + isAdmin + ", " + request.userInformation?.isPartnerAdmin)
   if (isAdmin) {
+    console.log('!!! much here admin: ');
     // no filter for infinite admins
     return events;
   }
@@ -55,7 +57,7 @@ export function isOwner(
 ) {
   if (request.userInformation?.isInfiniteAdmin) {
     // infinite admins own all events
-    return true;
+    return true; // !!! HOW DID THIS PASS WHEN I SET IT TO FALSE
   }
 
   if (!request.userInformation?.isPartnerAdmin) {

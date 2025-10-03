@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Put,
   Query,
@@ -45,6 +46,9 @@ import { AuthenticatedUserGuard } from '../authentication/auth-guards/authentica
 import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 import { Op } from 'sequelize';
+import { request } from 'express';
+import { isNullOrUndefined } from 'src/utils/is-null-or-undefined';
+import { isOwner } from 'src/authentication/filters/remove-sensitive-data-for-non-admins';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
 @UseGuards(AuthenticatedUserGuard)
@@ -210,29 +214,12 @@ export default class EventsAuthenticatedController {
       .then((events) => new EventsResponse({ events }));
   }
 
-  @Get('/:id')
-  @UseGuards(AdminAuthGuard)
-  @ApiOperation({
-    summary: 'Get a single event with no filters applied (authenticated only)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'get single event',
-  })
-  getById(@Param() params: { id: string }): Promise<SingleEventResponse> {
-    const id = params.id;
-
-    return this.eventsService
-      .findById(id)
-      .then(eventModelToEventDTO)
-      .then((event) => ({ event, status: 'success' }));
-  }
-
   @Put(':id')
   @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Update fields on an existing event' })
   @ApiImplicitParam({ name: 'id', type: String })
   updateEvent(
+    @Req() request: RequestWithUserInfo,
     @Param() params: FindByIdParams,
     @Body() updatedValues: UpdateEventRequest,
   ): Promise<EventModel> {
@@ -244,21 +231,21 @@ export default class EventsAuthenticatedController {
     );
 
     return this.eventsService
-      .update(id, eventWithDateTimesInISOFormat)
+      .update(request, id, eventWithDateTimesInISOFormat)
       .then((response) => response.updatedEntities[0]);
   }
 
   @Put('/verify/:id')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(PartnerAdminGuard)
   @ApiOperation({
     summary: 'Verify the event, making it visible to the public',
   })
   @ApiImplicitParam({ name: 'id', type: String })
-  verifyEvent(@Param() params: FindByIdParams): Promise<EventModel> {
+  verifyEvent(@Req() request: RequestWithUserInfo, @Param() params: FindByIdParams): Promise<EventModel> {
     const id = params.id;
 
     return this.eventsService
-      .update(id, { verified: true })
+      .update(request, id, { verified: true })
       .then((response) => response.updatedEntities[0]);
   }
 
