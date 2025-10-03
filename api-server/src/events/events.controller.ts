@@ -147,10 +147,18 @@ export class EventsController {
     type: String,
     description: 'Filter events by category',
   })
+  @ApiQuery({
+    name: 'owning_partner_id',
+    description: 'Filter events by owning partner ID. Can be specified multiple times.',
+    required: false,
+    type: [String],
+    isArray: true,
+  })
   async getAllVerified(
     @Req() request: RequestWithUserInfo,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
+    @Query('owning_partner_id') owningPartnerIds: string[] | string = [],
     @Query() pagination: PaginationDto,
     @Query('dateRange') dateRange?: string,
   ): Promise<EventsResponse> {
@@ -163,6 +171,7 @@ export class EventsController {
       .findAllPaginated({
         tags,
         category,
+        owningPartnerIds,
         pageSize,
         requestedPage: page,
         verifiedOnly: true,

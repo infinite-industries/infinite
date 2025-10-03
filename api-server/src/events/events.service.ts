@@ -102,6 +102,7 @@ export class EventsService {
     request,
     tags = [],
     category,
+    owningPartnerIds = [],
     verifiedOnly = true,
     pageSize,
     requestedPage,
@@ -125,6 +126,7 @@ export class EventsService {
       const whereClause = this.getWhereClause(
         tagClauseParams,
         category,
+        owningPartnerIds,
         verifiedOnly,
         startDate,
         endDate,
@@ -449,6 +451,7 @@ export class EventsService {
   private getWhereClause(
     tagClauseParams: Nullable<string>,
     category: Nullable<string>,
+    owningPartnerIds: string[] | string,
     verifiedOnly: boolean,
     startDate?: Date,
     endDate?: Date,
@@ -461,6 +464,11 @@ export class EventsService {
       ? `events.category = '${category}'`
       : null;
 
+    const partnerIdsArray = ensureEmbedQueryStringIsArray(owningPartnerIds);
+    const partnerIdsClause = partnerIdsArray.length > 0
+      ? `events.owning_partner_id IN (${partnerIdsArray.map(id => `'${id}'`).join(', ')})`
+      : null;
+
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
     const dateRangeFilter =
@@ -471,6 +479,7 @@ export class EventsService {
     const clauses = [
       tagClause,
       categoryClause,
+      partnerIdsClause,
       verifiedOnlyClause,
       dateRangeFilter,
     ].filter((clause) => isNotNullOrUndefined(clause));
@@ -521,6 +530,7 @@ interface FindAllPaginatedArgs {
   request: RequestWithUserInfo;
   tags: string[] | string;
   category?: string;
+  owningPartnerIds?: string[] | string;
   verifiedOnly?: boolean;
   pageSize: number;
   requestedPage: number;
