@@ -1181,16 +1181,6 @@ describe('Authenticated Events API', () => {
         .expect(403);
     });
 
-    it('should return 403 Forbidden for non-admin user accessing PUT /authenticated/events/verify/:id', async () => {
-      const [events] = await createListOfFutureEventsInChronologicalOrder(1);
-      const eventId = events[0].id;
-
-      return server
-        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${eventId}`)
-        .set('x-access-token', nonAdminToken)
-        .expect(403);
-    });
-
     it('should return 403 Forbidden for non-admin user accessing DELETE /authenticated/events/:id', async () => {
       const [events] = await createListOfFutureEventsInChronologicalOrder(1);
       const eventId = events[0].id;
@@ -1238,6 +1228,247 @@ describe('Authenticated Events API', () => {
           `/${CURRENT_VERSION_URI}/authenticated/events?dateRange=2024-01-01T00:00:00.000Z/2024-12-31T23:59:59.999Z`,
         )
         .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
+  });
+
+  describe('PUT /authenticated/events/verify/:id', () => {
+    it('should return 403 when user is not authenticated', async () => {
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const eventId = events[0].id;
+
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${eventId}`)
+        .expect(403);
+    });
+
+
+    it('should return 403 when user is authenticated but not an admin', async () => {
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const eventId = events[0].id;
+
+      // Create a non-admin user token
+      const nonAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${eventId}`)
+        .set('x-access-token', nonAdminToken)
+        .expect(403);
+    });
+
+    it('should return 403 when partner admin tries to verify event they do not own', async () => {
+      // Create two partners
+      const partner1 = await createPartner({
+        name: 'Partner 1',
+        logo_url: 'https://example.com/partner-1.png',
+      });
+
+      const partner2 = await createPartner({
+        name: 'Partner 2',
+        logo_url: 'https://example.com/partner-2.png',
+      });
+
+      // Create event owned by partner1
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+        owning_partner_id: partner1.id,
+      });
+      const eventId = events[0].id;
+
+      // Create partner admin token for partner2
+      const partner2AdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partner2AdminToken })
+        .expect(200);
+
+      // Get user info to get the user ID
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partner2AdminToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with partner2 (not partner1)
+      await associateUserWithPartners(userId, [partner2.id]);
+
+      // Try to verify event owned by partner1
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${eventId}`)
+        .set('x-access-token', partner2AdminToken)
+        .expect(403);
+    });
+
+    it('should successfully verify event when partner admin owns the event', async () => {
+      // Create a partner
+      const partner = await createPartner({
+        name: 'Test Partner',
+        logo_url: 'https://example.com/test-partner.png',
+      });
+
+      // Create event owned by the partner
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+        owning_partner_id: partner.id,
+      });
+      const eventId = events[0].id;
+
+      // Create partner admin token
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with the partner
+      await associateUserWithPartners(userId, [partner.id]);
+
+      // Verify the event
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${eventId}`)
+        .set('x-access-token', partnerAdminToken)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.verified).toEqual(true);
+          expect(body.id).toEqual(eventId);
+        });
+    });
+
+    it('should successfully verify event when infinite admin accesses it', async () => {
+      // Create a partner
+      const partner = await createPartner({
+        name: 'Test Partner',
+        logo_url: 'https://example.com/test-partner.png',
+      });
+
+      // Create event owned by the partner
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+        owning_partner_id: partner.id,
+      });
+      const eventId = events[0].id;
+
+      // Create infinite admin token
+      const adminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': true,
+      });
+
+      // Verify the event
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${eventId}`)
+        .set('x-access-token', adminToken)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.verified).toEqual(true);
+          expect(body.id).toEqual(eventId);
+        });
+    });
+
+    it('should return 404 when trying to verify non-existent event', async () => {
+      // Create a partner
+      const partner = await createPartner({
+        name: 'Test Partner',
+        logo_url: 'https://example.com/test-partner.png',
+      });
+
+      const nonExistentEventId = uuidv4();
+
+      // Create partner admin token
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with the partner
+      await associateUserWithPartners(userId, [partner.id]);
+
+      // Try to verify non-existent event
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${nonExistentEventId}`)
+        .set('x-access-token', partnerAdminToken)
+        .expect(404);
+    });
+
+    it('should successfully verify event without partner ownership when infinite admin accesses it', async () => {
+      // Create event without partner ownership
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const eventId = events[0].id;
+
+      // Create infinite admin token
+      const adminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': true,
+      });
+
+      // Verify the event
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${eventId}`)
+        .set('x-access-token', adminToken)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.verified).toEqual(true);
+          expect(body.id).toEqual(eventId);
+        });
+    });
+
+    it('should return 403 when partner admin tries to verify event without partner ownership', async () => {
+      // Create event without partner ownership
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const eventId = events[0].id;
+
+      // Create a partner
+      const partner = await createPartner({
+        name: 'Test Partner',
+        logo_url: 'https://example.com/test-partner.png',
+      });
+
+      // Create partner admin token
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with the partner
+      await associateUserWithPartners(userId, [partner.id]);
+
+      // Try to verify event without partner ownership
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${eventId}`)
+        .set('x-access-token', partnerAdminToken)
         .expect(403);
     });
   });

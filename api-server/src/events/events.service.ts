@@ -4,6 +4,7 @@ import {
   LoggerService,
   BadRequestException,
   ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
@@ -259,6 +260,10 @@ export class EventsService {
 
         // validate ownership before updating (infinite admins own anything and everything)
         const event = await this.findOne({ where: { id }});
+        if (isNullOrUndefined(event)) {
+          throw new NotFoundException('Could not find event: ' + id);
+        }
+
         if (!isOwner(event, request)) {
           throw new ForbiddenException("You do not have access to edit this event");
         }
