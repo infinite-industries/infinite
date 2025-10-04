@@ -71,10 +71,7 @@ export default class EventDTO {
   @ApiProperty({ example: EXAMPLE_DATE })
   updatedAt: Date;
 
-  /**
-   * @deprecated This property is deprecated and will be removed in future versions.
-   */
-  @ApiProperty({ example: 'radio-mc-radio-station', deprecated: true })
+  @ApiProperty({ example: 'radio-mc-radio-station' })
   reviewed_by_org: string;
 
   @ApiProperty({

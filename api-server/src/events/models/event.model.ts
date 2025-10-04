@@ -107,11 +107,8 @@ export class EventModel extends Model<EventModel> {
   @ApiProperty({ example: EXAMPLE_DATE })
   updatedAt: Date;
 
-  /**
-   * @deprecated This property is deprecated and will be removed in future versions.
-   */
   @Column
-  @ApiProperty({ example: 'radio-mc-radio-station', deprecated: true })
+  @ApiProperty({ example: 'radio-mc-radio-station' })
   reviewed_by_org: string;
 
   @Column(DataType.ARRAY(DataType.STRING))

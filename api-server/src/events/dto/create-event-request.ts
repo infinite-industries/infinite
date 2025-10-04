@@ -85,10 +85,7 @@ export class CreateEventRequest {
   @IsOptional()
   bitly_link: string;
 
-  /**
-   * @deprecated This property is deprecated and will be removed in future versions.
-   */
-  @ApiProperty({ example: 'radio-mc-radio-station', deprecated: true })
+  @ApiProperty({ example: 'radio-mc-radio-station' })
   @IsOptional()
   reviewed_by_org: string;
 
