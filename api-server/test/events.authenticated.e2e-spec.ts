@@ -1705,12 +1705,11 @@ describe('Authenticated Events API', () => {
         logo_url: 'https://example.com/test-partner.png',
       });
 
-      // Create more events than the default page size
-      const [partnerEvents] =
-        await createListOfFutureEventsInChronologicalOrder(25, {
-          verified: true,
-          owning_partner_id: partner.id,
-        });
+      // Create more events than the default page size\
+      await createListOfFutureEventsInChronologicalOrder(25, {
+        verified: true,
+        owning_partner_id: partner.id,
+      });
 
       // Create events for other partners
       const otherPartner = await createPartner({
@@ -1767,16 +1766,24 @@ describe('Authenticated Events API', () => {
 
       // Create events for the partner within date range (2024-2025)
       const [partnerEventsInRange] =
-        await createListOfFutureEventsInChronologicalOrder(3, {
-          verified: true,
-          owning_partner_id: partner.id,
-        }, new Date('2024-06-15T00:00:00.000Z'));
+        await createListOfFutureEventsInChronologicalOrder(
+          3,
+          {
+            verified: true,
+            owning_partner_id: partner.id,
+          },
+          new Date('2024-06-15T00:00:00.000Z'),
+        );
 
       // Create events for the partner outside date range (2026+)
-      await createListOfFutureEventsInChronologicalOrder(2, {
-        verified: true,
-        owning_partner_id: partner.id,
-      }, new Date('2026-06-15T00:00:00.000Z'));
+      await createListOfFutureEventsInChronologicalOrder(
+        2,
+        {
+          verified: true,
+          owning_partner_id: partner.id,
+        },
+        new Date('2026-06-15T00:00:00.000Z'),
+      );
 
       // Create events for other partners within date range (should be filtered out)
       const otherPartner = await createPartner({
@@ -1784,10 +1791,14 @@ describe('Authenticated Events API', () => {
         logo_url: 'https://example.com/other-partner.png',
       });
 
-      await createListOfFutureEventsInChronologicalOrder(2, {
-        verified: true,
-        owning_partner_id: otherPartner.id,
-      }, new Date('2024-06-15T00:00:00.000Z'));
+      await createListOfFutureEventsInChronologicalOrder(
+        2,
+        {
+          verified: true,
+          owning_partner_id: otherPartner.id,
+        },
+        new Date('2024-06-15T00:00:00.000Z'),
+      );
 
       const token = await login();
 

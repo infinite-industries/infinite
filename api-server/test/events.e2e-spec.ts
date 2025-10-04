@@ -1350,11 +1350,10 @@ describe('Events API', () => {
       });
 
       // Create more events than the default page size
-      const [partnerEvents] =
-        await createListOfFutureEventsInChronologicalOrder(25, {
-          verified: true,
-          owning_partner_id: partner.id,
-        });
+      await createListOfFutureEventsInChronologicalOrder(25, {
+        verified: true,
+        owning_partner_id: partner.id,
+      });
 
       // Create events for other partners
       const otherPartner = await partnerModel.create({

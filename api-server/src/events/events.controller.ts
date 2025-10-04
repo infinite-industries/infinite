@@ -149,7 +149,8 @@ export class EventsController {
   })
   @ApiQuery({
     name: 'owning_partner_id',
-    description: 'Filter events by owning partner ID. Can be specified multiple times.',
+    description:
+      'Filter events by owning partner ID. Can be specified multiple times.',
     required: false,
     type: [String],
     isArray: true,
@@ -206,7 +207,6 @@ export class EventsController {
     @Query('embed') embed: string[] | string = [],
     @Req() request: RequestWithUserInfo,
   ): Promise<SingleEventResponse> {
-    console.log('!!! MUCH events/id ' + params.id);
     const id = params.id;
     const findOptions = {
       ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),

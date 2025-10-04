@@ -82,7 +82,7 @@ export class EventsService {
   private async findOne(findOptions: FindOptions): Promise<EventModel> {
     return await this.eventModel.findOne({
       include: [DatetimeVenueModel, VenueModel, PartnerModel],
-      ...findOptions  
+      ...findOptions,
     });
   }
 
@@ -261,13 +261,15 @@ export class EventsService {
         };
 
         // validate ownership before updating (infinite admins own anything and everything)
-        const event = await this.findOne({ where: { id }});
+        const event = await this.findOne({ where: { id } });
         if (isNullOrUndefined(event)) {
           throw new NotFoundException('Could not find event: ' + id);
         }
 
         if (!isOwner(event, request)) {
-          throw new ForbiddenException("You do not have access to edit this event");
+          throw new ForbiddenException(
+            'You do not have access to edit this event',
+          );
         }
 
         const updatedEvent = await this.eventModel.update(
@@ -465,9 +467,12 @@ export class EventsService {
       : null;
 
     const partnerIdsArray = ensureEmbedQueryStringIsArray(owningPartnerIds);
-    const partnerIdsClause = partnerIdsArray.length > 0
-      ? `events.owning_partner_id IN (${partnerIdsArray.map(id => `'${id}'`).join(', ')})`
-      : null;
+    const partnerIdsClause =
+      partnerIdsArray.length > 0
+        ? `events.owning_partner_id IN (${partnerIdsArray
+            .map((id) => `'${id}'`)
+            .join(', ')})`
+        : null;
 
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
