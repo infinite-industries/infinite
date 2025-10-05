@@ -1,7 +1,6 @@
 import moment from 'moment';
 import { Op, literal } from 'sequelize';
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -25,7 +24,6 @@ import SlackNotificationService, {
 } from '../notifications/slack-notification.service';
 import { EventsResponse } from './dto/events-response';
 import { SingleEventResponse } from './dto/single-event-response';
-import { Request } from 'express';
 import { removeSensitiveDataForNonAdmins } from '../authentication/filters/remove-sensitive-data-for-non-admins';
 import FindByIdParams from '../dto/find-by-id-params';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -43,8 +41,9 @@ import { isNullOrUndefined } from '../utils';
 import { VenueModel } from 'src/venues/models/venue.model';
 import { DatetimeVenueModel } from './models/datetime-venue.model';
 import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
-import isAdminUser from 'src/authentication/is-admin-user';
+import { PartnerModel } from '../users/models/partner.model';
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
+import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -72,13 +71,13 @@ export class EventsController {
   async getAllCurrentVerified(
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
-    @Req() request: Request,
+    @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
-    const isAdmin = await isAdminUser(request);
+    const isAdmin = request.userInformation?.isInfiniteAdmin || false;
 
     const include = isAdmin
-      ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel]
-      : [VenueModel, DatetimeVenueModel];
+      ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel, PartnerModel]
+      : [VenueModel, DatetimeVenueModel, PartnerModel];
 
     const findOptions = {
       include,
@@ -149,15 +148,13 @@ export class EventsController {
     description: 'Filter events by category',
   })
   async getAllVerified(
-    @Req() request: Request,
+    @Req() request: RequestWithUserInfo,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
     @Query('dateRange') dateRange?: string,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
-
-    const isUserAdmin = await isAdminUser(request);
 
     const [startDate, endDate] =
       validateAndExtractOptionalDateTimeFilters(dateRange);
@@ -171,7 +168,7 @@ export class EventsController {
         verifiedOnly: true,
         startDate,
         endDate,
-        isUserAdmin,
+        request,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
@@ -198,7 +195,7 @@ export class EventsController {
   getEventById(
     @Param() params: FindByIdParams,
     @Query('embed') embed: string[] | string = [],
-    @Req() request: Request,
+    @Req() request: RequestWithUserInfo,
   ): Promise<SingleEventResponse> {
     const id = params.id;
     const findOptions = {

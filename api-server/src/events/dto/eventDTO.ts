@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { VenueModel } from '../../venues/models/venue.model';
 import { StartEndTimePairs } from '../../shared-types/start-end-time-pairs';
+import { PartnerDTO } from '../../users/dto/partner-dto';
 
 const EXAMPLE_DATE = new Date();
 const EXAMPLE_START_DATE = new Date(
@@ -16,6 +17,12 @@ export default class EventDTO {
 
   @ApiProperty({ example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa' })
   venue_id: string;
+
+  @ApiProperty({
+    example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa',
+    required: false,
+  })
+  owning_partner_id?: string;
 
   @ApiProperty({ example: 'Infinite Gallery Opening' })
   title: string;
@@ -35,7 +42,12 @@ export default class EventDTO {
   @ApiProperty({ example: '5' })
   admission_fee: string;
 
-  @ApiProperty({ example: 'bob.vance@refridgeration.com' })
+  @ApiProperty({
+    description: `The e-mail address for admins of the site to communicate with
+    about the event. This will be filtered out of un-authenticated api calls. It
+    is meant for communication between the submitter and site admins`,
+    example: 'bob.vance@refridgeration.com',
+  })
   organizer_contact: string;
 
   @ApiProperty({ example: 'The gallery is open' })
@@ -71,7 +83,10 @@ export default class EventDTO {
   @ApiProperty({ example: EXAMPLE_DATE })
   updatedAt: Date;
 
-  @ApiProperty({ example: 'radio-mc-radio-station' })
+  /**
+   * @deprecated This property is deprecated and will be removed in future versions.
+   */
+  @ApiProperty({ example: 'radio-mc-radio-station', deprecated: true })
   reviewed_by_org: string;
 
   @ApiProperty({
@@ -96,6 +111,21 @@ export default class EventDTO {
 
   @ApiProperty()
   venue: VenueModel;
+
+  @ApiProperty({
+    type: () => PartnerDTO,
+    nullable: true,
+    required: false,
+    description: 'The partner that owns this event',
+    example: {
+      id: '123e4567-e89b-12d3-a456-426614174000',
+      name: 'TechCorp Inc.',
+      logo_url: 'https://example.com/logo.png',
+      createdAt: '2024-01-15T10:30:00.000Z',
+      updatedAt: '2024-01-15T10:30:00.000Z',
+    },
+  })
+  owning_partner?: PartnerDTO;
 
   @ApiProperty({
     example: {

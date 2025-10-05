@@ -25,8 +25,7 @@ export interface DecodedAuthZeroToken extends Record<string, unknown> {
 }
 
 export function parseJwt(req: Request): Promise<UserInformation> {
-  const token =
-    req.body.token || req.query.token || req.headers['x-access-token'];
+  const token = getTokenFromHeader(req);
 
   return getUserInformationFromToken(token);
 }
@@ -51,4 +50,8 @@ function getUserInformationFromToken(token: string): Promise<UserInformation> {
       }
     });
   });
+}
+
+export function getTokenFromHeader(req: Request) {
+  return req.body.token || req.query.token || req.headers['x-access-token'];
 }

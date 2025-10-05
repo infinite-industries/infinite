@@ -7,6 +7,7 @@ import { CURRENT_VERSION_URI } from '../src/utils/versionts';
 import { EventModel } from '../src/events/models/event.model';
 import generateEvent, { createEvent } from './fakers/event.faker';
 import generateVenue from './fakers/venue.faker';
+import faker from 'faker';
 import { ChildProcessWithoutNullStreams } from 'child_process';
 import runMigrations from './test-helpers/e2e-stack/run-migrations';
 import startApplication from './test-helpers/e2e-stack/start-application';
@@ -15,6 +16,7 @@ import killApp from './test-helpers/e2e-stack/kill-app';
 import stopDatabase from './test-helpers/e2e-stack/stop-database';
 import startDatabase from './test-helpers/e2e-stack/start-database';
 import { DatetimeVenueModel } from '../src/events/models/datetime-venue.model';
+import { PartnerModel } from '../src/users/models/partner.model';
 import { PORT } from '../src/constants';
 
 const today = new Date(Date.now());
@@ -28,6 +30,7 @@ let dbContainer: StartedTestContainer;
 let eventModel: typeof EventModel;
 let venueModel: typeof VenueModel;
 let datetimeVenueModel: typeof DatetimeVenueModel;
+let partnerModel: typeof PartnerModel;
 let testingModule: TestingModule;
 
 let dbHostPort: number;
@@ -50,6 +53,7 @@ describe('CurrentEvents (e2e)', () => {
     eventModel = databaseModels.eventModel;
     venueModel = databaseModels.venueModel;
     datetimeVenueModel = databaseModels.datetimeVenueModel;
+    partnerModel = databaseModels.partnerModel;
 
     testingModule = databaseModels.testingModule;
 
@@ -86,6 +90,8 @@ describe('CurrentEvents (e2e)', () => {
     if (eventModel) await deleteAllEvents();
 
     if (venueModel) await deleteAllVenues();
+
+    if (partnerModel) await deleteAllPartners();
 
     return Promise.resolve();
   });
@@ -310,6 +316,75 @@ describe('CurrentEvents (e2e)', () => {
       });
   });
 
+  it('handles mixed events with and without partners in current-events', async () => {
+    const futureTime1 = getDateTimePair(getTimePlusX(today, 1));
+    const futureTime2 = getDateTimePair(getTimePlusX(today, 2));
+    const venue = await createVenue(generateVenue(venueModel));
+
+    // Create a partner
+    const partner = await partnerModel.create({
+      id: faker.datatype.uuid(),
+      name: 'Mixed Events Partner',
+      logo_url: 'https://example.com/mixed-events-logo.png',
+    });
+
+    // Create event with partner
+    await createEvent(
+      generateEvent(eventModel, {
+        venue_id: venue.id,
+        verified: true,
+        owning_partner_id: partner.id,
+      }),
+      [futureTime1],
+    );
+
+    // Create event without partner
+    await createEvent(
+      generateEvent(eventModel, {
+        venue_id: venue.id,
+        verified: true,
+      }),
+      [futureTime2],
+    );
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/current-verified`)
+      .expect(200)
+      .then(async (response) => {
+        expect(response.body.events.length).toEqual(2);
+
+        // Find events with and without partners
+        const eventWithPartnerData = response.body.events.find(
+          (e) => e.owning_partner_id,
+        );
+        const eventWithoutPartnerData = response.body.events.find(
+          (e) => !e.owning_partner_id,
+        );
+
+        // Verify event with partner has partner data
+        expect(eventWithPartnerData).toHaveProperty(
+          'owning_partner_id',
+          partner.id,
+        );
+        expect(eventWithPartnerData).toHaveProperty('owning_partner');
+        expect(eventWithPartnerData.owning_partner).toHaveProperty(
+          'id',
+          partner.id,
+        );
+        expect(eventWithPartnerData.owning_partner).toHaveProperty(
+          'name',
+          partner.name,
+        );
+
+        // Verify event without partner has no partner data
+        expect(eventWithoutPartnerData).toHaveProperty(
+          'owning_partner_id',
+          null,
+        );
+        expect(eventWithoutPartnerData.owning_partner).toBeUndefined();
+      });
+  });
+
   function getTimePlusX(time, deltaHours) {
     const incrementedTime = new Date(time);
     incrementedTime.setHours(incrementedTime.getHours() + deltaHours);
@@ -382,5 +457,9 @@ describe('CurrentEvents (e2e)', () => {
 
   async function deleteAllDatetimeVenues() {
     await datetimeVenueModel.destroy({ where: {} });
+  }
+
+  async function deleteAllPartners() {
+    await partnerModel.destroy({ where: {} });
   }
 });

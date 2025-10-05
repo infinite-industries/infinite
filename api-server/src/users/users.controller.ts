@@ -6,20 +6,17 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from '../authentication/auth.guard';
-import { Request } from 'express';
-import { UserInformation } from '../authentication/parse-jwt';
-import UsersService from './users.service';
-import { buildFromUserInfo } from './dto/new-user';
+import { AuthenticatedUserGuard } from '../authentication/auth-guards/authenticated-user.guard';
 import { UserInfoResp } from './dto/user-info-resp';
+import { PartnerDTO } from './dto/partner-dto';
+import { PartnersListResponse } from './dto/partners-list-response';
+import { RequestWithUserInfo } from './dto/RequestWithUserInfo';
 
 @Controller(`${VERSION_1_URI}/users`)
 @ApiTags('users')
 export class UsersController {
-  constructor(private readonly userService: UsersService) {}
-
   @Get('current')
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthenticatedUserGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Return information about the authenticated user' })
   @ApiResponse({
@@ -30,25 +27,33 @@ export class UsersController {
   async getCurrentUser(
     @Req() request: RequestWithUserInfo,
   ): Promise<UserInfoResp> {
-    const userInfo: UserInformation = request.userInformation;
-    const userInfoToPersist = buildFromUserInfo(userInfo);
-
-    // TODO There's no real need to persist user info to db at this point, this was done when we were going to have
-    // user curated lists and such
-    const persistedUserInfo = await this.userService.ensureByName(
-      userInfoToPersist,
-    );
-
-    return new UserInfoResp({
-      id: persistedUserInfo.id,
-      name: userInfo.decodedToken.name,
-      nickname: userInfo.decodedToken.nickname,
-      isInfiniteAdmin: userInfo.isInfiniteAdmin,
-      venueIDs: userInfo.venueIds,
-    });
+    return request.userInformation;
   }
-}
 
-interface RequestWithUserInfo extends Request {
-  userInformation: UserInformation;
+  @Get('current/partners')
+  @UseGuards(AuthenticatedUserGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Get partners associated with the authenticated user',
+    description:
+      'Returns a list of partners that are associated with the currently logged-in user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of partners associated with the user',
+    type: PartnersListResponse,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - user not authenticated',
+  })
+  async getPartnersForUser(
+    @Req() request: RequestWithUserInfo,
+  ): Promise<PartnersListResponse> {
+    const userInfo = request.userInformation;
+
+    return new PartnersListResponse(
+      userInfo.partners?.map((partner) => new PartnerDTO(partner)) || [],
+    );
+  }
 }
