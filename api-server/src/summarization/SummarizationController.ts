@@ -25,7 +25,8 @@ export class SummarizationController {
 
   @Post('get-brief-description')
   @ApiOperation({
-    summary: 'returns a brief description based on the provided full description',
+    summary:
+      'returns a brief description based on the provided full description',
   })
   async getABriefDescription(
     @Body() newEvent: PredictTagsFromDescriptionRequest,

@@ -101,132 +101,135 @@
 
 </template>
 
-<script>
+<script setup>
+  import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
   import { useStore } from 'vuex'
+  import { useRoute, onBeforeRouteLeave } from 'vue-router'
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import SubmissionPreview from '@/components/SubmissionPreview'
   import PartnerService from '@/services/PartnerService'
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
-  export default {
-    async setup () {
-      definePageMeta({
-        layout: 'no-mobile-cta',
-      })
-      const { query } = useRoute()
-      const store = useStore()
+  definePageMeta({
+    layout: 'no-mobile-cta',
+  })
 
-      // scaffold event (this is a synchronous operation)
-      store.dispatch('CreateNewEvent')
-      // fetch venues to power venue selector
-      await useLegacyStoreFetch(FETCH_ACTIVE_VENUES, [
-        FETCH_ACTIVE_VENUES
-      ])
+  const { query } = useRoute()
+  const store = useStore()
 
-      // display partner info if provided in query
-      if (query.partner) {
-        return {
-          partner: PartnerService.getPartnerForQuery(query.partner)
-        }
-      }
-    },
-    data: function () {
-      return {
-        mode: 'edit',
-        previewEvent: null,
-        partner: null,
-        submissionErrorMessage: null,
-      }
-    },
-    // sometimes users navigate away without submitting
-    // if the form is partially filled, we can try to warn them and give them
-    // a chance to abort the nav
-    // mounted/beforeDestroy handle the "close tab / window" case...
-    mounted: function () {
-      if (window) {
-        window.addEventListener('beforeunload', this.promptIfInProgress)
-      }
-    },
-    beforeUnmount: function () {
-      if (window) {
-        window.removeEventListener('beforeunload', this.promptIfInProgress)
-      }
-    },
-    // ...and beforeRouteLeave handles the SPA routing case
-    beforeRouteLeave: function (from, to, next) {
-      // this _shouldn't_ be possible, but seems to be during hot reload in dev
-      if (!this) {
-        return next()
-      }
+  const mode = ref('edit')
+  const previewEvent = ref(null)
+  const partner = ref(null)
+  const submissionErrorMessage = ref(null)
+  const form = ref(null)
+  const previewHeading = ref(null)
 
-      if (this.isDirtyOrPending()) {
-        console.log('warning user that incomplete is not submitted')
-        const sure = window.confirm('You have unsaved changes. Sure?')
-        next(sure ? undefined : false)
-      } else {
-        next()
+  // === Support Methods ====
+  const onPreview = (event) => {
+    previewEvent.value = event
+    mode.value = 'preview'
+    nextTick(() => {
+      // Using native scrollIntoView for smooth scrolling to the preview heading
+      if (previewHeading.value) {
+        previewHeading.value.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
-    },
-    methods: {
-      onPreview: function (event) {
-        this.previewEvent = event
-        this.mode = 'preview'
-        this.$nextTick(() => this.$scrollTo(this.$refs.previewHeading, { offset: -200 }))
-      },
-      submitEventForReal: function () {
-        this.previewEvent = null
-        this.mode = 'pending'
-        this.$refs.form.UploadEvent()
-      },
-      changeTheEvent: function () {
-        this.previewEvent = null
-        this.mode = 'edit'
-      },
-      newSubmission: function () {
-        window.location.reload()
-      },
-      isDirtyOrPending: function () {
-        return (
-          this.$refs?.form?.isDirty() &&
-          // after submission, form will still be dirty, but we no longer care
-          this.mode !== 'success' &&
-          this.mode !== 'error'
-        ) || this.mode === 'pending'
-      },
-      promptIfInProgress: function (event) {
-        if (this.isDirtyOrPending()) {
-          console.log('warning user that incomplete event is not submitted')
-          // preventing default is the primary trigger for stopping unload
-          event.preventDefault()
-          // but some browsers are looking for a string value either returned
-          // or assigned to returnValue, (of course they don't use it for
-          // anything, though)
-          // eslint-disable-next-line no-return-assign
-          return event.returnValue = 'You have unsaved changes. Sure?'
-        }
-      },
-      handleSubmissionError: function({ error }) {
-        this.mode = 'error'
+    })
+  }
 
-        const errorResp = error?.response
+  const submitEventForReal = () => {
+    previewEvent.value = null
+    mode.value = 'pending'
+    form.value?.UploadEvent()
+  }
 
-        if (
-          errorResp !== null &&
-          errorResp !== undefined &&
-          !!errorResp?.data?.message
-        ) {
-          this.submissionErrorMessage = errorResp.data.message
-        }
-      },
-      handleErrorDismissed: function() {
-        this.submissionErrorMessage = null
-        this.mode = 'edit'
-      }
-    },
-    components: {
-      'submission-form': SubmissionForm,
-      'submission-preview': SubmissionPreview
+  const changeTheEvent = () => {
+    previewEvent.value = null
+    mode.value = 'edit'
+  }
+
+  const newSubmission = () => {
+    window.location.reload()
+  }
+
+  const isDirtyOrPending = () => {
+    return (
+      form.value?.isDirty() &&
+      // after submission, form will still be dirty, but we no longer care
+      mode.value !== 'success' &&
+      mode.value !== 'error'
+    ) || mode.value === 'pending'
+  }
+
+  const promptIfInProgress = (event) => {
+    if (isDirtyOrPending()) {
+      console.log('warning user that incomplete event is not submitted')
+      // preventing default is the primary trigger for stopping unload
+      event.preventDefault()
+      // but some browsers are looking for a string value either returned
+      // or assigned to returnValue, (of course they don't use it for
+      // anything, though)
+      return event.returnValue = 'You have unsaved changes. Sure?'
     }
+  }
+
+  const handleSubmissionError = ({ error }) => {
+    mode.value = 'error'
+
+    const errorResp = error?.response
+
+    if (
+      errorResp !== null &&
+      errorResp !== undefined &&
+      !!errorResp?.data?.message
+    ) {
+      submissionErrorMessage.value = errorResp.data.message
+    }
+  }
+
+  const handleErrorDismissed = () => {
+    submissionErrorMessage.value = null
+    mode.value = 'edit'
+  }
+
+  // === Lifecycle Hooks ====
+  onMounted(() => {
+    if (window) {
+      // sometimes users navigate away without submitting
+      // if the form is partially filled, we can try to warn them and give them
+      // a chance to abort the nav
+      // mounted/beforeDestroy handle the "close tab / window" case...
+      window.addEventListener('beforeunload', promptIfInProgress)
+    }
+  })
+
+  onBeforeUnmount(() => {
+    if (window) {
+      window.removeEventListener('beforeunload', promptIfInProgress)
+    }
+  })
+
+  onBeforeRouteLeave((to, from, next) => {
+    // ...and beforeRouteLeave handles the SPA routing case
+    if (isDirtyOrPending()) {
+      console.log('warning user that incomplete is not submitted')
+      const sure = window.confirm('You have unsaved changes. Sure?')
+      next(sure ? undefined : false)
+    } else {
+      next()
+    }
+  })
+
+  // === Load Data ===
+  store.dispatch('CreateNewEvent')
+
+  // fetch venues to power venue selector
+  await useLegacyStoreFetch(FETCH_ACTIVE_VENUES, [
+    FETCH_ACTIVE_VENUES
+  ])
+
+  // display partner info if provided in query
+  if (query.partner) {
+    partner.value = PartnerService.getPartnerForQuery(query.partner)
   }
 </script>
 

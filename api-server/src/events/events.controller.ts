@@ -1,10 +1,10 @@
 import moment from 'moment';
 import { Op, literal } from 'sequelize';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
-  HttpException,
   NotFoundException,
   Param,
   Post,
@@ -33,12 +33,18 @@ import { eventModelToEventDTO } from './dto/eventModelToEventDTO';
 import EventDTO from './dto/eventDTO';
 import { ENV } from '../constants';
 import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
+import { ApiQuery } from '@nestjs/swagger';
 import {
   EVENT_PAGINATION_DEFAULT_PAGE,
   EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
   PaginationDto,
 } from './dto/pagination-dto';
 import { isNullOrUndefined } from '../utils';
+import { VenueModel } from 'src/venues/models/venue.model';
+import { DatetimeVenueModel } from './models/datetime-venue.model';
+import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
+import isAdminUser from 'src/authentication/is-admin-user';
+import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -63,20 +69,19 @@ export class EventsController {
     description: 'current verified events',
     type: EventsResponse,
   })
-  getAllCurrentVerified(
-    @Query('embed') embed: string[] | string = [],
+  async getAllCurrentVerified(
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Req() request: Request,
   ): Promise<EventsResponse> {
-    if (typeof embed === 'string') {
-      embed = [embed, 'DATE_TIME'];
-    } else {
-      embed.push('DATE_TIME');
-    }
+    const isAdmin = await isAdminUser(request);
+
+    const include = isAdmin
+      ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel]
+      : [VenueModel, DatetimeVenueModel];
 
     const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+      include,
       where: {
         [Op.and]: [
           getCommonQueryTermsForEvents(true, tags, category),
@@ -128,12 +133,34 @@ export class EventsController {
     required: false,
     type: Number,
   })
-  getAllVerified(
+  @ApiImplicitQuery({
+    name: 'dateRange',
+    description:
+      'Date range for filtering events (ISO 8601 format). Format: startDate/endDate. This will return all events having ' +
+      'one or more start times that fall within the range provided (>= startDate & < endDate)',
+    example: '2024-01-01T00:00:00.000Z/2024-12-31T23:59:59.999Z',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'category',
+    required: false,
+    type: String,
+    description: 'Filter events by category',
+  })
+  async getAllVerified(
+    @Req() request: Request,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
+    @Query('dateRange') dateRange?: string,
   ): Promise<EventsResponse> {
     const { page, pageSize } = pagination;
+
+    const isUserAdmin = await isAdminUser(request);
+
+    const [startDate, endDate] =
+      validateAndExtractOptionalDateTimeFilters(dateRange);
 
     return this.eventsService
       .findAllPaginated({
@@ -142,6 +169,9 @@ export class EventsController {
         pageSize,
         requestedPage: page,
         verifiedOnly: true,
+        startDate,
+        endDate,
+        isUserAdmin,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
