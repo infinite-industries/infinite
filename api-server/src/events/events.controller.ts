@@ -214,7 +214,7 @@ export class EventsController {
     };
 
     return this.eventsService
-      .findById(id, findOptions)
+      .findById(request, id, findOptions)
       .then((event) => {
         if (isNullOrUndefined(event)) {
           throw new NotFoundException('Could not find event: ' + id);

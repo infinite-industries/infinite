@@ -40,7 +40,10 @@ import { Nullable } from '../utils/NullableOrUndefinable';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 import { PartnerModel } from '../users/models/partner.model';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
-import { isOwner } from '../authentication/filters/remove-sensitive-data-for-non-admins';
+import {
+  isOwner,
+  removeSensitiveDataForSingleEvent,
+} from '../authentication/filters/remove-sensitive-data-for-non-admins';
 
 @Injectable()
 export class EventsService {
@@ -60,10 +63,11 @@ export class EventsService {
     private sequelize: Sequelize,
   ) {}
 
-  // TODO '!!! unify, bascially this should always return no auth, but filter as needed
-  // then we can delete authenticated only single event fetch and authenticated and fineOne
-  // goes away
-  async findById(id: string, findOptions?: FindOptions): Promise<EventModel> {
+  async findById(
+    request: RequestWithUserInfo,
+    id: string,
+    findOptions?: FindOptions,
+  ): Promise<EventModel> {
     let options = {
       where: { id },
     };
@@ -72,12 +76,21 @@ export class EventsService {
       options = { ...findOptions, ...options };
     }
 
-    return this.findOne(options).then((result) => {
-      return result;
-    });
+    return await this.findOne(options)
+      .then((result) => {
+        return result;
+      })
+      .then((event) => {
+        if (isNullOrUndefined(event)) {
+          throw new NotFoundException('Could not find event: ' + id);
+        } else {
+          return event;
+        }
+      })
+      .then((event) => removeSensitiveDataForSingleEvent(request, event));
   }
 
-  // just a prviate utility with no auth checks for use internally
+  // just a private utility with no auth checks for use internally
   // it automatically applies includes
   private async findOne(findOptions: FindOptions): Promise<EventModel> {
     return await this.eventModel.findOne({
