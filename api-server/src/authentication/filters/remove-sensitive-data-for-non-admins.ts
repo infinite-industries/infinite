@@ -79,7 +79,7 @@ export function isOwner(
 ) {
   if (request.userInformation?.isInfiniteAdmin) {
     // infinite admins own all events
-    return true; // !!! HOW DID THIS PASS WHEN I SET IT TO FALSE
+    return true;
   }
 
   if (!request.userInformation?.isPartnerAdmin) {
