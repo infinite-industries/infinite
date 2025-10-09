@@ -71,7 +71,7 @@
         </div>
         <div v-if="partner" class="partner">
           <div>Partnering with</div>
-          <img :src="partner.logo" :alt="partner.name" width="200" />
+          <img :src="partner.logo_url" :alt="partner.name" width="200" />
         </div>
       </div>
       <client-only>
@@ -81,7 +81,7 @@
           v-show="mode == 'edit'"
           :user_action="'upload'"
           :user_role="'regular'"
-          :review-org="partner ? partner.id : null"
+          :owning-partner-id="partner ? partner.id : null"
           ref="form"
           @preview="onPreview"
           @submitted="mode = 'success'"
@@ -107,7 +107,6 @@
   import { useRoute, onBeforeRouteLeave } from 'vue-router'
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import SubmissionPreview from '@/components/SubmissionPreview'
-  import PartnerService from '@/services/PartnerService'
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
   definePageMeta({
@@ -115,6 +114,7 @@
   })
 
   const { query } = useRoute()
+  const { $apiService } = useNuxtApp()
   const store = useStore()
 
   const mode = ref('edit')
@@ -229,7 +229,14 @@
 
   // display partner info if provided in query
   if (query.partner) {
-    partner.value = PartnerService.getPartnerForQuery(query.partner)
+    const { data, error } = await useAsyncData('partner-fetch', () =>
+      $apiService.get(`/partners/name/${query.partner}`));
+
+    if (error.value) {
+      console.error(`could not fetch partner: ${query.partner}: `, error.value)
+    } else {
+      partner.value = data.value;
+    }
   }
 </script>
 
@@ -252,7 +259,6 @@
   }
 
   .ii-button {
-
     background-color: #6cba70;
     font-family: "Open Sans",sans-serif;
     color: #000;

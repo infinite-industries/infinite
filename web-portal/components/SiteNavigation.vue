@@ -32,6 +32,10 @@
         <nuxt-link to="/admin">Admin</nuxt-link>
       </li>
 
+      <li v-if="loggedIn && user.isPartnerAdmin">
+        <nuxt-link to="/partner-admin">Partner Admin</nuxt-link>
+      </li>
+
       <li v-if="loggedIn">
         <nuxt-link @click="onLogoutClick">Logout</nuxt-link>
       </li>

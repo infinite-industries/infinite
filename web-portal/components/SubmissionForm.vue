@@ -394,7 +394,7 @@
   })
 
   export default {
-    props: ['event_id', 'user_role', 'user_action', 'reviewOrg'],
+    props: ['event_id', 'user_role', 'user_action', 'owningPartnerId'],
     // user_role --> admin, venue, regular
     // user_action --> upload, edit
     emits: ['preview', 'submitted', 'error'],
@@ -529,7 +529,7 @@
           fb_event_link: this.calendar_event.fb_event_link ? this.calendar_event.fb_event_link.split('?')[0] : null,
           eventbrite_link: this.calendar_event.eventbrite_link ? this.calendar_event.eventbrite_link.split('?')[0] : null,
           organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
-          reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
+          owning_partner_id: this.owningPartnerId ? this.owningPartnerId : null
         }
 
         let eventCreationResponse = null
