@@ -132,7 +132,7 @@ describe('SubmissionForm component', () => {
     expect(apiPost.mock.calls[0][1].reviewed_by_org).toBeNull()
 
     // === prop when prop is set
-    await wrapper.setProps({ reviewOrg: partner })
+    await wrapper.setProps({ owningPartnerId: partner })
     await wrapper.vm.UploadEvent()
     expect(apiPost.mock.calls.length).toBe(2)
     expect(apiPost.mock.calls[1][1].reviewed_by_org).toBe(partner)
