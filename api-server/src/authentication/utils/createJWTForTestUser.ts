@@ -6,9 +6,9 @@ export default function createJWTForTestUser(props: {
   name: string;
   picture: string;
   sub: string;
+  'https://infinite.industries.com/isInfiniteAdmin': boolean;
 }) {
   const userValues = {
-    'https://infinite.industries.com/isInfiniteAdmin': true,
     ...props,
   };
 

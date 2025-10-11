@@ -191,7 +191,6 @@ export default class EventsAuthenticatedController {
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
     const user = request.userInformation;
-    // await this.userService.ensureCurrentUserByName(request);
 
     if (user.isInfiniteAdmin) {
       // infinite admins have access to all partners, it may be useful for admins

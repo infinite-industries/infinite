@@ -44,7 +44,6 @@ export default class UsersService {
     let userInfo: UserInformation;
     try {
       userInfo = await parseJwt(request);
-
       this.logger.debug('successfully parsed jwt');
     } catch (ex) {
       this.logger.error(ex);
@@ -71,7 +70,7 @@ export default class UsersService {
     });
   }
 
-  private async ensureByName(user: NewUser): Promise<UserModel> {
+  public async ensureByName(user: NewUser): Promise<UserModel> {
     const name = user.name;
 
     const userToInsert = {
