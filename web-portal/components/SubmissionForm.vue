@@ -502,7 +502,7 @@
               this.calendar_event.verified = true
               this.dirtyOnVerifyDialog = true
             } else {
-              if (this.uers_role === 'partner-admin') {
+              if (this.user_role === 'partner-admin') {
                 this.$router.push('/partner-admin')
               } else {
                 this.$router.push('/admin')
@@ -774,7 +774,7 @@
       },
 
       isAdminOrPartnerAdmin: function() {
-        return this.user_role === 'admin' || this.uers_role === 'partner-admin' 
+        return this.user_role === 'admin' || this.user_role === 'partner-admin' 
       },
 
       suggestedTags: function () {
