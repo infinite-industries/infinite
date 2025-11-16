@@ -51,10 +51,10 @@ Changing this is a manual process using the Azure dashboard.
 ### Server Runtime Configuration
 
 The staging and production servers were provisioned using the [ansible files in this project](./ansible). This installs
-docker-compose and other runtime dependencies including nginx. If you need to change nginx configuration or other runtime
-concerns on the server this is the place to do it. There is a [readme in that directory with more information](./ansible/README.md)
+docker-compose and other runtime dependencies, including nginx. If you need to change nginx configuration or other runtime
+concerns on the server, this is the place to do it. There is a [readme in that directory with more information](./ansible/README.md)
 
-For the most part we try to keep the server runtime fairly spartan. It primarily consists of:
+For the most part, we try to keep the server runtime fairly spartan. It primarily consists of:
 
  1. docker/docker-compose
  2. nginx

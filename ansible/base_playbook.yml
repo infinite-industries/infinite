@@ -51,7 +51,7 @@
           - docker-ce
           - docker-ce-cli
           - containerd.io
-    - name: Download Docker Comppose
+    - name: Download Docker Compose
       become: true
       get_url:
         url: "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64"
@@ -60,6 +60,9 @@
     - name: Add user to docker group
       become: true
       user:
-        name: 'infinite'
+        name: '{{ ansible_user }}'
         groups: 'docker'
         append: 'yes'
+    - name: Reset SSH connection to apply group changes
+      meta: reset_connection
+      when: docker_group_result.changed
