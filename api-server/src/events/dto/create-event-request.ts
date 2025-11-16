@@ -85,9 +85,14 @@ export class CreateEventRequest {
   @IsOptional()
   bitly_link: string;
 
-  @ApiProperty({ example: 'radio-mc-radio-station' })
+  @ApiProperty({
+    example: 'radio-mc-radio-station',
+    description: `Associates this event with an existing partner. If an event
+    is associated with a partner then that partner then partner-admins will be
+    allowed to approve and mange this event. The partner must already exist.`,
+  })
   @IsOptional()
-  reviewed_by_org: string;
+  owning_partner_id: string;
 
   @ApiProperty({
     example: [{ start_time: EXAMPLE_START_DATE, end_time: EXAMPLE_END_DATE }],

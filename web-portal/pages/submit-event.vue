@@ -175,14 +175,14 @@
   const handleSubmissionError = ({ error }) => {
     mode.value = 'error'
 
-    const errorResp = error?.response
+    const errorResp = error?.data
 
     if (
       errorResp !== null &&
       errorResp !== undefined &&
-      !!errorResp?.data?.message
+      !!errorResp?.message
     ) {
-      submissionErrorMessage.value = errorResp.data.message
+      submissionErrorMessage.value = errorResp.message
     }
   }
 
@@ -329,6 +329,11 @@
   }
 
   .infinite-submission-form__error-message {
-    color: red;
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    background-color: rgb(var(--v-theme-error));
+    color: white;
+    font-weight: bold;
   }
 </style>

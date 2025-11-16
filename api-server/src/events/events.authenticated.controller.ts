@@ -6,6 +6,7 @@ import {
   Param,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { VERSION_1_URI } from '../utils/versionts';
@@ -16,7 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthGuard } from '../authentication/auth.guard';
+import { AdminAuthGuard } from '../authentication/auth-guards/admin-auth.guard';
 import { EventIdResponse } from './dto/event-id-response';
 import { SingleEventResponse } from './dto/single-event-response';
 import { EventsService } from './events.service';
@@ -40,9 +41,13 @@ import {
   PaginationDto,
 } from './dto/pagination-dto';
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
+import { AuthenticatedUserGuard } from '../authentication/auth-guards/authenticated-user.guard';
+import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
+import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
+import { Op } from 'sequelize';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
-@UseGuards(AuthGuard)
+@UseGuards(AuthenticatedUserGuard)
 @ApiTags('events -- authenticated')
 @ApiBearerAuth()
 @ApiResponse({ status: 403, description: 'Forbidden' })
@@ -50,6 +55,7 @@ export default class EventsAuthenticatedController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiBearerAuth()
@@ -91,6 +97,7 @@ export default class EventsAuthenticatedController {
     description: 'Filter events by category',
   })
   getAll(
+    @Req() request: RequestWithUserInfo,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
     @Query() pagination: PaginationDto,
@@ -110,6 +117,7 @@ export default class EventsAuthenticatedController {
         verifiedOnly: false,
         startDate,
         endDate,
+        request,
       })
       .then((paginatedEventResp) => {
         const totalEntries = paginatedEventResp.count;
@@ -129,6 +137,7 @@ export default class EventsAuthenticatedController {
 
   // this probably shouldn't be needed long term, we should just fetch this with the event
   @Get('/admin-metadata')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Get all admin metadata for all events' })
   getEventAdminMetadata(): Promise<EventAdminMetadataListResponse> {
     return this.eventsService
@@ -140,6 +149,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Get('non-verified')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({
     summary: 'Get events that have not yet been verified (admin only)',
   })
@@ -159,7 +169,49 @@ export default class EventsAuthenticatedController {
       .then((events) => new EventsResponse({ events }));
   }
 
+  @Get('non-verified-for-partners')
+  @UseGuards(PartnerAdminGuard)
+  @ApiOperation({
+    summary: `Get events that have not yet been verified filtered by the partners you belong
+    to (partner-admin or admin only). If you are an infinite admin this will act just like non-verified`,
+  })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiBearerAuth()
+  async getAllNonVerifiedForPartnersBelongToTheCurrentUser(
+    @Query('embed') embed: string[] | string = [],
+    @Req() request: RequestWithUserInfo,
+  ): Promise<EventsResponse> {
+    const user = request.userInformation;
+    // await this.userService.ensureCurrentUserByName(request);
+
+    if (user.isInfiniteAdmin) {
+      // infinite admins have access to all partners, it may be useful for admins
+      // to filter by a given partner, but we can implement that as a separate filter
+      // somewhere, this event is specifically a convenience to give an easy way
+      // to get all un-verified events a partner-admin has access to
+      return this.getAllNonVerified(embed);
+    }
+
+    const partnerIds = user.partners?.map((partner) => partner.id) || [];
+
+    const findOptions = {
+      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
+      where: {
+        verified: false,
+        owning_partner_id: {
+          [Op.in]: partnerIds,
+        },
+      },
+    };
+
+    return this.eventsService
+      .findAll(findOptions)
+      .then((events) => events.map(eventModelToEventDTO))
+      .then((events) => new EventsResponse({ events }));
+  }
+
   @Get('/:id')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({
     summary: 'Get a single event with no filters applied (authenticated only)',
   })
@@ -177,6 +229,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Put(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Update fields on an existing event' })
   @ApiImplicitParam({ name: 'id', type: String })
   updateEvent(
@@ -196,6 +249,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Put('/verify/:id')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({
     summary: 'Verify the event, making it visible to the public',
   })
@@ -209,6 +263,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Delete the event' })
   @ApiImplicitParam({ name: 'id', type: String })
   deleteEvent(@Param() params: FindByIdParams): Promise<EventIdResponse> {
@@ -220,6 +275,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Put(':id/admin-metadata')
+  @UseGuards(AdminAuthGuard)
   @ApiOperation({ summary: 'Set admin metadata information for an event' })
   @ApiImplicitParam({ name: 'id', type: String })
   upsertAdminMetadata(

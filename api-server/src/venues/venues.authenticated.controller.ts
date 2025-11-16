@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { VERSION_1_URI } from '../utils/versionts';
-import { AuthGuard } from '../authentication/auth.guard';
+import { AdminAuthGuard } from '../authentication/auth-guards/admin-auth.guard';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,7 +24,7 @@ import isNullUndefinedOrEmpty from '../utils/isNullUndefinedOrEmpty';
 
 @Controller(`${VERSION_1_URI}/authenticated/venues`)
 @ApiTags('venues -- authenticated')
-@UseGuards(AuthGuard)
+@UseGuards(AdminAuthGuard)
 @ApiBearerAuth()
 @ApiResponse({ status: 403, description: 'Forbidden' })
 export default class VenuesAuthenticatedController {

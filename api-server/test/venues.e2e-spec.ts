@@ -144,7 +144,7 @@ describe('Venues (e2e)', () => {
         expect(venueResp).toBeTruthy();
 
         expect(response.body.venue).not.toEqual(originalModelAsJson);
-        assertVenuesEqualIgnoringDateStamps(venueResp, expectedModel);
+        assertVenuesEqualIgnoringDateStampsAndLatLong(venueResp, expectedModel);
       });
   });
 
@@ -193,7 +193,10 @@ describe('Venues (e2e)', () => {
         expect(venueResp).toBeTruthy();
 
         expect(response.body.venue).not.toEqual(originalModelAsJson);
-        assertVenuesEqualIgnoringDateStamps(venueResp, expectedModelResp);
+        assertVenuesEqualIgnoringDateStampsAndLatLong(
+          venueResp,
+          expectedModelResp,
+        );
       });
   });
 
@@ -261,7 +264,7 @@ describe('Venues (e2e)', () => {
         expect(respVenue.createdAt).toBeTruthy();
         expect(respVenue.updatedAt).toBeTruthy();
 
-        assertVenuesEqualIgnoringDateStamps(
+        assertVenuesEqualIgnoringDateStampsAndLatLong(
           respVenueWithoutId,
           expectedRespValue,
         );
@@ -341,12 +344,14 @@ describe('Venues (e2e)', () => {
     };
   }
 
-  function assertVenuesEqualIgnoringDateStamps(
+  function assertVenuesEqualIgnoringDateStampsAndLatLong(
     actualVenueModel: Record<string, unknown>,
     expectedVenueModel: Record<string, unknown>,
   ) {
     const actualModelWithoutDates = new VenueModel({
       ...actualVenueModel,
+      gps_lat: null, // we don't have lat/long service configured when running tests
+      gps_long: null,
       updatedAt: null,
       createdAt: null,
     });
