@@ -1,6 +1,7 @@
 export default defineNuxtRouteMiddleware((to, from) => {
   const partnerQuery = from.query.partner
 
+  console.log('!!! here: ' + partnerQuery)
   if (partnerQuery && !to.query.partner) {
     // Preserve the 'partner' query parameter when it exists
     return navigateTo({
@@ -10,4 +11,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
       params: to.params,
     })
   }
+
+  return;
 })
