@@ -15,7 +15,6 @@ import { EventModel } from './models/event.model';
 import { Inject, LoggerService } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { VERSION_1_URI } from '../utils/versionts';
-import { getOptionsForEventsServiceFromEmbedsQueryParam } from '../utils/get-options-for-events-service-from-embeds-query-param';
 import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
 import { mapDateTimesToIso } from '../utils/map-date-times-to-iso';
 import { CreateEventRequest } from './dto/create-event-request';
@@ -204,12 +203,10 @@ export class EventsController {
   })
   getEventById(
     @Param() params: FindByIdParams,
-    @Query('embed') embed: string[] | string = [],
     @Req() request: RequestWithUserInfo,
   ): Promise<SingleEventResponse> {
     const id = params.id;
     const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
       order: [literal('date_times.start_time ASC')],
     };
 

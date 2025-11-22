@@ -20,7 +20,6 @@ async function startApplication(
     {
       env: {
         ...process.env,
-        foo: 'bar',
         DB_HOST,
         DB_PORT: dbPort + '',
         DB_USER_NAME: DB_USERNAME,

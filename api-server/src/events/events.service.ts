@@ -76,6 +76,7 @@ export class EventsService {
       options = { ...findOptions, ...options };
     }
 
+    // findOne will add the include option with all the necessary embedded models
     return await this.findOne(options)
       .then((result) => {
         return result;
