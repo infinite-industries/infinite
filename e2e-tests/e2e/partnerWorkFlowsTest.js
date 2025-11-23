@@ -45,6 +45,14 @@ context('Partner Work Flows', () => {
     // Verify the event appears in unverified events list
     cy.get('.unverified-events').contains('tr', PARTNER_EVENT_NAME).should('exist')
     
+    // Verify partner logo is displayed in the OWNER column
+    cy.get('.unverified-events').contains('tr', PARTNER_EVENT_NAME).within(() => {
+      cy.get('td').first().find('img')
+        .should('exist')
+        .should('have.attr', 'src', PARTNER_LOGO_URL)
+        .should('have.attr', 'alt', PARTNER_NAME)
+    })
+    
     // Click Edit on the event to navigate to edit page
     cy.get('.unverified-events').contains('tr', PARTNER_EVENT_NAME).contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
