@@ -18,22 +18,6 @@ context('Partner Work Flows', () => {
       .should('have.attr', 'src', PARTNER_LOGO_URL)
   })
 
-  xit('Preserves partner query parameter when navigating', () => {
-    // Visit home page with partner query parameter
-    cy.visit(`/?partner=${PARTNER_NAME}`)
-    
-    // Verify partner query parameter is present
-    cy.url().should('include', `partner=${PARTNER_NAME}`)
-    
-    // Click on the "SUBMIT" button in the top right toolbar
-    cy.get('#submit').click()
-    
-    // Wait for navigation to complete and middleware to process
-    // The middleware should add the partner param, so wait for it to appear
-    cy.url({ timeout: 10000 }).should('include', '/submit-event')
-    cy.url({ timeout: 5000 }).should('include', `partner=${PARTNER_NAME}`)
-  })
-
   it('Submits event with partner query parameter', () => {
     const guid = crypto.randomUUID()
     const PARTNER_EVENT_NAME = `Partner Test Event-${guid}`
@@ -102,6 +86,24 @@ context('Partner Work Flows', () => {
     cy.get('.verified-events').contains('tr', NON_PARTNER_EVENT_NAME).should('not.exist')
   })
 
+
+  xit('Preserves partner query parameter when navigating', () => {
+    // Visit home page with partner query parameter
+    cy.visit(`/?partner=${PARTNER_NAME}`)
+    
+    // Verify partner query parameter is present
+    cy.url().should('include', `partner=${PARTNER_NAME}`)
+    
+    // Click on the "SUBMIT" button in the top right toolbar
+    cy.get('#submit').click()
+    
+    // Wait for navigation to complete and middleware to process
+    // The middleware should add the partner param, so wait for it to appear
+    cy.url({ timeout: 10000 }).should('include', '/submit-event')
+    cy.url({ timeout: 5000 }).should('include', `partner=${PARTNER_NAME}`)
+  })
+
+  // === Helper Functions ===
   function submitEvent(eventTitle, userName, userPassword, partnerName = PARTNER_NAME) {
     const EVENT_EMAIL = 'partner-test@te.st'
     
