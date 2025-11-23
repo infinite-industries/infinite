@@ -78,13 +78,42 @@ context('Partner Work Flows', () => {
     cy.get('.verified-events').contains('tr', PARTNER_EVENT_NAME).should('exist')
   })
 
-  function submitEvent(eventTitle, userName, userPassword) {
+  it('Partner admin cannot see events submitted without partner query parameter', () => {
+    const guid = crypto.randomUUID()
+    const NON_PARTNER_EVENT_NAME = `Non-Partner Test Event-${guid}`
+    
+    // Submit event without partner query parameter
+    submitEvent(NON_PARTNER_EVENT_NAME, PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, null)
+    
+    // Login as partner-admin
+    cy.visitAsUser(PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, '/')
+    
+    cy.wait(750) // hydration?
+    cy.get('#hamburger').click()
+    
+    // Click Partner Admin link
+    cy.get('#nav-list li').contains('a', 'Partner Admin').click()
+    cy.location('pathname').should('include', 'partner-admin')
+    
+    // Verify the event does NOT appear in unverified events list
+    cy.get('.unverified-events').contains('tr', NON_PARTNER_EVENT_NAME).should('not.exist')
+    
+    // Verify the event does NOT appear in verified events list
+    cy.get('.verified-events').contains('tr', NON_PARTNER_EVENT_NAME).should('not.exist')
+  })
+
+  function submitEvent(eventTitle, userName, userPassword, partnerName = PARTNER_NAME) {
     const EVENT_EMAIL = 'partner-test@te.st'
     
-    cy.visit(`/submit-event?partner=${PARTNER_NAME}`)
+    const url = partnerName ? `/submit-event?partner=${partnerName}` : '/submit-event'
+    cy.visit(url)
     
-    // Verify partner information is displayed
-    cy.get('.partner').should('exist')
+    // Verify partner information is displayed only if partner is provided
+    if (partnerName) {
+      cy.get('.partner').should('exist')
+    } else {
+      cy.get('.partner').should('not.exist')
+    }
     
     // Fill out event submission form
     cy.get('.event-title input').type(eventTitle)
