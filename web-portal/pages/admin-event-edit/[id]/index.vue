@@ -6,13 +6,14 @@
 
     <v-app v-if="!$store.getters.GetUserDataLoading">
       <client-only>
-        <submission-form :user_action="'edit'" :user_role="'admin'" :event_id="id"></submission-form>
+        <submission-form :user_action="'edit'" :user_role="userRole" :event_id="id"></submission-form>
       </client-only>
     </v-app>
   </div>
 </template>
 
 <script>
+  import { computed } from 'vue'
   import { useStore } from "vuex"
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import { FETCH_ACTIVE_VENUES } from '../../../store/venues'
@@ -32,6 +33,8 @@
 
       const { params } = useRoute()
       const store = useStore()
+      const { user } = useUserSession()
+      
       await callOnce('fetchEventEditData', async () => {
         await Promise.all([
           store.dispatch('admin/LoadEvent', { id: params.id }),
@@ -44,7 +47,18 @@
         title: 'Edit event - ' + (eventTitle ?? "")
       })
 
-      return {}
+      const userRole = computed(() => {
+        if (user.value?.isPartnerAdmin) {
+          return 'partner-admin'
+        } else if (user.value?.isInfiniteAdmin) {
+          return 'admin'
+        }
+        return 'regular'
+      })
+
+      return {
+        userRole
+      }
     },
     data: function () {
       return {

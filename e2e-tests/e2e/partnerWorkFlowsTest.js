@@ -3,6 +3,8 @@
 context('Partner Work Flows', () => {
   const PARTNER_NAME = 'random-displacement-shipping'
   const PARTNER_LOGO_URL = '/images/partners/random-displacement-shipping.png'
+  const PARTNER_ADMIN_USERNAME = Cypress.env('partner_admin_username')
+  const PARTNER_ADMIN_PASSWORD = Cypress.env('partner_admin_password')
 
   it('Styles the submission page based on partnery query param', () => {
     cy.visit(`/submit-event?partner=${PARTNER_NAME}`)
@@ -31,4 +33,95 @@ context('Partner Work Flows', () => {
     cy.url({ timeout: 10000 }).should('include', '/submit-event')
     cy.url({ timeout: 5000 }).should('include', `partner=${PARTNER_NAME}`)
   })
+
+  it('Submits event with partner query parameter', () => {
+    const guid = crypto.randomUUID()
+    const PARTNER_EVENT_NAME = `Partner Test Event-${guid}`
+    
+    submitEvent(PARTNER_EVENT_NAME, PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD)
+    
+    // Login as partner-admin
+    cy.visitAsUser(PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, '/')
+    
+    cy.wait(750) // hydration?
+    cy.get('#hamburger').click()
+    
+    // Verify Partner Admin link exists and Admin link does not exist
+    cy.get('#nav-list li').contains('a', 'Partner Admin').should('exist')
+    // Check that no link with exact text "Admin" exists (not "Partner Admin")
+    cy.get('#nav-list li a').then(($links) => {
+      const adminLinks = Array.from($links).filter(link => link.textContent.trim() === 'Admin')
+      expect(adminLinks.length).to.equal(0)
+    })
+    
+    // Click Partner Admin link
+    cy.get('#nav-list li').contains('a', 'Partner Admin').click()
+    cy.location('pathname').should('include', 'partner-admin')
+    
+    // Verify the event appears in unverified events list
+    cy.get('.unverified-events').contains('tr', PARTNER_EVENT_NAME).should('exist')
+    
+    // Click Edit on the event to navigate to edit page
+    cy.get('.unverified-events').contains('tr', PARTNER_EVENT_NAME).contains('Edit').click()
+    cy.location('pathname').should('include', 'admin-event-edit')
+    
+    // Verify the event
+    cy.get('button.btn-verify').click()
+    
+    // Should redirect back to partner-admin page
+    cy.location('pathname').should('include', 'partner-admin')
+    
+    // Verify the event is no longer in unverified events list
+    cy.get('.unverified-events').contains('tr', PARTNER_EVENT_NAME).should('not.exist')
+    
+    // Verify the event is now in verified events list
+    cy.get('.verified-events').contains('tr', PARTNER_EVENT_NAME).should('exist')
+  })
+
+  function submitEvent(eventTitle, userName, userPassword) {
+    const EVENT_EMAIL = 'partner-test@te.st'
+    
+    cy.visit(`/submit-event?partner=${PARTNER_NAME}`)
+    
+    // Verify partner information is displayed
+    cy.get('.partner').should('exist')
+    
+    // Fill out event submission form
+    cy.get('.event-title input').type(eventTitle)
+    
+    cy.get('.event-mode input[value="in-person"]').check()
+    cy.get('.event-category input[value="single-day-event"]').check()
+    
+    // Advance calendar one month and select the first day
+    cy.get('#cal-container .flatpickr-next-month').click()
+    cy.wait(1000) // wait for calendar animation to complete
+    cy.get('#cal-container .flatpickr-day').contains('1').click()
+    
+    cy.get('.start-hour').type('9')
+    cy.get('.start-minute').type('00')
+    cy.get('select[name=start_ampm]').select('PM')
+    
+    cy.get('.end-hour').type('10')
+    cy.get('.end-minute').type('00')
+    cy.get('select[name=end_ampm]').select('PM')
+    cy.get('.date-time-picker_new-date:not([disabled])').click()
+    
+    cy.get('.venue').focus()
+    cy.get('.results-container > :first-child').click()
+    
+    // selectFile is a custom command; see cypress/support/commands.js
+    cy.get('#event-image').selectFile('fixtures/images/event_sample_image.jpg')
+    
+    cy.get('.brief-description input').type('partner event test')
+    cy.get('.submitter-email input').type(EVENT_EMAIL)
+    
+    // Preview submission
+    cy.get('.submit-container button').click()
+    cy.get('.event-preview').should('exist')
+    cy.get('.event .event-heading h1').contains(eventTitle).should('exist')
+    
+    // Submit event
+    cy.get('.preview-controls button:first-child').click()
+    cy.get('h1.centered-header').contains('Thank you!').should('exist')
+  }
 })
