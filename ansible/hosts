@@ -1,5 +1,5 @@
 [staging]
-staging.infinite.industries ansible_user=infinite
+staging.infinite.industries ansible_user=azureuser
 
 [prod]
 23.100.45.102 ansible_user=infinite
