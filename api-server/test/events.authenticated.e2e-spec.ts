@@ -852,6 +852,29 @@ describe('Authenticated Events API', () => {
       });
   });
 
+  it('should successfully delete event when infinite admin accesses it', async () => {
+    // Create an event
+    const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+      verified: false,
+    });
+    const eventId = events[0].id;
+
+    // Create infinite admin token
+    const adminToken = await createJwtForRandomUser({
+      'https://infinite.industries.com/isInfiniteAdmin': true,
+    });
+
+    // Delete the event
+    return server
+      .delete(`/${CURRENT_VERSION_URI}/authenticated/events/${eventId}`)
+      .set('x-access-token', adminToken)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.status).toEqual('success');
+        expect(body.id).toEqual(eventId);
+      });
+  });
+
   describe('GET /authenticated/events/non-verified-for-partners', () => {
     it('should return 403 when user is not authenticated', async () => {
       await createListOfFutureEventsInChronologicalOrder(3);
@@ -1189,6 +1212,47 @@ describe('Authenticated Events API', () => {
         .delete(`/${CURRENT_VERSION_URI}/authenticated/events/${eventId}`)
         .set('x-access-token', nonAdminToken)
         .expect(403);
+    });
+
+    it('should successfully delete event when partner admin owns the event', async () => {
+      // Create a partner
+      const partner = await createPartner({
+        name: 'Test Partner',
+        logo_url: 'https://example.com/test-partner.png',
+      });
+
+      // Create event owned by the partner
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+        owning_partner_id: partner.id,
+      });
+      const eventId = events[0].id;
+
+      // Create partner admin token
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with the partner
+      await associateUserWithPartners(userId, [partner.id]);
+
+      // Delete the event
+      return server
+        .delete(`/${CURRENT_VERSION_URI}/authenticated/events/${eventId}`)
+        .set('x-access-token', partnerAdminToken)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.status).toEqual('success');
+          expect(body.id).toEqual(eventId);
+        });
     });
 
     it('should return 403 Forbidden for non-admin user accessing PUT /authenticated/events/:id/admin-metadata', async () => {
