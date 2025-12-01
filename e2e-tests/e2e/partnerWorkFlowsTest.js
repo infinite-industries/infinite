@@ -5,6 +5,8 @@ context('Partner Work Flows', () => {
   const PARTNER_LOGO_URL = '/images/partners/random-displacement-shipping.png'
   const PARTNER_ADMIN_USERNAME = Cypress.env('partner_admin_username')
   const PARTNER_ADMIN_PASSWORD = Cypress.env('partner_admin_password')
+  const ADMIN_USERNAME = Cypress.env('admin_auth_username')
+  const ADMIN_PASSWORD = Cypress.env('admin_auth_password')
 
   it('Styles the submission page based on partnery query param', () => {
     cy.visit(`/submit-event?partner=${PARTNER_NAME}`)
@@ -104,6 +106,31 @@ context('Partner Work Flows', () => {
     
     // Verify the event does NOT appear in verified events list
     cy.get('.verified-events').contains('tr', NON_PARTNER_EVENT_NAME).should('not.exist')
+    
+    // Clean up: Login as infinite-admin and delete the event
+    cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/')
+    
+    cy.wait(750) // hydration?
+    cy.get('#hamburger').click()
+    
+    // Click Admin link
+    cy.get('#nav-list li').contains('a', 'Admin').click()
+    cy.location('pathname').should('include', 'admin')
+    
+    // Verify the event appears in unverified events list (admin can see it)
+    cy.get('.unverified-events').contains('tr', NON_PARTNER_EVENT_NAME).should('exist')
+    
+    // Click Edit on the event to navigate to edit page
+    cy.get('.unverified-events').contains('tr', NON_PARTNER_EVENT_NAME).contains('Edit').click()
+    cy.location('pathname').should('include', 'admin-event-edit')
+    
+    // Delete the event
+    cy.get('.edit-container button').contains('Delete').click()
+    cy.get('[role="dialog"] button').contains('Kill').click()
+    
+    // Verify event is deleted and we're redirected back to admin page
+    cy.location('pathname').should('include', 'admin')
+    cy.get('.unverified-events').contains('tr', NON_PARTNER_EVENT_NAME).should('not.exist')
   })
 
 
