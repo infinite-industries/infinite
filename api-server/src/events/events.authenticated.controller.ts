@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
+  Inject,
+  LoggerService,
   Param,
   Put,
   Query,
@@ -44,6 +47,7 @@ import { AuthenticatedUserGuard } from '../authentication/auth-guards/authentica
 import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 import { Op } from 'sequelize';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
 @UseGuards(AuthenticatedUserGuard)
@@ -51,7 +55,11 @@ import { Op } from 'sequelize';
 @ApiBearerAuth()
 @ApiResponse({ status: 403, description: 'Forbidden' })
 export default class EventsAuthenticatedController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
+    private readonly eventsService: EventsService
+  ) {}
 
   @Get()
   @UseGuards(AdminAuthGuard)
@@ -257,14 +265,20 @@ export default class EventsAuthenticatedController {
   }
 
   @Delete(':id')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(PartnerAdminGuard)
   @ApiOperation({ summary: 'Delete the event' })
   @ApiImplicitParam({ name: 'id', type: String })
-  deleteEvent(@Param() params: FindByIdParams): Promise<EventIdResponse> {
+  deleteEvent(
+    @Req() request: RequestWithUserInfo,
+    @Param() params: FindByIdParams
+  ): Promise<EventIdResponse> {
     const id = params.id;
+    
+    this.logger.log("processing delete for event id: " + id);
+    this.logger.log("user requesting delete: " + JSON.stringify(request.userInformation, null, 4));
 
     return this.eventsService
-      .delete(id)
+      .delete(id, request)
       .then(() => ({ id, status: 'success' }));
   }
 

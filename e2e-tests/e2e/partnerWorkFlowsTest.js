@@ -68,6 +68,18 @@ context('Partner Work Flows', () => {
     
     // Verify the event is now in verified events list
     cy.get('.verified-events').contains('tr', PARTNER_EVENT_NAME).should('exist')
+    
+    // Navigate to edit page to delete the event
+    cy.get('.verified-events').contains('tr', PARTNER_EVENT_NAME).contains('Edit').click()
+    cy.location('pathname').should('include', 'admin-event-edit')
+    
+    // Delete the event
+    cy.get('.edit-container button').contains('Delete').click()
+    cy.get('[role="dialog"] button').contains('Kill').click()
+    
+    // Verify event is deleted and we're redirected
+    cy.location('pathname').should('include', 'partner-admin')
+    cy.get('.verified-events').contains('tr', PARTNER_EVENT_NAME).should('not.exist')
   })
 
   it('Partner admin cannot see events submitted without partner query parameter', () => {

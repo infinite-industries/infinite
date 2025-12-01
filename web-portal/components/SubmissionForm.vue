@@ -484,7 +484,13 @@
         this.$store.dispatch('admin/DeleteEvent', {
           id: this.calendar_event.id,
         })
-          .then(() => { this.$router.push('/admin') })
+          .then(() => {
+            if (this.user_role === 'partner-admin') {
+                this.$router.push('/partner-admin')
+            } else {
+              this.$router.push('/admin')
+            }
+          })
           .finally(() => { this.showEventLoadingSpinner = false })
       },
       VerifyEvent: function () {

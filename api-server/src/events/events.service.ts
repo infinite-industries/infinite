@@ -384,8 +384,25 @@ export class EventsService {
     return Promise.all(requests);
   }
 
-  async delete(id: string): Promise<DbDeleteResponse> {
-    return this.eventModel.destroy({ where: { id } }).then(toDbDeleteResponse);
+  async delete(id: string, request: RequestWithUserInfo): Promise<DbDeleteResponse> {
+    if (request?.userInformation?.isInfiniteAdmin || request?.userInformation?.isPartnerAdmin) {
+      // Check that we own the event
+      //   Note: There is an optimization oportunity here I'm fetching the whole model to verify this.
+      //     It's probably fast enough we don't delete often but if ever it's a problem we can definitly
+      //     improve this
+      const event = await this.findOne({ where: { id }});
+      if (!isOwner(event, request)) {
+        this.logger.warn(`Event "${id}" could not be deleted because the user is not the owner:
+          ${JSON.stringify(request?.userInformation, null, 4)}`);
+        throw new ForbiddenException();
+      }
+
+      // success
+      return this.eventModel.destroy({ where: { id } }).then(toDbDeleteResponse);
+    } else {
+      this.logger.warn(`Event "${id}" could not be deleted because the user is not a partner-admin or an admin`);
+      throw new ForbiddenException();
+    }
   }
 
   async getAllEventMetaData(): Promise<EventAdminMetadataModel[]> {
