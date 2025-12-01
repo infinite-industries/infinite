@@ -134,16 +134,18 @@ context('Partner Work Flows', () => {
   })
 
 
-  xit('Preserves partner query parameter when navigating', () => {
+  it('Preserves partner query parameter when navigating', () => {
     // Visit home page with partner query parameter
     cy.visit(`/?partner=${PARTNER_NAME}`)
-    
+
     // Verify partner query parameter is present
     cy.url().should('include', `partner=${PARTNER_NAME}`)
-    
+
+    cy.wait(1000) // hydration?
+
     // Click on the "SUBMIT" button in the top right toolbar
     cy.get('#submit').click()
-    
+
     // Wait for navigation to complete and middleware to process
     // The middleware should add the partner param, so wait for it to appear
     cy.url({ timeout: 10000 }).should('include', '/submit-event')
