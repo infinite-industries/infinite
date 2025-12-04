@@ -71,12 +71,21 @@ jobs:
           DB_PORT: 5432
       - name: Run Cypress
         run: |
-          echo "{\"admin_auth_username\":\"$ENV_US\",\"admin_auth_password\":\"$ENV_PW\"}" > cypress.env.json
+          cat > cypress.env.json << EOF
+          {
+            "admin_auth_username": "$ENV_US",
+            "admin_auth_password": "$ENV_PW",
+            "partner_admin_username": "$PARTNER_ENV_US",
+            "partner_admin_password": "$PARTNER_ENV_PW"
+          }
+          EOF
           npm start
         working-directory: './e2e-tests'
         env:
           ENV_US: "test"
           ENV_PW: "xxx"
+          PARTNER_ENV_US: "partner-admin"
+          PARTNER_ENV_PW: "xxx"
       - name: Save Cypress artifacts
         uses: actions/upload-artifact@v4
         if: ${{ failure() }}
