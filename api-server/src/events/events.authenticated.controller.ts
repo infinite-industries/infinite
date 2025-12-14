@@ -58,7 +58,7 @@ export default class EventsAuthenticatedController {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
-    private readonly eventsService: EventsService
+    private readonly eventsService: EventsService,
   ) {}
 
   @Get()
@@ -106,7 +106,7 @@ export default class EventsAuthenticatedController {
   @ApiQuery({
     name: 'owning_partner_id',
     description:
-      'Filter events by owning partner ID. Can be specified multiple times.',
+      'Filter events by owning partner ID. More than one partner ID can be specified using array syntax.',
     required: false,
     type: [String],
     isArray: true,
@@ -270,12 +270,15 @@ export default class EventsAuthenticatedController {
   @ApiImplicitParam({ name: 'id', type: String })
   deleteEvent(
     @Req() request: RequestWithUserInfo,
-    @Param() params: FindByIdParams
+    @Param() params: FindByIdParams,
   ): Promise<EventIdResponse> {
     const id = params.id;
-    
-    this.logger.log("processing delete for event id: " + id);
-    this.logger.log("user requesting delete: " + JSON.stringify(request.userInformation, null, 4));
+
+    this.logger.log('processing delete for event id: ' + id);
+    this.logger.log(
+      'user requesting delete: ' +
+        JSON.stringify(request.userInformation, null, 4),
+    );
 
     return this.eventsService
       .delete(id, request)

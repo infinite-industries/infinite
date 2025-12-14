@@ -149,7 +149,7 @@ export class EventsController {
   @ApiQuery({
     name: 'owning_partner_id',
     description:
-      'Filter events by owning partner ID. Can be specified multiple times.',
+      'Filter events by owning partner ID. More than one partner ID can be specified using array syntax.',
     required: false,
     type: [String],
     isArray: true,
