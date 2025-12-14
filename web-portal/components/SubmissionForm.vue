@@ -328,7 +328,7 @@
         <v-col cols="12">
           <div class="text-xs-center">
             <v-btn @click="UpdateEvent()">Save</v-btn>
-            <v-btn @click="VerifyEvent()" v-if="!calendar_event.verified && user_role==='admin'" class="btn-verify">Verify</v-btn>
+            <v-btn @click="VerifyEvent()" v-if="showVerifyButton" class="btn-verify">Verify</v-btn>
             <v-btn @click="ConfirmDeleteEvent()">Delete</v-btn>
           </div>
         </v-col>
@@ -394,7 +394,7 @@
   })
 
   export default {
-    props: ['event_id', 'user_role', 'user_action', 'reviewOrg'],
+    props: ['event_id', 'user_role', 'user_action', 'owningPartnerId'],
     // user_role --> admin, venue, regular
     // user_action --> upload, edit
     emits: ['preview', 'submitted', 'error'],
@@ -484,7 +484,13 @@
         this.$store.dispatch('admin/DeleteEvent', {
           id: this.calendar_event.id,
         })
-          .then(() => { this.$router.push('/admin') })
+          .then(() => {
+            if (this.user_role === 'partner-admin') {
+                this.$router.push('/partner-admin')
+            } else {
+              this.$router.push('/admin')
+            }
+          })
           .finally(() => { this.showEventLoadingSpinner = false })
       },
       VerifyEvent: function () {
@@ -502,7 +508,11 @@
               this.calendar_event.verified = true
               this.dirtyOnVerifyDialog = true
             } else {
-              this.$router.push('/admin')
+              if (this.user_role === 'partner-admin') {
+                this.$router.push('/partner-admin')
+              } else {
+                this.$router.push('/admin')
+              }
             }
           })
           .catch(() => {
@@ -529,7 +539,7 @@
           fb_event_link: this.calendar_event.fb_event_link ? this.calendar_event.fb_event_link.split('?')[0] : null,
           eventbrite_link: this.calendar_event.eventbrite_link ? this.calendar_event.eventbrite_link.split('?')[0] : null,
           organizers: this.calendar_event.organizers ? this.calendar_event.organizers.split(',') : [],
-          reviewed_by_org: this.reviewOrg ? this.reviewOrg : null
+          owning_partner_id: this.owningPartnerId ? this.owningPartnerId : null
         }
 
         let eventCreationResponse = null
@@ -759,6 +769,18 @@
 
       showDateTimePicker: function () {
         return this.calendar_event.category !== 'online-resource' ? ['date-time-picker'] : []
+      },
+
+      showVerifyButton: function() {
+        return this.isNotVerfified && this.isAdminOrPartnerAdmin
+      },
+
+      isNotVerfified: function() {
+        return !this.calendar_event.verified
+      },
+
+      isAdminOrPartnerAdmin: function() {
+        return this.user_role === 'admin' || this.user_role === 'partner-admin' 
       },
 
       suggestedTags: function () {

@@ -15,7 +15,6 @@ import { EventModel } from './models/event.model';
 import { Inject, LoggerService } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { VERSION_1_URI } from '../utils/versionts';
-import { getOptionsForEventsServiceFromEmbedsQueryParam } from '../utils/get-options-for-events-service-from-embeds-query-param';
 import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
 import { mapDateTimesToIso } from '../utils/map-date-times-to-iso';
 import { CreateEventRequest } from './dto/create-event-request';
@@ -147,10 +146,19 @@ export class EventsController {
     type: String,
     description: 'Filter events by category',
   })
+  @ApiQuery({
+    name: 'owning_partner_id',
+    description:
+      'Filter events by owning partner ID. More than one partner ID can be specified using array syntax.',
+    required: false,
+    type: [String],
+    isArray: true,
+  })
   async getAllVerified(
     @Req() request: RequestWithUserInfo,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
+    @Query('owning_partner_id') owningPartnerIds: string[] | string = [],
     @Query() pagination: PaginationDto,
     @Query('dateRange') dateRange?: string,
   ): Promise<EventsResponse> {
@@ -163,6 +171,7 @@ export class EventsController {
       .findAllPaginated({
         tags,
         category,
+        owningPartnerIds,
         pageSize,
         requestedPage: page,
         verifiedOnly: true,
@@ -194,18 +203,15 @@ export class EventsController {
   })
   getEventById(
     @Param() params: FindByIdParams,
-    @Query('embed') embed: string[] | string = [],
     @Req() request: RequestWithUserInfo,
   ): Promise<SingleEventResponse> {
     const id = params.id;
     const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
       order: [literal('date_times.start_time ASC')],
     };
 
     return this.eventsService
-      .findById(id, findOptions)
-      .then((event) => Promise.resolve(event))
+      .findById(request, id, findOptions)
       .then((event) => {
         if (isNullOrUndefined(event)) {
           throw new NotFoundException('Could not find event: ' + id);

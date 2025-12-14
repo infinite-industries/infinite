@@ -3,6 +3,8 @@ import {
   Injectable,
   LoggerService,
   BadRequestException,
+  ForbiddenException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import {
@@ -38,7 +40,10 @@ import { Nullable } from '../utils/NullableOrUndefinable';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 import { PartnerModel } from '../users/models/partner.model';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
-import { isOwner } from '../authentication/filters/remove-sensitive-data-for-non-admins';
+import {
+  isOwner,
+  removeSensitiveDataForSingleEvent,
+} from '../authentication/filters/remove-sensitive-data-for-non-admins';
 
 @Injectable()
 export class EventsService {
@@ -58,18 +63,39 @@ export class EventsService {
     private sequelize: Sequelize,
   ) {}
 
-  async findById(id: string, findOptions?: FindOptions): Promise<EventModel> {
+  async findById(
+    request: RequestWithUserInfo,
+    id: string,
+    findOptions?: FindOptions,
+  ): Promise<EventModel> {
     let options = {
       where: { id },
-      include: [DatetimeVenueModel, VenueModel, PartnerModel],
     };
 
     if (findOptions) {
       options = { ...findOptions, ...options };
     }
 
-    return this.eventModel.findOne(options).then((result) => {
-      return result;
+    // findOne will add the include option with all the necessary embedded models
+    return await this.findOneWithRelated(options)
+      .then((event) => {
+        if (isNullOrUndefined(event)) {
+          throw new NotFoundException('Could not find event: ' + id);
+        } else {
+          return event;
+        }
+      })
+      .then((event) => removeSensitiveDataForSingleEvent(request, event));
+  }
+
+  // just a private utility with no auth checks for use internally,
+  // it automatically applies includes
+  private async findOneWithRelated(
+    findOptions: FindOptions,
+  ): Promise<EventModel> {
+    return await this.eventModel.findOne({
+      include: [DatetimeVenueModel, VenueModel, PartnerModel],
+      ...findOptions,
     });
   }
 
@@ -89,6 +115,7 @@ export class EventsService {
     request,
     tags = [],
     category,
+    owningPartnerIds = [],
     verifiedOnly = true,
     pageSize,
     requestedPage,
@@ -112,6 +139,7 @@ export class EventsService {
       const whereClause = this.getWhereClause(
         tagClauseParams,
         category,
+        owningPartnerIds,
         verifiedOnly,
         startDate,
         endDate,
@@ -232,6 +260,7 @@ export class EventsService {
   }
 
   async update(
+    request: RequestWithUserInfo,
     id: string,
     values: Partial<UpdateEventRequest>,
   ): Promise<DbUpdateResponse<EventModel>> {
@@ -243,6 +272,18 @@ export class EventsService {
           returning: true,
           transaction,
         };
+
+        // validate ownership before updating (infinite admins own anything and everything)
+        const event = await this.findOneWithRelated({ where: { id } });
+        if (isNullOrUndefined(event)) {
+          throw new NotFoundException('Could not find event: ' + id);
+        }
+
+        if (!isOwner(event, request)) {
+          throw new ForbiddenException(
+            'You do not have access to edit this event',
+          );
+        }
 
         const updatedEvent = await this.eventModel.update(
           values as Partial<EventModel>,
@@ -342,8 +383,36 @@ export class EventsService {
     return Promise.all(requests);
   }
 
-  async delete(id: string): Promise<DbDeleteResponse> {
-    return this.eventModel.destroy({ where: { id } }).then(toDbDeleteResponse);
+  async delete(
+    id: string,
+    request: RequestWithUserInfo,
+  ): Promise<DbDeleteResponse> {
+    if (
+      request?.userInformation?.isInfiniteAdmin ||
+      request?.userInformation?.isPartnerAdmin
+    ) {
+      // Check that we own the event
+      //   Note: There is an optimization oportunity here I'm fetching the whole model to verify this.
+      //     It's probably fast enough we don't delete often but if ever it's a problem we can definitly
+      //     improve this
+      const event = await this.findOneWithRelated({ where: { id } });
+      if (!isOwner(event, request)) {
+        this.logger
+          .warn(`Event "${id}" could not be deleted because the user is not the owner:
+          ${JSON.stringify(request?.userInformation, null, 4)}`);
+        throw new ForbiddenException();
+      }
+
+      // success
+      return this.eventModel
+        .destroy({ where: { id } })
+        .then(toDbDeleteResponse);
+    } else {
+      this.logger.warn(
+        `Event "${id}" could not be deleted because the user is not a partner-admin or an admin`,
+      );
+      throw new ForbiddenException();
+    }
   }
 
   async getAllEventMetaData(): Promise<EventAdminMetadataModel[]> {
@@ -425,6 +494,7 @@ export class EventsService {
   private getWhereClause(
     tagClauseParams: Nullable<string>,
     category: Nullable<string>,
+    owningPartnerIds: string[] | string,
     verifiedOnly: boolean,
     startDate?: Date,
     endDate?: Date,
@@ -437,6 +507,14 @@ export class EventsService {
       ? `events.category = '${category}'`
       : null;
 
+    const partnerIdsArray = ensureEmbedQueryStringIsArray(owningPartnerIds);
+    const partnerIdsClause =
+      partnerIdsArray.length > 0
+        ? `events.owning_partner_id IN (${partnerIdsArray
+            .map((id) => `'${id}'`)
+            .join(', ')})`
+        : null;
+
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
     const dateRangeFilter =
@@ -447,6 +525,7 @@ export class EventsService {
     const clauses = [
       tagClause,
       categoryClause,
+      partnerIdsClause,
       verifiedOnlyClause,
       dateRangeFilter,
     ].filter((clause) => isNotNullOrUndefined(clause));
@@ -497,6 +576,7 @@ interface FindAllPaginatedArgs {
   request: RequestWithUserInfo;
   tags: string[] | string;
   category?: string;
+  owningPartnerIds?: string[] | string;
   verifiedOnly?: boolean;
   pageSize: number;
   requestedPage: number;
