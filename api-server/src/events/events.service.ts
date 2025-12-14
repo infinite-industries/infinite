@@ -77,7 +77,7 @@ export class EventsService {
     }
 
     // findOne will add the include option with all the necessary embedded models
-    return await this.findOne(options)
+    return await this.findOneWithRelated(options)
       .then((event) => {
         if (isNullOrUndefined(event)) {
           throw new NotFoundException('Could not find event: ' + id);
@@ -90,8 +90,9 @@ export class EventsService {
 
   // just a private utility with no auth checks for use internally,
   // it automatically applies includes
-  private async findOne(findOptions: FindOptions): Promise<EventModel> {
-    // TOOD: We might be able to use findOneWithRelated rather than being explicit with our includes
+  private async findOneWithRelated(
+    findOptions: FindOptions,
+  ): Promise<EventModel> {
     return await this.eventModel.findOne({
       include: [DatetimeVenueModel, VenueModel, PartnerModel],
       ...findOptions,
@@ -273,7 +274,7 @@ export class EventsService {
         };
 
         // validate ownership before updating (infinite admins own anything and everything)
-        const event = await this.findOne({ where: { id } });
+        const event = await this.findOneWithRelated({ where: { id } });
         if (isNullOrUndefined(event)) {
           throw new NotFoundException('Could not find event: ' + id);
         }
@@ -394,7 +395,7 @@ export class EventsService {
       //   Note: There is an optimization oportunity here I'm fetching the whole model to verify this.
       //     It's probably fast enough we don't delete often but if ever it's a problem we can definitly
       //     improve this
-      const event = await this.findOne({ where: { id } });
+      const event = await this.findOneWithRelated({ where: { id } });
       if (!isOwner(event, request)) {
         this.logger
           .warn(`Event "${id}" could not be deleted because the user is not the owner:
