@@ -88,9 +88,10 @@ export class EventsService {
       .then((event) => removeSensitiveDataForSingleEvent(request, event));
   }
 
-  // just a private utility with no auth checks for use internally
+  // just a private utility with no auth checks for use internally,
   // it automatically applies includes
   private async findOne(findOptions: FindOptions): Promise<EventModel> {
+    // TOOD: We might be able to use findOneWithRelated rather than being explicit with our includes
     return await this.eventModel.findOne({
       include: [DatetimeVenueModel, VenueModel, PartnerModel],
       ...findOptions,
