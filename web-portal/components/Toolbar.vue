@@ -1,7 +1,12 @@
 <template>
   <div class="container">
     <div id="toolbar" style="z-index:21">
-      <ii-logo id="logo" icon-color="#fff" width="140" height="55" style="cursor: pointer" />
+      <template v-if="partnerLogo">
+        <img id="logo" :src="partnerLogo" :alt="`Brought to you by ${partnerName}`" height="55" />
+      </template>
+      <template v-else>
+        <ii-logo id="logo" icon-color="#fff" width="140" height="55" style="cursor: pointer" />
+      </template>
       <ii-subscribe
         v-if="showCallsToAction"
         id="subscribe"
@@ -23,7 +28,6 @@
     <ii-navigation>
       <slot name="navigation" />
     </ii-navigation>
-    <!-- <ii-navigation /> -->
   </div>
 </template>
 
@@ -52,6 +56,12 @@
       }
     },
     computed: {
+      partnerLogo: function () {
+        return this.$store.getters['partner/partner']?.logo_url
+      },
+      partnerName: function () {
+        return this.$store.getters['partner/partner']?.name
+      },
       showCallsToAction: function () {
         // hide CTAs on admin routes and when sidebar is open
         return (!this.$route || !ROUTE_IS_ADMIN.test(this.$route.path)) &&
