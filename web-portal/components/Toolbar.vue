@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div id="toolbar" style="z-index:21">
-      <template v-if="partnerLogo">
-        <img id="logo" :src="partnerLogo" :alt="`Brought to you by ${partnerName}`" height="55" />
+      <template v-if="partner">
+        <ii-partner-logo id="logo" :partner="partner" height="55" />
       </template>
       <template v-else>
         <ii-logo id="logo" icon-color="#fff" width="140" height="55" style="cursor: pointer" />
@@ -38,6 +38,7 @@
   import Hamburger from './vectors/Hamburger.vue'
 
   import Navigation from './Navigation.vue'
+  import PartnerLogo from './PartnerLogo.vue'
 
   const ROUTE_IS_ADMIN = new RegExp('^/admin')
 
@@ -45,6 +46,7 @@
     name: 'Toolbar',
     components: {
       'ii-logo': Logo,
+      'ii-partner-logo': PartnerLogo,
       'ii-subscribe': Subscribe,
       'ii-submit': Submit,
       'ii-hamburger': Hamburger,
@@ -56,11 +58,8 @@
       }
     },
     computed: {
-      partnerLogo: function () {
-        return this.$store.getters['partner/partner']?.logo_url
-      },
-      partnerName: function () {
-        return this.$store.getters['partner/partner']?.name
+      partner: function () {
+        return this.$store.getters['partner/partner']
       },
       showCallsToAction: function () {
         // hide CTAs on admin routes and when sidebar is open
