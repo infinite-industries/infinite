@@ -68,7 +68,7 @@
         }
       },
       ownerLogo: function () {
-        return this.calendarEvent?.owning_partner?.logo_url
+        return this.calendarEvent?.owning_partner?.light_logo_url
       }
     },
     methods: {

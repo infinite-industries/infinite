@@ -1,6 +1,6 @@
 <template>
   <nuxt-link v-if="partner" to="/">
-    <img id="logo" :src="partner.logo_url" :alt="`Brought to you by ${partner.name}`" :height="height" />
+    <img id="logo" :src="partner.light_logo_url" :alt="`Brought to you by ${partner.name}`" :height="height" />
   </nuxt-link>
 </template>
 

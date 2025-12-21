@@ -1006,7 +1006,8 @@ describe('Events API', () => {
     const partner = await partnerModel.create({
       id: uuidv4(),
       name: 'Test Partner Organization',
-      logo_url: 'https://example.com/logo.png',
+      light_logo_url: 'https://example.com/logo-light.png',
+      dark_logo_url: 'https://example.com/logo-dark.png',
     });
 
     // Create an event with the partner
@@ -1035,8 +1036,8 @@ describe('Events API', () => {
           partner.name,
         );
         expect(eventReturned.owning_partner).toHaveProperty(
-          'logo_url',
-          partner.logo_url,
+          'light_logo_url',
+          partner.light_logo_url,
         );
         expect(eventReturned.owning_partner).toHaveProperty('createdAt');
         expect(eventReturned.owning_partner).toHaveProperty('updatedAt');
@@ -1069,7 +1070,8 @@ describe('Events API', () => {
     const partner = await partnerModel.create({
       id: uuidv4(),
       name: 'Test Partner for Pagination',
-      logo_url: 'https://example.com/pagination-logo.png',
+      light_logo_url: 'https://example.com/pagination-logo-light.png',
+      dark_logo_url: 'https://example.com/pagination-logo-dark.png',
     });
 
     // Create events with the partner
@@ -1103,8 +1105,12 @@ describe('Events API', () => {
           expect(event.owning_partner).toHaveProperty('id', partner.id);
           expect(event.owning_partner).toHaveProperty('name', partner.name);
           expect(event.owning_partner).toHaveProperty(
-            'logo_url',
-            partner.logo_url,
+            'light_logo_url',
+            partner.light_logo_url,
+          );
+          expect(event.owning_partner).toHaveProperty(
+            'dark_logo_url',
+            partner.dark_logo_url,
           );
         });
 
@@ -1127,13 +1133,15 @@ describe('Events API', () => {
       const partner1 = await partnerModel.create({
         id: uuidv4(),
         name: 'Partner 1',
-        logo_url: 'https://example.com/partner-1.png',
+        light_logo_url: 'https://example.com/partner-1-light.png',
+      dark_logo_url: 'https://example.com/partner-1-dark.png',
       });
 
       const partner2 = await partnerModel.create({
         id: uuidv4(),
         name: 'Partner 2',
-        logo_url: 'https://example.com/partner-2.png',
+        light_logo_url: 'https://example.com/partner-2-light.png',
+      dark_logo_url: 'https://example.com/partner-2-dark.png',
       });
 
       // Create events for partner1
@@ -1185,19 +1193,22 @@ describe('Events API', () => {
       const partner1 = await partnerModel.create({
         id: uuidv4(),
         name: 'Partner 1',
-        logo_url: 'https://example.com/partner-1.png',
+        light_logo_url: 'https://example.com/partner-1-light.png',
+      dark_logo_url: 'https://example.com/partner-1-dark.png',
       });
 
       const partner2 = await partnerModel.create({
         id: uuidv4(),
         name: 'Partner 2',
-        logo_url: 'https://example.com/partner-2.png',
+        light_logo_url: 'https://example.com/partner-2-light.png',
+      dark_logo_url: 'https://example.com/partner-2-dark.png',
       });
 
       const partner3 = await partnerModel.create({
         id: uuidv4(),
         name: 'Partner 3',
-        logo_url: 'https://example.com/partner-3.png',
+        light_logo_url: 'https://example.com/partner-3-light.png',
+      dark_logo_url: 'https://example.com/partner-3-dark.png',
       });
 
       // Create events for partner1
@@ -1284,7 +1295,8 @@ describe('Events API', () => {
       const partner = await partnerModel.create({
         id: uuidv4(),
         name: 'Test Partner',
-        logo_url: 'https://example.com/test-partner.png',
+        light_logo_url: 'https://example.com/test-partner-light.png',
+      dark_logo_url: 'https://example.com/test-partner-dark.png',
       });
 
       // Create events for the partner with specific tags
@@ -1306,7 +1318,8 @@ describe('Events API', () => {
       const otherPartner = await partnerModel.create({
         id: uuidv4(),
         name: 'Other Partner',
-        logo_url: 'https://example.com/other-partner.png',
+        light_logo_url: 'https://example.com/other-partner-light.png',
+      dark_logo_url: 'https://example.com/other-partner-dark.png',
       });
 
       await createListOfFutureEventsInChronologicalOrder(2, {
@@ -1346,7 +1359,8 @@ describe('Events API', () => {
       const partner = await partnerModel.create({
         id: uuidv4(),
         name: 'Test Partner',
-        logo_url: 'https://example.com/test-partner.png',
+        light_logo_url: 'https://example.com/test-partner-light.png',
+      dark_logo_url: 'https://example.com/test-partner-dark.png',
       });
 
       // Create more events than the default page size
@@ -1359,7 +1373,8 @@ describe('Events API', () => {
       const otherPartner = await partnerModel.create({
         id: uuidv4(),
         name: 'Other Partner',
-        logo_url: 'https://example.com/other-partner.png',
+        light_logo_url: 'https://example.com/other-partner-light.png',
+      dark_logo_url: 'https://example.com/other-partner-dark.png',
       });
 
       await createListOfFutureEventsInChronologicalOrder(10, {
@@ -1429,13 +1444,15 @@ describe('Events API', () => {
       const userPartner = await partnerModel.create({
         id: uuidv4(),
         name: 'User Partner',
-        logo_url: 'https://example.com/user-partner.png',
+        light_logo_url: 'https://example.com/user-partner-light.png',
+      dark_logo_url: 'https://example.com/user-partner-dark.png',
       });
 
       const otherPartner = await partnerModel.create({
         id: uuidv4(),
         name: 'Other Partner',
-        logo_url: 'https://example.com/other-partner.png',
+        light_logo_url: 'https://example.com/other-partner-light.png',
+      dark_logo_url: 'https://example.com/other-partner-dark.png',
       });
 
       // Create a user with JWT token (partner admin)
@@ -1527,7 +1544,8 @@ describe('Events API', () => {
       const userPartner = await partnerModel.create({
         id: uuidv4(),
         name: 'User Partner',
-        logo_url: 'https://example.com/user-partner.png',
+        light_logo_url: 'https://example.com/user-partner-light.png',
+      dark_logo_url: 'https://example.com/user-partner-dark.png',
       });
 
       // Create a user with JWT token (partner admin)
@@ -1579,13 +1597,15 @@ describe('Events API', () => {
       const userPartner = await partnerModel.create({
         id: uuidv4(),
         name: 'User Partner',
-        logo_url: 'https://example.com/user-partner.png',
+        light_logo_url: 'https://example.com/user-partner-light.png',
+      dark_logo_url: 'https://example.com/user-partner-dark.png',
       });
 
       const otherPartner = await partnerModel.create({
         id: uuidv4(),
         name: 'Other Partner',
-        logo_url: 'https://example.com/other-partner.png',
+        light_logo_url: 'https://example.com/other-partner-light.png',
+      dark_logo_url: 'https://example.com/other-partner-dark.png',
       });
 
       // Create a user with JWT token (partner admin)

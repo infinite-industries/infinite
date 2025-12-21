@@ -164,7 +164,8 @@ export class AuthenticationController implements OnModuleInit {
       this.logger.log('Creating random-displacement-shipping partner...');
       partner = await this.partnersService.create({
         name: 'random-displacement-shipping',
-        logo_url: '/images/partners/random-displacement-shipping.png',
+        light_logo_url: '/images/partners/random-displacement-shipping.png',
+        dark_logo_url: '/images/partners/random-displacement-shipping.png',
       });
       this.logger.log(`Partner created with ID: ${partner.id}`);
     } else {

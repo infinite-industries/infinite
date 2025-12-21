@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router'
 export const state = () => ({
   // string | null
   name: null,
-  // { id: string; name: string; logo_url: string } | null
+  // { id: string; name: string; light_logo_url: string; dark_logo_url: string } | null
   partner: null
 })
 

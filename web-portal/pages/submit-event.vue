@@ -71,7 +71,7 @@
         </div>
         <div v-if="partner" class="partner">
           <div>Partnering with</div>
-          <img :src="partner.logo_url" :alt="partner.name" width="200" />
+          <img :src="partner.light_logo_url" :alt="partner.name" width="200" />
         </div>
       </div>
       <client-only>

@@ -6,7 +6,8 @@ const faker = require('faker');
 function generatePartnerRequest(): CreatePartnerRequest {
   return {
     name: faker.company.companyName(),
-    logo_url: faker.internet.url() + '/logo.png',
+    light_logo_url: faker.internet.url() + '/logo-light.png',
+    dark_logo_url: faker.internet.url() + '/logo-dark.png',
   };
 }
 

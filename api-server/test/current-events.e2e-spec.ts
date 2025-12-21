@@ -325,7 +325,8 @@ describe('CurrentEvents (e2e)', () => {
     const partner = await partnerModel.create({
       id: faker.datatype.uuid(),
       name: 'Mixed Events Partner',
-      logo_url: 'https://example.com/mixed-events-logo.png',
+      light_logo_url: 'https://example.com/mixed-events-logo-light.png',
+      dark_logo_url: 'https://example.com/mixed-events-logo-dark.png',
     });
 
     // Create event with partner
