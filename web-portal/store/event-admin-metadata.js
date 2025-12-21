@@ -28,8 +28,8 @@ export const actions = {
 
     return useNuxtApp().$apiService.put(`/authenticated/events/${eventId}/admin-metadata`, { isProblem }, idToken)
       .then((response) => {
-        context.commit('admin/UPDATE_ADMIN_METADATA', { eventId, newMetaDateEntry: response.data.eventAdminMetadata }, { root: true })
-        context.commit('GET_UPSERT_EVENT_METADATA_FETCH_SUCCESS', response.data.eventAdminMetadata)
+        context.commit('admin/UPDATE_ADMIN_METADATA', { eventId, newMetaDateEntry: response.eventAdminMetadata }, { root: true })
+        context.commit('GET_UPSERT_EVENT_METADATA_FETCH_SUCCESS', response.eventAdminMetadata)
       })
       .catch((error) => {
         context.commit('GET_UPSERT_EVENT_METADATA_FETCH_FAIL', error)
