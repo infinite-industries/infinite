@@ -458,7 +458,7 @@ export class EventsService {
         { returning: true },
       )
       .then((resp) => {
-        return resp[0][0];
+        return resp[0];
       });
   }
 

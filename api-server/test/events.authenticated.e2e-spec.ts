@@ -1273,6 +1273,105 @@ describe('Authenticated Events API', () => {
         .expect(403);
     });
 
+    it('should successfully update admin-metadata when partner admin owns the event', async () => {
+      // Create a partner
+      const partner = await createPartner({
+        name: 'Test Partner',
+        logo_url: 'https://example.com/test-partner.png',
+      });
+
+      // Create event owned by the partner
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+        owning_partner_id: partner.id,
+      });
+      const eventId = events[0].id;
+
+      // Create partner admin token
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with the partner
+      await associateUserWithPartners(userId, [partner.id]);
+
+      const adminMetadata = {
+        isProblem: true,
+      };
+
+      // Update the admin metadata
+      return server
+        .put(
+          `/${CURRENT_VERSION_URI}/authenticated/events/${eventId}/admin-metadata`,
+        )
+        .set('x-access-token', partnerAdminToken)
+        .send(adminMetadata)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.status).toEqual('success');
+          expect(body.eventAdminMetadata).toBeDefined();
+          expect(body.eventAdminMetadata.event_id).toEqual(eventId);
+          expect(body.eventAdminMetadata.is_problem).toEqual(true);
+        });
+    });
+
+    it('should return 403 Forbidden when partner admin tries to update admin-metadata for event they do not own', async () => {
+      // Create two partners
+      const partner1 = await createPartner({
+        name: 'Partner 1',
+        logo_url: 'https://example.com/partner-1.png',
+      });
+
+      const partner2 = await createPartner({
+        name: 'Partner 2',
+        logo_url: 'https://example.com/partner-2.png',
+      });
+
+      // Create an event owned by partner1
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+        owning_partner_id: partner1.id,
+      });
+      const eventId = events[0].id;
+
+      // Create partner admin token for partner2
+      const partner2AdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      // Create the user in the database
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partner2AdminToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+
+      // Associate user with partner2 (not partner1)
+      await associateUserWithPartners(userId, [partner2.id]);
+
+      const adminMetadata = {
+        isProblem: true,
+      };
+
+      // Try to update admin metadata for event owned by partner1
+      return server
+        .put(
+          `/${CURRENT_VERSION_URI}/authenticated/events/${eventId}/admin-metadata`,
+        )
+        .set('x-access-token', partner2AdminToken)
+        .send(adminMetadata)
+        .expect(403);
+    });
+
     it('should return 403 Forbidden for non-admin user accessing GET /authenticated/events with query parameters', async () => {
       await createListOfFutureEventsInChronologicalOrder(5);
 

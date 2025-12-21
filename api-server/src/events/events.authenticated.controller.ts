@@ -295,9 +295,8 @@ export default class EventsAuthenticatedController {
   ): Promise<EventAdminMetadataSingleResponse> {
     return this.eventsService
       .upsertEventMetadata(request, id, updatedState)
-      .then(
-        (eventAdminMetadata) =>
-          new EventAdminMetadataSingleResponse({ eventAdminMetadata }),
-      );
+      .then((eventAdminMetadata) => {
+        return new EventAdminMetadataSingleResponse(eventAdminMetadata);
+      });
   }
 }
