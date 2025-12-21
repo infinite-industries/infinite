@@ -1,11 +1,12 @@
 const PARTNERS = {
   wrfl: {
     name: 'WRFL',
-    logo: '/images/partners/wrfl.svg',
+    logo: '/images/partners/wrfl-light.svg',
     id: 'wrfl'
   }
 }
 
+/** @deprecated replaced by dynamic/API-driven partner system */
 export default class PartnerService {
   static getPartnerForQuery(queryParam) {
     const partnerKey = queryParam ? queryParam.toLowerCase() : ''

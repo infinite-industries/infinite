@@ -73,7 +73,8 @@ prod:  https://api.infinite.industries/api/
 
 ## Migrations
 
-* Create a new migration scrip: `npm run db:migrate:generate -- --name={a-descriptive-name}`
+* Create a new migration script: `npm run db:migrate:generate -- --name={a-descriptive-name}`
+
 ## API Design Philosophy and Best Practices
 
 * While database models use snake for fields the API should generally use camel case.
