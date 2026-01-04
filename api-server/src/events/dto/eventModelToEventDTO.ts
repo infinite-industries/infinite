@@ -61,7 +61,8 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
       ? new PartnerDTO({
           id: eventModel.owning_partner.id,
           name: eventModel.owning_partner.name,
-          logo_url: eventModel.owning_partner.logo_url,
+          light_logo_url: eventModel.owning_partner.light_logo_url,
+          dark_logo_url: eventModel.owning_partner.dark_logo_url,
           createdAt: eventModel.owning_partner.createdAt,
           updatedAt: eventModel.owning_partner.updatedAt,
         })

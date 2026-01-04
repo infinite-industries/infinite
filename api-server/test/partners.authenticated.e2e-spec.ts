@@ -160,7 +160,7 @@ describe('Partners Authenticated (e2e)', () => {
         .expect(403);
     });
 
-    it('should create a new partner with name and logo_url', async () => {
+    it('should create a new partner with name and logo URLs', async () => {
       const adminToken = await createJwtForRandomUser();
       const partnerRequest = generatePartnerRequest();
 
@@ -172,13 +172,14 @@ describe('Partners Authenticated (e2e)', () => {
         .then((response) => {
           expect(response.body.id).toBeDefined();
           expect(response.body.name).toEqual(partnerRequest.name);
-          expect(response.body.logo_url).toEqual(partnerRequest.logo_url);
+          expect(response.body.light_logo_url).toEqual(partnerRequest.light_logo_url);
+          expect(response.body.dark_logo_url).toEqual(partnerRequest.dark_logo_url);
           expect(response.body.createdAt).toBeDefined();
           expect(response.body.updatedAt).toBeDefined();
         });
     });
 
-    it('should create a new partner with only name (logo_url optional)', async () => {
+    it('should create a new partner with only name (logo URLs optional)', async () => {
       const adminToken = await createJwtForRandomUser();
       const partnerRequest: CreatePartnerRequest = {
         name: 'Test Partner',
@@ -192,7 +193,8 @@ describe('Partners Authenticated (e2e)', () => {
         .then((response) => {
           expect(response.body.id).toBeDefined();
           expect(response.body.name).toEqual(partnerRequest.name);
-          expect(response.body.logo_url).toEqual(null);
+          expect(response.body.light_logo_url).toEqual(null);
+          expect(response.body.dark_logo_url).toEqual(null);
           expect(response.body.createdAt).toBeDefined();
           expect(response.body.updatedAt).toBeDefined();
         });
@@ -201,7 +203,8 @@ describe('Partners Authenticated (e2e)', () => {
     it('should return 400 when name is missing', async () => {
       const adminToken = await createJwtForRandomUser();
       const partnerRequest = {
-        logo_url: 'https://example.com/logo.png',
+        light_logo_url: 'https://example.com/logo-light.png',
+        dark_logo_url: 'https://example.com/logo-dark.png',
       };
 
       return server
@@ -215,7 +218,8 @@ describe('Partners Authenticated (e2e)', () => {
       const adminToken = await createJwtForRandomUser();
       const partnerRequest = {
         name: '',
-        logo_url: 'https://example.com/logo.png',
+        light_logo_url: 'https://example.com/logo-light.png',
+        dark_logo_url: 'https://example.com/logo-dark.png',
       };
 
       return server

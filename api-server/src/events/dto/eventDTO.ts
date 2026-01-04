@@ -120,7 +120,8 @@ export default class EventDTO {
     example: {
       id: '123e4567-e89b-12d3-a456-426614174000',
       name: 'TechCorp Inc.',
-      logo_url: 'https://example.com/logo.png',
+      light_logo_url: 'https://example.com/logo-light.png',
+      dark_logo_url: 'https://example.com/logo-dark.png',
       createdAt: '2024-01-15T10:30:00.000Z',
       updatedAt: '2024-01-15T10:30:00.000Z',
     },

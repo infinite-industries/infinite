@@ -71,7 +71,7 @@
         </div>
         <div v-if="partner" class="partner">
           <div>Partnering with</div>
-          <img :src="partner.logo_url" :alt="partner.name" width="200" />
+          <img :src="partner.light_logo_url" :alt="partner.name" width="200" />
         </div>
       </div>
       <client-only>
@@ -104,7 +104,7 @@
 <script setup>
   import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
   import { useStore } from 'vuex'
-  import { useRoute, onBeforeRouteLeave } from 'vue-router'
+  import { onBeforeRouteLeave } from 'vue-router'
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import SubmissionPreview from '@/components/SubmissionPreview'
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
@@ -113,13 +113,12 @@
     layout: 'no-mobile-cta',
   })
 
-  const { query } = useRoute()
-  const { $apiService } = useNuxtApp()
   const store = useStore()
 
   const mode = ref('edit')
   const previewEvent = ref(null)
-  const partner = ref(null)
+  // "partner" org tracked globally, just need to tap in to store
+  const partner = computed(() => store.getters['partner/partner'])
   const submissionErrorMessage = ref(null)
   const form = ref(null)
   const previewHeading = ref(null)
@@ -226,18 +225,6 @@
   await useLegacyStoreFetch(FETCH_ACTIVE_VENUES, [
     FETCH_ACTIVE_VENUES
   ])
-
-  // display partner info if provided in query
-  if (query.partner) {
-    const { data, error } = await useAsyncData('partner-fetch', () =>
-      $apiService.get(`/partners/name/${query.partner}`));
-
-    if (error.value) {
-      console.error(`could not fetch partner: ${query.partner}: `, error.value)
-    } else {
-      partner.value = data.value;
-    }
-  }
 </script>
 
 <style scoped>

@@ -182,7 +182,8 @@ describe('Users (e2e)', () => {
           // Verify partner structure in response
           expect(response.body.partners[0]).toHaveProperty('id');
           expect(response.body.partners[0]).toHaveProperty('name');
-          expect(response.body.partners[0]).toHaveProperty('logo_url');
+          expect(response.body.partners[0]).toHaveProperty('light_logo_url');
+          expect(response.body.partners[0]).toHaveProperty('dark_logo_url');
           expect(response.body.partners[0]).toHaveProperty('createdAt');
           expect(response.body.partners[0]).toHaveProperty('updatedAt');
 
@@ -308,7 +309,8 @@ describe('Users (e2e)', () => {
           // Verify partner structure in response
           expect(response.body.partners[0]).toHaveProperty('id');
           expect(response.body.partners[0]).toHaveProperty('name');
-          expect(response.body.partners[0]).toHaveProperty('logo_url');
+          expect(response.body.partners[0]).toHaveProperty('light_logo_url');
+          expect(response.body.partners[0]).toHaveProperty('dark_logo_url');
           expect(response.body.partners[0]).toHaveProperty('createdAt');
           expect(response.body.partners[0]).toHaveProperty('updatedAt');
 
@@ -321,9 +323,11 @@ describe('Users (e2e)', () => {
           );
 
           expect(returnedPartner1.name).toEqual(partner1.name);
-          expect(returnedPartner1.logo_url).toEqual(partner1.logo_url);
+          expect(returnedPartner1.light_logo_url).toEqual(partner1.light_logo_url);
+          expect(returnedPartner1.dark_logo_url).toEqual(partner1.dark_logo_url);
           expect(returnedPartner2.name).toEqual(partner2.name);
-          expect(returnedPartner2.logo_url).toEqual(partner2.logo_url);
+          expect(returnedPartner2.light_logo_url).toEqual(partner2.light_logo_url);
+          expect(returnedPartner2.dark_logo_url).toEqual(partner2.dark_logo_url);
         });
     });
 

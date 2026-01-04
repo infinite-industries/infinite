@@ -72,14 +72,7 @@ export class EventsController {
     @Query('category') category: string,
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
-    const isAdmin = request.userInformation?.isInfiniteAdmin || false;
-
-    const include = isAdmin
-      ? [VenueModel, DatetimeVenueModel, EventAdminMetadataModel, PartnerModel]
-      : [VenueModel, DatetimeVenueModel, PartnerModel];
-
     const findOptions = {
-      include,
       where: {
         [Op.and]: [
           getCommonQueryTermsForEvents(true, tags, category),
@@ -94,7 +87,7 @@ export class EventsController {
     };
 
     return this.eventsService
-      .findAll(findOptions)
+      .findAll(request, findOptions)
       .then((events) => events.map(eventModelToEventDTO))
       .then((events) => removeSensitiveDataForNonAdmins(request, events))
       .then((events) => new EventsResponse({ events }));

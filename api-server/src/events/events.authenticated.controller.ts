@@ -173,15 +173,14 @@ export default class EventsAuthenticatedController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiBearerAuth()
   getAllNonVerified(
-    @Query('embed') embed: string[] | string = [],
+    @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
     const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
       where: { verified: false },
     };
 
     return this.eventsService
-      .findAll(findOptions)
+      .findAll(request, findOptions)
       .then((events) => events.map(eventModelToEventDTO))
       .then((events) => new EventsResponse({ events }));
   }
@@ -205,7 +204,7 @@ export default class EventsAuthenticatedController {
       // to filter by a given partner, but we can implement that as a separate filter
       // somewhere, this event is specifically a convenience to give an easy way
       // to get all un-verified events a partner-admin has access to
-      return this.getAllNonVerified(embed);
+      return this.getAllNonVerified(request);
     }
 
     const partnerIds = user.partners?.map((partner) => partner.id) || [];
@@ -221,7 +220,7 @@ export default class EventsAuthenticatedController {
     };
 
     return this.eventsService
-      .findAll(findOptions)
+      .findAll(request, findOptions)
       .then((events) => events.map(eventModelToEventDTO))
       .then((events) => new EventsResponse({ events }));
   }
@@ -286,18 +285,18 @@ export default class EventsAuthenticatedController {
   }
 
   @Put(':id/admin-metadata')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(PartnerAdminGuard)
   @ApiOperation({ summary: 'Set admin metadata information for an event' })
   @ApiImplicitParam({ name: 'id', type: String })
   upsertAdminMetadata(
+    @Req() request: RequestWithUserInfo,
     @Param() { id }: FindByIdParams,
     @Body() updatedState: UpsertEventAdminMetadataRequest,
   ): Promise<EventAdminMetadataSingleResponse> {
     return this.eventsService
-      .upsertEventMetadata(id, updatedState)
-      .then(
-        (eventAdminMetadata) =>
-          new EventAdminMetadataSingleResponse({ eventAdminMetadata }),
-      );
+      .upsertEventMetadata(request, id, updatedState)
+      .then((eventAdminMetadata) => {
+        return new EventAdminMetadataSingleResponse(eventAdminMetadata);
+      });
   }
 }

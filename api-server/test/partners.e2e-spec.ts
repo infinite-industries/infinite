@@ -62,7 +62,8 @@ describe('Partners API (e2e)', () => {
     const partner = await partnerModel.create({
       id: uuidv4(),
       name: 'Test Partner Organization',
-      logo_url: 'https://example.com/logo.png',
+      light_logo_url: 'https://example.com/logo-light.png',
+      dark_logo_url: 'https://example.com/logo-dark.png',
     });
 
     return server
@@ -75,7 +76,8 @@ describe('Partners API (e2e)', () => {
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);
         expect(body).toHaveProperty('name', partner.name);
-        expect(body).toHaveProperty('logo_url', partner.logo_url);
+        expect(body).toHaveProperty('light_logo_url', partner.light_logo_url);
+        expect(body).toHaveProperty('dark_logo_url', partner.dark_logo_url);
         expect(body).toHaveProperty('createdAt');
         expect(body).toHaveProperty('updatedAt');
       });
@@ -104,7 +106,8 @@ describe('Partners API (e2e)', () => {
     const partner = await partnerModel.create({
       id: uuidv4(),
       name: partnerName,
-      logo_url: 'https://example.com/techcorp-logo.png',
+      light_logo_url: 'https://example.com/techcorp-logo-light.png',
+      dark_logo_url: 'https://example.com/techcorp-logo-dark.png',
     });
 
     return server
@@ -117,7 +120,8 @@ describe('Partners API (e2e)', () => {
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);
         expect(body).toHaveProperty('name', partnerName);
-        expect(body).toHaveProperty('logo_url', partner.logo_url);
+        expect(body).toHaveProperty('light_logo_url', partner.light_logo_url);
+        expect(body).toHaveProperty('dark_logo_url', partner.dark_logo_url);
       });
   });
 
@@ -127,7 +131,8 @@ describe('Partners API (e2e)', () => {
     const partner = await partnerModel.create({
       id: uuidv4(),
       name: partnerName,
-      logo_url: 'https://example.com/global-tech-logo.png',
+      light_logo_url: 'https://example.com/global-tech-logo-light.png',
+      dark_logo_url: 'https://example.com/global-tech-logo-dark.png',
     });
 
     return server
@@ -140,7 +145,8 @@ describe('Partners API (e2e)', () => {
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);
         expect(body).toHaveProperty('name', partnerName);
-        expect(body).toHaveProperty('logo_url', partner.logo_url);
+        expect(body).toHaveProperty('light_logo_url', partner.light_logo_url);
+        expect(body).toHaveProperty('dark_logo_url', partner.dark_logo_url);
       });
   });
 
@@ -149,7 +155,8 @@ describe('Partners API (e2e)', () => {
     const partner = await partnerModel.create({
       id: uuidv4(),
       name: 'Public Partner',
-      logo_url: 'https://example.com/public-logo.png',
+      light_logo_url: 'https://example.com/public-logo-light.png',
+      dark_logo_url: 'https://example.com/public-logo-dark.png',
     });
 
     // Test without any authentication headers
@@ -163,16 +170,18 @@ describe('Partners API (e2e)', () => {
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);
         expect(body).toHaveProperty('name', partner.name);
-        expect(body).toHaveProperty('logo_url', partner.logo_url);
+        expect(body).toHaveProperty('light_logo_url', partner.light_logo_url);
+        expect(body).toHaveProperty('dark_logo_url', partner.dark_logo_url);
       });
   });
 
-  it('/partners/name/{name} should return partner with null logo_url when not set', async () => {
-    // Create a partner without logo_url
+  it('/partners/name/{name} should return partner with null logo URLs when not set', async () => {
+    // Create a partner without logo URLs
     const partner = await partnerModel.create({
       id: uuidv4(),
       name: 'Partner Without Logo',
-      logo_url: null,
+      light_logo_url: null,
+      dark_logo_url: null,
     });
 
     return server
@@ -185,7 +194,8 @@ describe('Partners API (e2e)', () => {
       .then(async ({ body }) => {
         expect(body).toHaveProperty('id', partner.id);
         expect(body).toHaveProperty('name', partner.name);
-        expect(body).toHaveProperty('logo_url', null);
+        expect(body).toHaveProperty('light_logo_url', null);
+        expect(body).toHaveProperty('dark_logo_url', null);
       });
   });
 });

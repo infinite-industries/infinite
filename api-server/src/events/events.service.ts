@@ -44,6 +44,7 @@ import {
   isOwner,
   removeSensitiveDataForSingleEvent,
 } from '../authentication/filters/remove-sensitive-data-for-non-admins';
+import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
 
 @Injectable()
 export class EventsService {
@@ -99,10 +100,24 @@ export class EventsService {
     });
   }
 
-  findAll(findOptions?: FindOptions): Promise<EventModel[]> {
-    const defaultOptions = {
-      include: [DatetimeVenueModel, VenueModel, PartnerModel],
-    };
+  findAll(
+    request: RequestWithUserInfo,
+    findOptions?: FindOptions,
+  ): Promise<EventModel[]> {
+    const isInfiniteAdmin = request.userInformation?.isInfiniteAdmin;
+    const isPartnerAdmin = request.userInformation?.isPartnerAdmin;
+
+    const include =
+      isInfiniteAdmin || isPartnerAdmin
+        ? [
+            DatetimeVenueModel,
+            VenueModel,
+            PartnerModel,
+            EventAdminMetadataModel,
+          ]
+        : [DatetimeVenueModel, VenueModel, PartnerModel];
+
+    const defaultOptions = { include };
 
     const mergedOptions = findOptions
       ? { ...defaultOptions, ...findOptions }
@@ -420,16 +435,30 @@ export class EventsService {
   }
 
   async upsertEventMetadata(
+    request: RequestWithUserInfo,
     eventId: string,
     updatedState: UpsertEventAdminMetadataRequest,
   ): Promise<EventAdminMetadataModel> {
+    // Validate that the event exists
+    const event = await this.findOneWithRelated({ where: { id: eventId } });
+    if (isNullOrUndefined(event)) {
+      throw new NotFoundException('Could not find event: ' + eventId);
+    }
+
+    // Validate ownership: user must be infiniteAdmin or partner admin that owns the event
+    if (!isOwner(event, request)) {
+      throw new ForbiddenException(
+        'You do not have access to update metadata for this event',
+      );
+    }
+
     return this.eventAdminMetadataModel
       .upsert(
         { is_problem: updatedState.isProblem, event_id: eventId },
         { returning: true },
       )
       .then((resp) => {
-        return resp[0][0];
+        return resp[0];
       });
   }
 
