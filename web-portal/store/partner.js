@@ -28,6 +28,7 @@ export const actions = {
         useNuxtApp().$apiService.get(`/partners/name/${query.partner}`)
         .catch(() => null) // eat 404s to avoid breaking everything
       )
+
       if (error.value) {
         console.error(error, error.value)
       } else {
