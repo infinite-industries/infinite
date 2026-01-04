@@ -125,11 +125,18 @@ export const actions = {
   },
 
   LoadAllLocalEventData: function (context) {
+    const showOnlyPartnerEvents = useNuxtApp().$store.getters['partner/showOnlyPartnerEvents']
+    const partnerId = useNuxtApp().$store.getters['partner/partner']?.id
     context.commit('SET_LOADING_STATUS', true)
 
     return useNuxtApp().$apiService.get(`${CURRENT_EVENTS_VERIFIED_PATH}?${EMBED_VENUE}`)
       .then((data) => {
-        context.commit('UPDATE_LOCALIZED_EVENTS', data.events)
+        context.commit(
+          'UPDATE_LOCALIZED_EVENTS',
+          showOnlyPartnerEvents && partnerId
+            ? data.events.filter((ev) => ev.owning_partner_id === partnerId)
+            : data.events
+        )
         context.commit('SET_LOADING_STATUS', false)
       })
       .catch((error) => {
@@ -138,9 +145,16 @@ export const actions = {
       })
   },
   LoadAllStreamingEventData: function (context) {
+    const showOnlyPartnerEvents = useNuxtApp().$store.getters['partner/showOnlyPartnerEvents']
+    const partnerId = useNuxtApp().$store.getters['partner/partner']?.id
     return useNuxtApp().$apiService.get(`${EVENTS_VERIFIED_PATH}?category=online-resource&${EMBED_VENUE}`)
       .then((data) => {
-        context.commit('UPDATE_STREAMING_EVENTS', data.events)
+        context.commit(
+          'UPDATE_STREAMING_EVENTS',
+          showOnlyPartnerEvents && partnerId
+            ? data.events.filter((ev) => ev.owning_partner_id === partnerId)
+            : data.events
+        )
       })
       .catch((error) => {
         console.error(error)
