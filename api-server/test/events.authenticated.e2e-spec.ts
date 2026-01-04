@@ -686,6 +686,7 @@ describe('Authenticated Events API', () => {
     const [allEvents] = await createListOfFutureEventsInChronologicalOrder(
       givenTotalNumEvents,
       { verified: false },
+      new Date('2025-12-01T00:00:00Z'),
     );
 
     const token = await login();
