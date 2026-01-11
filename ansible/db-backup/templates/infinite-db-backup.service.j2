@@ -6,7 +6,7 @@ User=infinite
 Group=infinite
 Type=oneshot
 WorkingDirectory=/home/infinite
-ExecStart=docker run --rm --env-file docker-files/ops.env -v /home/infinite/backups:/var/tmp/backups ghcr.io/infinite-industries/ops:{{ image_version }}
+ExecStart=docker run --rm --user %U:%G --env-file docker-files/ops.env -v /home/infinite/backups:/var/tmp/backups ghcr.io/infinite-industries/ops:{{ image_version }}
 
 [Install]
 WantedBy= multi-user.target
