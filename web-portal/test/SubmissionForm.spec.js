@@ -118,7 +118,7 @@ describe('SubmissionForm component', () => {
     expect(wrapper.vm.calendar_event.category).toEqual('other:Colons:are:special.')
   })
 
-  it('sets reviewed_by_org based on prop', async () => {
+  it('sets owning_partner_id based on prop', async () => {
     const partner = 'wrfl'
 
     const apiPost = wrapper.vm.$nuxt.$apiService.post = vi.fn(() => Promise.resolve({}))
@@ -129,13 +129,13 @@ describe('SubmissionForm component', () => {
     // unset when prop is null
     await wrapper.vm.UploadEvent()
     expect(apiPost.mock.calls.length).toBe(1)
-    expect(apiPost.mock.calls[0][1].reviewed_by_org).toBeNull()
+    expect(apiPost.mock.calls[0][1].owning_partner_id).toBeNull()
 
     // === prop when prop is set
-    await wrapper.setProps({ reviewOrg: partner })
+    await wrapper.setProps({ owningPartnerId: partner })
     await wrapper.vm.UploadEvent()
     expect(apiPost.mock.calls.length).toBe(2)
-    expect(apiPost.mock.calls[1][1].reviewed_by_org).toBe(partner)
+    expect(apiPost.mock.calls[1][1].owning_partner_id).toBe(partner)
   })
 
   it('strips query params off Facebook links', async () => {

@@ -2,8 +2,10 @@
   <div>
     <ii-list-viewer :calendar_events="events" />
 
-    <h2>Online Resources / Projects</h2>
-    <ii-list-viewer :calendar_events="streamEvents" />
+    <template v-if="streamEvents && streamEvents.length > 0">
+        <h2>Online Resources / Projects</h2>
+        <ii-list-viewer :calendar_events="streamEvents" />
+    </template>
   </div>
 </template>
 

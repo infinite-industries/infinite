@@ -71,7 +71,7 @@
         </div>
         <div v-if="partner" class="partner">
           <div>Partnering with</div>
-          <img :src="partner.logo" :alt="partner.name" width="200" />
+          <img :src="partner.light_logo_url" :alt="partner.name" width="200" />
         </div>
       </div>
       <client-only>
@@ -81,7 +81,7 @@
           v-show="mode == 'edit'"
           :user_action="'upload'"
           :user_role="'regular'"
-          :review-org="partner ? partner.id : null"
+          :owning-partner-id="partner ? partner.id : null"
           ref="form"
           @preview="onPreview"
           @submitted="mode = 'success'"
@@ -104,22 +104,21 @@
 <script setup>
   import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
   import { useStore } from 'vuex'
-  import { useRoute, onBeforeRouteLeave } from 'vue-router'
+  import { onBeforeRouteLeave } from 'vue-router'
   import SubmissionForm from '@/components/SubmissionForm.vue'
   import SubmissionPreview from '@/components/SubmissionPreview'
-  import PartnerService from '@/services/PartnerService'
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
 
   definePageMeta({
     layout: 'no-mobile-cta',
   })
 
-  const { query } = useRoute()
   const store = useStore()
 
   const mode = ref('edit')
   const previewEvent = ref(null)
-  const partner = ref(null)
+  // "partner" org tracked globally, just need to tap in to store
+  const partner = computed(() => store.getters['partner/partner'])
   const submissionErrorMessage = ref(null)
   const form = ref(null)
   const previewHeading = ref(null)
@@ -226,11 +225,6 @@
   await useLegacyStoreFetch(FETCH_ACTIVE_VENUES, [
     FETCH_ACTIVE_VENUES
   ])
-
-  // display partner info if provided in query
-  if (query.partner) {
-    partner.value = PartnerService.getPartnerForQuery(query.partner)
-  }
 </script>
 
 <style scoped>
@@ -252,7 +246,6 @@
   }
 
   .ii-button {
-
     background-color: #6cba70;
     font-family: "Open Sans",sans-serif;
     color: #000;

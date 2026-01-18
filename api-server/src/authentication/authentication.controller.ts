@@ -4,6 +4,7 @@ import {
   HttpException,
   Inject,
   LoggerService,
+  OnModuleInit,
   Post,
 } from '@nestjs/common';
 import { VERSION_1_URI } from '../utils/versionts';
@@ -22,16 +23,26 @@ import {
   AUTH_USE_TEST_USERS,
 } from '../constants';
 import createJWTForTestUser from './utils/createJWTForTestUser';
+import UsersService from '../users/users.service';
+import { PartnersService } from '../users/partners.service';
 
 @Controller(`${VERSION_1_URI}/authentication`)
 @ApiTags('authentication')
-export class AuthenticationController {
+export class AuthenticationController implements OnModuleInit {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
+    private readonly usersService: UsersService,
+    private readonly partnersService: PartnersService,
   ) {
     if (AUTH_USE_TEST_USERS) {
       this.logger.warn(AUTH_USE_TEST_USERS_WARNING);
+    }
+  }
+
+  async onModuleInit() {
+    if (AUTH_USE_TEST_USERS) {
+      await this.ensureTestPartnerUser();
     }
   }
 
@@ -72,12 +83,27 @@ export class AuthenticationController {
     username: string,
     password: string,
   ): Promise<LoginResponse> {
-    if (username === 'test' && password === 'xxx') {
+    if (password !== 'xxx') {
+      throw new HttpException('invalid username or password', 403);
+    }
+
+    if (username === 'test') {
       const token = createJWTForTestUser({
         name: 'test',
         nickname: 'test',
+        'https://infinite.industries.com/isInfiniteAdmin': true,
         picture: 'https://via.placeholder.com/150',
         sub: 'test',
+      });
+
+      return { token };
+    } else if (username === 'partner-admin') {
+      const token = createJWTForTestUser({
+        name: 'partner-admin',
+        nickname: 'partner-admin',
+        picture: 'https://via.placeholder.com/150',
+        sub: 'partner-admin',
+        'https://infinite.industries.com/isInfiniteAdmin': false,
       });
 
       return { token };
@@ -114,6 +140,55 @@ export class AuthenticationController {
         'there was an unknown problem performing login',
         500,
       );
+    }
+  }
+
+  private async ensureTestPartnerUser() {
+    this.logger.log('Ensuring partner-admin user exists...');
+
+    // Ensure the user exists
+    const testPartnerUser = await this.usersService.ensureByName({
+      name: 'partner-admin',
+      nickname: 'partner-admin',
+      picture: 'https://via.placeholder.com/150',
+    });
+
+    this.logger.log(`Test partner user ensured with ID: ${testPartnerUser.id}`);
+
+    // Ensure the partner exists
+    let partner = await this.partnersService.findByName(
+      'random-displacement-shipping',
+    );
+
+    if (!partner) {
+      this.logger.log('Creating random-displacement-shipping partner...');
+      partner = await this.partnersService.create({
+        name: 'random-displacement-shipping',
+        light_logo_url: '/images/partners/random-displacement-shipping.png',
+        dark_logo_url: '/images/partners/random-displacement-shipping.png',
+      });
+      this.logger.log(`Partner created with ID: ${partner.id}`);
+    } else {
+      this.logger.log(
+        `Partner random-displacement-shipping already exists with ID: ${partner.id}`,
+      );
+    }
+
+    // Associate the user with the partner (if not already associated)
+    try {
+      await this.partnersService.associateUserWithPartner({
+        user_id: testPartnerUser.id,
+        partner_id: partner.id,
+      });
+      this.logger.log(
+        'Successfully associated partner-admin user with partner',
+      );
+    } catch (error) {
+      if (error.message?.includes('already associated')) {
+        this.logger.log('User is already associated with partner');
+      } else {
+        throw error;
+      }
     }
   }
 }

@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
+  Inject,
+  LoggerService,
   Param,
   Put,
   Query,
@@ -19,7 +22,6 @@ import {
 } from '@nestjs/swagger';
 import { AdminAuthGuard } from '../authentication/auth-guards/admin-auth.guard';
 import { EventIdResponse } from './dto/event-id-response';
-import { SingleEventResponse } from './dto/single-event-response';
 import { EventsService } from './events.service';
 import { UpdateEventRequest } from './dto/update-event-request';
 import { EventModel } from './models/event.model';
@@ -45,6 +47,7 @@ import { AuthenticatedUserGuard } from '../authentication/auth-guards/authentica
 import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 import { Op } from 'sequelize';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
 @UseGuards(AuthenticatedUserGuard)
@@ -52,7 +55,11 @@ import { Op } from 'sequelize';
 @ApiBearerAuth()
 @ApiResponse({ status: 403, description: 'Forbidden' })
 export default class EventsAuthenticatedController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
+    private readonly eventsService: EventsService,
+  ) {}
 
   @Get()
   @UseGuards(AdminAuthGuard)
@@ -96,10 +103,19 @@ export default class EventsAuthenticatedController {
     type: String,
     description: 'Filter events by category',
   })
+  @ApiQuery({
+    name: 'owning_partner_id',
+    description:
+      'Filter events by owning partner ID. More than one partner ID can be specified using array syntax.',
+    required: false,
+    type: [String],
+    isArray: true,
+  })
   getAll(
     @Req() request: RequestWithUserInfo,
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
+    @Query('owning_partner_id') owningPartnerIds: string[] | string = [],
     @Query() pagination: PaginationDto,
     @Query('dateRange') dateRange?: string,
   ): Promise<EventsResponse> {
@@ -112,6 +128,7 @@ export default class EventsAuthenticatedController {
       .findAllPaginated({
         tags,
         category,
+        owningPartnerIds,
         pageSize,
         requestedPage: page,
         verifiedOnly: false,
@@ -156,15 +173,14 @@ export default class EventsAuthenticatedController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiBearerAuth()
   getAllNonVerified(
-    @Query('embed') embed: string[] | string = [],
+    @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
     const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
       where: { verified: false },
     };
 
     return this.eventsService
-      .findAll(findOptions)
+      .findAll(request, findOptions)
       .then((events) => events.map(eventModelToEventDTO))
       .then((events) => new EventsResponse({ events }));
   }
@@ -182,14 +198,13 @@ export default class EventsAuthenticatedController {
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
     const user = request.userInformation;
-    // await this.userService.ensureCurrentUserByName(request);
 
     if (user.isInfiniteAdmin) {
       // infinite admins have access to all partners, it may be useful for admins
       // to filter by a given partner, but we can implement that as a separate filter
       // somewhere, this event is specifically a convenience to give an easy way
       // to get all un-verified events a partner-admin has access to
-      return this.getAllNonVerified(embed);
+      return this.getAllNonVerified(request);
     }
 
     const partnerIds = user.partners?.map((partner) => partner.id) || [];
@@ -205,27 +220,9 @@ export default class EventsAuthenticatedController {
     };
 
     return this.eventsService
-      .findAll(findOptions)
+      .findAll(request, findOptions)
       .then((events) => events.map(eventModelToEventDTO))
       .then((events) => new EventsResponse({ events }));
-  }
-
-  @Get('/:id')
-  @UseGuards(AdminAuthGuard)
-  @ApiOperation({
-    summary: 'Get a single event with no filters applied (authenticated only)',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'get single event',
-  })
-  getById(@Param() params: { id: string }): Promise<SingleEventResponse> {
-    const id = params.id;
-
-    return this.eventsService
-      .findById(id)
-      .then(eventModelToEventDTO)
-      .then((event) => ({ event, status: 'success' }));
   }
 
   @Put(':id')
@@ -233,6 +230,7 @@ export default class EventsAuthenticatedController {
   @ApiOperation({ summary: 'Update fields on an existing event' })
   @ApiImplicitParam({ name: 'id', type: String })
   updateEvent(
+    @Req() request: RequestWithUserInfo,
     @Param() params: FindByIdParams,
     @Body() updatedValues: UpdateEventRequest,
   ): Promise<EventModel> {
@@ -244,49 +242,61 @@ export default class EventsAuthenticatedController {
     );
 
     return this.eventsService
-      .update(id, eventWithDateTimesInISOFormat)
+      .update(request, id, eventWithDateTimesInISOFormat)
       .then((response) => response.updatedEntities[0]);
   }
 
   @Put('/verify/:id')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(PartnerAdminGuard)
   @ApiOperation({
     summary: 'Verify the event, making it visible to the public',
   })
   @ApiImplicitParam({ name: 'id', type: String })
-  verifyEvent(@Param() params: FindByIdParams): Promise<EventModel> {
+  verifyEvent(
+    @Req() request: RequestWithUserInfo,
+    @Param() params: FindByIdParams,
+  ): Promise<EventModel> {
     const id = params.id;
 
     return this.eventsService
-      .update(id, { verified: true })
+      .update(request, id, { verified: true })
       .then((response) => response.updatedEntities[0]);
   }
 
   @Delete(':id')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(PartnerAdminGuard)
   @ApiOperation({ summary: 'Delete the event' })
   @ApiImplicitParam({ name: 'id', type: String })
-  deleteEvent(@Param() params: FindByIdParams): Promise<EventIdResponse> {
+  deleteEvent(
+    @Req() request: RequestWithUserInfo,
+    @Param() params: FindByIdParams,
+  ): Promise<EventIdResponse> {
     const id = params.id;
 
+    this.logger.log('processing delete for event id: ' + id);
+    this.logger.log(
+      'user requesting delete: ' +
+        JSON.stringify(request.userInformation, null, 4),
+    );
+
     return this.eventsService
-      .delete(id)
+      .delete(id, request)
       .then(() => ({ id, status: 'success' }));
   }
 
   @Put(':id/admin-metadata')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(PartnerAdminGuard)
   @ApiOperation({ summary: 'Set admin metadata information for an event' })
   @ApiImplicitParam({ name: 'id', type: String })
   upsertAdminMetadata(
+    @Req() request: RequestWithUserInfo,
     @Param() { id }: FindByIdParams,
     @Body() updatedState: UpsertEventAdminMetadataRequest,
   ): Promise<EventAdminMetadataSingleResponse> {
     return this.eventsService
-      .upsertEventMetadata(id, updatedState)
-      .then(
-        (eventAdminMetadata) =>
-          new EventAdminMetadataSingleResponse({ eventAdminMetadata }),
-      );
+      .upsertEventMetadata(request, id, updatedState)
+      .then((eventAdminMetadata) => {
+        return new EventAdminMetadataSingleResponse(eventAdminMetadata);
+      });
   }
 }

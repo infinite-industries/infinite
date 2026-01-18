@@ -2,8 +2,9 @@
   <tr>
     <td>
       <img
-        v-if="calendarEvent.reviewed_by_org"
+        v-if="calendarEvent.owning_partner"
         :src="ownerLogo"
+        :alt="calendarEvent.owning_partner.name"
         width="30"
       />
 
@@ -50,7 +51,6 @@
 <script>
   import FormButton from '~/components/FormButton.vue'
   import momenttz from 'moment-timezone'
-  import PartnerService from '~/services/PartnerService'
 
   export default {
     name: 'AdminEventsListRow',
@@ -68,7 +68,7 @@
         }
       },
       ownerLogo: function () {
-        return PartnerService.getLogoForReviewer(this.calendarEvent.reviewed_by_org)
+        return this.calendarEvent?.owning_partner?.light_logo_url
       }
     },
     methods: {

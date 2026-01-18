@@ -60,6 +60,22 @@ done
 
 trap "kill 0" EXIT
 
+### === check for cypress.env.json
+if [ ! -f "cypress.env.json" ]; then
+  echo "ERROR: cypress.env.json file is missing!"
+  echo "Please create it by copying the sample file:"
+  echo "  cp cypress.env.json.sample cypress.env.json"
+  echo "Then fill in the admin_auth_username and admin_auth_password values."
+  exit 1
+fi
+
+# Check if the credentials are set (not empty strings)
+if grep -q '"admin_auth_username": ""' cypress.env.json || \
+   grep -q '"admin_auth_password": ""' cypress.env.json; then
+  echo "WARNING: admin_auth_username or admin_auth_password appears to be empty in cypress.env.json"
+  echo "Please ensure both values are set before running tests."
+fi
+
 ### === migrate and see the database
 pushd ../api-server || exit 1
 npm install

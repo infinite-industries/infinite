@@ -35,18 +35,42 @@ function removeSensitiveDataList(
   }
 }
 
-function removeSensitiveDataForSingleEvent(
-  request: RequestWithUserInfo,
-  infiniteEvent: EventDTO,
-): EventDTO {
+export function removeSensitiveDataForSingleEvent<
+  T extends EventDTO | EventModel,
+>(request: RequestWithUserInfo, infiniteEvent: T): T {
   if (isOwner(infiniteEvent, request)) {
     // they own it, just return the unfiltered event
     return infiniteEvent;
   }
 
-  // strip the organizer_contact, we keep this internal and don't expose
-  // it over the api or via the ui to un-authenticated users
-  return { ...infiniteEvent, organizer_contact: undefined };
+  if (isEventModel(infiniteEvent)) {
+    return removeSensitiveDataForSingleEventModel(request, infiniteEvent) as T;
+  } else {
+    // Process EventDTO - strip the organizer_contact, we keep this internal and don't expose
+    // it over the api or via the ui to un-authenticated users
+    return {
+      ...infiniteEvent,
+      organizer_contact: undefined,
+      event_admin_metadata: undefined,
+    };
+  }
+}
+
+function removeSensitiveDataForSingleEventModel(
+  request: RequestWithUserInfo,
+  infiniteEvent: EventModel,
+): EventModel {
+  if (isOwner(infiniteEvent, request)) {
+    return infiniteEvent;
+  }
+
+  // ideally I'd clone this like we do for the DTO, but cloing Sequealize modesl is weird
+  // you can do something like new EventModel(oldModel.get({ plain: true }))
+  // but that drops all the nested models like venues and partners
+  infiniteEvent.organizer_contact = undefined;
+  infiniteEvent.event_admin_metadata = undefined;
+
+  return infiniteEvent;
 }
 
 export function isOwner(
@@ -73,4 +97,8 @@ export function isOwner(
 
 function isGenericEventList(arg: EventOrEventList): arg is EventDTO[] {
   return Array.isArray(arg);
+}
+
+function isEventModel(obj: any): obj is EventModel {
+  return obj instanceof EventModel;
 }

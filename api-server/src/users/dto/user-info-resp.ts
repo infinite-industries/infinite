@@ -33,7 +33,8 @@ export class UserInfoResp {
       {
         id: SAMPLE_GUID_2,
         name: 'TechCorp Inc.',
-        logo_url: 'https://example.com/logo.png',
+        light_logo_url: 'https://example.com/logo-light.png',
+        dark_logo_url: 'https://example.com/logo-dark.png',
         createdAt: '2024-01-15T10:30:00.000Z',
         updatedAt: '2024-01-15T10:30:00.000Z',
       },

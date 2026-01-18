@@ -33,7 +33,10 @@ export class PartnerModel extends Model<PartnerModel> {
   name: string;
 
   @Column
-  logo_url: string;
+  light_logo_url: string | null;
+
+  @Column
+  dark_logo_url: string | null;
 
   @Column
   @ApiProperty({ example: SAMPLE_DATE })

@@ -7,7 +7,7 @@ export const state = () => {
 }
 
 const CURRENT_EVENTS_VERIFIED_PATH = '/events/current-verified'
-const EVENTS_NON_VERIFIED_PATH = '/authenticated/events/non-verified?embed=DATE_TIME&embed=ADMIN_META_DATA'
+const EVENTS_NON_VERIFIED_PATH = '/authenticated/events/non-verified'
 
 export const getters = {
   GetUnverifiedEvents: (state) => {
@@ -25,10 +25,14 @@ export const getters = {
 }
 
 export const actions = {
+  // This does not need to be in admin anymore as we are just going to call through to
+  // the unauthenticated endpoint. If you are authenticated then your token will
+  // be used by the service and you will get back all data including data would otherwise
+  // be filtered for non-authenticated users.
   LoadEvent: function (context, payload) {
     const id = payload.id
 
-    return useNuxtApp().$apiService.get('/authenticated/events/' + id)
+    return useNuxtApp().$apiService.get('/events/' + id)
       .then((response) => {
         if (response.status === 'success') { context.commit('POPULATE_CURRENT_EVENT', response.event, { root: true }) }
       })

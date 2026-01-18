@@ -192,7 +192,7 @@ based on docker-compose.
 
 The [ops](../ops/Dockerfile) image was created to address this need. 
 
-* It includes requsite packages and the [backup] orchestration script.
+* It includes requisite packages and the [backup] orchestration script.
 * Standard postgres and AWS variables are expected by the script.
 * Credentials are managed as part of the docker-compose environment - [ops.env](../ansible/db-backup/templates/ops.env.j2).
 * It executes with a bind mounted directory containing backups- `/home/infinite/backups`.

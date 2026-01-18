@@ -14,11 +14,18 @@ export class PartnerDTO {
   name: string;
 
   @ApiProperty({
-    description: 'URL to the partner logo',
-    example: 'https://example.com/logo.png',
+    description: 'URL to the partner logo for light backgrounds',
+    example: 'https://example.com/logo-light.png',
     nullable: true,
   })
-  logo_url: string | null;
+  light_logo_url: string | null;
+
+  @ApiProperty({
+    description: 'URL to the partner logo for dark backgrounds',
+    example: 'https://example.com/logo-dark.png',
+    nullable: true,
+  })
+  dark_logo_url: string | null;
 
   @ApiProperty({
     description: 'Timestamp when the partner was created',
@@ -35,13 +42,15 @@ export class PartnerDTO {
   constructor(partner: {
     id: string;
     name: string;
-    logo_url: string | null;
+    light_logo_url: string | null;
+    dark_logo_url: string | null;
     createdAt: Date;
     updatedAt: Date;
   }) {
     this.id = partner.id;
     this.name = partner.name;
-    this.logo_url = partner.logo_url;
+    this.light_logo_url = partner.light_logo_url;
+    this.dark_logo_url = partner.dark_logo_url;
     this.createdAt = partner.createdAt;
     this.updatedAt = partner.updatedAt;
   }

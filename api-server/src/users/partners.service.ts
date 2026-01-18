@@ -36,7 +36,8 @@ export class PartnersService {
       return await this.partnersModel.create({
         id: v4(),
         name: createPartnerRequest.name,
-        logo_url: createPartnerRequest.logo_url || null,
+        light_logo_url: createPartnerRequest.light_logo_url || null,
+        dark_logo_url: createPartnerRequest.dark_logo_url || null,
       });
     } catch (error) {
       // Check if it's a unique constraint violation

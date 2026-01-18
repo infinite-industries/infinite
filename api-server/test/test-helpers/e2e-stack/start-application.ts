@@ -26,6 +26,7 @@ async function startApplication(
         DB_PASSWORD,
         DB_NAME,
         JWT_PEM: testPem,
+        AUTH_USE_TEST_USERS: 'true',
       },
     },
   );

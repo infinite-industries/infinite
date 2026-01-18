@@ -6,12 +6,10 @@ import { EventAdminMetadataModel } from '../models/event-admin-metadata.model';
 export class EventAdminMetadataSingleResponse extends ResponseWrapper {
   eventAdminMetadata: EventAdminMetadataModel;
 
-  constructor(copy?: Partial<EventAdminMetadataSingleResponse>) {
+  constructor(eventAdminMetadata: EventAdminMetadataModel) {
     super();
 
-    if (isNotNullOrUndefined(copy)) {
-      cloneAttributes<EventAdminMetadataSingleResponse>(copy, this);
-    }
+    this.eventAdminMetadata = eventAdminMetadata.toJSON();
   }
 }
 

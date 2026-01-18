@@ -11,11 +11,20 @@ export class CreatePartnerRequest {
   name: string;
 
   @ApiProperty({
-    description: 'URL to the partner logo',
-    example: 'https://example.com/logo.png',
+    description: 'URL to the partner logo for light backgrounds',
+    example: 'https://example.com/logo-light.png',
     required: false,
   })
   @IsString()
   @IsOptional()
-  logo_url?: string;
+  light_logo_url?: string;
+
+  @ApiProperty({
+    description: 'URL to the partner logo for dark backgrounds',
+    example: 'https://example.com/logo-dark.png',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  dark_logo_url?: string;
 }
