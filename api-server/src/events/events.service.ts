@@ -16,9 +16,7 @@ import {
 } from 'sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { EventModel } from './models/event.model';
-import DbUpdateResponse, {
-  toDbUpdateResponse,
-} from '../shared-types/db-update-response';
+import DbUpdateResponse from '../shared-types/db-update-response';
 import DbDeleteResponse, {
   toDbDeleteResponse,
 } from '../shared-types/db-delete-response';
@@ -44,7 +42,6 @@ import {
   isOwner,
   removeSensitiveDataForSingleEvent,
 } from '../authentication/filters/remove-sensitive-data-for-non-admins';
-import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
 
 @Injectable()
 export class EventsService {
