@@ -66,12 +66,20 @@ $ npm run test:cov
 
 ### Running tests in IntelliJ
 
-Try to run the test using the play button, it will succeed but find no tests. Edit the run and set the following under
-jest options:
+Go to Run/Run... in the menu. In the menu that pops up, choose "Edit Configurations..." 
+![Screenshot from 2026-02-08 14-29-26.png](readme-assets/Screenshot%20from%202026-02-08%2014-29-26.png)
+
+Look for "Edit Configuration templates..." in the lower left hand of the dialog
+![Screenshot from 2026-02-08 14-30-17.png](readme-assets/Screenshot%20from%202026-02-08%2014-30-17.png)
+
+Click it and choose Jest, then set "jest options" to
 
 `--config ./test/jest-e2e.json --runInBand`
 
-![Screenshot from 2026-02-08 12-24-45.png](../../../Pictures/Screenshots/Screenshot%20from%202026-02-08%2012-24-45.png)
+![Screenshot from 2026-02-08 14-36-24.png](readme-assets/Screenshot%20from%202026-02-08%2014-36-24.png)
+
+Finally, go to the spec and press play next to one of the tests:
+![Screenshot from 2026-02-08 14-27-17.png](readme-assets/Screenshot%20from%202026-02-08%2014-27-17.png)
 
 ## Viewing swagger docs
 
