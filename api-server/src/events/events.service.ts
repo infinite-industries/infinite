@@ -44,7 +44,7 @@ import {
   isOwner,
   removeSensitiveDataForSingleEvent,
 } from '../authentication/filters/remove-sensitive-data-for-non-admins';
-import getCommonQueryTermsForEvents from "../utils/get-common-query-terms-for-events";
+import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
 
 @Injectable()
 export class EventsService {
@@ -279,44 +279,50 @@ export class EventsService {
     id: string,
     values: Partial<UpdateEventRequest>,
   ): Promise<DbUpdateResponse<EventModel>> {
-    return this.sequelize
-      .transaction(async (transaction) => {
-        const transactionHost = { transaction };
-        const updateQueryOptions: UpdateOptions = {
-          where: { id },
-          returning: true,
-          transaction,
-        };
+    return this.sequelize.transaction(async (transaction) => {
+      const transactionHost = { transaction };
+      const updateQueryOptions: UpdateOptions = {
+        where: { id },
+        returning: true,
+        transaction,
+      };
 
-        // validate ownership before updating (infinite admins own anything and everything)
-        const event = await this.findOneWithRelated({ where: { id } });
-        if (isNullOrUndefined(event)) {
-          throw new NotFoundException('Could not find event: ' + id);
-        }
+      // validate ownership before updating (infinite admins own anything and everything)
+      const event = await this.findOneWithRelated({ where: { id } });
+      if (isNullOrUndefined(event)) {
+        throw new NotFoundException('Could not find event: ' + id);
+      }
 
-        if (!isOwner(event, request)) {
-          throw new ForbiddenException(
-            'You do not have access to edit this event',
-          );
-        }
-
-        const updatedEvent = await this.eventModel.update(
-          values as Partial<EventModel>,
-          updateQueryOptions,
+      if (!isOwner(event, request)) {
+        throw new ForbiddenException(
+          'You do not have access to edit this event',
         );
+      }
 
-        await this.updateDatetimeVenueEntries(
-          id,
-          values.venue_id,
-          values.date_times,
-          transactionHost,
-        );
-
-        return updatedEvent;
-      })
-      .then((resp) =>
-        toDbUpdateResponse(resp as unknown as [number, EventModel[]]),
+      const [numberOfAffectedEntities] = await this.eventModel.update(
+        values as Partial<EventModel>,
+        updateQueryOptions,
       );
+
+      await this.updateDatetimeVenueEntries(
+        id,
+        values.venue_id,
+        values.date_times,
+        transactionHost,
+      );
+
+      // refetching the event makes sure we get back all related models, since this is all inside a transaction it
+      // should be safe
+      const updatedEvent = await this.findOneWithRelated({
+        where: { id },
+        transaction,
+      });
+
+      return {
+        numberOfAffectedEntities,
+        updatedEntities: [updatedEvent],
+      } as DbUpdateResponse<EventModel>;
+    });
   }
 
   private async updateDatetimeVenueEntries(

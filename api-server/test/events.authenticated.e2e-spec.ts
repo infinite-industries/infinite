@@ -1452,6 +1452,11 @@ describe('Authenticated Events API', () => {
           expect(body.image).toEqual(updateData.image);
           expect(body.organizer_contact).toEqual(updateData.organizer_contact);
           expect(body.brief_description).toEqual(updateData.brief_description);
+          expect(body.date_times).toHaveLength(updatedDateTimes.length);
+          body.date_times.forEach((dt, i) => {
+            expect(dt.start_time).toEqual(updatedDateTimes[i].start_time);
+            expect(dt.end_time).toEqual(updatedDateTimes[i].end_time);
+          });
         });
     });
   });
