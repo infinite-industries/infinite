@@ -64,6 +64,15 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+### Running tests in IntelliJ
+
+Try to run the test using the play button, it will succeed but find no tests. Edit the run and set the following under
+jest options:
+
+`--config ./test/jest-e2e.json --runInBand`
+
+![Screenshot from 2026-02-08 12-24-45.png](../../../Pictures/Screenshots/Screenshot%20from%202026-02-08%2012-24-45.png)
+
 ## Viewing swagger docs
 
 `[host]/api/`

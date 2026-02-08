@@ -1416,6 +1416,46 @@ describe('Authenticated Events API', () => {
     });
   });
 
+  describe('PUT /authenticated/events/:id', () => {
+    it('should successfully update event when infinite admin accesses it', async () => {
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const eventId = events[0].id;
+
+      const adminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': true,
+      });
+
+      const oneDayMs = 24 * 60 * 60 * 1000;
+      const updatedDateTimes = events[0].date_times.map((dt) => ({
+        start_time: new Date(new Date(dt.start_time).getTime() + oneDayMs).toISOString(),
+        end_time: new Date(new Date(dt.end_time).getTime() + oneDayMs).toISOString(),
+      }));
+
+      const updateData = {
+        title: 'Updated Event Title',
+        image: 'https://example.com/updated-image.jpg',
+        organizer_contact: 'updated@example.com',
+        brief_description: 'Updated brief description',
+        date_times: updatedDateTimes,
+      };
+
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/${eventId}`)
+        .set('x-access-token', adminToken)
+        .send(updateData)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.id).toEqual(eventId);
+          expect(body.title).toEqual(updateData.title);
+          expect(body.image).toEqual(updateData.image);
+          expect(body.organizer_contact).toEqual(updateData.organizer_contact);
+          expect(body.brief_description).toEqual(updateData.brief_description);
+        });
+    });
+  });
+
   describe('PUT /authenticated/events/verify/:id', () => {
     it('should return 403 when user is not authenticated', async () => {
       const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
