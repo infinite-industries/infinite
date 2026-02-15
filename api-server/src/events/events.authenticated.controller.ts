@@ -226,7 +226,7 @@ export default class EventsAuthenticatedController {
   }
 
   @Put(':id')
-  @UseGuards(AdminAuthGuard)
+  @UseGuards(PartnerAdminGuard)
   @ApiOperation({ summary: 'Update fields on an existing event' })
   @ApiImplicitParam({ name: 'id', type: String })
   updateEvent(
