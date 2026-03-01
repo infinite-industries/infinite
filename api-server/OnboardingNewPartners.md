@@ -17,12 +17,15 @@ https://infinite-industries-event-images.s3.us-west-2.amazonaws.com/example_whit
 https://manage.auth0.com/dashboard/us/1nfinite/
 
 The Infinite tenant should be selected in the upper right-hand corner
+
 ![auth0-1.png](readme-assets/auth0-1.png)
 
 Navigate to User Management/users in the left-hand side navigation menu
+
 ![img.png](readme-assets/auth0-2.png)
 
 Click Create User, then Create via JSON in the upper right corner
+
 ![img_2.png](readme-assets/auth0-3.png)
 
 Provide the following fields:
