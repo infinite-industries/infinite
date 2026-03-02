@@ -16,7 +16,7 @@ https://infinite-industries-event-images.s3.us-west-2.amazonaws.com/example_whit
 
 https://manage.auth0.com/dashboard/us/1nfinite/
 
-The Infinite tenant should be selected in the upper right-hand corner
+The Infinite (1nfinite) tenant should be selected in the upper right-hand corner
 
 ![auth0-1.png](readme-assets/auth0-1.png)
 
