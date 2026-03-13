@@ -91,10 +91,16 @@ export class EventsService {
   private async findOneWithRelated(
     findOptions: FindOptions,
   ): Promise<EventModel> {
-    return await this.eventModel.findOne({
+    const event = await this.eventModel.findOne({
       include: [DatetimeVenueModel, VenueModel, PartnerModel],
       ...findOptions,
     });
+
+    if (event) {
+      await this.populateVenuePartners([event]);
+    }
+
+    return event;
   }
 
   async findAll(
@@ -236,11 +242,26 @@ export class EventsService {
             })
           : [];
 
+      // Derive venues and populate venue partners before the ownership check
+      // so that venue-partner associations are available when isOwner runs
       paginatedRows.forEach((event) => {
         const dateTimesForEvent = dateTimes.filter(
           ({ event_id }) => event_id === event.id,
         );
+        event.date_times = dateTimesForEvent;
 
+        const uniqueVenues = new Map<string, VenueModel>();
+        dateTimesForEvent.forEach((dt) => {
+          if (dt.venue && !uniqueVenues.has(dt.venue.id)) {
+            uniqueVenues.set(dt.venue.id, dt.venue);
+          }
+        });
+        event.venues = [...uniqueVenues.values()];
+      });
+
+      await this.populateVenuePartners(paginatedRows);
+
+      paginatedRows.forEach((event) => {
         // Find and assign the corresponding partner
         const partnerForEvent = event.owning_partner_id
           ? partners.find(({ id }) => id === event.owning_partner_id)
@@ -260,7 +281,6 @@ export class EventsService {
           event.organizer_contact = undefined;
         }
 
-        event.date_times = dateTimesForEvent;
         event.owning_partner = partnerForEvent;
       });
 
@@ -507,21 +527,11 @@ export class EventsService {
     }
   }
 
-  // Warning, this works by side-effect, it modify the partners attribute of the
-  // venue models
-  private async populateVenuePartners(events: EventModel[]): Promise<void> {
-    // get a list of all unique venu ides used in our list of events
-    const venueIds = [
-      ...new Set(
-        events
-          .flatMap(({ venues }) => (venues ?? []).map(({ id }) => id))
-          .filter(isNotNullOrUndefined),
-      ),
-    ];
-
+  private async buildVenuePartnerMap(
+    venueIds: string[],
+  ): Promise<Map<string, PartnerModel[]>> {
     if (venueIds.length === 0) {
-      // nothing more to do
-      return;
+      return new Map();
     }
 
     const mappings = await this.sequelize.query<{
@@ -558,11 +568,23 @@ export class EventsService {
       venueMap.get(venue_id).push(partner);
     });
 
+    return venueMap;
+  }
+
+  private async populateVenuePartners(events: EventModel[]): Promise<void> {
+    const venueIds = [
+      ...new Set(
+        events
+          .flatMap(({ venues }) => (venues ?? []).map(({ id }) => id))
+          .filter(isNotNullOrUndefined),
+      ),
+    ];
+
+    const venueMap = await this.buildVenuePartnerMap(venueIds);
+
     events.forEach((event) => {
       (event.venues ?? []).forEach((venue) => {
-        if (venueMap.has(venue.id)) {
-          venue.partners = venueMap.get(venue.id);
-        }
+        venue.partners = venueMap.get(venue.id) ?? [];
       });
     });
   }
