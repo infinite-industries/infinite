@@ -1,11 +1,19 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  LoggerService,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { VenueModel } from './models/venue.model';
+import { PartnerModel } from '../users/models/partner.model';
 import { v4 as uuidv4 } from 'uuid';
 import {
   CreateVenueRequest,
   UpdateVenueRequest,
 } from './dto/create-update-venue-request';
+import { AssociateVenuePartnerRequest } from './dto/associate-venue-partner-request';
 import { FindOptions } from 'sequelize';
 import getSlug from '../utils/get-slug';
 import { GpsService } from './gps.services';
@@ -17,6 +25,7 @@ import { isNullOrUndefined } from '../utils';
 export class VenuesService {
   constructor(
     @InjectModel(VenueModel) private venueModel: typeof VenueModel,
+    @InjectModel(PartnerModel) private partnerModel: typeof PartnerModel,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
     private readonly gpsService: GpsService,
@@ -107,6 +116,94 @@ export class VenuesService {
       .then((resp: [number, VenueModel[]]) => {
         return resp[1][0];
       });
+  }
+
+  async getPartnersForVenue(venueId: string): Promise<PartnerModel[]> {
+    const venue = await this.venueModel.findByPk(venueId, {
+      include: [
+        {
+          model: PartnerModel,
+          as: 'partners',
+          through: { attributes: [] },
+        },
+      ],
+    });
+
+    if (!venue) {
+      throw new NotFoundException(`Venue with ID ${venueId} not found`);
+    }
+
+    return venue.partners;
+  }
+
+  async associateVenueWithPartner(
+    request: AssociateVenuePartnerRequest,
+  ): Promise<void> {
+    const { venue_id, partner_id } = request;
+
+    const venue = await this.venueModel.findByPk(venue_id, {
+      include: [
+        {
+          model: PartnerModel,
+          as: 'partners',
+          through: { attributes: [] },
+        },
+      ],
+    });
+
+    if (!venue) {
+      throw new NotFoundException(`Venue with ID ${venue_id} not found`);
+    }
+
+    const partner = await this.partnerModel.findByPk(partner_id);
+
+    if (!partner) {
+      throw new NotFoundException(`Partner with ID ${partner_id} not found`);
+    }
+
+    const existingAssociation = venue.partners.find((p) => p.id === partner_id);
+    if (existingAssociation) {
+      throw new ConflictException(
+        `Venue ${venue_id} is already associated with partner ${partner_id}`,
+      );
+    }
+
+    await (venue as any).addPartner(partner);
+  }
+
+  async disassociateVenueFromPartner(
+    request: AssociateVenuePartnerRequest,
+  ): Promise<void> {
+    const { venue_id, partner_id } = request;
+
+    const venue = await this.venueModel.findByPk(venue_id, {
+      include: [
+        {
+          model: PartnerModel,
+          as: 'partners',
+          through: { attributes: [] },
+        },
+      ],
+    });
+
+    if (!venue) {
+      throw new NotFoundException(`Venue with ID ${venue_id} not found`);
+    }
+
+    const partner = await this.partnerModel.findByPk(partner_id);
+
+    if (!partner) {
+      throw new NotFoundException(`Partner with ID ${partner_id} not found`);
+    }
+
+    const existingAssociation = venue.partners.find((p) => p.id === partner_id);
+    if (!existingAssociation) {
+      throw new NotFoundException(
+        `Venue ${venue_id} is not associated with partner ${partner_id}`,
+      );
+    }
+
+    await (venue as any).removePartner(partner);
   }
 
   private async fillInGPSCoordinatesIfNeededWhenPossible<

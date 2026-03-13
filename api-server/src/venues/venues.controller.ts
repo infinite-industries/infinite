@@ -14,8 +14,10 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { VERSION_1_URI } from '../utils/versionts';
 import { CreateVenueRequest } from './dto/create-update-venue-request';
 import { VenuesResponse } from './dto/venues-response';
+import { VenuePartnersListResponse } from './dto/venue-partners-list-response';
 import FindByIdParams from '../dto/find-by-id-params';
 import { SingleVenueResponse } from './dto/single-venue-response';
+import { PartnerDTO } from '../users/dto/partner-dto';
 import SlackNotificationService, {
   VENUE_SUBMIT,
 } from '../notifications/slack-notification.service';
@@ -37,6 +39,26 @@ export class VenuesController {
     private readonly slackNotificationService: SlackNotificationService,
     private readonly gpsService: GpsService,
   ) {}
+
+  @Get('/:id/partners')
+  @ApiOperation({ summary: 'get partners associated with a venue' })
+  @ApiResponse({
+    status: 200,
+    description: 'list of partners for the venue',
+    type: VenuePartnersListResponse,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Venue not found',
+  })
+  async getPartnersForVenue(
+    @Param() params: FindByIdParams,
+  ): Promise<VenuePartnersListResponse> {
+    const partners = await this.venuesService.getPartnersForVenue(params.id);
+    return new VenuePartnersListResponse(
+      partners.map((p) => new PartnerDTO(p)),
+    );
+  }
 
   @Get('/:id')
   @ApiOperation({ summary: 'get a venue by id' })
