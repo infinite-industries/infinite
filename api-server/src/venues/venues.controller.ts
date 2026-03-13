@@ -28,6 +28,7 @@ import {
 } from './dto/GetGPSCoordinatesRequest';
 import { GpsService } from './gps.services';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { venueModelToVenueDTO } from './dto/venue-model-to-venue-dto';
 
 @Controller(`${VERSION_1_URI}/venues`)
 @ApiTags('venues')
@@ -72,7 +73,7 @@ export class VenuesController {
 
     return this.venuesService
       .findById(id)
-      .then((venue) => new SingleVenueResponse({ venue }));
+      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
   }
 
   @Get()
@@ -88,15 +89,15 @@ export class VenuesController {
     if (includeDeleted === 'yes') {
       return this.venuesService
         .findAll()
-        .then((venues) => new VenuesResponse({ venues }));
+        .then((venues) => new VenuesResponse({ venues: venues.map(venueModelToVenueDTO) }));
     } else if (includeDeleted === 'only') {
       return this.venuesService
         .findWhereSoftDeleted()
-        .then((venues) => new VenuesResponse({ venues }));
+        .then((venues) => new VenuesResponse({ venues: venues.map(venueModelToVenueDTO) }));
     } else {
       return this.venuesService
         .findWhereNotSoftDeleted()
-        .then((venues) => new VenuesResponse({ venues }));
+        .then((venues) => new VenuesResponse({ venues: venues.map(venueModelToVenueDTO) }));
     }
   }
 
@@ -122,7 +123,7 @@ export class VenuesController {
 
         return venue;
       })
-      .then((venue) => new SingleVenueResponse({ venue }));
+      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
   }
 
   @Post('/get-gps-from-address')

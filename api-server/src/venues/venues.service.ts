@@ -31,27 +31,36 @@ export class VenuesService {
     private readonly gpsService: GpsService,
   ) {}
 
-  findById(id: string): Promise<VenueModel> {
-    const options: FindOptions = {
-      where: { id },
-    };
+  private readonly partnersInclude = {
+    model: PartnerModel,
+    as: 'partners' as const,
+    through: { attributes: [] },
+  };
 
-    return this.venueModel.findOne(options);
+  findById(id: string): Promise<VenueModel> {
+    return this.venueModel.findOne({
+      where: { id },
+      include: [this.partnersInclude],
+    });
   }
 
   findAll(): Promise<VenueModel[]> {
-    return this.venueModel.findAll();
+    return this.venueModel.findAll({
+      include: [this.partnersInclude],
+    });
   }
 
   findWhereNotSoftDeleted(): Promise<VenueModel[]> {
     return this.venueModel.findAll({
       where: { is_soft_deleted: false },
+      include: [this.partnersInclude],
     });
   }
 
   findWhereSoftDeleted(): Promise<VenueModel[]> {
     return this.venueModel.findAll({
       where: { is_soft_deleted: true },
+      include: [this.partnersInclude],
     });
   }
 
@@ -61,7 +70,9 @@ export class VenuesService {
 
     newVenue = await this.fillInGPSCoordinatesIfNeededWhenPossible(newVenue);
 
-    return this.venueModel.create({ ...newVenue, id, slug });
+    await this.venueModel.create({ ...newVenue, id, slug });
+
+    return this.findById(id);
   }
 
   async update(
@@ -76,46 +87,33 @@ export class VenuesService {
       ? { ...updatedValues, slug: getSlug(updatedValues.name) }
       : { ...updatedValues };
 
-    return this.venueModel
-      .update(values, {
-        where: { id },
-        returning: true,
-      })
-      .then((resp: [number, VenueModel[]]) => {
-        if (resp[0] === 0) {
-          return null;
-        }
+    const [affectedCount] = await this.venueModel.update(values, {
+      where: { id },
+    });
 
-        return resp[1][0];
-      });
+    if (affectedCount === 0) {
+      return null;
+    }
+
+    return this.findById(id);
   }
 
-  softDelete(id: string): Promise<VenueModel> {
-    return this.venueModel
-      .update(
-        { is_soft_deleted: true },
-        {
-          where: { id },
-          returning: true,
-        },
-      )
-      .then((resp: [number, VenueModel[]]) => {
-        return resp[1][0];
-      });
+  async softDelete(id: string): Promise<VenueModel> {
+    await this.venueModel.update(
+      { is_soft_deleted: true },
+      { where: { id } },
+    );
+
+    return this.findById(id);
   }
 
-  reactivate(id: string): Promise<VenueModel> {
-    return this.venueModel
-      .update(
-        { is_soft_deleted: false },
-        {
-          where: { id },
-          returning: true,
-        },
-      )
-      .then((resp: [number, VenueModel[]]) => {
-        return resp[1][0];
-      });
+  async reactivate(id: string): Promise<VenueModel> {
+    await this.venueModel.update(
+      { is_soft_deleted: false },
+      { where: { id } },
+    );
+
+    return this.findById(id);
   }
 
   async getPartnersForVenue(venueId: string): Promise<PartnerModel[]> {

@@ -23,6 +23,7 @@ import FindByIdParams from '../dto/find-by-id-params';
 import { UpdateVenueRequest } from './dto/create-update-venue-request';
 import { AssociateVenuePartnerRequest } from './dto/associate-venue-partner-request';
 import isNullUndefinedOrEmpty from '../utils/isNullUndefinedOrEmpty';
+import { venueModelToVenueDTO } from './dto/venue-model-to-venue-dto';
 
 @Controller(`${VERSION_1_URI}/authenticated/venues`)
 @ApiTags('venues -- authenticated')
@@ -47,7 +48,7 @@ export default class VenuesAuthenticatedController {
 
     return this.venuesService
       .softDelete(id)
-      .then((venue) => new SingleVenueResponse({ venue }));
+      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
   }
 
   @Put('/:id/activate')
@@ -65,7 +66,7 @@ export default class VenuesAuthenticatedController {
 
     return this.venuesService
       .reactivate(id)
-      .then((venue) => new SingleVenueResponse({ venue }));
+      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
   }
 
   @Put('/:id')
@@ -87,7 +88,7 @@ export default class VenuesAuthenticatedController {
     const { id } = params;
 
     return this.venuesService.update(id, updatedValues).then((venue) => {
-      return new SingleVenueResponse({ venue });
+      return new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) });
     });
   }
 
