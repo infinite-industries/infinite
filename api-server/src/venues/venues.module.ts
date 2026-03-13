@@ -17,5 +17,6 @@ import { UsersModules } from '../users/users.modules';
   ],
   controllers: [VenuesController, VenuesAuthenticatedController],
   providers: [VenuesService, GpsService],
+  exports: [VenuesService],
 })
 export class VenuesModule {}
