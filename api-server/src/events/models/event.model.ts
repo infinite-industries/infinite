@@ -33,6 +33,8 @@ export class EventModel extends Model<EventModel> {
   @ApiProperty({ example: '166ab8f0-a067-11ea-aa51-cdc3fe7afefa' })
   id: string;
 
+  // this should be removed, it is no longer used (but we should make sure
+  // we don't need it for historical data first)
   @Column
   @ApiProperty({ example: 'f467e7a0-a066-11ea-aa51-cdc3fe7afefa' })
   @ForeignKey(() => VenueModel)

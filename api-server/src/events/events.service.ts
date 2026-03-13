@@ -97,7 +97,7 @@ export class EventsService {
     });
   }
 
-  findAll(
+  async findAll(
     request: RequestWithUserInfo,
     findOptions?: FindOptions,
   ): Promise<EventModel[]> {
@@ -120,7 +120,11 @@ export class EventsService {
       ? { ...defaultOptions, ...findOptions }
       : defaultOptions;
 
-    return this.eventModel.findAll(mergedOptions);
+    const results = await this.eventModel.findAll(mergedOptions);
+
+    await this.populateVenuePartners(results);
+
+    return results;
   }
 
   async findAllPaginated({
@@ -501,6 +505,66 @@ export class EventsService {
 
       return submittedEvent;
     }
+  }
+
+  // Warning, this works by side-effect, it modify the partners attribute of the
+  // venue models
+  private async populateVenuePartners(events: EventModel[]): Promise<void> {
+    // get a list of all unique venu ides used in our list of events
+    const venueIds = [
+      ...new Set(
+        events
+          .flatMap(({ venues }) => (venues ?? []).map(({ id }) => id))
+          .filter(isNotNullOrUndefined),
+      ),
+    ];
+
+    if (venueIds.length === 0) {
+      // nothing more to do
+      return;
+    }
+
+    const mappings = await this.sequelize.query<{
+      venue_id: string;
+      partner_id: string;
+    }>(
+      `SELECT vpm.venue_id, vpm.partner_id
+       FROM venues_partners_mappings vpm
+       WHERE vpm.venue_id IN (:venueIds)`,
+      { replacements: { venueIds }, type: QueryTypes.SELECT },
+    );
+
+    const partnerIds = [
+      ...new Set(mappings.map(({ partner_id }) => partner_id)),
+    ];
+
+    const partners =
+      partnerIds.length > 0
+        ? await this.partnerModel.findAll({
+            where: { id: { [Op.in]: partnerIds } },
+          })
+        : [];
+
+    const partnerMap = new Map(partners.map((p) => [p.id, p]));
+
+    const venueMap = new Map<string, PartnerModel[]>();
+    mappings.forEach(({ venue_id, partner_id }) => {
+      const partner = partnerMap.get(partner_id);
+      if (!partner) return;
+
+      if (!venueMap.has(venue_id)) {
+        venueMap.set(venue_id, []);
+      }
+      venueMap.get(venue_id).push(partner);
+    });
+
+    events.forEach((event) => {
+      (event.venues ?? []).forEach((venue) => {
+        if (venueMap.has(venue.id)) {
+          venue.partners = venueMap.get(venue.id);
+        }
+      });
+    });
   }
 
   private getTagsClauseParams(tags: string[] | string): Nullable<string> {

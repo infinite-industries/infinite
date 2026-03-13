@@ -2,6 +2,7 @@ import { EventModel } from '../models/event.model';
 import EventDTO from './eventDTO';
 import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';
 import { DatetimeVenueModel } from '../models/datetime-venue.model';
+import { VenueModel } from '../../venues/models/venue.model';
 import { PartnerDTO } from '../../users/dto/partner-dto';
 
 export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
@@ -47,9 +48,13 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
     website_link: eventModel.website_link,
     multi_day: eventModel.multi_day,
     date_times,
-    venue: isNotNullOrUndefined(eventModel.venues)
-      ? eventModel.venues[0]
-      : null,
+    venue:
+      isNotNullOrUndefined(eventModel.venues) && eventModel.venues[0]
+        ? ({
+            ...eventModel.venues[0].toJSON(),
+            partners: (eventModel.venues[0] as any).partners ?? [],
+          } as VenueModel)
+        : null,
     event_admin_metadata: isNotNullOrUndefined(eventModel.event_admin_metadata)
       ? {
           is_problem: eventModel.event_admin_metadata.is_problem,

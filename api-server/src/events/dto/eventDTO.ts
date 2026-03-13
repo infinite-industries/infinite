@@ -109,6 +109,8 @@ export default class EventDTO {
   @ApiProperty({ example: [] })
   links: Array<string>;
 
+  // TODO: This should really be returning a DTO rather than VenueModel,
+  // This would help with a lot with awkward cast logic in eventModelToEventDTO
   @ApiProperty()
   venue: VenueModel;
 
