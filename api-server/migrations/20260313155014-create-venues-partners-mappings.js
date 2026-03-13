@@ -2,13 +2,13 @@
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable('venues_partners_mappings', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
-        defaultValue: Sequelize.literal('uuid_generate_v4()')
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
       },
       venue_id: {
         type: Sequelize.UUID,
@@ -33,33 +33,33 @@ module.exports = {
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('now()')
+        defaultValue: Sequelize.literal('now()'),
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.literal('now()')
-      }
+        defaultValue: Sequelize.literal('now()'),
+      },
     });
 
     await queryInterface.addConstraint('venues_partners_mappings', {
       fields: ['venue_id', 'partner_id'],
       type: 'unique',
-      name: 'unique_venue_partner_mapping'
+      name: 'unique_venue_partner_mapping',
     });
 
     await queryInterface.addIndex('venues_partners_mappings', {
       fields: ['venue_id'],
-      name: 'idx_venues_partners_mappings_venue_id'
+      name: 'idx_venues_partners_mappings_venue_id',
     });
 
     await queryInterface.addIndex('venues_partners_mappings', {
       fields: ['partner_id'],
-      name: 'idx_venues_partners_mappings_partner_id'
+      name: 'idx_venues_partners_mappings_partner_id',
     });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('venues_partners_mappings');
-  }
+  },
 };
