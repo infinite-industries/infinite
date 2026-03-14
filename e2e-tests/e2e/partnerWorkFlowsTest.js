@@ -8,7 +8,7 @@ context('Partner Work Flows', () => {
   const ADMIN_USERNAME = Cypress.env('admin_auth_username')
   const ADMIN_PASSWORD = Cypress.env('admin_auth_password')
 
-  it('Styles the submission page based on partnery query param', () => {
+  it('Styles the submission page based on partner query param', () => {
     cy.visit(`/submit-event?partner=${PARTNER_NAME}`)
     
     // Verify partner information and logo are displayed on submission page
@@ -152,8 +152,99 @@ context('Partner Work Flows', () => {
     cy.url({ timeout: 5000 }).should('include', `partner=${PARTNER_NAME}`)
   })
 
+  it('Partner admin can verify and delete events submitted at a partner-associated venue', () => {
+    const guid = crypto.randomUUID()
+    const VENUE_EVENT_NAME = `Venue Partner Test Event-${guid}`
+    
+    // Submit event at Planet Express without partner query parameter.
+    // Planet Express is associated with the partner via venue-partner mapping,
+    // so the partner-admin should still own this event even without owning_partner_id.
+    submitEvent(VENUE_EVENT_NAME, PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, null, 'Planet Express')
+    
+    // Login as admin to find the event and get the edit URL
+    cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/')
+    
+    cy.wait(750)
+    cy.get('#hamburger').click()
+    cy.get('#nav-list li').contains('a', 'Admin').click()
+    cy.location('pathname').should('include', 'admin')
+    
+    // Find the event in the unverified list and click Edit
+    cy.get('.unverified-events').contains('tr', VENUE_EVENT_NAME).contains('Edit').click()
+    cy.location('pathname').should('include', 'admin-event-edit')
+    
+    cy.location('pathname').then((editPath) => {
+      // Login as partner-admin and navigate to the edit page
+      cy.visitAsUser(PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, editPath)
+      
+      // Partner-admin should be able to verify because Planet Express is
+      // associated with their partner (venue-based ownership)
+      cy.get('button.btn-verify').click()
+      
+      // Should redirect back to partner-admin page on successful verify
+      cy.location('pathname').should('include', 'partner-admin')
+      
+      // Navigate back to the edit page to delete the event
+      cy.visit(editPath)
+      
+      // Delete the event
+      cy.get('.edit-container button').contains('Delete').click()
+      cy.get('[role="dialog"] button').contains('Kill').click()
+      
+      // Should redirect to partner-admin page
+      cy.location('pathname').should('include', 'partner-admin')
+    })
+  })
+
+  it('Partner admin cannot verify events submitted at a non-partner-associated venue', () => {
+    const guid = crypto.randomUUID()
+    const NON_PARTNER_VENUE_EVENT_NAME = `Non-Partner Venue Test Event-${guid}`
+    
+    // Submit event at Mom's Friendly Robot Company without partner query parameter.
+    // This venue is NOT associated with any partner, so the partner-admin should
+    // not have ownership.
+    submitEvent(NON_PARTNER_VENUE_EVENT_NAME, PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, null, "Mom's Friendly Robot Company")
+    
+    // Login as admin to find the event and get the edit URL
+    cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/')
+    
+    cy.wait(750)
+    cy.get('#hamburger').click()
+    cy.get('#nav-list li').contains('a', 'Admin').click()
+    cy.location('pathname').should('include', 'admin')
+    
+    // Find the event in the unverified list and click Edit
+    cy.get('.unverified-events').contains('tr', NON_PARTNER_VENUE_EVENT_NAME).contains('Edit').click()
+    cy.location('pathname').should('include', 'admin-event-edit')
+    
+    cy.location('pathname').then((editPath) => {
+      // Login as partner-admin and navigate to the edit page
+      cy.visitAsUser(PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, editPath)
+      
+      // Intercept the verify API request to assert on the response
+      cy.intercept('PUT', '**/authenticated/events/verify/**').as('verifyRequest')
+      
+      // Try to verify the event
+      cy.get('button.btn-verify').click()
+      
+      // The verify request should fail with 403 Forbidden
+      cy.wait('@verifyRequest').its('response.statusCode').should('eq', 403)
+      
+      // Should NOT redirect — still on the edit page
+      cy.location('pathname').should('include', 'admin-event-edit')
+      
+      // Clean up: Login as admin and delete the event
+      cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, editPath)
+      
+      cy.get('.edit-container button').contains('Delete').click()
+      cy.get('[role="dialog"] button').contains('Kill').click()
+      
+      cy.location('pathname').should('include', 'admin')
+    })
+  })
+
   // === Helper Functions ===
-  function submitEvent(eventTitle, userName, userPassword, partnerName = PARTNER_NAME) {
+  function submitEvent(eventTitle, userName, userPassword, partnerName = PARTNER_NAME, venueName = null) {
     const EVENT_EMAIL = 'partner-test@te.st'
     
     const url = partnerName ? `/submit-event?partner=${partnerName}` : '/submit-event'
@@ -186,8 +277,13 @@ context('Partner Work Flows', () => {
     cy.get('select[name=end_ampm]').select('PM')
     cy.get('.date-time-picker_new-date:not([disabled])').click()
     
-    cy.get('.venue').focus()
-    cy.get('.results-container > :first-child').click()
+    if (venueName) {
+      cy.get('.venue').type(venueName)
+      cy.get('.results-container').contains(venueName).click()
+    } else {
+      cy.get('.venue').focus()
+      cy.get('.results-container > :first-child').click()
+    }
     
     // selectFile is a custom command; see cypress/support/commands.js
     cy.get('#event-image').selectFile('fixtures/images/event_sample_image.jpg')

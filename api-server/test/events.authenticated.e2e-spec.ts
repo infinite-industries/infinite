@@ -1960,6 +1960,346 @@ describe('Authenticated Events API', () => {
     });
   });
 
+  describe('Venue-Partner Ownership Tests', () => {
+    it('should successfully delete event when partner admin owns it via venue-partner association', async () => {
+      const venuePartner = await createPartner({
+        name: 'Venue Partner',
+        light_logo_url: 'https://example.com/venue-partner-light.png',
+        dark_logo_url: 'https://example.com/venue-partner-dark.png',
+      });
+
+      // Event has no owning_partner_id
+      const event = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: false },
+      );
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, venuePartner.id);
+
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      await associateUserWithPartners(userResponse.body.id, [venuePartner.id]);
+
+      return server
+        .delete(`/${CURRENT_VERSION_URI}/authenticated/events/${event.id}`)
+        .set('x-access-token', partnerAdminToken)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.status).toEqual('success');
+          expect(body.id).toEqual(event.id);
+        });
+    });
+
+    it('should return 403 when partner admin tries to delete event whose venue belongs to a different partner', async () => {
+      const userPartner = await createPartner({
+        name: 'User Partner',
+        light_logo_url: 'https://example.com/user-partner-light.png',
+        dark_logo_url: 'https://example.com/user-partner-dark.png',
+      });
+
+      const otherPartner = await createPartner({
+        name: 'Other Venue Partner',
+        light_logo_url: 'https://example.com/other-venue-partner-light.png',
+        dark_logo_url: 'https://example.com/other-venue-partner-dark.png',
+      });
+
+      const event = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: false },
+      );
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, otherPartner.id);
+
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      await associateUserWithPartners(userResponse.body.id, [userPartner.id]);
+
+      return server
+        .delete(`/${CURRENT_VERSION_URI}/authenticated/events/${event.id}`)
+        .set('x-access-token', partnerAdminToken)
+        .expect(403);
+    });
+
+    it('should successfully update event when partner admin owns it via venue-partner association', async () => {
+      const venuePartner = await createPartner({
+        name: 'Venue Partner',
+        light_logo_url: 'https://example.com/venue-partner-light.png',
+        dark_logo_url: 'https://example.com/venue-partner-dark.png',
+      });
+
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const event = events[0];
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, venuePartner.id);
+
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      await associateUserWithPartners(userResponse.body.id, [venuePartner.id]);
+
+      const updateData = {
+        title: 'Updated Via Venue Partner',
+        image: 'https://example.com/updated-image.jpg',
+        organizer_contact: 'updated@example.com',
+        brief_description: 'Updated via venue-partner ownership',
+        date_times: event.date_times.map((dt) => ({
+          start_time: new Date(dt.start_time).toISOString(),
+          end_time: new Date(dt.end_time).toISOString(),
+        })),
+      };
+
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/${event.id}`)
+        .set('x-access-token', partnerAdminToken)
+        .send(updateData)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.id).toEqual(event.id);
+          expect(body.title).toEqual(updateData.title);
+          expect(body.brief_description).toEqual(updateData.brief_description);
+        });
+    });
+
+    it('should return 403 when partner admin tries to update event whose venue belongs to a different partner', async () => {
+      const userPartner = await createPartner({
+        name: 'User Partner',
+        light_logo_url: 'https://example.com/user-partner-light.png',
+        dark_logo_url: 'https://example.com/user-partner-dark.png',
+      });
+
+      const otherPartner = await createPartner({
+        name: 'Other Venue Partner',
+        light_logo_url: 'https://example.com/other-venue-partner-light.png',
+        dark_logo_url: 'https://example.com/other-venue-partner-dark.png',
+      });
+
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const event = events[0];
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, otherPartner.id);
+
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      await associateUserWithPartners(userResponse.body.id, [userPartner.id]);
+
+      const updateData = {
+        title: 'Should Not Work',
+        image: 'https://example.com/image.jpg',
+        organizer_contact: 'test@example.com',
+        brief_description: 'Should not work',
+        date_times: event.date_times.map((dt) => ({
+          start_time: new Date(dt.start_time).toISOString(),
+          end_time: new Date(dt.end_time).toISOString(),
+        })),
+      };
+
+      return server
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/${event.id}`)
+        .set('x-access-token', partnerAdminToken)
+        .send(updateData)
+        .expect(403);
+    });
+
+    it('should successfully verify event when partner admin owns it via venue-partner association', async () => {
+      const venuePartner = await createPartner({
+        name: 'Venue Partner',
+        light_logo_url: 'https://example.com/venue-partner-light.png',
+        dark_logo_url: 'https://example.com/venue-partner-dark.png',
+      });
+
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const event = events[0];
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, venuePartner.id);
+
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      await associateUserWithPartners(userResponse.body.id, [venuePartner.id]);
+
+      return server
+        .put(
+          `/${CURRENT_VERSION_URI}/authenticated/events/verify/${event.id}`,
+        )
+        .set('x-access-token', partnerAdminToken)
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.verified).toEqual(true);
+          expect(body.id).toEqual(event.id);
+        });
+    });
+
+    it('should return 403 when partner admin tries to verify event whose venue belongs to a different partner', async () => {
+      const userPartner = await createPartner({
+        name: 'User Partner',
+        light_logo_url: 'https://example.com/user-partner-light.png',
+        dark_logo_url: 'https://example.com/user-partner-dark.png',
+      });
+
+      const otherPartner = await createPartner({
+        name: 'Other Venue Partner',
+        light_logo_url: 'https://example.com/other-venue-partner-light.png',
+        dark_logo_url: 'https://example.com/other-venue-partner-dark.png',
+      });
+
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const event = events[0];
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, otherPartner.id);
+
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      await associateUserWithPartners(userResponse.body.id, [userPartner.id]);
+
+      return server
+        .put(
+          `/${CURRENT_VERSION_URI}/authenticated/events/verify/${event.id}`,
+        )
+        .set('x-access-token', partnerAdminToken)
+        .expect(403);
+    });
+
+    it('should successfully update admin-metadata when partner admin owns event via venue-partner association', async () => {
+      const venuePartner = await createPartner({
+        name: 'Venue Partner',
+        light_logo_url: 'https://example.com/venue-partner-light.png',
+        dark_logo_url: 'https://example.com/venue-partner-dark.png',
+      });
+
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const event = events[0];
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, venuePartner.id);
+
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      await associateUserWithPartners(userResponse.body.id, [venuePartner.id]);
+
+      return server
+        .put(
+          `/${CURRENT_VERSION_URI}/authenticated/events/${event.id}/admin-metadata`,
+        )
+        .set('x-access-token', partnerAdminToken)
+        .send({ isProblem: true })
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.status).toEqual('success');
+          expect(body.eventAdminMetadata).toBeDefined();
+          expect(body.eventAdminMetadata.event_id).toEqual(event.id);
+          expect(body.eventAdminMetadata.is_problem).toEqual(true);
+        });
+    });
+
+    it('should return 403 when partner admin tries to update admin-metadata for event whose venue belongs to a different partner', async () => {
+      const userPartner = await createPartner({
+        name: 'User Partner',
+        light_logo_url: 'https://example.com/user-partner-light.png',
+        dark_logo_url: 'https://example.com/user-partner-dark.png',
+      });
+
+      const otherPartner = await createPartner({
+        name: 'Other Venue Partner',
+        light_logo_url: 'https://example.com/other-venue-partner-light.png',
+        dark_logo_url: 'https://example.com/other-venue-partner-dark.png',
+      });
+
+      const [events] = await createListOfFutureEventsInChronologicalOrder(1, {
+        verified: false,
+      });
+      const event = events[0];
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, otherPartner.id);
+
+      const partnerAdminToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': partnerAdminToken })
+        .expect(200);
+
+      await associateUserWithPartners(userResponse.body.id, [userPartner.id]);
+
+      return server
+        .put(
+          `/${CURRENT_VERSION_URI}/authenticated/events/${event.id}/admin-metadata`,
+        )
+        .set('x-access-token', partnerAdminToken)
+        .send({ isProblem: true })
+        .expect(403);
+    });
+  });
+
   describe('Partner ID Filtering Tests', () => {
     it('/authenticated/events should filter events by single owning_partner_id', async () => {
       // Create partners
