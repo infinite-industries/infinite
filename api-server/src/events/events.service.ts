@@ -179,7 +179,7 @@ export class EventsService {
       // guaranteed to stay the same.
       // We've also added a secondary order by on created_at to ensure that events without start_time like
       // online resources at least sort consistently
-      const paginatedRows: EventModel[] = await this.sequelize.query(
+      const paginatedRows = (await this.sequelize.query(
         `
               with compressed_event as (
                 SELECT
@@ -207,7 +207,7 @@ export class EventsService {
             endDate,
           },
         },
-      );
+      )) as EventModel[];
 
       // Fill back in nested models date_times and venues
       const dateTimes = await this.dateTimeVenueModel.findAll({
