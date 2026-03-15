@@ -97,7 +97,10 @@ export class EventsService {
     });
 
     if (event) {
-      await this.populateVenuePartners([event]);
+      this.populateVenuePartnersForSingleEvent(
+        event,
+        await this.buildVenuePartnerMap([event]),
+      );
     }
 
     return event;
@@ -128,7 +131,10 @@ export class EventsService {
 
     const results = await this.eventModel.findAll(mergedOptions);
 
-    await this.populateVenuePartners(results);
+    this.populateVenuePartners(
+      results,
+      await this.buildVenuePartnerMap(results),
+    );
 
     return results;
   }
@@ -242,14 +248,19 @@ export class EventsService {
             })
           : [];
 
-      // Derive venues and populate venue partners before the ownership check
-      // so that venue-partner associations are available when isOwner runs
+      // this will fetch all partnerships referenced on a venue and build a map of venue to partnership
+      const venueIdToPartnershipMap = await this.buildVenuePartnerMap(
+        paginatedRows,
+      );
+
       paginatedRows.forEach((event) => {
+        // populate date_times field on the event
         const dateTimesForEvent = dateTimes.filter(
           ({ event_id }) => event_id === event.id,
         );
         event.date_times = dateTimesForEvent;
 
+        // populate venues field on the event
         const uniqueVenues = new Map<string, VenueModel>();
         dateTimesForEvent.forEach((dt) => {
           if (dt.venue && !uniqueVenues.has(dt.venue.id)) {
@@ -257,11 +268,14 @@ export class EventsService {
           }
         });
         event.venues = [...uniqueVenues.values()];
-      });
 
-      await this.populateVenuePartners(paginatedRows);
+        // fills in via side effect partners on the associated venues,
+        // this must be done before we apply the isOwner check
+        this.populateVenuePartnersForSingleEvent(
+          event,
+          venueIdToPartnershipMap,
+        );
 
-      paginatedRows.forEach((event) => {
         // Find and assign the corresponding partner
         const partnerForEvent = event.owning_partner_id
           ? partners.find(({ id }) => id === event.owning_partner_id)
@@ -527,9 +541,36 @@ export class EventsService {
     }
   }
 
+  // Warning: This works via side-effect, setting the partners array on even venues
+  private populateVenuePartners(
+    events: EventModel[],
+    venueIdToPartnershipMap: Map<string, PartnerModel[]>,
+  ): void {
+    events.forEach((event) => {
+      (event.venues ?? []).forEach((venue) => {
+        venue.partners = venueIdToPartnershipMap.get(venue.id) ?? [];
+      });
+    });
+  }
+
+  private populateVenuePartnersForSingleEvent(
+    event: EventModel,
+    venueIdToPartnershipMap: Map<string, PartnerModel[]>,
+  ): void {
+    return this.populateVenuePartners([event], venueIdToPartnershipMap);
+  }
+
   private async buildVenuePartnerMap(
-    venueIds: string[],
+    events: EventModel[],
   ): Promise<Map<string, PartnerModel[]>> {
+    const venueIds = [
+      ...new Set(
+        events
+          .flatMap(({ venues }) => (venues ?? []).map(({ id }) => id))
+          .filter(isNotNullOrUndefined),
+      ),
+    ];
+
     if (venueIds.length === 0) {
       return new Map();
     }
@@ -569,24 +610,6 @@ export class EventsService {
     });
 
     return venueMap;
-  }
-
-  private async populateVenuePartners(events: EventModel[]): Promise<void> {
-    const venueIds = [
-      ...new Set(
-        events
-          .flatMap(({ venues }) => (venues ?? []).map(({ id }) => id))
-          .filter(isNotNullOrUndefined),
-      ),
-    ];
-
-    const venueMap = await this.buildVenuePartnerMap(venueIds);
-
-    events.forEach((event) => {
-      (event.venues ?? []).forEach((venue) => {
-        venue.partners = venueMap.get(venue.id) ?? [];
-      });
-    });
   }
 
   private getTagsClauseParams(tags: string[] | string): Nullable<string> {
