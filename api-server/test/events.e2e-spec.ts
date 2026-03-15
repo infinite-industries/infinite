@@ -1001,6 +1001,91 @@ describe('Events API', () => {
       });
   });
 
+  it('/events/current-verified should include venue partners when venues have associated partners', async () => {
+    const venuePartner = await partnerModel.create({
+      id: uuidv4(),
+      name: 'Venue Partner for Current Verified',
+      light_logo_url: 'https://example.com/venue-partner-light.png',
+      dark_logo_url: 'https://example.com/venue-partner-dark.png',
+    });
+
+    const futureStart = new Date();
+    futureStart.setDate(futureStart.getDate() + 1);
+    const futureEnd = new Date();
+    futureEnd.setDate(futureEnd.getDate() + 2);
+
+    const event = await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [
+        {
+          id: uuidv4(),
+          start_time: futureStart,
+          end_time: futureEnd,
+          timezone: 'UTC',
+        },
+      ],
+    );
+
+    const venueId = event.date_times[0].venue_id;
+    await associateVenueWithPartner(venueId, venuePartner.id);
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/current-verified`)
+      .expect(200)
+      .then(({ body }) => {
+        const { events, status } = body;
+
+        expect(status).toEqual('success');
+        expect(events).toHaveLength(1);
+
+        const returnedEvent = events[0];
+        expect(returnedEvent.venue).toBeDefined();
+        expect(returnedEvent.venue.partners).toBeDefined();
+        expect(returnedEvent.venue.partners).toHaveLength(1);
+        expect(returnedEvent.venue.partners[0].id).toEqual(venuePartner.id);
+        expect(returnedEvent.venue.partners[0].name).toEqual(venuePartner.name);
+      });
+  });
+
+  it('/events/current-verified should return empty partners array on venue when venue has no associated partners', async () => {
+    const futureStart = new Date();
+    futureStart.setDate(futureStart.getDate() + 1);
+    const futureEnd = new Date();
+    futureEnd.setDate(futureEnd.getDate() + 2);
+
+    await createRandomEventWithDateTime(
+      eventModel,
+      venueModel,
+      datetimeVenueModel,
+      { verified: true },
+      [
+        {
+          id: uuidv4(),
+          start_time: futureStart,
+          end_time: futureEnd,
+          timezone: 'UTC',
+        },
+      ],
+    );
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/current-verified`)
+      .expect(200)
+      .then(({ body }) => {
+        const { events, status } = body;
+
+        expect(status).toEqual('success');
+        expect(events).toHaveLength(1);
+
+        const returnedEvent = events[0];
+        expect(returnedEvent.venue).toBeDefined();
+        expect(returnedEvent.venue.partners).toEqual([]);
+      });
+  });
+
   it('/events/{eventId} should include owning_partner when event has a partner', async () => {
     // Create a partner
     const partner = await partnerModel.create({
@@ -1662,5 +1747,15 @@ describe('Events API', () => {
 
     // Use the association method to set partners
     await (user as any).setPartners(partners);
+  }
+
+  async function associateVenueWithPartner(
+    venueId: string,
+    partnerId: string,
+  ): Promise<void> {
+    const venue = await venueModel.findByPk(venueId);
+    const partner = await partnerModel.findByPk(partnerId);
+
+    await (venue as any).addPartner(partner);
   }
 });

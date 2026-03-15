@@ -3,6 +3,7 @@ import { VenuesController } from './venues.controller';
 import { VenuesService } from './venues.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { VenueModel } from './models/venue.model';
+import { PartnerModel } from '../users/models/partner.model';
 import { NotificationsModule } from '../notifications/notifications.module';
 import VenuesAuthenticatedController from './venues.authenticated.controller';
 import { GpsService } from './gps.services';
@@ -10,11 +11,12 @@ import { UsersModules } from '../users/users.modules';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([VenueModel]),
+    SequelizeModule.forFeature([VenueModel, PartnerModel]),
     NotificationsModule,
     UsersModules,
   ],
   controllers: [VenuesController, VenuesAuthenticatedController],
   providers: [VenuesService, GpsService],
+  exports: [VenuesService],
 })
 export class VenuesModule {}

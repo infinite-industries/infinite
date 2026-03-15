@@ -3,6 +3,7 @@ import EventDTO from './eventDTO';
 import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';
 import { DatetimeVenueModel } from '../models/datetime-venue.model';
 import { PartnerDTO } from '../../users/dto/partner-dto';
+import { venueModelToVenueDTO } from '../../venues/dto/venue-model-to-venue-dto';
 
 export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
   const date_times: DatetimeVenueModel[] = isNotNullOrUndefined(
@@ -47,9 +48,13 @@ export function eventModelToEventDTO(eventModel: EventModel): EventDTO {
     website_link: eventModel.website_link,
     multi_day: eventModel.multi_day,
     date_times,
-    venue: isNotNullOrUndefined(eventModel.venues)
-      ? eventModel.venues[0]
-      : null,
+    // This returns a single venue, the schema supports multiple, but the frontend
+    // can't really deal with that, for the time being we will pretend to the
+    // outside world like there can be only one
+    venue:
+      isNotNullOrUndefined(eventModel.venues) && eventModel.venues[0]
+        ? venueModelToVenueDTO(eventModel.venues[0])
+        : null,
     event_admin_metadata: isNotNullOrUndefined(eventModel.event_admin_metadata)
       ? {
           is_problem: eventModel.event_admin_metadata.is_problem,

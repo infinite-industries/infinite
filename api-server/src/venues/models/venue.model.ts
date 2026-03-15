@@ -1,6 +1,7 @@
-import { Column, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import { BelongsToMany, Column, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Optional, Utils } from 'sequelize';
+import { PartnerModel } from '../../users/models/partner.model';
 
 const EXAMPLE_STATE = new Date();
 
@@ -75,4 +76,12 @@ export class VenueModel extends Model<VenueModel> {
   @Column
   @ApiProperty({ example: EXAMPLE_STATE })
   updatedAt: Date;
+
+  @BelongsToMany(() => PartnerModel, {
+    through: 'venues_partners_mappings',
+    foreignKey: 'venue_id',
+    otherKey: 'partner_id',
+    as: 'partners',
+  })
+  partners: PartnerModel[];
 }

@@ -91,13 +91,22 @@ export class EventsService {
   private async findOneWithRelated(
     findOptions: FindOptions,
   ): Promise<EventModel> {
-    return await this.eventModel.findOne({
+    const event = await this.eventModel.findOne({
       include: [DatetimeVenueModel, VenueModel, PartnerModel],
       ...findOptions,
     });
+
+    if (event) {
+      this.populateVenuePartnersForSingleEvent(
+        event,
+        await this.buildVenuePartnerMap([event]),
+      );
+    }
+
+    return event;
   }
 
-  findAll(
+  async findAll(
     request: RequestWithUserInfo,
     findOptions?: FindOptions,
   ): Promise<EventModel[]> {
@@ -120,7 +129,14 @@ export class EventsService {
       ? { ...defaultOptions, ...findOptions }
       : defaultOptions;
 
-    return this.eventModel.findAll(mergedOptions);
+    const results = await this.eventModel.findAll(mergedOptions);
+
+    this.populateVenuePartners(
+      results,
+      await this.buildVenuePartnerMap(results),
+    );
+
+    return results;
   }
 
   async findAllPaginated({
@@ -232,9 +248,32 @@ export class EventsService {
             })
           : [];
 
+      // this will fetch all partnerships referenced on a venue and build a map of venue to partnership
+      const venueIdToPartnershipMap = await this.buildVenuePartnerMap(
+        paginatedRows,
+      );
+
       paginatedRows.forEach((event) => {
+        // populate date_times field on the event
         const dateTimesForEvent = dateTimes.filter(
           ({ event_id }) => event_id === event.id,
+        );
+        event.date_times = dateTimesForEvent;
+
+        // populate venues field on the event
+        const uniqueVenues = new Map<string, VenueModel>();
+        dateTimesForEvent.forEach((dt) => {
+          if (dt.venue && !uniqueVenues.has(dt.venue.id)) {
+            uniqueVenues.set(dt.venue.id, dt.venue);
+          }
+        });
+        event.venues = [...uniqueVenues.values()];
+
+        // fills in via side effect partners on the associated venues,
+        // this must be done before we apply the isOwner check
+        this.populateVenuePartnersForSingleEvent(
+          event,
+          venueIdToPartnershipMap,
         );
 
         // Find and assign the corresponding partner
@@ -256,7 +295,6 @@ export class EventsService {
           event.organizer_contact = undefined;
         }
 
-        event.date_times = dateTimesForEvent;
         event.owning_partner = partnerForEvent;
       });
 
@@ -501,6 +539,77 @@ export class EventsService {
 
       return submittedEvent;
     }
+  }
+
+  // Warning: This works via side-effect, setting the partners array on even venues
+  private populateVenuePartners(
+    events: EventModel[],
+    venueIdToPartnershipMap: Map<string, PartnerModel[]>,
+  ): void {
+    events.forEach((event) => {
+      (event.venues ?? []).forEach((venue) => {
+        venue.partners = venueIdToPartnershipMap.get(venue.id) ?? [];
+      });
+    });
+  }
+
+  private populateVenuePartnersForSingleEvent(
+    event: EventModel,
+    venueIdToPartnershipMap: Map<string, PartnerModel[]>,
+  ): void {
+    return this.populateVenuePartners([event], venueIdToPartnershipMap);
+  }
+
+  private async buildVenuePartnerMap(
+    events: EventModel[],
+  ): Promise<Map<string, PartnerModel[]>> {
+    const venueIds = [
+      ...new Set(
+        events
+          .flatMap(({ venues }) => (venues ?? []).map(({ id }) => id))
+          .filter(isNotNullOrUndefined),
+      ),
+    ];
+
+    if (venueIds.length === 0) {
+      return new Map();
+    }
+
+    const mappings = await this.sequelize.query<{
+      venue_id: string;
+      partner_id: string;
+    }>(
+      `SELECT vpm.venue_id, vpm.partner_id
+       FROM venues_partners_mappings vpm
+       WHERE vpm.venue_id IN (:venueIds)`,
+      { replacements: { venueIds }, type: QueryTypes.SELECT },
+    );
+
+    const partnerIds = [
+      ...new Set(mappings.map(({ partner_id }) => partner_id)),
+    ];
+
+    const partners =
+      partnerIds.length > 0
+        ? await this.partnerModel.findAll({
+            where: { id: { [Op.in]: partnerIds } },
+          })
+        : [];
+
+    const partnerMap = new Map(partners.map((p) => [p.id, p]));
+
+    const venueMap = new Map<string, PartnerModel[]>();
+    mappings.forEach(({ venue_id, partner_id }) => {
+      const partner = partnerMap.get(partner_id);
+      if (!partner) return;
+
+      if (!venueMap.has(venue_id)) {
+        venueMap.set(venue_id, []);
+      }
+      venueMap.get(venue_id).push(partner);
+    });
+
+    return venueMap;
   }
 
   private getTagsClauseParams(tags: string[] | string): Nullable<string> {
