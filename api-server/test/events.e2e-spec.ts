@@ -1498,6 +1498,131 @@ describe('Events API', () => {
           });
         });
     });
+
+    it('/verified should include events matched via venue-partner association when filtering by owning_partner_id', async () => {
+      const partner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Venue-Associated Partner',
+        light_logo_url: 'https://example.com/venue-assoc-light.png',
+        dark_logo_url: 'https://example.com/venue-assoc-dark.png',
+      });
+
+      // Event with direct owning_partner_id
+      const directEvent = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: true, owning_partner_id: partner.id },
+      );
+
+      // Event with NO owning_partner_id, but its venue is associated with the partner
+      const venueEvent = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: true },
+      );
+      const venueId = venueEvent.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, partner.id);
+
+      // Unrelated event (should be excluded)
+      await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: true },
+      );
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner.id}`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(2);
+
+          const returnedEventIds = events.map((e) => e.id);
+          expect(returnedEventIds).toContain(directEvent.id);
+          expect(returnedEventIds).toContain(venueEvent.id);
+        });
+    });
+
+    it('/verified should not duplicate events that match both owning_partner_id and venue-partner association', async () => {
+      const partner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Dual-Match Partner',
+        light_logo_url: 'https://example.com/dual-light.png',
+        dark_logo_url: 'https://example.com/dual-dark.png',
+      });
+
+      // Event has owning_partner_id AND its venue is also associated with the same partner
+      const dualMatchEvent = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: true, owning_partner_id: partner.id },
+      );
+      const venueId = dualMatchEvent.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, partner.id);
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner.id}`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(1);
+          expect(events[0].id).toEqual(dualMatchEvent.id);
+        });
+    });
+
+    it('/verified should include venue-partner events in pagination count', async () => {
+      const partner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Pagination Partner',
+        light_logo_url: 'https://example.com/pag-light.png',
+        dark_logo_url: 'https://example.com/pag-dark.png',
+      });
+
+      // 3 events with direct owning_partner_id
+      await createListOfFutureEventsInChronologicalOrder(3, {
+        verified: true,
+        owning_partner_id: partner.id,
+      });
+
+      // 2 events matched via venue-partner association only
+      for (let i = 0; i < 2; i++) {
+        const venueEvent = await createRandomEventWithDateTime(
+          eventModel,
+          venueModel,
+          datetimeVenueModel,
+          { verified: true },
+        );
+        await associateVenueWithPartner(
+          venueEvent.date_times[0].venue_id,
+          partner.id,
+        );
+      }
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner.id}&page=1&pageSize=10`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status, totalPages } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(5);
+          expect(totalPages).toEqual(1);
+        });
+    });
   });
 
   describe('Organizer Contact Filtering Tests', () => {

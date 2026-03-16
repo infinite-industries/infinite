@@ -46,7 +46,7 @@ import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndEx
 import { AuthenticatedUserGuard } from '../authentication/auth-guards/authenticated-user.guard';
 import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
-import { Op } from 'sequelize';
+import { Op, literal } from 'sequelize';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
@@ -209,13 +209,24 @@ export default class EventsAuthenticatedController {
 
     const partnerIds = user.partners?.map((partner) => partner.id) || [];
 
+    const partnerIdsList = partnerIds.map((id) => `'${id}'`).join(', ');
+
+    // It's safe to inject partnerIdsList because they are loaded from the database via the authenticated
+    // user's partner associations
     const findOptions = {
       ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
       where: {
         verified: false,
-        owning_partner_id: {
-          [Op.in]: partnerIds,
-        },
+        // We need to get any events that match owning_partner_id to on one of the users partner_ids or that
+        // take place at a venue that belongs to one of these partners
+        [Op.or]: [
+          { owning_partner_id: { [Op.in]: partnerIds } },
+          literal(`"EventModel"."id" IN (
+            SELECT dv.event_id FROM datetime_venue dv
+            JOIN venues_partners_mappings vpm ON vpm.venue_id = dv.venue_id
+            WHERE vpm.partner_id IN (${partnerIdsList})
+          )`),
+        ],
       },
     };
 

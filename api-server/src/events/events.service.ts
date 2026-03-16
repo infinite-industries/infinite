@@ -649,11 +649,18 @@ export class EventsService {
       : null;
 
     const partnerIdsArray = ensureEmbedQueryStringIsArray(owningPartnerIds);
+    const partnerIdsList = partnerIdsArray
+      .map((id) => `'${id}'`)
+      .join(', ');
     const partnerIdsClause =
       partnerIdsArray.length > 0
-        ? `events.owning_partner_id IN (${partnerIdsArray
-            .map((id) => `'${id}'`)
-            .join(', ')})`
+        ? `(events.owning_partner_id IN (${partnerIdsList})
+           OR EXISTS (
+             SELECT 1 FROM datetime_venue dv2
+             JOIN venues_partners_mappings vpm ON vpm.venue_id = dv2.venue_id
+             WHERE dv2.event_id = events.id
+             AND vpm.partner_id IN (${partnerIdsList})
+           ))`
         : null;
 
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;

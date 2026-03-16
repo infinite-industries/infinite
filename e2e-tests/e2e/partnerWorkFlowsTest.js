@@ -88,8 +88,8 @@ context('Partner Work Flows', () => {
     const guid = crypto.randomUUID()
     const NON_PARTNER_EVENT_NAME = `Non-Partner Test Event-${guid}`
     
-    // Submit event without partner query parameter
-    submitEvent(NON_PARTNER_EVENT_NAME, PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, null)
+    // Submit event without partner query parameter, at a venue not associated with any partner
+    submitEvent(NON_PARTNER_EVENT_NAME, PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, null, "Mom's Friendly Robot Company")
     
     // Login as partner-admin
     cy.visitAsUser(PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, '/')
@@ -161,39 +161,54 @@ context('Partner Work Flows', () => {
     // so the partner-admin should still own this event even without owning_partner_id.
     submitEvent(VENUE_EVENT_NAME, PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, null, 'Planet Express')
     
-    // Login as admin to find the event and get the edit URL
-    cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/')
+    // Login as partner-admin
+    cy.visitAsUser(PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, '/')
     
     cy.wait(750)
     cy.get('#hamburger').click()
-    cy.get('#nav-list li').contains('a', 'Admin').click()
-    cy.location('pathname').should('include', 'admin')
     
-    // Find the event in the unverified list and click Edit
+    // Verify Partner Admin link exists and Admin link does not
+    cy.get('#nav-list li').contains('a', 'Partner Admin').should('exist')
+    cy.get('#nav-list li a').then(($links) => {
+      const adminLinks = Array.from($links).filter(link => link.textContent.trim() === 'Admin')
+      expect(adminLinks.length).to.equal(0)
+    })
+    
+    // Click Partner Admin link
+    cy.get('#nav-list li').contains('a', 'Partner Admin').click()
+    cy.location('pathname').should('include', 'partner-admin')
+    
+    // Verify the event appears in unverified events list
+    cy.get('.unverified-events').contains('tr', VENUE_EVENT_NAME).should('exist')
+    
+    // Click Edit on the event to navigate to edit page
     cy.get('.unverified-events').contains('tr', VENUE_EVENT_NAME).contains('Edit').click()
     cy.location('pathname').should('include', 'admin-event-edit')
     
-    cy.location('pathname').then((editPath) => {
-      // Login as partner-admin and navigate to the edit page
-      cy.visitAsUser(PARTNER_ADMIN_USERNAME, PARTNER_ADMIN_PASSWORD, editPath)
-      
-      // Partner-admin should be able to verify because Planet Express is
-      // associated with their partner (venue-based ownership)
-      cy.get('button.btn-verify').click()
-      
-      // Should redirect back to partner-admin page on successful verify
-      cy.location('pathname').should('include', 'partner-admin')
-      
-      // Navigate back to the edit page to delete the event
-      cy.visit(editPath)
-      
-      // Delete the event
-      cy.get('.edit-container button').contains('Delete').click()
-      cy.get('[role="dialog"] button').contains('Kill').click()
-      
-      // Should redirect to partner-admin page
-      cy.location('pathname').should('include', 'partner-admin')
-    })
+    // Partner-admin should be able to verify because Planet Express is
+    // associated with their partner (venue-based ownership)
+    cy.get('button.btn-verify').click()
+    
+    // Should redirect back to partner-admin page
+    cy.location('pathname').should('include', 'partner-admin')
+    
+    // Verify the event is no longer in unverified events list
+    cy.get('.unverified-events').contains('tr', VENUE_EVENT_NAME).should('not.exist')
+    
+    // Verify the event is now in verified events list
+    cy.get('.verified-events').contains('tr', VENUE_EVENT_NAME).should('exist')
+    
+    // Navigate to edit page to delete the event
+    cy.get('.verified-events').contains('tr', VENUE_EVENT_NAME).contains('Edit').click()
+    cy.location('pathname').should('include', 'admin-event-edit')
+    
+    // Delete the event
+    cy.get('.edit-container button').contains('Delete').click()
+    cy.get('[role="dialog"] button').contains('Kill').click()
+    
+    // Verify event is deleted and we're redirected
+    cy.location('pathname').should('include', 'partner-admin')
+    cy.get('.verified-events').contains('tr', VENUE_EVENT_NAME).should('not.exist')
   })
 
   it('Partner admin cannot verify events submitted at a non-partner-associated venue', () => {
