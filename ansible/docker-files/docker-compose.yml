@@ -11,6 +11,11 @@ services:
       - "3003"
     ports:
       - "3003:3003"
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "5"
 
   web-portal:
     restart: always
@@ -26,6 +31,11 @@ services:
       - "7779"
     ports:
       - "7779:7779"
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "5"
 
   discord-bot:
     restart: always
@@ -36,4 +46,9 @@ services:
       - "2112"
     ports:
       - "2112:2112"
+    logging:
+      driver: json-file
+      options:
+        max-size: "1m"
+        max-file: "5"
 
