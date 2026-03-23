@@ -30,7 +30,7 @@
       const otherError = 'An error occurred'
 
       useHead({
-        title: error.statusCode === 404 ? pageNotFound : otherError,
+        title: error.status === 404 ? pageNotFound : otherError,
         titleTemplate: '%s - Infinite Industries',
         link: [
           {

@@ -25,15 +25,15 @@ export default defineEventHandler(async (event) => {
     } catch (e) {
       logger.error('Unable to post message to Slack: ', e)
       throw createError({
-        statusCode: 500,
-        statusMessage: `Unable to post to Slack. Error Message: "${e}"`
+        status: 500,
+        message: `Unable to post to Slack. Error Message: "${e}"`
       })
     }
   } else {
     logger.error('Invalid Slack message request')
     throw createError({
       statusCode: 400,
-      statusMessage: 'Please pass correct variables in the request body.'
+      message: 'Please pass correct variables in the request body.'
     })
   }
 })
