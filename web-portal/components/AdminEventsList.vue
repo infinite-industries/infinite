@@ -67,17 +67,21 @@
     font-family: "Open Sans", sans-serif;
   }
 
-  .calendar-events-table >>> td, .calendar-events-table th {
+  .calendar-events-table :deep(td), .calendar-events-table th {
       border: 1px solid #ddd;
       padding: 8px;
   }
 
-  .calendar-events-table >>> td:first-child {
+  .calendar-events-table :deep(td:first-child) {
     text-align: center;
   }
 
-  .calendar-events-table tr:nth-child(even){background-color: #f2f2f2;}
+  .calendar-events-table tr:nth-child(even){
+    background-color: #f2f2f2;
+  }
 
-  .calendar-events-table tr:hover {background-color: #ddd;}
+  .calendar-events-table tr:hover {
+    background-color: #ddd;
+  }
 
 </style>
