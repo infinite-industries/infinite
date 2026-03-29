@@ -114,15 +114,18 @@ export class EventsService {
 
     const partnerIds = user.partners?.map((partner) => partner.id) || [];
 
-    const partnerIdsList = partnerIds.map((id) => `'${id}'`).join(', ');
+    // these should be safe since they are fetched from the db but we will
+    // espcape them just in case
+    const partnerIdsList = partnerIds
+      .map((id) => this.sequelize.escape(id))
+      .join(', ');
     const findOptions = user.isInfiniteAdmin
       ? { where: { verified: false } } // infinite admins have access to all partners, it may be useful for admins
       : {
           where: {
             verified: false,
-            // We need to get any events that match owning_partner_id to on one of the users partner_ids or that
-            // take place at a venue that belongs to one of these partners. It's safe to inject them directly
-            // because we have just fetched them from the DB and they are valid IDs
+            // We need events where owning_partner_id is one of the user's partners or the event uses a venue
+            // mapped to one of those partners (see subquery). IDs are escaped for the literal subquery.
             [Op.or]: [
               { owning_partner_id: { [Op.in]: partnerIds } },
               literal(`"EventModel"."id" IN (
@@ -195,14 +198,26 @@ export class EventsService {
     }
     return this.sequelize.transaction(async () => {
       const tagClauseParams = this.getTagsClauseParams(tags);
-      const whereClause = this.getWhereClause(
-        tagClauseParams,
-        category,
-        owningPartnerIds,
-        verifiedOnly,
+      const { whereClause, replacements: whereClauseReplacements } =
+        this.getWhereClause(
+          tagClauseParams,
+          category,
+          owningPartnerIds,
+          verifiedOnly,
+          startDate,
+          endDate,
+        );
+
+      const paginatedQueryReplacements: Record<string, unknown> = {
+        ...whereClauseReplacements,
         startDate,
         endDate,
-      );
+        offset: (requestedPage - 1) * pageSize,
+        limit: pageSize,
+      };
+      if (isNotNullOrUndefined(tagClauseParams)) {
+        paginatedQueryReplacements.tagFilter = tagClauseParams;
+      }
 
       // Sort events by the first start_time and apply pagination
       // Note, we have to sort by first_start_time in our common table expression to apply pagination correctly, but we
@@ -222,7 +237,7 @@ export class EventsService {
                   ${whereClause}
               GROUP BY (events.id)
               ORDER BY first_start_time DESC, "createdAt" DESC
-              OFFSET ${(requestedPage - 1) * pageSize} LIMIT ${pageSize} )
+              OFFSET :offset LIMIT :limit )
               SELECT events.*
               FROM compressed_event
                        JOIN events ON events.id = compressed_event.id
@@ -231,12 +246,7 @@ export class EventsService {
         {
           type: QueryTypes.SELECT,
           model: EventModel,
-          replacements: {
-            tagFilter: tagClauseParams,
-            categoryFilter: category,
-            startDate,
-            endDate,
-          },
+          replacements: paginatedQueryReplacements,
         },
       )) as EventModel[];
 
@@ -323,6 +333,7 @@ export class EventsService {
       const totalCount = await this.getEventCountWithFilters(
         tagClauseParams,
         whereClause,
+        whereClauseReplacements,
         startDate,
         endDate,
       );
@@ -685,27 +696,32 @@ export class EventsService {
     verifiedOnly: boolean,
     startDate?: Date,
     endDate?: Date,
-  ): string {
+  ): { whereClause: string; replacements: Record<string, unknown> } {
+    const replacements: Record<string, unknown> = {};
+
     const tagClause = isNotNullOrUndefined(tagClauseParams)
       ? `:tagFilter && events.tags`
       : null;
 
-    const categoryClause = isNotNullOrUndefined(category)
-      ? `events.category = '${category}'`
-      : null;
+    let categoryClause: Nullable<string> = null;
+    if (isNotNullOrUndefined(category)) {
+      replacements.category = category;
+      categoryClause = `events.category = :category`;
+    }
 
     const partnerIdsArray = ensureEmbedQueryStringIsArray(owningPartnerIds);
-    const partnerIdsList = partnerIdsArray.map((id) => `'${id}'`).join(', ');
-    const partnerIdsClause =
-      partnerIdsArray.length > 0
-        ? `(events.owning_partner_id IN (${partnerIdsList})
+    let partnerIdsClause: Nullable<string> = null;
+    if (partnerIdsArray.length > 0) {
+      replacements.filterPartnerIdsOwning = partnerIdsArray;
+      replacements.filterPartnerIdsVenue = partnerIdsArray;
+      partnerIdsClause = `(events.owning_partner_id IN (:filterPartnerIdsOwning)
            OR EXISTS (
              SELECT 1 FROM datetime_venue dv2
              JOIN venues_partners_mappings vpm ON vpm.venue_id = dv2.venue_id
              WHERE dv2.event_id = events.id
-             AND vpm.partner_id IN (${partnerIdsList})
-           ))`
-        : null;
+             AND vpm.partner_id IN (:filterPartnerIdsVenue)
+           ))`;
+    }
 
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
@@ -723,18 +739,31 @@ export class EventsService {
     ].filter((clause) => isNotNullOrUndefined(clause));
 
     if (clauses.length === 0) {
-      return '';
-    } else {
-      return `WHERE ${clauses.join(' AND ')}`;
+      return { whereClause: '', replacements };
     }
+
+    return {
+      whereClause: `WHERE ${clauses.join(' AND ')}`,
+      replacements,
+    };
   }
 
   private async getEventCountWithFilters(
-    tagClauseParams: string,
+    tagClauseParams: Nullable<string>,
     whereClause: string,
+    whereClauseReplacements: Record<string, unknown>,
     startDate?: Date,
     endDate?: Date,
   ): Promise<number> {
+    const replacements: Record<string, unknown> = {
+      ...whereClauseReplacements,
+      startDate,
+      endDate,
+    };
+    if (isNotNullOrUndefined(tagClauseParams)) {
+      replacements.tagFilter = tagClauseParams;
+    }
+
     const results: { count: string }[] = await this.sequelize.query(
       `
       with compressed_event as (
@@ -752,11 +781,7 @@ export class EventsService {
       `,
       {
         type: QueryTypes.SELECT,
-        replacements: {
-          tagFilter: tagClauseParams,
-          startDate,
-          endDate,
-        },
+        replacements,
       },
     );
 
