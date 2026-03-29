@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   Inject,
   LoggerService,
@@ -175,12 +174,12 @@ export default class EventsAuthenticatedController {
   getAllNonVerified(
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
-    const findOptions = {
-      where: { verified: false },
-    };
-
+    // Since infinite admins have access to all partners this will really just return
+    // all non-verified events
+    //
+    // We could consider a future enhancement to let admins filter by a given partner,
     return this.eventsService
-      .findAll(request, findOptions)
+      .findAllNonVerifiedForPartnersBelongToTheCurrentUser(request)
       .then((events) => events.map(eventModelToEventDTO))
       .then((events) => new EventsResponse({ events }));
   }
@@ -194,44 +193,10 @@ export default class EventsAuthenticatedController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiBearerAuth()
   async getAllNonVerifiedForPartnersBelongToTheCurrentUser(
-    @Query('embed') embed: string[] | string = [],
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
-    const user = request.userInformation;
-
-    if (user.isInfiniteAdmin) {
-      // infinite admins have access to all partners, it may be useful for admins
-      // to filter by a given partner, but we can implement that as a separate filter
-      // somewhere, this event is specifically a convenience to give an easy way
-      // to get all un-verified events a partner-admin has access to
-      return this.getAllNonVerified(request);
-    }
-
-    const partnerIds = user.partners?.map((partner) => partner.id) || [];
-
-    const partnerIdsList = partnerIds.map((id) => `'${id}'`).join(', ');
-
-    // It's safe to inject partnerIdsList because they are loaded from the database via the authenticated
-    // user's partner associations
-    const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: {
-        verified: false,
-        // We need to get any events that match owning_partner_id to on one of the users partner_ids or that
-        // take place at a venue that belongs to one of these partners
-        [Op.or]: [
-          { owning_partner_id: { [Op.in]: partnerIds } },
-          literal(`"EventModel"."id" IN (
-            SELECT dv.event_id FROM datetime_venue dv
-            JOIN venues_partners_mappings vpm ON vpm.venue_id = dv.venue_id
-            WHERE vpm.partner_id IN (${partnerIdsList})
-          )`),
-        ],
-      },
-    };
-
     return this.eventsService
-      .findAll(request, findOptions)
+      .findAllNonVerifiedForPartnersBelongToTheCurrentUser(request)
       .then((events) => events.map(eventModelToEventDTO))
       .then((events) => new EventsResponse({ events }));
   }

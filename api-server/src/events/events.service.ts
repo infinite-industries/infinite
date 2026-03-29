@@ -9,6 +9,7 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import {
   FindOptions,
+  literal,
   Op,
   QueryTypes,
   Transaction,
@@ -104,6 +105,36 @@ export class EventsService {
     }
 
     return event;
+  }
+
+  async findAllNonVerifiedForPartnersBelongToTheCurrentUser(
+    request: RequestWithUserInfo,
+  ): Promise<EventModel[]> {
+    const user = request.userInformation;
+
+    const partnerIds = user.partners?.map((partner) => partner.id) || [];
+
+    const partnerIdsList = partnerIds.map((id) => `'${id}'`).join(', ');
+    const findOptions = user.isInfiniteAdmin
+      ? { where: { verified: false } } // infinite admins have access to all partners, it may be useful for admins
+      : {
+          where: {
+            verified: false,
+            // We need to get any events that match owning_partner_id to on one of the users partner_ids or that
+            // take place at a venue that belongs to one of these partners. It's safe to inject them directly
+            // because we have just fetched them from the DB and they are valid IDs
+            [Op.or]: [
+              { owning_partner_id: { [Op.in]: partnerIds } },
+              literal(`"EventModel"."id" IN (
+            SELECT dv.event_id FROM datetime_venue dv
+            JOIN venues_partners_mappings vpm ON vpm.venue_id = dv.venue_id
+            WHERE vpm.partner_id IN (${partnerIdsList})
+          )`),
+            ],
+          },
+        };
+
+    return this.findAll(request, findOptions);
   }
 
   async findAll(
@@ -248,19 +279,15 @@ export class EventsService {
             })
           : [];
 
-      // this will fetch all partnerships referenced on a venue and build a map of venue to partnership
-      const venueIdToPartnershipMap = await this.buildVenuePartnerMap(
-        paginatedRows,
-      );
-
+      // Derive venues and populate venue partners before the ownership check
+      // so that venue-partner associations are available when isOwner runs
+      // this must be done before we call buildVenuePartnerMap
       paginatedRows.forEach((event) => {
-        // populate date_times field on the event
         const dateTimesForEvent = dateTimes.filter(
           ({ event_id }) => event_id === event.id,
         );
         event.date_times = dateTimesForEvent;
 
-        // populate venues field on the event
         const uniqueVenues = new Map<string, VenueModel>();
         dateTimesForEvent.forEach((dt) => {
           if (dt.venue && !uniqueVenues.has(dt.venue.id)) {
@@ -268,7 +295,14 @@ export class EventsService {
           }
         });
         event.venues = [...uniqueVenues.values()];
+      });
 
+      // this will fetch all partnerships referenced on a venue and build a map of venue to partnership
+      const venueIdToPartnershipMap = await this.buildVenuePartnerMap(
+        paginatedRows,
+      );
+
+      paginatedRows.forEach((event) => {
         // fills in via side effect partners on the associated venues,
         // this must be done before we apply the isOwner check
         this.populateVenuePartnersForSingleEvent(
@@ -649,9 +683,7 @@ export class EventsService {
       : null;
 
     const partnerIdsArray = ensureEmbedQueryStringIsArray(owningPartnerIds);
-    const partnerIdsList = partnerIdsArray
-      .map((id) => `'${id}'`)
-      .join(', ');
+    const partnerIdsList = partnerIdsArray.map((id) => `'${id}'`).join(', ');
     const partnerIdsClause =
       partnerIdsArray.length > 0
         ? `(events.owning_partner_id IN (${partnerIdsList})
