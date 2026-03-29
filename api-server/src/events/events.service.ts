@@ -279,25 +279,13 @@ export class EventsService {
             })
           : [];
 
-      // Derive venues and populate venue partners before the ownership check
-      // so that venue-partner associations are available when isOwner runs
-      // this must be done before we call buildVenuePartnerMap
-      paginatedRows.forEach((event) => {
-        const dateTimesForEvent = dateTimes.filter(
-          ({ event_id }) => event_id === event.id,
-        );
-        event.date_times = dateTimesForEvent;
+      // must run before buildVenuePartnerMap
+      this.populateDateTimesAndVenuesForPaginatedEvents(
+        paginatedRows,
+        dateTimes,
+      );
 
-        const uniqueVenues = new Map<string, VenueModel>();
-        dateTimesForEvent.forEach((dt) => {
-          if (dt.venue && !uniqueVenues.has(dt.venue.id)) {
-            uniqueVenues.set(dt.venue.id, dt.venue);
-          }
-        });
-        event.venues = [...uniqueVenues.values()];
-      });
-
-      // this will fetch all partnerships referenced on a venue and build a map of venue to partnership
+      // Fetch venue-partner mappings (requires event.venues to be populated first)
       const venueIdToPartnershipMap = await this.buildVenuePartnerMap(
         paginatedRows,
       );
@@ -575,7 +563,30 @@ export class EventsService {
     }
   }
 
-  // Warning: This works via side-effect, setting the partners array on even venues
+  // Warning: mutates each event in place — assigns `date_times` and deduplicated
+  // `venues` from the datetime query rows. Must run before `buildVenuePartnerMap`
+  // so venue IDs are present for partner lookups
+  private populateDateTimesAndVenuesForPaginatedEvents(
+    events: EventModel[],
+    dateTimes: DatetimeVenueModel[],
+  ): void {
+    events.forEach((event) => {
+      const dateTimesForEvent = dateTimes.filter(
+        ({ event_id }) => event_id === event.id,
+      );
+      event.date_times = dateTimesForEvent;
+
+      const uniqueVenues = new Map<string, VenueModel>();
+      dateTimesForEvent.forEach((dt) => {
+        if (dt.venue && !uniqueVenues.has(dt.venue.id)) {
+          uniqueVenues.set(dt.venue.id, dt.venue);
+        }
+      });
+      event.venues = [...uniqueVenues.values()];
+    });
+  }
+
+  // Warning: This works via side effect, setting the partners array on even venues
   private populateVenuePartners(
     events: EventModel[],
     venueIdToPartnershipMap: Map<string, PartnerModel[]>,
@@ -587,6 +598,7 @@ export class EventsService {
     });
   }
 
+  // Warning: This works via side effect, setting the partners array on even venues
   private populateVenuePartnersForSingleEvent(
     event: EventModel,
     venueIdToPartnershipMap: Map<string, PartnerModel[]>,
