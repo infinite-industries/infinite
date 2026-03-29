@@ -4,8 +4,8 @@ End-to-end / integration tests for [Infinite Industries](https://infinite.indust
 
 ## Dependencies
 
-- [Node.js](https://nodejs.org/en/): 8.9.4 or higher
-- [npm](https://www.npmjs.com/get-npm): 5.6.0 or higher
+- [Node.js](https://nodejs.org/en/): 22.x.x
+- [npm](https://www.npmjs.com/get-npm): 10.x.x
 
 ## Setup
 
