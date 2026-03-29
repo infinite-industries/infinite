@@ -77,22 +77,44 @@ export function isOwner(
   event: EventDTO | EventModel,
   request: RequestWithUserInfo,
 ) {
+  // infinite admin is always an owner
   if (request.userInformation?.isInfiniteAdmin) {
-    // infinite admins own all events
     return true;
   }
 
+  // if you're not at least a partner-admin you don't own anything
   if (!request.userInformation?.isPartnerAdmin) {
-    // not a partner admin can't own anything
     return false;
   }
 
-  // check if the event belongs to own of their partnerships
-  return isNotNullOrUndefined(
-    request.userInformation.partners.find(
-      (p) => p.id === event.owning_partner_id,
-    ),
+  // check if the event was submitted via a partner url associated with the user
+  const userPartnerIds = new Set(
+    request.userInformation.partners.map((p) => p.id),
   );
+  if (
+    isNotNullOrUndefined(event.owning_partner_id) &&
+    userPartnerIds.has(event.owning_partner_id)
+  ) {
+    // the user owns this event because they are a partner-admin for a partnership
+    // and this partnership url was used when the event was submitted
+    return true;
+  }
+
+  // treat users as owners if any venue on the event is associated with one of
+  // their partners
+  const venues = getVenues(event);
+  return venues.some((venue) =>
+    (venue.partners ?? []).some((p) => userPartnerIds.has(p.id)),
+  );
+}
+
+function getVenues(
+  event: EventDTO | EventModel,
+): Array<{ partners?: Array<{ id: string }> }> {
+  if (isEventModel(event)) {
+    return event.venues ?? [];
+  }
+  return event.venue ? [event.venue] : [];
 }
 
 function isGenericEventList(arg: EventOrEventList): arg is EventDTO[] {

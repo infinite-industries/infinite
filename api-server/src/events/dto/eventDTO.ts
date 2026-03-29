@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { VenueModel } from '../../venues/models/venue.model';
+import { VenueDTO } from '../../venues/dto/venue-dto';
 import { StartEndTimePairs } from '../../shared-types/start-end-time-pairs';
 import { PartnerDTO } from '../../users/dto/partner-dto';
 
@@ -109,8 +109,8 @@ export default class EventDTO {
   @ApiProperty({ example: [] })
   links: Array<string>;
 
-  @ApiProperty()
-  venue: VenueModel;
+  @ApiProperty({ type: () => VenueDTO })
+  venue: VenueDTO;
 
   @ApiProperty({
     type: () => PartnerDTO,

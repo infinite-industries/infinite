@@ -1,11 +1,19 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import {
+  ConflictException,
+  Inject,
+  Injectable,
+  LoggerService,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { VenueModel } from './models/venue.model';
+import { PartnerModel } from '../users/models/partner.model';
 import { v4 as uuidv4 } from 'uuid';
 import {
   CreateVenueRequest,
   UpdateVenueRequest,
 } from './dto/create-update-venue-request';
+import { AssociateVenuePartnerRequest } from './dto/associate-venue-partner-request';
 import { FindOptions } from 'sequelize';
 import getSlug from '../utils/get-slug';
 import { GpsService } from './gps.services';
@@ -17,32 +25,42 @@ import { isNullOrUndefined } from '../utils';
 export class VenuesService {
   constructor(
     @InjectModel(VenueModel) private venueModel: typeof VenueModel,
+    @InjectModel(PartnerModel) private partnerModel: typeof PartnerModel,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
     private readonly gpsService: GpsService,
   ) {}
 
-  findById(id: string): Promise<VenueModel> {
-    const options: FindOptions = {
-      where: { id },
-    };
+  private readonly partnersInclude = {
+    model: PartnerModel,
+    as: 'partners' as const,
+    through: { attributes: [] },
+  };
 
-    return this.venueModel.findOne(options);
+  findById(id: string): Promise<VenueModel> {
+    return this.venueModel.findOne({
+      where: { id },
+      include: [this.partnersInclude],
+    });
   }
 
   findAll(): Promise<VenueModel[]> {
-    return this.venueModel.findAll();
+    return this.venueModel.findAll({
+      include: [this.partnersInclude],
+    });
   }
 
   findWhereNotSoftDeleted(): Promise<VenueModel[]> {
     return this.venueModel.findAll({
       where: { is_soft_deleted: false },
+      include: [this.partnersInclude],
     });
   }
 
   findWhereSoftDeleted(): Promise<VenueModel[]> {
     return this.venueModel.findAll({
       where: { is_soft_deleted: true },
+      include: [this.partnersInclude],
     });
   }
 
@@ -52,7 +70,9 @@ export class VenuesService {
 
     newVenue = await this.fillInGPSCoordinatesIfNeededWhenPossible(newVenue);
 
-    return this.venueModel.create({ ...newVenue, id, slug });
+    await this.venueModel.create({ ...newVenue, id, slug });
+
+    return this.findById(id);
   }
 
   async update(
@@ -67,46 +87,121 @@ export class VenuesService {
       ? { ...updatedValues, slug: getSlug(updatedValues.name) }
       : { ...updatedValues };
 
-    return this.venueModel
-      .update(values, {
-        where: { id },
-        returning: true,
-      })
-      .then((resp: [number, VenueModel[]]) => {
-        if (resp[0] === 0) {
-          return null;
-        }
+    const [affectedCount] = await this.venueModel.update(values, {
+      where: { id },
+    });
 
-        return resp[1][0];
-      });
+    if (affectedCount === 0) {
+      return null;
+    }
+
+    return this.findById(id);
   }
 
-  softDelete(id: string): Promise<VenueModel> {
-    return this.venueModel
-      .update(
-        { is_soft_deleted: true },
-        {
-          where: { id },
-          returning: true,
-        },
-      )
-      .then((resp: [number, VenueModel[]]) => {
-        return resp[1][0];
-      });
+  async softDelete(id: string): Promise<VenueModel> {
+    await this.venueModel.update(
+      { is_soft_deleted: true },
+      { where: { id } },
+    );
+
+    return this.findById(id);
   }
 
-  reactivate(id: string): Promise<VenueModel> {
-    return this.venueModel
-      .update(
-        { is_soft_deleted: false },
+  async reactivate(id: string): Promise<VenueModel> {
+    await this.venueModel.update(
+      { is_soft_deleted: false },
+      { where: { id } },
+    );
+
+    return this.findById(id);
+  }
+
+  async getPartnersForVenue(venueId: string): Promise<PartnerModel[]> {
+    const venue = await this.venueModel.findByPk(venueId, {
+      include: [
         {
-          where: { id },
-          returning: true,
+          model: PartnerModel,
+          as: 'partners',
+          through: { attributes: [] },
         },
-      )
-      .then((resp: [number, VenueModel[]]) => {
-        return resp[1][0];
-      });
+      ],
+    });
+
+    if (!venue) {
+      throw new NotFoundException(`Venue with ID ${venueId} not found`);
+    }
+
+    return venue.partners;
+  }
+
+  async associateVenueWithPartner(
+    request: AssociateVenuePartnerRequest,
+  ): Promise<void> {
+    const { venue_id, partner_id } = request;
+
+    const venue = await this.venueModel.findByPk(venue_id, {
+      include: [
+        {
+          model: PartnerModel,
+          as: 'partners',
+          through: { attributes: [] },
+        },
+      ],
+    });
+
+    if (!venue) {
+      throw new NotFoundException(`Venue with ID ${venue_id} not found`);
+    }
+
+    const partner = await this.partnerModel.findByPk(partner_id);
+
+    if (!partner) {
+      throw new NotFoundException(`Partner with ID ${partner_id} not found`);
+    }
+
+    const existingAssociation = venue.partners.find((p) => p.id === partner_id);
+    if (existingAssociation) {
+      throw new ConflictException(
+        `Venue ${venue_id} is already associated with partner ${partner_id}`,
+      );
+    }
+
+    await (venue as any).addPartner(partner);
+  }
+
+  async disassociateVenueFromPartner(
+    request: AssociateVenuePartnerRequest,
+  ): Promise<void> {
+    const { venue_id, partner_id } = request;
+
+    const venue = await this.venueModel.findByPk(venue_id, {
+      include: [
+        {
+          model: PartnerModel,
+          as: 'partners',
+          through: { attributes: [] },
+        },
+      ],
+    });
+
+    if (!venue) {
+      throw new NotFoundException(`Venue with ID ${venue_id} not found`);
+    }
+
+    const partner = await this.partnerModel.findByPk(partner_id);
+
+    if (!partner) {
+      throw new NotFoundException(`Partner with ID ${partner_id} not found`);
+    }
+
+    const existingAssociation = venue.partners.find((p) => p.id === partner_id);
+    if (!existingAssociation) {
+      throw new NotFoundException(
+        `Venue ${venue_id} is not associated with partner ${partner_id}`,
+      );
+    }
+
+    await (venue as any).removePartner(partner);
   }
 
   private async fillInGPSCoordinatesIfNeededWhenPossible<

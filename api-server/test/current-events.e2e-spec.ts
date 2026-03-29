@@ -386,6 +386,60 @@ describe('CurrentEvents (e2e)', () => {
       });
   });
 
+  it('returns venue partners on events when venues have associated partners', async () => {
+    const futureTime = getDateTimePair(getTimePlusX(today, 1));
+    const venue = await createVenue(generateVenue(venueModel));
+
+    const venuePartner = await partnerModel.create({
+      id: faker.datatype.uuid(),
+      name: 'Venue Partner',
+      light_logo_url: 'https://example.com/venue-partner-light.png',
+      dark_logo_url: 'https://example.com/venue-partner-dark.png',
+    });
+
+    await createEvent(
+      generateEvent(eventModel, { venue_id: venue.id, verified: true }),
+      [futureTime],
+    );
+
+    await associateVenueWithPartner(venue.id, venuePartner.id);
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/current-verified`)
+      .expect(200)
+      .then(async (response) => {
+        expect(response.body.events.length).toEqual(1);
+
+        const event = response.body.events[0];
+        expect(event.venue).toBeDefined();
+        expect(event.venue.partners).toBeDefined();
+        expect(event.venue.partners).toHaveLength(1);
+        expect(event.venue.partners[0].id).toEqual(venuePartner.id);
+        expect(event.venue.partners[0].name).toEqual(venuePartner.name);
+      });
+  });
+
+  it('returns empty partners array on venue when venue has no associated partners', async () => {
+    const futureTime = getDateTimePair(getTimePlusX(today, 1));
+    const venue = await createVenue(generateVenue(venueModel));
+
+    await createEvent(
+      generateEvent(eventModel, { venue_id: venue.id, verified: true }),
+      [futureTime],
+    );
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/current-verified`)
+      .expect(200)
+      .then(async (response) => {
+        expect(response.body.events.length).toEqual(1);
+
+        const event = response.body.events[0];
+        expect(event.venue).toBeDefined();
+        expect(event.venue.partners).toEqual([]);
+      });
+  });
+
   function getTimePlusX(time, deltaHours) {
     const incrementedTime = new Date(time);
     incrementedTime.setHours(incrementedTime.getHours() + deltaHours);
@@ -462,5 +516,15 @@ describe('CurrentEvents (e2e)', () => {
 
   async function deleteAllPartners() {
     await partnerModel.destroy({ where: {} });
+  }
+
+  async function associateVenueWithPartner(
+    venueId: string,
+    partnerId: string,
+  ): Promise<void> {
+    const venue = await venueModel.findByPk(venueId);
+    const partner = await partnerModel.findByPk(partnerId);
+
+    await (venue as any).addPartner(partner);
   }
 });

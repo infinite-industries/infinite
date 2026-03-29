@@ -10,6 +10,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { UserModel } from './user.model';
 import { EventModel } from '../../events/models/event.model';
+import { VenueModel } from '../../venues/models/venue.model';
 
 const SAMPLE_DATE = new Date();
 
@@ -54,6 +55,14 @@ export class PartnerModel extends Model<PartnerModel> {
     as: 'users',
   })
   users: UserModel[];
+
+  @BelongsToMany(() => VenueModel, {
+    through: 'venues_partners_mappings',
+    foreignKey: 'partner_id',
+    otherKey: 'venue_id',
+    as: 'venues',
+  })
+  venues: VenueModel[];
 
   // One-to-many association with events
   @HasMany(() => EventModel, {
