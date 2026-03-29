@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  ForbiddenException,
   Get,
   Inject,
   LoggerService,
@@ -46,7 +45,7 @@ import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndEx
 import { AuthenticatedUserGuard } from '../authentication/auth-guards/authenticated-user.guard';
 import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
-import { Op } from 'sequelize';
+import { Op, literal } from 'sequelize';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
@@ -175,12 +174,12 @@ export default class EventsAuthenticatedController {
   getAllNonVerified(
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
-    const findOptions = {
-      where: { verified: false },
-    };
-
+    // Since infinite admins have access to all partners this will really just return
+    // all non-verified events
+    //
+    // We could consider a future enhancement to let admins filter by a given partner,
     return this.eventsService
-      .findAll(request, findOptions)
+      .findAllNonVerifiedForPartnersBelongToTheCurrentUser(request)
       .then((events) => events.map(eventModelToEventDTO))
       .then((events) => new EventsResponse({ events }));
   }
@@ -194,33 +193,10 @@ export default class EventsAuthenticatedController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiBearerAuth()
   async getAllNonVerifiedForPartnersBelongToTheCurrentUser(
-    @Query('embed') embed: string[] | string = [],
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
-    const user = request.userInformation;
-
-    if (user.isInfiniteAdmin) {
-      // infinite admins have access to all partners, it may be useful for admins
-      // to filter by a given partner, but we can implement that as a separate filter
-      // somewhere, this event is specifically a convenience to give an easy way
-      // to get all un-verified events a partner-admin has access to
-      return this.getAllNonVerified(request);
-    }
-
-    const partnerIds = user.partners?.map((partner) => partner.id) || [];
-
-    const findOptions = {
-      ...getOptionsForEventsServiceFromEmbedsQueryParam(embed),
-      where: {
-        verified: false,
-        owning_partner_id: {
-          [Op.in]: partnerIds,
-        },
-      },
-    };
-
     return this.eventsService
-      .findAll(request, findOptions)
+      .findAllNonVerifiedForPartnersBelongToTheCurrentUser(request)
       .then((events) => events.map(eventModelToEventDTO))
       .then((events) => new EventsResponse({ events }));
   }

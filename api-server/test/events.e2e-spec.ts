@@ -1498,6 +1498,131 @@ describe('Events API', () => {
           });
         });
     });
+
+    it('/verified should include events matched via venue-partner association when filtering by owning_partner_id', async () => {
+      const partner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Venue-Associated Partner',
+        light_logo_url: 'https://example.com/venue-assoc-light.png',
+        dark_logo_url: 'https://example.com/venue-assoc-dark.png',
+      });
+
+      // Event with direct owning_partner_id
+      const directEvent = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: true, owning_partner_id: partner.id },
+      );
+
+      // Event with NO owning_partner_id, but its venue is associated with the partner
+      const venueEvent = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: true },
+      );
+      const venueId = venueEvent.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, partner.id);
+
+      // Unrelated event (should be excluded)
+      await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: true },
+      );
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner.id}`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(2);
+
+          const returnedEventIds = events.map((e) => e.id);
+          expect(returnedEventIds).toContain(directEvent.id);
+          expect(returnedEventIds).toContain(venueEvent.id);
+        });
+    });
+
+    it('/verified should not duplicate events that match both owning_partner_id and venue-partner association', async () => {
+      const partner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Dual-Match Partner',
+        light_logo_url: 'https://example.com/dual-light.png',
+        dark_logo_url: 'https://example.com/dual-dark.png',
+      });
+
+      // Event has owning_partner_id AND its venue is also associated with the same partner
+      const dualMatchEvent = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        { verified: true, owning_partner_id: partner.id },
+      );
+      const venueId = dualMatchEvent.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, partner.id);
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner.id}`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(1);
+          expect(events[0].id).toEqual(dualMatchEvent.id);
+        });
+    });
+
+    it('/verified should include venue-partner events in pagination count', async () => {
+      const partner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Pagination Partner',
+        light_logo_url: 'https://example.com/pag-light.png',
+        dark_logo_url: 'https://example.com/pag-dark.png',
+      });
+
+      // 3 events with direct owning_partner_id
+      await createListOfFutureEventsInChronologicalOrder(3, {
+        verified: true,
+        owning_partner_id: partner.id,
+      });
+
+      // 2 events matched via venue-partner association only
+      for (let i = 0; i < 2; i++) {
+        const venueEvent = await createRandomEventWithDateTime(
+          eventModel,
+          venueModel,
+          datetimeVenueModel,
+          { verified: true },
+        );
+        await associateVenueWithPartner(
+          venueEvent.date_times[0].venue_id,
+          partner.id,
+        );
+      }
+
+      return server
+        .get(
+          `/${CURRENT_VERSION_URI}/events/verified?owning_partner_id=${partner.id}&page=1&pageSize=10`,
+        )
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status, totalPages } = body;
+
+          expect(status).toEqual('success');
+          expect(events).toHaveLength(5);
+          expect(totalPages).toEqual(1);
+        });
+    });
   });
 
   describe('Organizer Contact Filtering Tests', () => {
@@ -1730,6 +1855,159 @@ describe('Events API', () => {
 
           expect(status).toEqual('success');
           // Partner admin should NOT see organizer_contact for events they don't own
+          expect(eventReturned.organizer_contact).toBeUndefined();
+        });
+    });
+  });
+
+  describe('Venue-Partner Ownership Tests', () => {
+    it('/events/verified should show organizer_contact for partner admin when ownership is via venue-partner association', async () => {
+      const venuePartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Venue Partner',
+        light_logo_url: 'https://example.com/venue-partner-light.png',
+        dark_logo_url: 'https://example.com/venue-partner-dark.png',
+      });
+
+      const userToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': userToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+      await associateUserWithPartners(userId, [venuePartner.id]);
+
+      // Event has NO owning_partner_id, but its venue is associated with the user's partner
+      const event = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        {
+          verified: true,
+          organizer_contact: 'venue-owned@example.com',
+        },
+      );
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, venuePartner.id);
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/events/verified?page=1&pageSize=10`)
+        .set({ 'x-access-token': userToken })
+        .expect(200)
+        .then(async ({ body }) => {
+          const { events, status } = body;
+
+          expect(status).toEqual('success');
+
+          const returnedEvent = events.find((e) => e.id === event.id);
+          expect(returnedEvent).toBeDefined();
+          expect(returnedEvent.organizer_contact).toEqual(
+            'venue-owned@example.com',
+          );
+        });
+    });
+
+    it('/events/{id} should show organizer_contact for partner admin when ownership is via venue-partner association', async () => {
+      const venuePartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Venue Partner',
+        light_logo_url: 'https://example.com/venue-partner-light.png',
+        dark_logo_url: 'https://example.com/venue-partner-dark.png',
+      });
+
+      const userToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': userToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+      await associateUserWithPartners(userId, [venuePartner.id]);
+
+      const event = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        {
+          verified: true,
+          organizer_contact: 'venue-owned@example.com',
+        },
+      );
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, venuePartner.id);
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/events/${event.id}`)
+        .set({ 'x-access-token': userToken })
+        .expect(200)
+        .then(async ({ body }) => {
+          const { event: eventReturned, status } = body;
+
+          expect(status).toEqual('success');
+          expect(eventReturned.organizer_contact).toEqual(
+            'venue-owned@example.com',
+          );
+        });
+    });
+
+    it('/events/{id} should strip organizer_contact when partner admin does not own the event via venue-partner or owning_partner_id', async () => {
+      const userPartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'User Partner',
+        light_logo_url: 'https://example.com/user-partner-light.png',
+        dark_logo_url: 'https://example.com/user-partner-dark.png',
+      });
+
+      const otherPartner = await partnerModel.create({
+        id: uuidv4(),
+        name: 'Other Venue Partner',
+        light_logo_url: 'https://example.com/other-venue-partner-light.png',
+        dark_logo_url: 'https://example.com/other-venue-partner-dark.png',
+      });
+
+      const userToken = await createJwtForRandomUser({
+        'https://infinite.industries.com/isInfiniteAdmin': false,
+      });
+
+      const userResponse = await server
+        .get(`/${CURRENT_VERSION_URI}/users/current`)
+        .set({ 'x-access-token': userToken })
+        .expect(200);
+
+      const userId = userResponse.body.id;
+      await associateUserWithPartners(userId, [userPartner.id]);
+
+      // Event venue is associated with a different partner
+      const event = await createRandomEventWithDateTime(
+        eventModel,
+        venueModel,
+        datetimeVenueModel,
+        {
+          verified: true,
+          organizer_contact: 'not-yours@example.com',
+        },
+      );
+
+      const venueId = event.date_times[0].venue_id;
+      await associateVenueWithPartner(venueId, otherPartner.id);
+
+      return server
+        .get(`/${CURRENT_VERSION_URI}/events/${event.id}`)
+        .set({ 'x-access-token': userToken })
+        .expect(200)
+        .then(async ({ body }) => {
+          const { event: eventReturned, status } = body;
+
+          expect(status).toEqual('success');
           expect(eventReturned.organizer_contact).toBeUndefined();
         });
     });
