@@ -7,7 +7,8 @@ Widget for embedding events from the Infinite Industries platform on a website.
 
 ## Requirmements
 
-* Node 22.x.x.
+* Node 16.x.x.
+  * Note, does not work on 20 unlike the rest of the application
 ## Installation
 
 - Add one or more `div`s or other elements with id `infinite-widget` to your main template where you want to place the widget.
