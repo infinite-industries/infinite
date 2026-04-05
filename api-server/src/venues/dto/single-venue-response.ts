@@ -1,9 +1,9 @@
 import { ResponseWrapper } from '../../dto/response-wrapper';
 import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';
-import { VenueModel } from '../models/venue.model';
+import { VenueDTO } from './venue-dto';
 
 export class SingleVenueResponse extends ResponseWrapper {
-  venue: VenueModel;
+  venue: VenueDTO;
 
   constructor(copy?: Partial<SingleVenueResponse>) {
     super(copy);

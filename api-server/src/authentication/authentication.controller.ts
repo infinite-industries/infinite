@@ -23,8 +23,7 @@ import {
   AUTH_USE_TEST_USERS,
 } from '../constants';
 import createJWTForTestUser from './utils/createJWTForTestUser';
-import UsersService from '../users/users.service';
-import { PartnersService } from '../users/partners.service';
+import { TestPartnerService } from './test-partner.service';
 
 @Controller(`${VERSION_1_URI}/authentication`)
 @ApiTags('authentication')
@@ -32,8 +31,7 @@ export class AuthenticationController implements OnModuleInit {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
-    private readonly usersService: UsersService,
-    private readonly partnersService: PartnersService,
+    private readonly testPartnerService: TestPartnerService,
   ) {
     if (AUTH_USE_TEST_USERS) {
       this.logger.warn(AUTH_USE_TEST_USERS_WARNING);
@@ -42,7 +40,7 @@ export class AuthenticationController implements OnModuleInit {
 
   async onModuleInit() {
     if (AUTH_USE_TEST_USERS) {
-      await this.ensureTestPartnerUser();
+      await this.testPartnerService.ensureTestPartnerUser();
     }
   }
 
@@ -140,55 +138,6 @@ export class AuthenticationController implements OnModuleInit {
         'there was an unknown problem performing login',
         500,
       );
-    }
-  }
-
-  private async ensureTestPartnerUser() {
-    this.logger.log('Ensuring partner-admin user exists...');
-
-    // Ensure the user exists
-    const testPartnerUser = await this.usersService.ensureByName({
-      name: 'partner-admin',
-      nickname: 'partner-admin',
-      picture: 'https://via.placeholder.com/150',
-    });
-
-    this.logger.log(`Test partner user ensured with ID: ${testPartnerUser.id}`);
-
-    // Ensure the partner exists
-    let partner = await this.partnersService.findByName(
-      'random-displacement-shipping',
-    );
-
-    if (!partner) {
-      this.logger.log('Creating random-displacement-shipping partner...');
-      partner = await this.partnersService.create({
-        name: 'random-displacement-shipping',
-        light_logo_url: '/images/partners/random-displacement-shipping.png',
-        dark_logo_url: '/images/partners/random-displacement-shipping.png',
-      });
-      this.logger.log(`Partner created with ID: ${partner.id}`);
-    } else {
-      this.logger.log(
-        `Partner random-displacement-shipping already exists with ID: ${partner.id}`,
-      );
-    }
-
-    // Associate the user with the partner (if not already associated)
-    try {
-      await this.partnersService.associateUserWithPartner({
-        user_id: testPartnerUser.id,
-        partner_id: partner.id,
-      });
-      this.logger.log(
-        'Successfully associated partner-admin user with partner',
-      );
-    } catch (error) {
-      if (error.message?.includes('already associated')) {
-        this.logger.log('User is already associated with partner');
-      } else {
-        throw error;
-      }
     }
   }
 }

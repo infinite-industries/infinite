@@ -10,6 +10,7 @@ import { ChildProcessWithoutNullStreams } from 'child_process';
 import { StartedTestContainer } from 'testcontainers';
 import { TestingModule } from '@nestjs/testing';
 import { VenueModel } from '../src/venues/models/venue.model';
+import { PartnerModel } from '../src/users/models/partner.model';
 import { CreateVenueRequest } from '../src/venues/dto/create-update-venue-request';
 import { v4 as uuidv4 } from 'uuid';
 import getSlug from '../src/utils/get-slug';
@@ -31,6 +32,7 @@ describe('Venues (e2e)', () => {
   let dbContainer: StartedTestContainer;
 
   let venueModel: typeof VenueModel;
+  let partnerModel: typeof PartnerModel;
   let testingModule: TestingModule;
 
   let dbHostPort: number;
@@ -50,6 +52,7 @@ describe('Venues (e2e)', () => {
     const databaseModels = await buildDbConnectionsForTests(dbHostPort);
 
     venueModel = databaseModels.venueModel;
+    partnerModel = databaseModels.partnerModel;
     testingModule = databaseModels.testingModule;
 
     console.info('test suite ready');
@@ -76,7 +79,8 @@ describe('Venues (e2e)', () => {
   });
 
   beforeEach(async () => {
-    await deleteAllAnnouncements();
+    await deleteAllVenues();
+    if (partnerModel) await partnerModel.destroy({ where: {} });
   });
 
   it('[GET]/venues should return all non-soft deleted venues given no flags are passed', async () => {
@@ -263,11 +267,76 @@ describe('Venues (e2e)', () => {
         expect(respVenue.id).toBeTruthy();
         expect(respVenue.createdAt).toBeTruthy();
         expect(respVenue.updatedAt).toBeTruthy();
+        expect(respVenue.partners).toEqual([]);
 
         assertVenuesEqualIgnoringDateStampsAndLatLong(
           respVenueWithoutId,
           expectedRespValue,
         );
+      });
+  });
+
+  it('[GET]/venues should include partners on venues that have associated partners', async () => {
+    const venue = await insertVenue(generateRandomCreateVenueRequest());
+
+    const partner = await partnerModel.create({
+      id: uuidv4(),
+      name: 'Test Partner',
+      light_logo_url: 'https://example.com/light.png',
+      dark_logo_url: 'https://example.com/dark.png',
+    });
+
+    await associateVenueWithPartner(venue.id, partner.id);
+
+    return server
+      .get(GET_ALL_VENUES_END_POINT)
+      .expect(200)
+      .then(async (response) => {
+        expect(response.body.venues).toHaveLength(1);
+
+        const returnedVenue = response.body.venues[0];
+        expect(returnedVenue.partners).toBeDefined();
+        expect(returnedVenue.partners).toHaveLength(1);
+        expect(returnedVenue.partners[0].id).toEqual(partner.id);
+        expect(returnedVenue.partners[0].name).toEqual(partner.name);
+      });
+  });
+
+  it('[GET]/venues should return empty partners array on venues with no associated partners', async () => {
+    await insertVenue(generateRandomCreateVenueRequest());
+
+    return server
+      .get(GET_ALL_VENUES_END_POINT)
+      .expect(200)
+      .then(async (response) => {
+        expect(response.body.venues).toHaveLength(1);
+
+        const returnedVenue = response.body.venues[0];
+        expect(returnedVenue.partners).toEqual([]);
+      });
+  });
+
+  it('[GET]/venues/:id should include partners on the returned venue', async () => {
+    const venue = await insertVenue(generateRandomCreateVenueRequest());
+
+    const partner = await partnerModel.create({
+      id: uuidv4(),
+      name: 'Single Venue Partner',
+      light_logo_url: 'https://example.com/light.png',
+      dark_logo_url: 'https://example.com/dark.png',
+    });
+
+    await associateVenueWithPartner(venue.id, partner.id);
+
+    return server
+      .get(`${GET_ALL_VENUES_END_POINT}/${venue.id}`)
+      .expect(200)
+      .then(async (response) => {
+        const returnedVenue = response.body.venue;
+        expect(returnedVenue.partners).toBeDefined();
+        expect(returnedVenue.partners).toHaveLength(1);
+        expect(returnedVenue.partners[0].id).toEqual(partner.id);
+        expect(returnedVenue.partners[0].name).toEqual(partner.name);
       });
   });
 
@@ -309,8 +378,18 @@ describe('Venues (e2e)', () => {
     }
   }
 
-  function deleteAllAnnouncements(): Promise<number> {
+  function deleteAllVenues(): Promise<number> {
     return venueModel.destroy({ where: {} });
+  }
+
+  async function associateVenueWithPartner(
+    venueId: string,
+    partnerId: string,
+  ): Promise<void> {
+    const venue = await venueModel.findByPk(venueId);
+    const partner = await partnerModel.findByPk(partnerId);
+
+    await (venue as any).addPartner(partner);
   }
 
   function insertVenue(

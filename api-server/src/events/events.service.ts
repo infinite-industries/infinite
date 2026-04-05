@@ -9,6 +9,7 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import {
   FindOptions,
+  literal,
   Op,
   QueryTypes,
   Transaction,
@@ -91,13 +92,55 @@ export class EventsService {
   private async findOneWithRelated(
     findOptions: FindOptions,
   ): Promise<EventModel> {
-    return await this.eventModel.findOne({
+    const event = await this.eventModel.findOne({
       include: [DatetimeVenueModel, VenueModel, PartnerModel],
       ...findOptions,
     });
+
+    if (event) {
+      this.populateVenuePartnersForSingleEvent(
+        event,
+        await this.buildVenuePartnerMap([event]),
+      );
+    }
+
+    return event;
   }
 
-  findAll(
+  async findAllNonVerifiedForPartnersBelongToTheCurrentUser(
+    request: RequestWithUserInfo,
+  ): Promise<EventModel[]> {
+    const user = request.userInformation;
+
+    const partnerIds = user.partners?.map((partner) => partner.id) || [];
+
+    // these should be safe since they are fetched from the db but we will
+    // espcape them just in case
+    const partnerIdsList = partnerIds
+      .map((id) => this.sequelize.escape(id))
+      .join(', ');
+    const findOptions = user.isInfiniteAdmin
+      ? { where: { verified: false } } // infinite admins have access to all partners, it may be useful for admins
+      : {
+          where: {
+            verified: false,
+            // We need events where owning_partner_id is one of the user's partners or the event uses a venue
+            // mapped to one of those partners (see subquery). IDs are escaped for the literal subquery.
+            [Op.or]: [
+              { owning_partner_id: { [Op.in]: partnerIds } },
+              literal(`"EventModel"."id" IN (
+            SELECT dv.event_id FROM datetime_venue dv
+            JOIN venues_partners_mappings vpm ON vpm.venue_id = dv.venue_id
+            WHERE vpm.partner_id IN (${partnerIdsList})
+          )`),
+            ],
+          },
+        };
+
+    return this.findAll(request, findOptions);
+  }
+
+  async findAll(
     request: RequestWithUserInfo,
     findOptions?: FindOptions,
   ): Promise<EventModel[]> {
@@ -120,7 +163,14 @@ export class EventsService {
       ? { ...defaultOptions, ...findOptions }
       : defaultOptions;
 
-    return this.eventModel.findAll(mergedOptions);
+    const results = await this.eventModel.findAll(mergedOptions);
+
+    this.populateVenuePartners(
+      results,
+      await this.buildVenuePartnerMap(results),
+    );
+
+    return results;
   }
 
   async findAllPaginated({
@@ -148,14 +198,26 @@ export class EventsService {
     }
     return this.sequelize.transaction(async () => {
       const tagClauseParams = this.getTagsClauseParams(tags);
-      const whereClause = this.getWhereClause(
-        tagClauseParams,
-        category,
-        owningPartnerIds,
-        verifiedOnly,
+      const { whereClause, replacements: whereClauseReplacements } =
+        this.getWhereClause(
+          tagClauseParams,
+          category,
+          owningPartnerIds,
+          verifiedOnly,
+          startDate,
+          endDate,
+        );
+
+      const paginatedQueryReplacements: Record<string, unknown> = {
+        ...whereClauseReplacements,
         startDate,
         endDate,
-      );
+        offset: (requestedPage - 1) * pageSize,
+        limit: pageSize,
+      };
+      if (isNotNullOrUndefined(tagClauseParams)) {
+        paginatedQueryReplacements.tagFilter = tagClauseParams;
+      }
 
       // Sort events by the first start_time and apply pagination
       // Note, we have to sort by first_start_time in our common table expression to apply pagination correctly, but we
@@ -163,7 +225,7 @@ export class EventsService {
       // guaranteed to stay the same.
       // We've also added a secondary order by on created_at to ensure that events without start_time like
       // online resources at least sort consistently
-      const paginatedRows: EventModel[] = await this.sequelize.query(
+      const paginatedRows = (await this.sequelize.query(
         `
               with compressed_event as (
                 SELECT
@@ -175,7 +237,7 @@ export class EventsService {
                   ${whereClause}
               GROUP BY (events.id)
               ORDER BY first_start_time DESC, "createdAt" DESC
-              OFFSET ${(requestedPage - 1) * pageSize} LIMIT ${pageSize} )
+              OFFSET :offset LIMIT :limit )
               SELECT events.*
               FROM compressed_event
                        JOIN events ON events.id = compressed_event.id
@@ -184,14 +246,9 @@ export class EventsService {
         {
           type: QueryTypes.SELECT,
           model: EventModel,
-          replacements: {
-            tagFilter: tagClauseParams,
-            categoryFilter: category,
-            startDate,
-            endDate,
-          },
+          replacements: paginatedQueryReplacements,
         },
-      );
+      )) as EventModel[];
 
       // Fill back in nested models date_times and venues
       const dateTimes = await this.dateTimeVenueModel.findAll({
@@ -232,9 +289,23 @@ export class EventsService {
             })
           : [];
 
+      // must run before buildVenuePartnerMap
+      this.populateDateTimesAndVenuesForPaginatedEvents(
+        paginatedRows,
+        dateTimes,
+      );
+
+      // Fetch venue-partner mappings (requires event.venues to be populated first)
+      const venueIdToPartnershipMap = await this.buildVenuePartnerMap(
+        paginatedRows,
+      );
+
       paginatedRows.forEach((event) => {
-        const dateTimesForEvent = dateTimes.filter(
-          ({ event_id }) => event_id === event.id,
+        // fills in via side effect partners on the associated venues,
+        // this must be done before we apply the isOwner check
+        this.populateVenuePartnersForSingleEvent(
+          event,
+          venueIdToPartnershipMap,
         );
 
         // Find and assign the corresponding partner
@@ -256,13 +327,13 @@ export class EventsService {
           event.organizer_contact = undefined;
         }
 
-        event.date_times = dateTimesForEvent;
         event.owning_partner = partnerForEvent;
       });
 
       const totalCount = await this.getEventCountWithFilters(
         tagClauseParams,
         whereClause,
+        whereClauseReplacements,
         startDate,
         endDate,
       );
@@ -503,6 +574,101 @@ export class EventsService {
     }
   }
 
+  // Warning: mutates each event in place — assigns `date_times` and deduplicated
+  // `venues` from the datetime query rows. Must run before `buildVenuePartnerMap`
+  // so venue IDs are present for partner lookups
+  private populateDateTimesAndVenuesForPaginatedEvents(
+    events: EventModel[],
+    dateTimes: DatetimeVenueModel[],
+  ): void {
+    events.forEach((event) => {
+      const dateTimesForEvent = dateTimes.filter(
+        ({ event_id }) => event_id === event.id,
+      );
+      event.date_times = dateTimesForEvent;
+
+      const uniqueVenues = new Map<string, VenueModel>();
+      dateTimesForEvent.forEach((dt) => {
+        if (dt.venue && !uniqueVenues.has(dt.venue.id)) {
+          uniqueVenues.set(dt.venue.id, dt.venue);
+        }
+      });
+      event.venues = [...uniqueVenues.values()];
+    });
+  }
+
+  // Warning: This works via side effect, setting the partners array on even venues
+  private populateVenuePartners(
+    events: EventModel[],
+    venueIdToPartnershipMap: Map<string, PartnerModel[]>,
+  ): void {
+    events.forEach((event) => {
+      (event.venues ?? []).forEach((venue) => {
+        venue.partners = venueIdToPartnershipMap.get(venue.id) ?? [];
+      });
+    });
+  }
+
+  // Warning: This works via side effect, setting the partners array on even venues
+  private populateVenuePartnersForSingleEvent(
+    event: EventModel,
+    venueIdToPartnershipMap: Map<string, PartnerModel[]>,
+  ): void {
+    return this.populateVenuePartners([event], venueIdToPartnershipMap);
+  }
+
+  private async buildVenuePartnerMap(
+    events: EventModel[],
+  ): Promise<Map<string, PartnerModel[]>> {
+    const venueIds = [
+      ...new Set(
+        events
+          .flatMap(({ venues }) => (venues ?? []).map(({ id }) => id))
+          .filter(isNotNullOrUndefined),
+      ),
+    ];
+
+    if (venueIds.length === 0) {
+      return new Map();
+    }
+
+    const mappings = await this.sequelize.query<{
+      venue_id: string;
+      partner_id: string;
+    }>(
+      `SELECT vpm.venue_id, vpm.partner_id
+       FROM venues_partners_mappings vpm
+       WHERE vpm.venue_id IN (:venueIds)`,
+      { replacements: { venueIds }, type: QueryTypes.SELECT },
+    );
+
+    const partnerIds = [
+      ...new Set(mappings.map(({ partner_id }) => partner_id)),
+    ];
+
+    const partners =
+      partnerIds.length > 0
+        ? await this.partnerModel.findAll({
+            where: { id: { [Op.in]: partnerIds } },
+          })
+        : [];
+
+    const partnerMap = new Map(partners.map((p) => [p.id, p]));
+
+    const venueMap = new Map<string, PartnerModel[]>();
+    mappings.forEach(({ venue_id, partner_id }) => {
+      const partner = partnerMap.get(partner_id);
+      if (!partner) return;
+
+      if (!venueMap.has(venue_id)) {
+        venueMap.set(venue_id, []);
+      }
+      venueMap.get(venue_id).push(partner);
+    });
+
+    return venueMap;
+  }
+
   private getTagsClauseParams(tags: string[] | string): Nullable<string> {
     const tagList = ensureEmbedQueryStringIsArray(tags);
 
@@ -530,22 +696,32 @@ export class EventsService {
     verifiedOnly: boolean,
     startDate?: Date,
     endDate?: Date,
-  ): string {
+  ): { whereClause: string; replacements: Record<string, unknown> } {
+    const replacements: Record<string, unknown> = {};
+
     const tagClause = isNotNullOrUndefined(tagClauseParams)
       ? `:tagFilter && events.tags`
       : null;
 
-    const categoryClause = isNotNullOrUndefined(category)
-      ? `events.category = '${category}'`
-      : null;
+    let categoryClause: Nullable<string> = null;
+    if (isNotNullOrUndefined(category)) {
+      replacements.category = category;
+      categoryClause = `events.category = :category`;
+    }
 
     const partnerIdsArray = ensureEmbedQueryStringIsArray(owningPartnerIds);
-    const partnerIdsClause =
-      partnerIdsArray.length > 0
-        ? `events.owning_partner_id IN (${partnerIdsArray
-            .map((id) => `'${id}'`)
-            .join(', ')})`
-        : null;
+    let partnerIdsClause: Nullable<string> = null;
+    if (partnerIdsArray.length > 0) {
+      replacements.filterPartnerIdsOwning = partnerIdsArray;
+      replacements.filterPartnerIdsVenue = partnerIdsArray;
+      partnerIdsClause = `(events.owning_partner_id IN (:filterPartnerIdsOwning)
+           OR EXISTS (
+             SELECT 1 FROM datetime_venue dv2
+             JOIN venues_partners_mappings vpm ON vpm.venue_id = dv2.venue_id
+             WHERE dv2.event_id = events.id
+             AND vpm.partner_id IN (:filterPartnerIdsVenue)
+           ))`;
+    }
 
     const verifiedOnlyClause = verifiedOnly ? 'verified = true' : null;
 
@@ -563,18 +739,31 @@ export class EventsService {
     ].filter((clause) => isNotNullOrUndefined(clause));
 
     if (clauses.length === 0) {
-      return '';
-    } else {
-      return `WHERE ${clauses.join(' AND ')}`;
+      return { whereClause: '', replacements };
     }
+
+    return {
+      whereClause: `WHERE ${clauses.join(' AND ')}`,
+      replacements,
+    };
   }
 
   private async getEventCountWithFilters(
-    tagClauseParams: string,
+    tagClauseParams: Nullable<string>,
     whereClause: string,
+    whereClauseReplacements: Record<string, unknown>,
     startDate?: Date,
     endDate?: Date,
   ): Promise<number> {
+    const replacements: Record<string, unknown> = {
+      ...whereClauseReplacements,
+      startDate,
+      endDate,
+    };
+    if (isNotNullOrUndefined(tagClauseParams)) {
+      replacements.tagFilter = tagClauseParams;
+    }
+
     const results: { count: string }[] = await this.sequelize.query(
       `
       with compressed_event as (
@@ -592,11 +781,7 @@ export class EventsService {
       `,
       {
         type: QueryTypes.SELECT,
-        replacements: {
-          tagFilter: tagClauseParams,
-          startDate,
-          endDate,
-        },
+        replacements,
       },
     );
 

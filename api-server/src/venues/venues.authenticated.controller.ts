@@ -5,6 +5,7 @@ import {
   Delete,
   Header,
   Param,
+  Post,
   Put,
   UseGuards,
 } from '@nestjs/common';
@@ -20,7 +21,9 @@ import { SingleVenueResponse } from './dto/single-venue-response';
 import { VenuesService } from './venues.service';
 import FindByIdParams from '../dto/find-by-id-params';
 import { UpdateVenueRequest } from './dto/create-update-venue-request';
+import { AssociateVenuePartnerRequest } from './dto/associate-venue-partner-request';
 import isNullUndefinedOrEmpty from '../utils/isNullUndefinedOrEmpty';
+import { venueModelToVenueDTO } from './dto/venue-model-to-venue-dto';
 
 @Controller(`${VERSION_1_URI}/authenticated/venues`)
 @ApiTags('venues -- authenticated')
@@ -45,7 +48,7 @@ export default class VenuesAuthenticatedController {
 
     return this.venuesService
       .softDelete(id)
-      .then((venue) => new SingleVenueResponse({ venue }));
+      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
   }
 
   @Put('/:id/activate')
@@ -63,7 +66,7 @@ export default class VenuesAuthenticatedController {
 
     return this.venuesService
       .reactivate(id)
-      .then((venue) => new SingleVenueResponse({ venue }));
+      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
   }
 
   @Put('/:id')
@@ -85,7 +88,63 @@ export default class VenuesAuthenticatedController {
     const { id } = params;
 
     return this.venuesService.update(id, updatedValues).then((venue) => {
-      return new SingleVenueResponse({ venue });
+      return new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) });
     });
+  }
+
+  @Post('partner-associate')
+  @ApiOperation({ summary: 'Associate a venue with a partner (admin only)' })
+  @ApiResponse({
+    status: 201,
+    description: 'Venue successfully associated with partner',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - validation failed',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Venue or partner not found',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Venue is already associated with this partner',
+  })
+  async associateVenueWithPartner(
+    @Body() request: AssociateVenuePartnerRequest,
+  ): Promise<{ status: string; message: string }> {
+    await this.venuesService.associateVenueWithPartner(request);
+
+    return {
+      status: 'success',
+      message: `Venue ${request.venue_id} successfully associated with partner ${request.partner_id}`,
+    };
+  }
+
+  @Post('partner-disassociate')
+  @ApiOperation({
+    summary: 'Remove association between a venue and a partner (admin only)',
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'Venue successfully disassociated from partner',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - validation failed',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Venue or partner not found, or association does not exist',
+  })
+  async disassociateVenueFromPartner(
+    @Body() request: AssociateVenuePartnerRequest,
+  ): Promise<{ status: string; message: string }> {
+    await this.venuesService.disassociateVenueFromPartner(request);
+
+    return {
+      status: 'success',
+      message: `Venue ${request.venue_id} successfully disassociated from partner ${request.partner_id}`,
+    };
   }
 }

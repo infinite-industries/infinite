@@ -1,10 +1,10 @@
 import { ResponseWrapper } from '../../dto/response-wrapper';
 import isNotNullOrUndefined from '../../utils/is-not-null-or-undefined';
 import cloneAttributes from '../../utils/clone-attributes';
-import { VenueModel } from '../models/venue.model';
+import { VenueDTO } from './venue-dto';
 
 export class VenuesResponse extends ResponseWrapper {
-  venues: VenueModel[];
+  venues: VenueDTO[];
 
   constructor(copy?: Partial<VenuesResponse>) {
     super();
