@@ -111,11 +111,11 @@
     margin-top: 105px;
   }
 
-  nav >>> #nav-list {
+  nav :deep(#nav-list) {
     padding-left: 24px;
   }
 
-  nav >>> #nav-list li {
+  nav :deep(#nav-list li) {
     list-style: none;
     font-family: 'Open Sans', sans-serif;
     font-size: 1.2em;
@@ -124,19 +124,19 @@
   }
 
 @media only screen and (max-width: 480px) {
-    nav >>> #nav-list li {
+    nav :deep(#nav-list li) {
       font-size: 1.4em;
       padding: 10px;
     }
   }
 
-  nav >>> #nav-list a {
+  nav :deep(#nav-list a) {
     color: white;
     text-decoration: none;
     cursor: pointer;
   }
 
-  nav >>> #nav-list a:hover {
+  nav :deep(#nav-list a:hover) {
     text-decoration: underline;
   }
 
