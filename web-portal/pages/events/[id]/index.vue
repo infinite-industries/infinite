@@ -22,7 +22,7 @@
   if (error.value) {
     // TODO: current implementation doesn't neccessarily 404;
     // TBD what to do
-    throw createError({ statusCode: error.value.statusCode, message: 'Not Found' })
+    throw createError({ status: error.value.status, statusText: 'Not Found' })
   }
 
   // construct head metadata

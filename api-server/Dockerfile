@@ -1,4 +1,4 @@
-FROM node:iron
+FROM node:jod
 
 ADD ./ /api-server
 WORKDIR /api-server
