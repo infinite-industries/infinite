@@ -489,7 +489,7 @@
         })
           .then(() => {
             if (this.user_role === 'partner-admin') {
-                this.$router.push('/partner-admin')
+              this.$router.push('/partner-admin')
             } else {
               this.$router.push('/admin')
             }
@@ -653,16 +653,6 @@
           return false
         }
       },
-      addDate: function () {
-        this.calendar_event.additional_dates.push({ time_start: '', time_end: '', title: `Day ${this.calendar_event.additional_dates.length + 2}` })
-        this.calendar_event.multi_day = true
-      },
-      removeAdditionalDate: function (index) {
-        this.calendar_event.additional_dates.splice(index, 1)
-        if (this.calendar_event.additional_dates.length === 0) {
-          this.calendar_event.multi_day = false
-        }
-      },
       onDateTimeVenueChanged: function() {
         this.doTimeAndLocationExistingEventDetection()
       },
@@ -783,7 +773,7 @@
       },
 
       isAdminOrPartnerAdmin: function() {
-        return this.user_role === 'admin' || this.user_role === 'partner-admin' 
+        return this.user_role === 'admin' || this.user_role === 'partner-admin'
       },
 
       suggestedTags: function () {
