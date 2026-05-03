@@ -393,6 +393,12 @@
     }
   })
 
+  const createFormEvent = (event) => Object.assign({}, event, {
+    condition: event.condition ? event.condition.map(t => t) : [],
+    date_times: event.date_times ? event.date_times.map(dt => ({ ...dt })) : [],
+    tags: event.tags ? event.tags.map(t => t) : []
+  })
+
   export default {
     props: ['event_id', 'user_role', 'user_action', 'owningPartnerId'],
     // user_role --> admin, venue, regular
@@ -425,11 +431,7 @@
     },
     created: function () {
       const new_event = this.$store.getters.GetCurrentEvent
-      this.calendar_event = Object.assign({}, new_event, {
-        condition: new_event.condition ? new_event.condition.map(t => t) : [],
-        date_times: new_event.date_times.map(dt => ({ ...dt })),
-        tags: new_event.tags ? new_event.tags.map(t => t) : []
-      })
+      this.calendar_event = createFormEvent(new_event);
     },
     mounted() {
       this.doTimeAndLocationExistingEventDetection()
@@ -437,7 +439,8 @@
     methods: {
       /** @public */
       isDirty: function () {
-        return !this.isEqual(this.calendar_event, this.$store.getters.GetCurrentEvent)
+        const formattedSavedEvent = createFormEvent(this.$store.getters.GetCurrentEvent);
+        return !this.isEqual(this.calendar_event, formattedSavedEvent);
       },
       isEqual: function(x, y) {
         const ok = Object.keys, tx = typeof x, ty = typeof y;
