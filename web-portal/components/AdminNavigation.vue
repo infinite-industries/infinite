@@ -9,11 +9,12 @@
     <li>
       <nuxt-link to="/admin-announcement-edit">Announcements</nuxt-link>
     </li>
-
     <li>
       <nuxt-link to="/admin-venue-edit">Venues</nuxt-link>
     </li>
-
+    <li>
+      <nuxt-link to="/admin-partner-edit">Manage Partners</nuxt-link>
+    </li>
     <AuthState v-slot="{ loggedIn }">
       <li v-if="loggedIn">
         <nuxt-link @click="onLogoutClick">Logout</nuxt-link>
