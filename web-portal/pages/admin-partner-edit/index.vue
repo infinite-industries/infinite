@@ -18,6 +18,7 @@
           v-for="partner in pageItems"
           :key="partner.id"
           :partner="partner"
+          @upload-logo="handleLogoUpload"
         />
       </Pagination>
     </v-app>
@@ -31,6 +32,7 @@
   import PartnerCard from '~/components/admin-partner-edit/PartnerCard.vue'
 
   const store = useStore()
+  const { $apiService } = useNuxtApp()
 
   // --- State & Computed ---
 
@@ -47,6 +49,17 @@
   })
 
   const maxNumberOfPageShortcuts = 5
+
+  const handleLogoUpload = async ({ partnerId, type, file }) => {
+    console.log(`Uploading ${type} logo for partner ${partnerId}:`, file.name)
+
+    try {
+      await $apiService.uploadPartnerLogo(partnerId, type, file)
+      await store.dispatch(FETCH_PARTNERS)
+    } catch (error) {
+      console.error('Failed to upload partner logo:', error)
+    }
+  }
 
   // --- Lifecycle ---
 
