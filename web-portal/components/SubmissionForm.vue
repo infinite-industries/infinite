@@ -91,14 +91,14 @@
 
       <!-- Venue -->
       <v-row wrap>
-        <v-col col="12" sm="3">
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
         </v-col>
-        <v-col col="12" sm="8">
+        <v-col cols="12" sm="8">
           <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="calendar_event.venue_id" @selectVenue="selectVenue"></venue-picker>
         </v-col>
-        <v-col col="0" sm="3"></v-col>
-        <v-col col="12" sm="8">
+        <v-col cols="0" sm="3"></v-col>
+        <v-col cols="12" sm="8">
           <p style="margin: 10px 0px 10px 0px; text-align: center;">OR</p>
         </v-col>
       </v-row>
