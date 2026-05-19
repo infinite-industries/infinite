@@ -57,8 +57,8 @@
   const emit = defineEmits(['upload-logo'])
 
   const logoConfig = [
-    { type: 'light', label: 'Light Logo', key: 'lightLogoUrl', bgClass: 'img-wrapper-light' },
-    { type: 'dark', label: 'Dark Logo', key: 'darkLogoUrl', bgClass: 'img-wrapper-dark' }
+    { type: 'light', label: 'Light Logo', key: 'light_logo_url', bgClass: 'img-wrapper-light' },
+    { type: 'dark', label: 'Dark Logo', key: 'dark_logo_url', bgClass: 'img-wrapper-dark' }
   ]
 
   const logoInputs = ref({})
