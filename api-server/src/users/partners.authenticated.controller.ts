@@ -56,8 +56,14 @@ export class PartnersAuthenticatedController {
     if (!['light', 'dark'].includes(type)) {
       throw new BadRequestException('type must be either "light" or "dark"');
     }
-
-    const filepath = type === 'light' ? 'light-logo' : 'dark-logo'; // TODO: how is this done elsewhere?
+    const now = new Date();
+    // Add uploaded timestamp to filename as cheap & nondestructive logo versioning
+    const datePart = now.toLocaleDateString('en-CA'); // YYYY-MM-DD
+    const timePart = now.toLocaleTimeString('en-GB'); // HH:mm:ss
+    const filepath =
+      type === 'light'
+        ? `light-logo-${datePart}_${timePart}`
+        : `dark-logo-${datePart}_${timePart}`;
     const folder = `partner-${id}`;
     const savedImagePath = await this.uploadsService.saveUncompressedImage(
       file,
