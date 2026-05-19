@@ -43,7 +43,7 @@
     "axios": "^0.21.1",
     "class-transformer": "^0.3.1",
     "dotenv": "^8.2.0",
-    "jsonwebtoken": "^9.0.0 ",
+    "jsonwebtoken": "^9.0.0",
     "moment": "~2.29.1",
     "moment-timezone": "~0.5.33",
     "nest-winston": "^1.9.1",
@@ -55,7 +55,7 @@
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.1",
     "sequelize-typescript": "^2.1.5",
-    "slack-notify": "^2.0.6 ",
+    "slack-notify": "^2.0.6",
     "swagger-ui-express": "^4.6.2",
     "uuid": "^8.3.0",
     "winston": "^3.3.3"

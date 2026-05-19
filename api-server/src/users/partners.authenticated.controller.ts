@@ -59,7 +59,7 @@ export class PartnersAuthenticatedController {
     const now = new Date();
     // Add uploaded timestamp to filename as cheap & nondestructive logo versioning
     const datePart = now.toLocaleDateString('en-CA'); // YYYY-MM-DD
-    const timePart = now.toLocaleTimeString('en-GB'); // HH:mm:ss
+    const timePart = now.toLocaleTimeString('en-GB').replace(/:/g, '-'); // HH-mm-ss
     const filepath =
       type === 'light'
         ? `light-logo-${datePart}_${timePart}`

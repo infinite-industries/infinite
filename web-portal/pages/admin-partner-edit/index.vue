@@ -51,11 +51,9 @@
   const maxNumberOfPageShortcuts = 5
 
   const handleLogoUpload = async ({ partnerId, type, file }) => {
-    console.log(`Uploading ${type} logo for partner ${partnerId}:`, file.name)
-
     try {
       await $apiService.uploadPartnerLogo(partnerId, type, file)
-      await store.dispatch(FETCH_PARTNERS)
+      await store.dispatch(FETCH_PARTNERS, { apiService: $apiService })
     } catch (error) {
       console.error('Failed to upload partner logo:', error)
     }
@@ -64,7 +62,7 @@
   // --- Lifecycle ---
 
   onMounted(async () => {
-    await store.dispatch(FETCH_PARTNERS)
+    await store.dispatch(FETCH_PARTNERS, { apiService: $apiService })
   })
 
   // --- Meta ---
