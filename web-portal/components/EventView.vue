@@ -92,9 +92,8 @@
                 <span>Tweet</span>
               </a>
               <div
-                v-if="event.bitly_link"
                 class="ii-social-button ii-copy-btn"
-                @click="copyBitlyLink"
+                @click="copyLink"
               >
                 <ii-link-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
                 <span>Copy Link</span>
@@ -243,17 +242,18 @@
       toggleShare() {
         this.showShareDropdown = !this.showShareDropdown
       },
-      copyBitlyLink() {
+      copyLink() {
         if ("clipboard" in navigator) {
-          navigator.clipboard.writeText(this.event.bitly_link).then(() => {
-            console.info('Copied to clipboard:', this.event.bitly_link)
+          const link = this.$urlFor(`/events/${this.event.id}`)
+          navigator.clipboard.writeText(link).then(() => {
+            console.info('Copied to clipboard:', link)
             window.alert('Copied the URL. Now you can paste it into emails, tweets or any other announcements. Enjoy!')
           }).catch((e) => {
             console.error('Copy error:', e)
-            window.alert('We were unable to copy URL. Here it is for reference:\n' + this.event.bitly_link)
+            window.alert('We were unable to copy URL. Here it is for reference:\n' + link)
           })
         } else {
-          window.alert('We were unable to copy URL. Here it is for reference:\n' + this.event.bitly_link)
+          window.alert('We were unable to copy URL. Here it is for reference:\n' + link)
         }
       },
     },
