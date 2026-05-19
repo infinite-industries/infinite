@@ -1,7 +1,7 @@
 
 export default defineNuxtPlugin({
   name: 'api-service',
-  async setup (nuxtApp) {
+  async setup(nuxtApp) {
     const { user } = useUserSession()
 
     return {
@@ -59,5 +59,13 @@ class ApiService {
     data.append('file', file)
 
     return this.post('/uploads/event-image', data)
+  }
+
+  uploadPartnerLogo(partnerId, type, file) {
+    const data = new FormData()
+    data.append('type', type)
+    data.append('file', file)
+
+    return this.post(`/authenticated/partners/${partnerId}/logo`, data)
   }
 }

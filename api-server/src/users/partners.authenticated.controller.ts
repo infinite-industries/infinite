@@ -1,7 +1,18 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+  UploadedFile,
+  UseInterceptors,
+  BadRequestException,
+} from '@nestjs/common';
 import { VERSION_1_URI } from '../utils/versionts';
 import {
   ApiBearerAuth,
+  ApiConsumes,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -12,6 +23,8 @@ import { CreatePartnerRequest } from './dto/create-partner-request';
 import { AssociateUserPartnerRequest } from './dto/associate-user-partner-request';
 import { PartnerDTO } from './dto/partner-dto';
 import { PartnersListResponse } from './dto/partners-list-response';
+import { UploadsService } from '../uploads/uploads.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller(`${VERSION_1_URI}/authenticated/partners`)
 @UseGuards(AdminAuthGuard)
@@ -19,7 +32,46 @@ import { PartnersListResponse } from './dto/partners-list-response';
 @ApiBearerAuth()
 @ApiResponse({ status: 403, description: 'Forbidden' })
 export class PartnersAuthenticatedController {
-  constructor(private readonly partnersService: PartnersService) {}
+  constructor(
+    private readonly partnersService: PartnersService,
+    private readonly uploadsService: UploadsService,
+  ) { }
+
+  @Post(':id/logo')
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({
+    summary: 'Upload a partner logo and attach it to the partner',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Partner logo uploaded and partner updated successfully',
+    type: PartnerDTO,
+  })
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadPartnerLogo(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Body('type') type: 'light' | 'dark',
+  ): Promise<PartnerDTO> {
+    if (!['light', 'dark'].includes(type)) {
+      throw new BadRequestException('type must be either "light" or "dark"');
+    }
+
+    const filepath = type === 'light' ? 'light-logo' : 'dark-logo'; // TODO: how is this done elsewhere?
+    const folder = `partner_${id}`;
+    const s3ImagePath = await this.uploadsService.saveUncompressedImage(
+      file,
+      filepath,
+      folder,
+    );
+    const partner = await this.partnersService.updatePartnerLogo(
+      id,
+      type,
+      s3ImagePath,
+    );
+
+    return new PartnerDTO(partner);
+  }
 
   @Get()
   @ApiOperation({ summary: 'Get all partners (admin only)' })

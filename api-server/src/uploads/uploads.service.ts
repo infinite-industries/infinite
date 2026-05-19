@@ -7,7 +7,7 @@ import {
   INFINITE_API_BASE_URL,
 } from '../constants';
 import { v4 as uuid } from 'uuid';
-import { PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS } from './uploads.module';
+import { PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS } from './uploads.constants';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { isNullOrUndefined } from '../utils';
 import { S3 } from '@aws-sdk/client-s3';
@@ -43,6 +43,22 @@ export class UploadsService {
     }
   }
 
+  async saveUncompressedImage(
+    img: Express.Multer.File,
+    filename: string,
+    subpath: string,
+  ) {
+    if (isNullOrUndefined(AWS_S3_UPLOADS_BUCKET)) {
+      console.debug(
+        'using local drive to persist image uploads, this should only be used for local testing',
+      );
+
+      return this.saveToLocal(img.buffer, filename, subpath);
+    } else {
+      return this.saveToS3(img.buffer, filename);
+    }
+  }
+
   private async resizeAndCompress(
     imgFile: Express.Multer.File,
   ): Promise<Buffer> {
@@ -57,11 +73,15 @@ export class UploadsService {
     return imageInProcess.webp().toBuffer();
   }
 
-  private saveToLocal(imgBuffer: Buffer): Promise<string> {
-    const subPath = 'event-images';
+  private saveToLocal(
+    imgBuffer: Buffer,
+    filename?: string,
+    subpath?: string,
+  ): Promise<string> {
+    const subPath = subpath ? subpath : 'event-images';
 
     return new Promise((resolve, reject) => {
-      const imageName = this.generateNewImageName();
+      const imageName = filename ? filename : this.generateNewImageName();
 
       // wx flag mitigates the possibility of clobbering an existing file
       // (will error out on write)
@@ -80,22 +100,27 @@ export class UploadsService {
     });
   }
 
-  private async saveToS3(imageBuffer: Buffer): Promise<string> {
+  private async saveToS3(
+    imageBuffer: Buffer,
+    filename?: string,
+    subpath?: string,
+  ): Promise<string> {
     const s3 = new S3({ region: AWS_REGION });
-
-    const imageName = `uploads/${this.generateNewImageName()}`;
+    const filepath = filename ? filename : this.generateNewImageName();
+    const folder = subpath ? subpath : 'uploads';
+    const imagePath = `${folder}/${filepath}`;
 
     try {
       await s3.putObject({
         Body: imageBuffer,
         Bucket: AWS_S3_UPLOADS_BUCKET,
-        Key: imageName,
+        Key: imagePath,
       });
 
-      return `https://${AWS_S3_UPLOADS_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${imageName}`;
+      return `https://${AWS_S3_UPLOADS_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${imagePath}`;
     } catch (ex) {
       this.logger.error(
-        `failed to upload an image to S3: "${imageName}" -> bucket: "${AWS_S3_UPLOADS_BUCKET}"`,
+        `failed to upload an image to S3: "${imagePath}" -> bucket: "${AWS_S3_UPLOADS_BUCKET}"`,
       );
       throw ex;
     }
