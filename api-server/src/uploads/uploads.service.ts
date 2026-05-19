@@ -120,7 +120,7 @@ export class UploadsService {
     const filepath = filename
       ? `${filename}.${IMAGE_EXTENSION}`
       : this.generateNewImageName();
-    const folder = subpath ? subpath : 'uploads';
+    const folder = subpath ? `uploads/${subpath}` : 'uploads';
     const imagePath = `${folder}/${filepath}`;
 
     try {
