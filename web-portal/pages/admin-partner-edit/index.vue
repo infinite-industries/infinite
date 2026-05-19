@@ -37,7 +37,7 @@
   // --- State & Computed ---
 
   const isLoadingUser = computed(() => store.getters.GetUserDataLoading)
-  const isFetchingPartners = computed(() => store.state.partner.getPartnersQuery?.isLoading)
+  const isFetchingPartners = computed(() => store.state.partner.getPartnersQuery?.isFetching)
 
   const partners = computed(() => {
     const data = store.state.partner.getPartnersQuery?.data

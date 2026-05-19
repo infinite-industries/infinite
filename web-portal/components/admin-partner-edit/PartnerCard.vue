@@ -94,7 +94,6 @@
 </script>
 
 <style scoped>
-/* CSS KEPT EXACTLY AS IS TO PRESERVE OUTLINES */
 .partner-card {
   margin-bottom: 1rem;
   border: 2px solid #333;
@@ -128,7 +127,6 @@ label.partner-label {
 }
 
 .logo-block {
-  /* Allows blocks to grow equally to fill the row */
   flex: 1;
   min-width: 250px;
 }

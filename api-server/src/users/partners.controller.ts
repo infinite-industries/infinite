@@ -7,23 +7,7 @@ import { PartnerDTO } from './dto/partner-dto';
 @Controller(`${VERSION_1_URI}/partners`)
 @ApiTags('partners')
 export class PartnersController {
-  constructor(private readonly partnersService: PartnersService) { }
-
-  @Get()
-  @ApiOperation({
-    summary: 'Get all partners',
-    description:
-      'Retrieves all partners. This endpoint is publicly accessible and does not require authentication.',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Partners retrieved successfully',
-    type: [PartnerDTO],
-  })
-  async findAll(): Promise<PartnerDTO[]> {
-    const partners = await this.partnersService.findAll();
-    return partners.map((partner) => new PartnerDTO(partner));
-  }
+  constructor(private readonly partnersService: PartnersService) {}
 
   @Get('name/:name')
   @ApiOperation({

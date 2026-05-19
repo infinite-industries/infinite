@@ -42,7 +42,7 @@ export const mutations = {
     state.getPartnersQuery.error = null;
   },
   PARTNERS_FETCH_SUCCESS(state, data) {
-    state.getPartnersQuery.data = Array.isArray(data) ? data : [];
+    state.getPartnersQuery.data = Array.isArray(data?.partners) ? data.partners : [];
     state.getPartnersQuery.isFetching = false;
     state.getPartnersQuery.isSuccess = true;
   },
@@ -75,7 +75,7 @@ export const actions = {
   FetchPartners: function (context) {
     context.commit('PARTNERS_FETCH_START')
 
-    return useNuxtApp().$apiService.get('/partners')
+    return useNuxtApp().$apiService.get('/authenticated/partners')
       .then((data) => {
         context.commit('PARTNERS_FETCH_SUCCESS', data)
       })
