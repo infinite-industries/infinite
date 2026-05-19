@@ -9,7 +9,7 @@ import { PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS } from './uploads.constants';
     // static file server for serving local image uploads (you should really only use this upload strategy for local dev)
     ServeStaticModule.forRoot({
       rootPath: PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS + '/',
-      serveRoot: '/uploads/event-images',
+      serveRoot: '/uploads',
       serveStaticOptions: { index: false },
     }),
   ],

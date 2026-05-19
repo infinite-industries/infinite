@@ -58,8 +58,8 @@ export class PartnersAuthenticatedController {
     }
 
     const filepath = type === 'light' ? 'light-logo' : 'dark-logo'; // TODO: how is this done elsewhere?
-    const folder = `partner_${id}`;
-    const s3ImagePath = await this.uploadsService.saveUncompressedImage(
+    const folder = `partner-${id}`;
+    const savedImagePath = await this.uploadsService.saveUncompressedImage(
       file,
       filepath,
       folder,
@@ -67,7 +67,7 @@ export class PartnersAuthenticatedController {
     const partner = await this.partnersService.updatePartnerLogo(
       id,
       type,
-      s3ImagePath,
+      savedImagePath,
     );
 
     return new PartnerDTO(partner);

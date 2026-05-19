@@ -55,7 +55,7 @@ export class UploadsService {
 
       return this.saveToLocal(img.buffer, filename, subpath);
     } else {
-      return this.saveToS3(img.buffer, filename);
+      return this.saveToS3(img.buffer, filename, subpath);
     }
   }
 
@@ -79,24 +79,35 @@ export class UploadsService {
     subpath?: string,
   ): Promise<string> {
     const subPath = subpath ? subpath : 'event-images';
+    const dirPath = join(PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS, subPath);
 
     return new Promise((resolve, reject) => {
-      const imageName = filename ? filename : this.generateNewImageName();
+      const imageName = filename
+        ? `${filename}.${IMAGE_EXTENSION}`
+        : this.generateNewImageName();
 
-      // wx flag mitigates the possibility of clobbering an existing file
-      // (will error out on write)
-      fs.writeFile(
-        join(PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS, imageName),
-        imgBuffer,
-        { flag: 'wx' },
-        (err) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(`${INFINITE_API_BASE_URL}/uploads/${subPath}/${imageName}`);
-          }
-        },
-      );
+      // ensure the target directory exists
+      fs.mkdir(dirPath, { recursive: true }, (mkdirErr) => {
+        if (mkdirErr) {
+          return reject(mkdirErr);
+        }
+
+        // wx flag mitigates the possibility of clobbering an existing file
+        // (will error out on write)
+        const savedFilePath = `${INFINITE_API_BASE_URL}/uploads/${subPath}/${imageName}`;
+        fs.writeFile(
+          join(dirPath, imageName),
+          imgBuffer,
+          { flag: 'wx' },
+          (err) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(savedFilePath);
+            }
+          },
+        );
+      });
     });
   }
 
@@ -106,7 +117,9 @@ export class UploadsService {
     subpath?: string,
   ): Promise<string> {
     const s3 = new S3({ region: AWS_REGION });
-    const filepath = filename ? filename : this.generateNewImageName();
+    const filepath = filename
+      ? `${filename}.${IMAGE_EXTENSION}`
+      : this.generateNewImageName();
     const folder = subpath ? subpath : 'uploads';
     const imagePath = `${folder}/${filepath}`;
 
