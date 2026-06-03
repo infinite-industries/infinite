@@ -59,12 +59,13 @@ export class PartnersAuthenticatedController {
     const folder = `partner-${id}`;
     // Add uploaded timestamp to filename as cheap & nondestructive logo versioning
     const now = new Date();
-    const datePart = now.toLocaleDateString('en-CA'); // YYYY-MM-DD
-    const timePart = now.toLocaleTimeString('en-GB').replace(/:/g, '-'); // HH-mm-ss
+    const dateStr = now
+      .toISOString()
+      .replace(/:/g, '-')
+      .replace(/\.\d+Z/, '');
+    console.log('dateStr', dateStr);
     const filepath =
-      type === 'light'
-        ? `light-logo-${datePart}_${timePart}`
-        : `dark-logo-${datePart}_${timePart}`;
+      type === 'light' ? `light-logo-${dateStr}` : `dark-logo-${dateStr}`;
     const savedImagePath = await this.uploadsService.saveUncompressedImage(
       file,
       filepath,

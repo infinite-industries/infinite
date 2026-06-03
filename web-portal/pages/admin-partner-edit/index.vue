@@ -53,7 +53,7 @@
   const handleLogoUpload = async ({ partnerId, type, file }) => {
     try {
       await $apiService.uploadPartnerLogo(partnerId, type, file)
-      await store.dispatch(FETCH_PARTNERS, { apiService: $apiService })
+      await store.dispatch(FETCH_PARTNERS)
     } catch (error) {
       console.error('Failed to upload partner logo:', error)
     }
@@ -62,7 +62,7 @@
   // --- Lifecycle ---
 
   onMounted(async () => {
-    await store.dispatch(FETCH_PARTNERS, { apiService: $apiService })
+    await store.dispatch(FETCH_PARTNERS)
   })
 
   // --- Meta ---

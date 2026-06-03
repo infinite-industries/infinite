@@ -72,17 +72,10 @@ export const actions = {
       }
     }
   },
-  FetchPartners: function (context, { apiService } = {}) {
+  FetchPartners: function (context) {
     context.commit('PARTNERS_FETCH_START')
 
-    if (!apiService) {
-      const error = new Error('apiService is required to fetch partner data')
-      context.commit('PARTNERS_FETCH_FAIL', error)
-      console.error(error)
-      return Promise.reject(error)
-    }
-
-    return apiService.get('/authenticated/partners')
+    return useNuxtApp().$apiService.get('/authenticated/partners')
       .then((data) => {
         context.commit('PARTNERS_FETCH_SUCCESS', data)
       })
