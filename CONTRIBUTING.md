@@ -4,9 +4,7 @@ Thank you for your interest in contributing to the project.
 
 Infinite Industries is an all-volunteer team, based in Lexington, KY, with a particular current focus on supporting the greater Lexington / Central KY-area arts and culture scene, and we welcome contributions from far and wide. We encourage you to reach out via email at [info@infinite.industries](mailto:info@infinite.industries) or via the website's [contact form](https://infinite.industries/contact).
 
-While our long-term goal is for the project to be broadly adopted / adapted to support many communities, we believe it necessary to ensure the project is well-established and self-sustaining in our local area first. This is not meant to discourage contribution: we are open to discussing interesting ideas and feature suggestions, but cannot commit to pursuing them.
-
-That said, if you believe you could build off this project to create something useful for your community, you don't need to ask our permission; we encourage you to fork the repo and go for it!
+If you believe you could build off this project to create something useful for your community, we encourage you to fork the repo and go for it!
 
 ## Project Management
 
