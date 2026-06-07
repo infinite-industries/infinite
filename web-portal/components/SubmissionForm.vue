@@ -91,14 +91,14 @@
 
       <!-- Venue -->
       <v-row wrap>
-        <v-col col="12" sm="3">
+        <v-col cols="12" sm="3">
           <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
         </v-col>
-        <v-col col="12" sm="8">
+        <v-col cols="12" sm="8">
           <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="calendar_event.venue_id" @selectVenue="selectVenue"></venue-picker>
         </v-col>
-        <v-col col="0" sm="3"></v-col>
-        <v-col col="12" sm="8">
+        <v-col cols="0" sm="3"></v-col>
+        <v-col cols="12" sm="8">
           <p style="margin: 10px 0px 10px 0px; text-align: center;">OR</p>
         </v-col>
       </v-row>
@@ -393,6 +393,12 @@
     }
   })
 
+  const createFormEvent = (event) => Object.assign({}, event, {
+    condition: event.condition ? event.condition.map(t => t) : [],
+    date_times: event.date_times ? event.date_times.map(dt => ({ ...dt })) : [],
+    tags: event.tags ? event.tags.map(t => t) : []
+  })
+
   export default {
     props: ['event_id', 'user_role', 'user_action', 'owningPartnerId'],
     // user_role --> admin, venue, regular
@@ -425,11 +431,7 @@
     },
     created: function () {
       const new_event = this.$store.getters.GetCurrentEvent
-      this.calendar_event = Object.assign({}, new_event, {
-        condition: new_event.condition ? new_event.condition.map(t => t) : [],
-        date_times: new_event.date_times.map(dt => ({ ...dt })),
-        tags: new_event.tags ? new_event.tags.map(t => t) : []
-      })
+      this.calendar_event = createFormEvent(new_event);
     },
     mounted() {
       this.doTimeAndLocationExistingEventDetection()
@@ -437,7 +439,8 @@
     methods: {
       /** @public */
       isDirty: function () {
-        return !this.isEqual(this.calendar_event, this.$store.getters.GetCurrentEvent)
+        const formattedSavedEvent = createFormEvent(this.$store.getters.GetCurrentEvent);
+        return !this.isEqual(this.calendar_event, formattedSavedEvent);
       },
       isEqual: function(x, y) {
         const ok = Object.keys, tx = typeof x, ty = typeof y;
@@ -486,7 +489,7 @@
         })
           .then(() => {
             if (this.user_role === 'partner-admin') {
-                this.$router.push('/partner-admin')
+              this.$router.push('/partner-admin')
             } else {
               this.$router.push('/admin')
             }
@@ -650,16 +653,6 @@
           return false
         }
       },
-      addDate: function () {
-        this.calendar_event.additional_dates.push({ time_start: '', time_end: '', title: `Day ${this.calendar_event.additional_dates.length + 2}` })
-        this.calendar_event.multi_day = true
-      },
-      removeAdditionalDate: function (index) {
-        this.calendar_event.additional_dates.splice(index, 1)
-        if (this.calendar_event.additional_dates.length === 0) {
-          this.calendar_event.multi_day = false
-        }
-      },
       onDateTimeVenueChanged: function() {
         this.doTimeAndLocationExistingEventDetection()
       },
@@ -780,7 +773,7 @@
       },
 
       isAdminOrPartnerAdmin: function() {
-        return this.user_role === 'admin' || this.user_role === 'partner-admin' 
+        return this.user_role === 'admin' || this.user_role === 'partner-admin'
       },
 
       suggestedTags: function () {

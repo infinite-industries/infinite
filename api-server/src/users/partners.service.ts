@@ -49,6 +49,26 @@ export class PartnersService {
     }
   }
 
+  async updatePartnerLogo(
+    partnerId: string,
+    type: 'light' | 'dark',
+    imagePath: string,
+  ): Promise<PartnerModel> {
+    const partner = await this.partnersModel.findByPk(partnerId)
+    if (!partner) {
+      throw new NotFoundException(`Partner with ID ${partnerId} not found`)
+    }
+
+    if (type === 'light') {
+      partner.light_logo_url = imagePath
+    } else {
+      partner.dark_logo_url = imagePath
+    }
+
+    await partner.save()
+    return partner
+  }
+
   async associateUserWithPartner(
     associateRequest: AssociateUserPartnerRequest,
   ): Promise<void> {

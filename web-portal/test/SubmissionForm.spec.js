@@ -6,11 +6,6 @@ import { getEmptyCalendarEvent } from '../services/ResourceTemplateService'
 
 vi.mock('@/services/ImageUploadService')
 
-/**
- * When submission was refactored (Nov 2021) the only test case here
- * was rendered irrelevant. Keeping this for reference for future testing
- * of this component.
- */
 describe('SubmissionForm component', () => {
   let store = null
   let wrapper = null
@@ -184,6 +179,15 @@ describe('SubmissionForm component', () => {
     expect(wrapper.vm.calendar_event.condition).toEqual(['sold-out'])
   })
 
+  it('isDirty method returns false if no edits have been made', () => {
+    expect(wrapper.vm.isDirty()).toBe(false)
+  });
+
+  it('isDirty method returns true if any fields have been changed', async () => {
+    await wrapper.find('.event-mode input[type="radio"][value="online"]').setChecked(true)
+    expect(wrapper.vm.isDirty()).toBe(true)
+  });
+
   // function getFilledOutEvent() {
   //   return {
   //     'id': '',
@@ -216,7 +220,6 @@ describe('SubmissionForm component', () => {
   //     'ticket_link': '',
   //     'organizer_contact': 'chris.wininger@gmail..com',
   //     'multi_day': false,
-  //     'additional_dates': [],
   //     'venue_id': 'c2d65c4b-dee1-4449-9337-7e2de70dd1ad',
   //     'venue_name': 'Wyman, Mosciski and Wyman'
   //   }

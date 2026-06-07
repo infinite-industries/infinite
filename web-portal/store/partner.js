@@ -7,6 +7,13 @@ export const state = () => ({
   partner: null,
   // boolean
   showOnlyPartnerEvents: false,
+  // Partners list query state
+  getPartnersQuery: {
+    isFetching: false,
+    isSuccess: false,
+    error: null,
+    data: []
+  }
 })
 
 export const getters = {
@@ -15,7 +22,10 @@ export const getters = {
   },
   showOnlyPartnerEvents: (state) => {
     return state.showOnlyPartnerEvents ?? false;
-  }
+  },
+  GetActivePartners: (state) => {
+    return state.getPartnersQuery
+  },
 }
 
 export const mutations = {
@@ -25,6 +35,21 @@ export const mutations = {
   },
   SET_SHOW_ONLY_PARTNER_EVENTS: (state, payload) => {
     state.showOnlyPartnerEvents = payload && payload.toLowerCase() === "partner"
+  },
+  PARTNERS_FETCH_START(state) {
+    state.getPartnersQuery.isFetching = true;
+    state.getPartnersQuery.isSuccess = false;
+    state.getPartnersQuery.error = null;
+  },
+  PARTNERS_FETCH_SUCCESS(state, data) {
+    state.getPartnersQuery.data = Array.isArray(data?.partners) ? data.partners : [];
+    state.getPartnersQuery.isFetching = false;
+    state.getPartnersQuery.isSuccess = true;
+  },
+  PARTNERS_FETCH_FAIL(state, error) {
+    state.getPartnersQuery.isFetching = false;
+    state.getPartnersQuery.isSuccess = false;
+    state.getPartnersQuery.error = error;
   }
 }
 
@@ -34,7 +59,7 @@ export const actions = {
     if (query.partner && query.partner !== context.state.name) {
       const { data, error } = await useAsyncData('partner-fetch', () =>
         useNuxtApp().$apiService.get(`/partners/name/${query.partner}`)
-        .catch(() => null) // eat 404s to avoid breaking everything
+          .catch(() => null) // eat 404s to avoid breaking everything
       )
 
       if (error.value) {
@@ -46,5 +71,28 @@ export const actions = {
         }
       }
     }
+  },
+  FetchPartners: function (context) {
+    context.commit('PARTNERS_FETCH_START')
+
+    return useNuxtApp().$apiService.get('/authenticated/partners')
+      .then((data) => {
+        context.commit('PARTNERS_FETCH_SUCCESS', data)
+      })
+      .catch((error) => {
+        context.commit('PARTNERS_FETCH_FAIL', error)
+        // Global alert popup
+        context.commit(
+          'ui/SHOW_NOTIFICATIONS',
+          {
+            open: true,
+            message: 'Hmmm... unable to get partner data. Please contact us and we will figure out what went wrong.'
+          },
+          { root: true })
+
+        console.error(error)
+      })
   }
 }
+
+export const FETCH_PARTNERS = 'partner/FetchPartners'
