@@ -28,6 +28,22 @@
     setup ({ error }) {
       const pageNotFound = '404 Page Not Found'
       const otherError = 'An error occurred'
+      const { user } = useUserSession()
+
+      const userRole = computed(() => {
+        if (user.value?.isPartnerAdmin) {
+          return 'partner-admin'
+        } else if (user.value?.isInfiniteAdmin) {
+          return 'admin'
+        }
+        return 'regular'
+      })
+
+      onMounted(() => {
+        if(userRole.value === 'admin') {
+          console.error('Error:', error)
+        }
+      })
 
       useHead({
         title: error.status === 404 ? pageNotFound : otherError,
