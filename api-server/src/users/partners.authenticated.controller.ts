@@ -58,12 +58,12 @@ export class PartnersAuthenticatedController {
     }
     const folder = `partner-${id}`;
     // Add uploaded timestamp to filename as cheap & nondestructive logo versioning
+    // dateStr is supposed to be human readable timestamp, eg: 2026-06-07-10-22-30 (yyyy-mm-dd-hh-mm-ss)
     const now = new Date();
     const dateStr = now
       .toISOString()
       .replace(/:/g, '-')
       .replace(/\.\d+Z/, '');
-    console.log('dateStr', dateStr);
     const filepath =
       type === 'light' ? `light-logo-${dateStr}` : `dark-logo-${dateStr}`;
     const savedImagePath = await this.uploadsService.saveUncompressedImage(
