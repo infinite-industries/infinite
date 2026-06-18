@@ -18,10 +18,7 @@
 set -e
 
 DB_CONTAINER_NAME="infinite-db"
-DB_PORT="5436"
 DB_USER="postgres"
-DB_PASSWORD="xxx"
-DB_NAME="infinite-api"
 API_PORT="3003"
 WEB_PORT="7779"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -97,13 +94,7 @@ else
     if ! docker start "$DB_CONTAINER_NAME" 2>/dev/null; then
         docker rm -f "$DB_CONTAINER_NAME" 2>/dev/null || true
         echo "Starting database ..."
-        docker run --name "$DB_CONTAINER_NAME" \
-          --rm \
-          -p "$DB_PORT":5432 \
-          -e POSTGRES_USER="$DB_USER" \
-          -e POSTGRES_PASSWORD="$DB_PASSWORD" \
-          -e POSTGRES_DB="$DB_NAME" \
-          -d postgres:9.6.2-alpine
+        "$PROJECT_ROOT/api-server/bin/docker-start-local-db.sh"
     fi
 fi
 
