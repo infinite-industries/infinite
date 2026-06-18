@@ -101,13 +101,14 @@ fi
 # 1.5 Wait for db to be ready to accept connections
 wait_for_db
 
-# 2. Start API server
+# 2. Start API server: create constants, seed db, & start
 (cd "$PROJECT_ROOT/api-server"
     if [ ! -d "node_modules" ]; then
         npm install
     fi
     npx sequelize-cli db:migrate
     npm run copy-constants
+    npm run db:seed:venues
     echo "Starting API server..."
     npm run start:dev
 ) &
