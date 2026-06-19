@@ -54,7 +54,7 @@ Can be embedded in partner websites and services.
 + [Yevhen Lukin](https://github.com/dix-icomys)
 + [Becky Mead](https://github.com/rlmead)
 
-Please contact us at [info@infiniteindustries](mailto:info@infiniteindustries). We will walk you through how to start running various components in your local dev environment.
+Please contact us at [info@infinite.industries](mailto:info@infinite.industries). We will walk you through how to start running various components in your local dev environment.
 
 ## License
 
