@@ -22,7 +22,9 @@ $ npm install
 
 ### Setup
 
-Set up the env file. A sample file is provided with a `.sample` suffix.
+There are sane defaults for all env configuration, including local database connection (see below). The only secondary service strictly required under development is the database; everything else (auth, file storage, etc) falls back on local behavior for convenience.
+
+If you need to override something, e.g. to test real auth, you can set the appropriate env vars or use an env file. A sample file is provided with a `.sample` suffix.
 
  ```bash
  cp .env.sample .env
