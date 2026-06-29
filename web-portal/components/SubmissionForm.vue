@@ -79,6 +79,8 @@
 
       <event-date-times-venues-editor
         v-model="calendar_event.date_times"
+        :initial_venue_id="calendar_event.venue_id"
+        :show_datetime_picker="showDateTimePicker"
         :mode="user_action"
         @change="onDateTimeVenueChanged"
       />

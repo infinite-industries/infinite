@@ -2,13 +2,12 @@
   <div>
     <v-row wrap>
         <v-col cols="12" sm="11">
-          <v-expansion-panels multiple v-model="showDateTimePicker">
-            <v-expansion-panel value="date-time-picker">
-              <v-expansion-panel-text>
-                <date-time-picker v-model="calendar_event.date_times" :mode="user_action" @change="onDateTimeVenueChanged" />
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
+          <date-time-picker
+            :model-value="modelValue"
+            :mode="mode"
+            @update:model-value="emit('update:modelValue', $event)"
+            @change="emit('change', $event)"
+          />
         </v-col>
       </v-row>
 
@@ -18,7 +17,7 @@
           <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
         </v-col>
         <v-col cols="12" sm="8">
-          <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="calendar_event.venue_id" @selectVenue="selectVenue"></venue-picker>
+          <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="initial_venue_id" @selectVenue="selectVenue"></venue-picker>
         </v-col>
         <v-col cols="0" sm="3"></v-col>
         <v-col cols="12" sm="8">
@@ -32,6 +31,26 @@
 </template>
 
 <script setup>
+  const props = defineProps({
+    modelValue: {
+      type: Array,
+      default: () => []
+    },
+    initial_venue_id: {
+      type: String,
+      required: true,
+    },
+    show_datetime_picker: {
+      type: Array,
+      required: true
+    },
+    mode: {
+      type: String,
+      default: 'upload'
+    }
+  })
+
+  const emit = defineEmits(['update:modelValue', 'change'])
 
 </script>
 
