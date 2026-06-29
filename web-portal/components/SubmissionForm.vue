@@ -82,7 +82,10 @@
         :initial_venue_id="calendar_event.venue_id"
         :show_datetime_picker="showDateTimePicker"
         :mode="user_action"
+        :venues="venues"
         @change="onDateTimeVenueChanged"
+        @selectVenue="selectVenue"
+        @newVenue="newVenue"
       />
       <!-- :mode prop binding to user_action var -->
       <!-- @change shorthand for "v-on" event binding -->

@@ -3,6 +3,7 @@
     <v-row wrap>
         <v-col cols="12" sm="11">
           <date-time-picker
+            v-if="show_datetime_picker.includes('date-time-picker')"
             :model-value="modelValue"
             :mode="mode"
             @update:model-value="emit('update:modelValue', $event)"
@@ -17,7 +18,12 @@
           <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
         </v-col>
         <v-col cols="12" sm="8">
-          <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="initial_venue_id" @selectVenue="selectVenue"></venue-picker>
+          <venue-picker
+            ref="venuePicker"
+            :venues="venues"
+            :initial_venue_id="initial_venue_id"
+            @selectVenue="emit('selectVenue', $event)"
+          ></venue-picker>
         </v-col>
         <v-col cols="0" sm="3"></v-col>
         <v-col cols="12" sm="8">
@@ -26,7 +32,7 @@
       </v-row>
 
       <!-- Add a Venue (collapsible content)-->
-      <add-new-venue @newVenue="newVenue" />
+      <add-new-venue @newVenue="emit('newVenue', $event)" />
   </div>
 </template>
 
@@ -37,20 +43,24 @@
       default: () => []
     },
     initial_venue_id: {
-      type: String,
-      required: true,
+      type: [String, Number, null],
+      default: null,
     },
     show_datetime_picker: {
       type: Array,
-      required: true
+      default: () => []
     },
     mode: {
       type: String,
       default: 'upload'
+    },
+    venues: {
+      type: Array,
+      default: () => []
     }
   })
 
-  const emit = defineEmits(['update:modelValue', 'change'])
+  const emit = defineEmits(['update:modelValue', 'change', 'selectVenue', 'newVenue'])
 
 </script>
 
