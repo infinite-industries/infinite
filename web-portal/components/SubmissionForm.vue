@@ -87,8 +87,6 @@
         @selectVenue="selectVenue"
         @newVenue="newVenue"
       />
-      <!-- :mode prop binding to user_action var -->
-      <!-- @change shorthand for "v-on" event binding -->
 
       <existing-event-detection-alert
         :duplicate-events-by-start-time="duplicateEventsByStartTime"
