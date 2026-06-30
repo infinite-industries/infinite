@@ -1,14 +1,35 @@
 <template>
-  <div>
+  <div
+   v-if="eventCategory && eventCategory !== 'online-resource'"
+  >
     <v-row>
       <v-col cols="12" sm="11">
-        <date-time-picker
-          v-if="show_datetime_picker.includes('date-time-picker')"
-          :model-value="modelValue"
-          :mode="mode"
-          @update:model-value="emit('update:modelValue', $event)"
-          @change="emit('change', $event)"
-        />
+        <div
+          v-if="['single-day-event', 'call-for-entry'].includes(eventCategory)"
+          style="border: 1px solid red"
+        >
+          <h1 style="color: red">Single Day Event</h1>
+          <date-time-picker
+            v-if="show_datetime_picker.includes('date-time-picker')"
+            :model-value="modelValue"
+            :mode="mode"
+            @update:model-value="emit('update:modelValue', $event)"
+            @change="emit('change', $event)"
+          />
+        </div>
+        <div
+         v-if="['gallery-show', 'multi-day-event', 'other'].includes(eventCategory)"
+         style="border: 1px solid blue"
+         >
+          <h1 style="color: blue">Multi-day Event</h1>
+          <date-time-picker
+            v-if="show_datetime_picker.includes('date-time-picker')"
+            :model-value="modelValue"
+            :mode="mode"
+            @update:model-value="emit('update:modelValue', $event)"
+            @change="emit('change', $event)"
+          />
+        </div>
       </v-col>
     </v-row>
 
@@ -21,7 +42,7 @@
           ref="venuePicker"
           :venues="venues"
           :initial_venue_id="initial_venue_id"
-          @selectVenue="emit('selectVenue', $event)"
+          @select-venue="emit('selectVenue', $event)"
         ></venue-picker>
       </v-col>
 
@@ -31,11 +52,12 @@
       </v-col>
     </v-row>
 
-    <add-new-venue @newVenue="emit('newVenue', $event)" />
+    <add-new-venue @new-venue="emit('newVenue', $event)" />
   </div>
 </template>
 
 <script setup>
+  import { watch } from 'vue'
   const props = defineProps({
     modelValue: {
       type: Array,
@@ -49,6 +71,10 @@
       type: Array,
       default: () => []
     },
+    eventCategory: {
+      type: String,
+      default: null,
+    },
     mode: {
       type: String,
       default: 'upload'
@@ -58,7 +84,6 @@
       default: () => []
     }
   })
-
   const emit = defineEmits(['update:modelValue', 'change', 'selectVenue', 'newVenue'])
 </script>
 

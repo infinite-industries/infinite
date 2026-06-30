@@ -81,6 +81,7 @@
         v-model="calendar_event.date_times"
         :initial_venue_id="calendar_event.venue_id"
         :show_datetime_picker="showDateTimePicker"
+        :event-category="eventCategory"
         :mode="user_action"
         :venues="venues"
         @change="onDateTimeVenueChanged"
@@ -356,9 +357,6 @@
 
 <script>
   import RichEditor from './RichEditor.vue'
-  import VenuePicker from './VenuePicker.vue'
-  import DateTimePicker from './DateTimePicker.vue'
-  import AddNewVenue from './AddNewVenue.vue'
   import ImageUploadService from '@/services/ImageUploadService'
   import ExistingEventDetectionAlert from '@/components/ExistingEventDetectionAlert.vue'
 
@@ -786,9 +784,7 @@
     components: {
       ExistingEventDetectionAlert,
       'rich-editor': RichEditor,
-      'venue-picker': VenuePicker,
-      'add-new-venue': AddNewVenue,
-      'date-time-picker': DateTimePicker,
+
       'existing-event-detection-alert': ExistingEventDetectionAlert
     }
 

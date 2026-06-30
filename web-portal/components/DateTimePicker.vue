@@ -1,155 +1,134 @@
 <template>
   <div id="cal-container">
-    <div class="instructions">
-      <p>
-        <span class="required-field">*</span>
-        Pick the date for your event. If it's a multi-day event, like a festival or a series of theater performances,
-        pick the first day and you will have a chance to add more later.
-      </p>
-    </div>
     <div class="time-date-control-wrapper">
-      <div>
-        <date-picker :allow-past="allowPast" :date="picker" @change="dateChanged" />
-      </div>
-      <div>
-        <div id="display-time-date">
-          <div class="time-date-input-box">
-            <!-- hide the box until a date is selected -->
-            <div class="time-date-entry" v-show="picker">
-              On {{ picker }} from
-              <span>
-                <input
-                  ref="startHourInput"
-                  v-model="start_hour"
-                  type="text"
-                  min="0"
-                  max="23"
-                  placeholder="hh"
-                  class="start-hour"
-                  :class="{ 'invalid' : start_hour_invalid }"
-                  maxlength="2"
-                />
-                <span>:</span>
-                <input
-                  ref="startMinInput"
-                  v-model="start_minute"
-                  type="text"
-                  min="0"
-                  max="59"
-                  placeholder="mm"
-                  class="start-minute"
-                  :class="{ 'invalid' : start_minute_invalid }"
-                  maxlength="2"
-                />
-                <select ref="startAmPm" name="start_ampm" v-model="start_ampm">
-                  <option value="am">AM</option>
-                  <option value="pm">PM</option>
-                </select>
-              </span>
-              to
-              <span>
-                <input
-                  ref="endHourInput"
-                  v-model="end_hour"
-                  type="text"
-                  min="0"
-                  max="23"
-                  placeholder="hh"
-                  class="end-hour"
-                  :class="{ 'invalid' : end_hour_invalid }"
-                  maxlength="2"
-                />
-                <span>:</span>
-                <input
-                  ref="endMinInput"
-                  v-model="end_minute"
-                  type="text"
-                  min="0"
-                  max="59"
-                  placeholder="mm"
-                  class="end-minute"
-                  :class="{ 'invalid' : end_minute_invalid }"
-                  maxlength="2"
-                />
-                <select ref="endAmPm" name="end_ampm" v-model="end_ampm">
-                  <option value="am">AM</option>
-                  <option value="pm">PM</option>
-                </select>
-                <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
-                  <option v-for="(tz) in $config.public.timezoneOptions.split(',')" :key="tz">
-                    {{ tz }}
-                  </option>
-                </select>
-              </span>
+      <!-- DATE AND TIME PICKER -->
+      <div class="time-date-input-box">
+        <div class="time-date-entry">
+          On <button class="link-button" @click="toggleCalendarModal()">{{ picker }}</button> from
+          <span>
+            <input
+              ref="startHourInput"
+              v-model="start_hour"
+              type="text"
+              min="0"
+              max="23"
+              placeholder="hh"
+              class="start-hour"
+              :class="{ 'invalid' : start_hour_invalid }"
+              maxlength="2"
+            />
+            <span>:</span>
+            <input
+              ref="startMinInput"
+              v-model="start_minute"
+              type="text"
+              min="0"
+              max="59"
+              placeholder="mm"
+              class="start-minute"
+              :class="{ 'invalid' : start_minute_invalid }"
+              maxlength="2"
+            />
+            <select ref="startAmPm" name="start_ampm" v-model="start_ampm">
+              <option value="am">AM</option>
+              <option value="pm">PM</option>
+            </select>
+          </span>
+          to
+          <span>
+            <input
+              ref="endHourInput"
+              v-model="end_hour"
+              type="text"
+              min="0"
+              max="23"
+              placeholder="hh"
+              class="end-hour"
+              :class="{ 'invalid' : end_hour_invalid }"
+              maxlength="2"
+            />
+            <span>:</span>
+            <input
+              ref="endMinInput"
+              v-model="end_minute"
+              type="text"
+              min="0"
+              max="59"
+              placeholder="mm"
+              class="end-minute"
+              :class="{ 'invalid' : end_minute_invalid }"
+              maxlength="2"
+            />
+            <select ref="endAmPm" name="end_ampm" v-model="end_ampm">
+              <option value="am">AM</option>
+              <option value="pm">PM</option>
+            </select>
+            <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
+              <option v-for="(tz) in $config.public.timezoneOptions.split(',')" :key="tz">
+                {{ tz }}
+              </option>
+            </select>
+          </span>
+          <div v-if="show_calendar_modal" :key="picker || 'empty'">
+            <date-picker :allow-past="allowPast" :date="picker" @change="dateChanged" />
+          </div>
 
-              <div v-if="edit_mode">
-                <date-time-picker-button @click="Cancel()">
-                  Cancel
-                </date-time-picker-button>
+          <div v-if="picker">
+            <date-time-picker-button @click="Cancel()">
+              Cancel
+            </date-time-picker-button>
 
-                <date-time-picker-button
-                  type="confirm"
-                  className="date-time-picker_update-date"
-                  @click="UpdateTimeSegment(time_segment_index)"
-                >
-                  Update
-                </date-time-picker-button>
-              </div>
-              <div v-else>
-                <date-time-picker-button @click="Cancel()">
-                  Cancel
-                </date-time-picker-button>
-
-                <date-time-picker-button
-                  type="confirm"
-                  className="date-time-picker_new-date"
-                  @click="AddTimeSegment()"
-                  v-show="validate_time"
-                >
-                  Confirm
-                </date-time-picker-button>
-              </div>
-              <div v-if="chrono_order_invalid" class="error--text">
-                End time for the event must follow the start time. Unless you are a Time Lord, of course...
-              </div>
+            <div v-if="edit_mode">
+              <date-time-picker-button
+                type="confirm"
+                className="date-time-picker_update-date"
+                @click="UpdateTimeSegment(time_segment_index)">
+                Update
+              </date-time-picker-button>
+            </div>
+            <div v-else>
+              <date-time-picker-button
+                type="confirm"
+                className="date-time-picker_new-date"
+                @click="AddTimeSegment()"
+                v-show="validate_time"
+              >
+                Confirm
+              </date-time-picker-button>
             </div>
           </div>
-
-          <div id="all-confirmed-times-dates">
-            <ul>
-              <li v-for="(date_and_time, index) in dates_and_times" :key="date_and_time.start_time + '/' + date_and_time.end_time">
-                <div class="time-list-item">
-                  <div>{{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time, date_and_time.timezone) }}</div>
-                  <div>
-                    <date-time-picker-button
-                      type="confirm"
-                      size="large"
-                      @click="EditTimeSegment(index)"
-                    >
-                      Edit
-                    </date-time-picker-button>
-
-                    <date-time-picker-button
-                      type="delete"
-                      size="large"
-                      @click="DeleteTimeSegment(index)"
-                    >
-                      Delete
-                    </date-time-picker-button>
-                  </div>
-                </div>
-              </li>
-            </ul>
+          <div v-if="chrono_order_invalid" class="error--text">
+            End time for the event must follow the start time. Unless you are a Time Lord, of course...
           </div>
-
-          <div v-show="!picker&&!introduction">
-            If you need additional dates, please select them now.
-          </div>
-          <!-- <div v-show="!picker&&!introduction">
-              It's lonely here.
-            </div> -->
-
         </div>
+      </div>
+
+      <!-- TIMES AND DATES -->
+      <div id="all-confirmed-times-dates">
+        <ul>
+          <li v-for="(date_and_time, index) in dates_and_times" :key="date_and_time.start_time + '/' + date_and_time.end_time">
+            <div class="time-list-item">
+              <div>{{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time, date_and_time.timezone) }}</div>
+              <div>
+                <date-time-picker-button
+                  type="confirm"
+                  size="large"
+                  @click="EditTimeSegment(index)"
+                >
+                  Edit
+                </date-time-picker-button>
+
+                <date-time-picker-button
+                  type="delete"
+                  size="large"
+                  @click="DeleteTimeSegment(index)"
+                >
+                  Delete
+                </date-time-picker-button>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
@@ -192,30 +171,33 @@
     data: function () {
       return {
         introduction: true,
-
         picker: null,
-
         edit_mode: false,
         time_segment_index: 0,
-
         start_hour: '',
         start_minute: '',
         start_ampm: 'pm',
-
         end_hour: '',
         end_minute: '',
         end_ampm: 'pm',
-
-        event_timezone: this.$config.public.timezoneDefault
+        event_timezone: this.$config.public.timezoneDefault,
+        show_calendar_modal: false
       }
     },
     mounted: function () {
-    // stuff
+      // Initialize with today in the default timezone as the default date
+      const tz = this.event_timezone || this.$config.public.timezoneDefault;
+      this.picker = momenttz.tz(tz).format('YYYY-MM-DD');
     },
     methods: {
       dateChanged: function(newDate) {
-        this.picker = newDate
+        this.picker = newDate;
+        // Let date-picker finish whatever it's doing before we hide it
+        this.$nextTick(() => {
+          this.show_calendar_modal = false;
+        });
       },
+
       AllowedDates: function (val) {
         // in edit mode, anything goes
         // otherwise, disallow days in the past
@@ -239,6 +221,7 @@
           }
         }
       },
+
       CheckForFocusOutMin: function (type) {
         const which_minute = (type === 'START') ? 'start_minute' : 'end_minute'
 
@@ -268,11 +251,13 @@
         this.end_minute = end_time.format('mm')
         this.end_ampm = end_time.format('a')
       },
+
       DeleteTimeSegment: function (which_segment) {
         const newValue = [ ...this.modelValue ]
         newValue.splice(which_segment, 1)
         this.$emit('update:modelValue', newValue)
       },
+
       AddTimeSegment: function () {
         const newValue = [ ...this.modelValue ]
         newValue.push(createTimeSegment(this.check_start_time, this.check_end_time, this.event_timezone))
@@ -282,7 +267,9 @@
         this.picker = null
         this.introduction = false
         this.edit_mode = false // if edit mode is active turn it off
+        this.show_calendar_modal = false
       },
+
       UpdateTimeSegment: function (which_segment) {
         const formatted_start_time = this.check_start_time
         const formatted_end_time = this.check_end_time
@@ -295,13 +282,17 @@
         this.picker = null
         this.introduction = false
         this.edit_mode = false // if edit mode is active turn it off
+        this.show_calendar_modal = false
         return true
-      // }
       },
 
       Cancel: function () {
         this.picker = null
         this.edit_mode = false
+      },
+
+      toggleCalendarModal: function () {
+        this.show_calendar_modal = !this.show_calendar_modal
       }
 
     },
@@ -410,10 +401,6 @@
     flex-grow: 1;
   }
 
-  #display-time-date {
-    /* this used to require padding; now it's gap w/ parent flex container */
-  }
-
   .time-date-input-box {
     min-height:100px;
     padding:15px;
@@ -495,5 +482,24 @@
     color: red;
     font-weight: bold;
   }
+
+ .link-button {
+  /* Remove default browser button styling */
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit; /* Inherits font-family, size, and weight from parent */
+
+  /* Apply link styling */
+  color: #0066cc;
+  text-decoration: underline;
+  cursor: pointer; /* Changes pointer to the hand icon on hover */
+}
+ .link-button:hover,
+ .link-button:focus {
+  color: #004499;
+  text-decoration: none; /* Removes underline on hover */
+}
 
 </style>
