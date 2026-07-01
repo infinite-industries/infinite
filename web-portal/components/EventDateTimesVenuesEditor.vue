@@ -1,12 +1,13 @@
 <template>
+  <!-- Don't show at all if this is an online resource -->
   <div
    v-if="eventCategory && eventCategory !== 'online-resource'"
   >
-    <v-row>
+    <v-row style="border: 1px solid red">
       <v-col cols="12" sm="11">
+        <!-- Single Day -->
         <div
           v-if="['single-day-event', 'call-for-entry'].includes(eventCategory)"
-          style="border: 1px solid red"
         >
           <h1 style="color: red">Single Day Event</h1>
           <date-time-picker
@@ -17,6 +18,8 @@
             @change="emit('change', $event)"
           />
         </div>
+
+        <!-- Multi-day -->
         <div
          v-if="['gallery-show', 'multi-day-event', 'other'].includes(eventCategory)"
          style="border: 1px solid blue"
@@ -33,32 +36,18 @@
       </v-col>
     </v-row>
 
-    <v-row>
-      <v-col cols="12" sm="3">
-        <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
-      </v-col>
-      <v-col cols="12" sm="8">
-        <venue-picker
-          ref="venuePicker"
-          :venues="venues"
-          :initial_venue_id="initial_venue_id"
-          @select-venue="emit('selectVenue', $event)"
-        ></venue-picker>
-      </v-col>
-
-      <v-col class="d-none d-sm-block" sm="3"></v-col>
-      <v-col cols="12" sm="8">
-        <p class="divider-text">OR</p>
-      </v-col>
-    </v-row>
-
-    <add-new-venue @new-venue="emit('newVenue', $event)" />
+    <venue-picker
+      ref="venuePicker"
+      :venues="venues"
+      :initial_venue_id="initial_venue_id"
+      @select-venue="emit('selectVenue', $event)"
+      @new-venue="emit('newVenue', $event)"
+    />
   </div>
 </template>
 
 <script setup>
-  import { watch } from 'vue'
-  const props = defineProps({
+  defineProps({
     modelValue: {
       type: Array,
       default: () => []
