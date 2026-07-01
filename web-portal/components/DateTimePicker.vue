@@ -1,135 +1,94 @@
 <template>
   <div id="cal-container">
-    <div class="time-date-control-wrapper">
-      <!-- DATE AND TIME PICKER -->
-      <div class="time-date-input-box">
-        <div class="time-date-entry">
-          On <button class="link-button" @click="toggleCalendarModal()">{{ picker }}</button> from
-          <span>
-            <input
-              ref="startHourInput"
-              v-model="start_hour"
-              type="text"
-              min="0"
-              max="23"
-              placeholder="hh"
-              class="start-hour"
-              :class="{ 'invalid' : start_hour_invalid }"
-              maxlength="2"
-            />
-            <span>:</span>
-            <input
-              ref="startMinInput"
-              v-model="start_minute"
-              type="text"
-              min="0"
-              max="59"
-              placeholder="mm"
-              class="start-minute"
-              :class="{ 'invalid' : start_minute_invalid }"
-              maxlength="2"
-            />
-            <select ref="startAmPm" name="start_ampm" v-model="start_ampm">
-              <option value="am">AM</option>
-              <option value="pm">PM</option>
-            </select>
-          </span>
-          to
-          <span>
-            <input
-              ref="endHourInput"
-              v-model="end_hour"
-              type="text"
-              min="0"
-              max="23"
-              placeholder="hh"
-              class="end-hour"
-              :class="{ 'invalid' : end_hour_invalid }"
-              maxlength="2"
-            />
-            <span>:</span>
-            <input
-              ref="endMinInput"
-              v-model="end_minute"
-              type="text"
-              min="0"
-              max="59"
-              placeholder="mm"
-              class="end-minute"
-              :class="{ 'invalid' : end_minute_invalid }"
-              maxlength="2"
-            />
-            <select ref="endAmPm" name="end_ampm" v-model="end_ampm">
-              <option value="am">AM</option>
-              <option value="pm">PM</option>
-            </select>
-            <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
-              <option v-for="(tz) in $config.public.timezoneOptions.split(',')" :key="tz">
-                {{ tz }}
-              </option>
-            </select>
-          </span>
-          <div v-if="show_calendar_modal" :key="picker || 'empty'">
-            <date-picker :allow-past="allowPast" :date="picker" @change="dateChanged" />
-          </div>
+    <!-- DATE AND TIME PICKER -->
+    <div class="time-date-input-box">
+      <div class="time-date-entry">
+        On <button class="link-button" @click="toggleCalendarModal()">{{ picker }}</button> from
+          <time-picker
+            v-model:hour="start_hour"
+            v-model:minute="start_minute"
+            v-model:ampm="start_ampm"
+            :invalidHour="start_hour_invalid"
+            :invalidMinute="start_minute_invalid"
+            hour-ref="startHourInput"
+            min-ref="startMinInput"
+            ampm-ref="startAmPm"
+          />
+        to
+          <time-picker
+            v-model:hour="end_hour"
+            v-model:minute="end_minute"
+            v-model:ampm="end_ampm"
+            :invalidHour="end_hour_invalid"
+            :invalidMinute="end_minute_invalid"
+            hour-ref="endHourInput"
+            min-ref="endMinInput"
+            ampm-ref="endAmPm"
+          />
+          <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
+            <option v-for="(tz) in $config.public.timezoneOptions.split(',')" :key="tz">
+              {{ tz }}
+            </option>
+          </select>
+        <div v-if="show_calendar_modal" :key="picker || 'empty'">
+          <date-picker :allow-past="allowPast" :date="picker" @change="dateChanged" />
+        </div>
 
-          <div v-if="picker">
-            <date-time-picker-button @click="Cancel()">
-              Cancel
+        <div v-if="picker">
+          <date-time-picker-button v-if="multi_day" @click="Cancel()">
+            Cancel
+          </date-time-picker-button>
+
+          <div v-if="edit_mode">
+            <date-time-picker-button
+              type="confirm"
+              className="date-time-picker_update-date"
+              @click="UpdateTimeSegment(time_segment_index)">
+              Update
             </date-time-picker-button>
-
-            <div v-if="edit_mode">
-              <date-time-picker-button
-                type="confirm"
-                className="date-time-picker_update-date"
-                @click="UpdateTimeSegment(time_segment_index)">
-                Update
-              </date-time-picker-button>
-            </div>
-            <div v-else>
-              <date-time-picker-button
-                type="confirm"
-                className="date-time-picker_new-date"
-                @click="AddTimeSegment()"
-                v-show="validate_time"
-              >
-                Confirm
-              </date-time-picker-button>
-            </div>
           </div>
-          <div v-if="chrono_order_invalid" class="error--text">
-            End time for the event must follow the start time. Unless you are a Time Lord, of course...
+          <div v-else>
+            <date-time-picker-button
+              type="confirm"
+              className="date-time-picker_new-date"
+              @click="AddTimeSegment()"
+              v-show="validate_time"
+            >
+              Confirm
+            </date-time-picker-button>
           </div>
         </div>
+        <div v-if="chrono_order_invalid" class="error--text">
+          End time for the event must follow the start time. Unless you are a Time Lord, of course...
+        </div>
       </div>
+    </div>
+    <!-- TIMES AND DATES -->
+    <div id="all-confirmed-times-dates">
+      <ul>
+        <li v-for="(date_and_time, index) in dates_and_times" :key="date_and_time.start_time + '/' + date_and_time.end_time">
+          <div class="time-list-item">
+            <div>{{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time, date_and_time.timezone) }}</div>
+            <div>
+              <date-time-picker-button
+                type="confirm"
+                size="large"
+                @click="EditTimeSegment(index)"
+              >
+                Edit
+              </date-time-picker-button>
 
-      <!-- TIMES AND DATES -->
-      <div id="all-confirmed-times-dates">
-        <ul>
-          <li v-for="(date_and_time, index) in dates_and_times" :key="date_and_time.start_time + '/' + date_and_time.end_time">
-            <div class="time-list-item">
-              <div>{{ FormattedDateTime(date_and_time.start_time, date_and_time.end_time, date_and_time.timezone) }}</div>
-              <div>
-                <date-time-picker-button
-                  type="confirm"
-                  size="large"
-                  @click="EditTimeSegment(index)"
-                >
-                  Edit
-                </date-time-picker-button>
-
-                <date-time-picker-button
-                  type="delete"
-                  size="large"
-                  @click="DeleteTimeSegment(index)"
-                >
-                  Delete
-                </date-time-picker-button>
-              </div>
+              <date-time-picker-button
+                type="delete"
+                size="large"
+                @click="DeleteTimeSegment(index)"
+              >
+                Delete
+              </date-time-picker-button>
             </div>
-          </li>
-        </ul>
-      </div>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -138,6 +97,7 @@
   import momenttz from 'moment-timezone'
   import DatePicker from '@/components/DatePicker.vue'
   import DateTimePickerButton from '@/components/DateTimePickerButton.vue'
+  import TimePicker from '@/components/TimePicker.vue'
 
   // this is how the date/time is stored in data and sent to the server
   const dateTimeStorageFormat = momenttz.ISO_8601
@@ -181,7 +141,8 @@
         end_minute: '',
         end_ampm: 'pm',
         event_timezone: this.$config.public.timezoneDefault,
-        show_calendar_modal: false
+        show_calendar_modal: false,
+        multi_day: false
       }
     },
     mounted: function () {
@@ -367,7 +328,8 @@
     },
     components: {
       'date-picker': DatePicker,
-      'date-time-picker-button': DateTimePickerButton
+      'date-time-picker-button': DateTimePickerButton,
+      'time-picker': TimePicker
     }
   }
 </script>
@@ -379,12 +341,6 @@
     font-family: 'Open Sans', sans-serif;
   }
 
-  #cal-container .time-date-control-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
   @media screen and (min-width: 875px) {
     #cal-container .time-date-control-wrapper {
       flex-direction: row;
@@ -394,7 +350,6 @@
 
   #cal-container > .time-date-control-wrapper > :first-child {
     flex-shrink: 0;
-    /* margin: auto; */
   }
 
   #cal-container > .time-date-control-wrapper > :last-child {
