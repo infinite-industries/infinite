@@ -1,68 +1,54 @@
 <template>
-  <!-- Don't show at all if this is an online resource -->
-  <div
-   v-if="eventCategory && eventCategory !== 'online-resource'"
-  >
-    <v-row style="border: 1px solid red">
-      <v-col cols="12" sm="11">
-        <!-- Single Day -->
-        <div
-          v-if="['single-day-event', 'call-for-entry'].includes(eventCategory)"
-        >
-          <h1 style="color: red">Single Day Event</h1>
-          <date-time-picker
-            v-if="show_datetime_picker.includes('date-time-picker')"
-            :model-value="modelValue"
+  <v-row>
+    <v-col cols="12">
+      <!-- Confirmed DatetimeVenues -->
+      <div v-if="localEntries.length > 0" class="confirmed-entries">
+        <h4>When and Where:</h4>
+          <date-time-venue-editor
+            v-for="(entry, index) in localEntries"
+            :key="entry.id || index"
+            v-model="localEntries[index]"
+            :venues="venues"
             :mode="mode"
-            @update:model-value="emit('update:modelValue', $event)"
-            @change="emit('change', $event)"
+            @delete="localEntries.splice(index, 1)"
+            @select-venue="venue => emit('selectVenue', venue)"
+            @new-venue="venue => emit('newVenue', venue)"
           />
-        </div>
+      </div>
 
-        <!-- Multi-day -->
-        <div
-         v-if="['gallery-show', 'multi-day-event', 'other'].includes(eventCategory)"
-         style="border: 1px solid blue"
-         >
-          <h1 style="color: blue">Multi-day Event</h1>
-          <date-time-picker
-            v-if="show_datetime_picker.includes('date-time-picker')"
-            :model-value="modelValue"
-            :mode="mode"
-            @update:model-value="emit('update:modelValue', $event)"
-            @change="emit('change', $event)"
-          />
-        </div>
-      </v-col>
-    </v-row>
-
-    <venue-picker
-      ref="venuePicker"
-      :venues="venues"
-      :initial_venue_id="initial_venue_id"
-      @select-venue="emit('selectVenue', $event)"
-      @new-venue="emit('newVenue', $event)"
-    />
-  </div>
+      <!-- Show an empty form if no entries or always for multi-date events -->
+      <div v-if="localEntries.length === 0 || ['gallery-show', 'multi-day-event', 'other'].includes(eventCategory)">
+        <date-time-venue-editor
+          edit-mode="true"
+          v-model="newEntryDraft"
+          :venues="venues"
+          :mode="mode"
+          :initial-venue-id="initialVenueId"
+          @change="handleNewEntryAdded"
+          @select-venue="venue => emit('selectVenue', venue)"
+          @new-venue="venue => emit('newVenue', venue)"
+        />
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup>
-  defineProps({
+  import { ref, watch } from 'vue'
+  import DateTimeVenueEditor from './DateTimeVenueEditor.vue'
+
+  const props = defineProps({
     modelValue: {
       type: Array,
       default: () => []
     },
-    initial_venue_id: {
+    initialVenueId: {
       type: [String, Number],
       default: null,
     },
-    show_datetime_picker: {
-      type: Array,
-      default: () => []
-    },
     eventCategory: {
       type: String,
-      default: null,
+      default: '',
     },
     mode: {
       type: String,
@@ -73,12 +59,36 @@
       default: () => []
     }
   })
+
   const emit = defineEmits(['update:modelValue', 'change', 'selectVenue', 'newVenue'])
+
+  const localEntries = ref(props.modelValue)
+  const newEntryDraft = ref({})
+
+  // Whenever date-time-venue-editor updates or deletes one,
+  // update the array and emit it up to the form.
+  watch(localEntries, (newVal) => {
+    emit('update:modelValue', newVal)
+    emit('change', newVal)
+  }, { deep: true })
+
+  const handleNewEntryAdded = (newEntry) => {
+    if (newEntry.start_time && newEntry.end_time) {
+      localEntries.value.push({ ...newEntry })
+      newEntryDraft.value = {}
+    }
+  }
 </script>
 
 <style scoped>
 .divider-text {
   margin: 10px 0;
   text-align: center;
+}
+
+.confirmed-entries ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0 0;
 }
 </style>

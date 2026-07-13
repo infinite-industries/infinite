@@ -1,11 +1,10 @@
 <template>
   <v-row>
-    <v-col cols="0" sm="3"></v-col>
-    <v-col cols="12" sm="8">
-      <v-expansion-panels multiple v-model="showAddVenue">
+    <v-col>
+      <v-expansion-panels v-model="showAddVenue">
         <v-expansion-panel style="margin-bottom: 10px;" value="add-new">
           <v-expansion-panel-title>
-            Add a New Venue:
+            Add a new venue:
           </v-expansion-panel-title>
           <v-expansion-panel-text style="padding: 0px 15px 0px 15px;">
             <!-- Venue Name -->
