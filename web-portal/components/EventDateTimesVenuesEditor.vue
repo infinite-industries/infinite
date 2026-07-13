@@ -1,23 +1,46 @@
 <template>
-  <v-row>
-    <v-col cols="12">
-      <!-- Confirmed DatetimeVenues -->
-      <div v-if="localEntries.length > 0" class="confirmed-entries">
-        <h4>When and Where:</h4>
-          <date-time-venue-editor
-            v-for="(entry, index) in localEntries"
-            :key="entry.id || index"
-            v-model="localEntries[index]"
-            :venues="venues"
-            :mode="mode"
-            @delete="localEntries.splice(index, 1)"
-            @select-venue="venue => emit('selectVenue', venue)"
-            @new-venue="venue => emit('newVenue', venue)"
-          />
-      </div>
+  <div class="datetime-venue-list">
+    <!-- Confirmed DatetimeVenues -->
+    <div v-if="localEntries.length > 0" class="confirmed-entries">
+      <h4>When and Where:</h4>
+        <date-time-venue-editor
+          v-for="(entry, index) in localEntries"
+          :key="entry.id || index"
+          v-model="localEntries[index]"
+          :venues="venues"
+          :mode="mode"
+          @delete="localEntries.splice(index, 1)"
+          @select-venue="venue => emit('selectVenue', venue)"
+          @new-venue="venue => emit('newVenue', venue)"
+        />
+    </div>
 
-      <!-- Show an empty form if no entries or always for multi-date events -->
-      <div v-if="localEntries.length === 0 || ['gallery-show', 'multi-day-event', 'other'].includes(eventCategory)">
+    <!-- Show empty form directly if no entries exist yet -->
+    <div v-if="localEntries.length === 0">
+      <date-time-venue-editor
+        edit-mode="true"
+        v-model="newEntryDraft"
+        :venues="venues"
+        :mode="mode"
+        :initial-venue-id="initialVenueId"
+        @change="handleNewEntryAdded"
+        @select-venue="venue => emit('selectVenue', venue)"
+        @new-venue="venue => emit('newVenue', venue)"
+      />
+    </div>
+
+    <!-- For multi-date events with existing entries, show Add Date button -->
+    <div v-else-if="['gallery-show', 'multi-day-event', 'other'].includes(eventCategory)">
+      <div v-if="!showAddForm" style="text-align: center;">
+        <button
+          @click="showAddForm = true"
+          class="add-date-btn"
+        >
+          <span class="add-icon" aria-hidden="true">+</span>
+          Add Date
+        </button>
+      </div>
+      <div v-else>
         <date-time-venue-editor
           edit-mode="true"
           v-model="newEntryDraft"
@@ -29,8 +52,8 @@
           @new-venue="venue => emit('newVenue', venue)"
         />
       </div>
-    </v-col>
-  </v-row>
+    </div>
+  </div>
 </template>
 
 <script setup>
@@ -64,6 +87,7 @@
 
   const localEntries = ref(props.modelValue)
   const newEntryDraft = ref({})
+  const showAddForm = ref(false)
 
   // Whenever date-time-venue-editor updates or deletes one,
   // update the array and emit it up to the form.
@@ -76,14 +100,14 @@
     if (newEntry.start_time && newEntry.end_time) {
       localEntries.value.push({ ...newEntry })
       newEntryDraft.value = {}
+      showAddForm.value = false
     }
   }
 </script>
 
 <style scoped>
-.divider-text {
-  margin: 10px 0;
-  text-align: center;
+.datetime-venue-list {
+  width: 100%;
 }
 
 .confirmed-entries ul {
@@ -91,4 +115,34 @@
   padding: 0;
   margin: 0.5rem 0 0;
 }
+
+button {
+  border-radius: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.add-date-btn {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #1976d2;
+  background: transparent;
+  color: #1976d2;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.add-date-btn:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+.add-icon {
+  font-size: 1.125rem;
+  line-height: 1;
+}
+
+
 </style>

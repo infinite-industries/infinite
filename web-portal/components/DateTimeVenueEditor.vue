@@ -282,6 +282,7 @@ button.delete-entry-button {
   cursor: pointer;
   color: #dc3545;
   font-size: 20px;
+  font-weight: 900;
   line-height: 1;
   transition: color 0.2s ease, transform 0.2s ease;
 }
