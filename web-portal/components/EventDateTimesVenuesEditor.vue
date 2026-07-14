@@ -110,12 +110,6 @@
   width: 100%;
 }
 
-.confirmed-entries ul {
-  list-style: none;
-  padding: 0;
-  margin: 0.5rem 0 0;
-}
-
 button {
   border-radius: 4px;
   cursor: pointer;

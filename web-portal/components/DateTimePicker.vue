@@ -352,21 +352,6 @@
     color: #dd2c00 !important;
   }
 
-  #all-confirmed-times-dates {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  #all-confirmed-times-dates ul {
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
-  }
-
-  #all-confirmed-times-dates ul li:not(:last-child) {
-    margin-bottom: 0.5rem;
-  }
-
   .time-list-item {
     background-color: #f2f2f2;
   }
