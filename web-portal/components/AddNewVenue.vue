@@ -312,6 +312,13 @@
 </script>
 
 <style scoped>
+  button {
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 14px;
+  }
+
   .btn-primary {
     background-color: #1976d2;
     color: white;
