@@ -526,7 +526,6 @@
       },
       newVenue: function (venue) {
         this.calendar_event.venue_id = venue.id
-        this.$refs.venuePicker.handleNewVenue(venue)
         this.doTimeAndLocationExistingEventDetection()
       },
       doTimeAndLocationExistingEventDetection: function() {

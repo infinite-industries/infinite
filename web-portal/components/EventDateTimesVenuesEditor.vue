@@ -18,7 +18,7 @@
     <!-- Show empty form directly if no entries exist yet -->
     <div v-if="localEntries.length === 0">
       <date-time-venue-editor
-        edit-mode="true"
+        :edit-mode="true"
         v-model="newEntryDraft"
         :venues="venues"
         :mode="mode"

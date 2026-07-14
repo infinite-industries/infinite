@@ -5,14 +5,18 @@
       :venues="venues"
       :initial_venue_id="initial_venue_id"
       @select-venue="emit('selectVenue', $event)"
+      @open-new-venue-modal="handleModal"
     />
     <add-new-venue
-    @new-venue="emit('newVenue', $event)"
+      v-model="showVenueModal"
+      @new-venue="handleNewVenue"
     />
   </div>
 </template>
 
 <script setup>
+  import { ref } from 'vue'
+
   defineProps({
     venues: {
       type: Array,
@@ -25,6 +29,16 @@
   })
 
   const emit = defineEmits(['selectVenue', 'newVenue'])
+
+  const showVenueModal = ref(false)
+
+  const handleModal = () => {
+    showVenueModal.value = true
+  }
+
+  const handleNewVenue = (venue) => {
+    emit('newVenue', venue)
+  }
 </script>
 
 <style scoped>
