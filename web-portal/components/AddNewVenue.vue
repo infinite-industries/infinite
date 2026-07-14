@@ -10,20 +10,66 @@
       <input type="text" id="venueStreet" v-model="new_venue.street" required placeholder="e.g. 123 Main St">
     </div>
 
-    <div class="form-group">
+    <div class="form-group autocomplete-wrapper">
       <label for="venueCity">City*</label>
-      <input type="text" id="venueCity" v-model="new_venue.city" list="city-suggestions" required placeholder="Start typing or select...">
-      <datalist id="city-suggestions">
-        <option v-for="city in suggestedCities" :key="city" :value="city" />
-      </datalist>
+      <div class="autocomplete-container" ref="cityDropdownContainer">
+        <input
+          type="text"
+          id="venueCity"
+          v-model="new_venue.city"
+          @focus="showCityDropdown = true"
+          @input="showCityDropdown = true"
+          @keydown="handleCityKeydown"
+          required
+          placeholder="Start typing or select..."
+          autocomplete="off"
+        >
+        <ul
+          v-if="showCityDropdown && filteredCities.length > 0"
+          class="autocomplete-dropdown"
+        >
+          <li
+            v-for="(city, index) in filteredCities"
+            :key="city"
+            :class="{ 'active': index === cityHighlightIndex }"
+            @mousedown.prevent="selectCity(city)"
+            @mouseenter="cityHighlightIndex = index"
+          >
+            {{ city }}
+          </li>
+        </ul>
+      </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group autocomplete-wrapper">
       <label for="venueState">State*</label>
-      <input type="text" id="venueState" v-model="new_venue.state" list="state-suggestions" required placeholder="Start typing or select...">
-      <datalist id="state-suggestions">
-        <option v-for="state in suggestedStates" :key="state" :value="state" />
-      </datalist>
+      <div class="autocomplete-container" ref="stateDropdownContainer">
+        <input
+          type="text"
+          id="venueState"
+          v-model="new_venue.state"
+          @focus="showStateDropdown = true"
+          @input="showStateDropdown = true"
+          @keydown="handleStateKeydown"
+          required
+          placeholder="Start typing or select..."
+          autocomplete="off"
+        >
+        <ul
+          v-if="showStateDropdown && filteredStates.length > 0"
+          class="autocomplete-dropdown"
+        >
+          <li
+            v-for="(state, index) in filteredStates"
+            :key="state"
+            :class="{ 'active': index === stateHighlightIndex }"
+            @mousedown.prevent="selectState(state)"
+            @mouseenter="stateHighlightIndex = index"
+          >
+            {{ state }}
+          </li>
+        </ul>
+      </div>
     </div>
 
     <div class="form-group">
@@ -57,7 +103,7 @@
 </template>
 
 <script setup>
-  import { ref, computed, defineExpose } from 'vue'
+  import { ref, computed, onMounted, onBeforeUnmount, defineExpose } from 'vue'
   import { useStore } from 'vuex'
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
   import Modal from '~/components/Modal.vue'
@@ -94,6 +140,16 @@
     g_map_link: ''
   })
 
+  // City autocomplete state
+  const showCityDropdown = ref(false)
+  const cityHighlightIndex = ref(-1)
+  const cityDropdownContainer = ref(null)
+
+  // State autocomplete state
+  const showStateDropdown = ref(false)
+  const stateHighlightIndex = ref(-1)
+  const stateDropdownContainer = ref(null)
+
   const venueRequiredFields = computed(() => {
     return new_venue.value.name !== '' &&
       new_venue.value.street !== '' &&
@@ -112,6 +168,111 @@
   const suggestedStates = [
     'Kentucky', 'Ohio', 'West Virginia', 'Tennessee'
   ]
+
+  const filteredCities = computed(() => {
+    const query = new_venue.value.city.toLowerCase()
+    if (!query) return suggestedCities
+    return suggestedCities.filter(city => city.toLowerCase().includes(query))
+  })
+
+  const filteredStates = computed(() => {
+    const query = new_venue.value.state.toLowerCase()
+    if (!query) return suggestedStates
+    return suggestedStates.filter(state => state.toLowerCase().includes(query))
+  })
+
+  const selectCity = (city) => {
+    new_venue.value.city = city
+    showCityDropdown.value = false
+    cityHighlightIndex.value = -1
+  }
+
+  const selectState = (state) => {
+    new_venue.value.state = state
+    showStateDropdown.value = false
+    stateHighlightIndex.value = -1
+  }
+
+  const handleCityKeydown = (e) => {
+    if (!showCityDropdown.value || filteredCities.value.length === 0) {
+      showCityDropdown.value = true
+      return
+    }
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault()
+        cityHighlightIndex.value = Math.min(
+          cityHighlightIndex.value + 1,
+          filteredCities.value.length - 1
+        )
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        cityHighlightIndex.value = Math.max(cityHighlightIndex.value - 1, -1)
+        break
+      case 'Enter':
+        e.preventDefault()
+        if (cityHighlightIndex.value >= 0) {
+          selectCity(filteredCities.value[cityHighlightIndex.value])
+        }
+        break
+      case 'Escape':
+        showCityDropdown.value = false
+        cityHighlightIndex.value = -1
+        break
+    }
+  }
+
+  const handleStateKeydown = (e) => {
+    if (!showStateDropdown.value || filteredStates.value.length === 0) {
+      showStateDropdown.value = true
+      return
+    }
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault()
+        stateHighlightIndex.value = Math.min(
+          stateHighlightIndex.value + 1,
+          filteredStates.value.length - 1
+        )
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        stateHighlightIndex.value = Math.max(stateHighlightIndex.value - 1, -1)
+        break
+      case 'Enter':
+        e.preventDefault()
+        if (stateHighlightIndex.value >= 0) {
+          selectState(filteredStates.value[stateHighlightIndex.value])
+        }
+        break
+      case 'Escape':
+        showStateDropdown.value = false
+        stateHighlightIndex.value = -1
+        break
+    }
+  }
+
+  const handleClickOutside = (e) => {
+    if (cityDropdownContainer.value && !cityDropdownContainer.value.contains(e.target)) {
+      showCityDropdown.value = false
+      cityHighlightIndex.value = -1
+    }
+    if (stateDropdownContainer.value && !stateDropdownContainer.value.contains(e.target)) {
+      showStateDropdown.value = false
+      stateHighlightIndex.value = -1
+    }
+  }
+
+  onMounted(() => {
+    document.addEventListener('click', handleClickOutside)
+  })
+
+  onBeforeUnmount(() => {
+    document.removeEventListener('click', handleClickOutside)
+  })
 
   const submitNewVenue = () => {
     const payload = {
@@ -193,6 +354,41 @@
   .form-group input:focus {
     border-color: #1976d2;
     box-shadow: 0 0 0 1px #1976d2;
+  }
+
+  /* Custom autocomplete styles */
+  .autocomplete-container {
+    position: relative;
+  }
+
+  .autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: white;
+    border: 1px solid #bbb;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  .autocomplete-dropdown li {
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.15s;
+  }
+
+  .autocomplete-dropdown li:hover,
+  .autocomplete-dropdown li.active {
+    background-color: #e3f2fd;
   }
 
   .btn-outline {
