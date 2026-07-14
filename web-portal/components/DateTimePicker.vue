@@ -61,8 +61,8 @@
         validator: value => value === 'upload' || value === 'edit'
       },
       modelValue: {
-        type: Array,
-        default: () => []
+        type: Object,
+        default: () => ({})
       }
     },
     emits: ['update:modelValue'],

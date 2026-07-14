@@ -4,6 +4,7 @@
       ref="venueSearch"
       :venues="venues"
       :initial_venue_id="initial_venue_id"
+      v-model="localSearchTerm"
       @select-venue="emit('selectVenue', $event)"
       @open-new-venue-modal="handleModal"
     />
@@ -15,14 +16,18 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
+  import { ref, watch } from 'vue'
 
-  defineProps({
+  const props = defineProps({
     venues: {
       type: Array,
       default: () => []
     },
     initial_venue_id: {
+      type: [String, Number],
+      default: null
+    },
+    searchterm: {
       type: [String, Number],
       default: null
     }
@@ -31,6 +36,13 @@
   const emit = defineEmits(['selectVenue', 'newVenue'])
 
   const showVenueModal = ref(false)
+  const localSearchTerm = ref(props.searchterm || '')
+
+  watch(() => props.searchterm, (newVal) => {
+    if (newVal !== localSearchTerm.value) {
+      localSearchTerm.value = newVal || ''
+    }
+  })
 
   const handleModal = () => {
     showVenueModal.value = true
@@ -38,6 +50,7 @@
 
   const handleNewVenue = (venue) => {
     emit('newVenue', venue)
+    emit('selectVenue', venue)
   }
 </script>
 

@@ -14,6 +14,7 @@
       ref="venuePicker"
       :venues="venues"
       :initial_venue_id="selectedVenueId"
+      :searchterm="selectedVenueId"
       @select-venue="handleVenueSelection"
       @new-venue="handleNewVenue"
     />
@@ -179,7 +180,7 @@
   }
 
   const deleteEntry = () => {
-    // Let the parent handle removing this specific object from its array
+    // Let the parent handle removing this from its array
     emit('delete')
   }
 
@@ -194,12 +195,11 @@
 
   const handleNewVenue = (venue) => {
     selectedVenueId.value = venue?.id
-    emit('newVenue', venue)
+    emit('selectVenue', venue)
   }
 </script>
 
 <style scoped>
-/* Styles remain exactly the same */
 .editable-form {
   border: 1px solid black;
   padding: 10px;

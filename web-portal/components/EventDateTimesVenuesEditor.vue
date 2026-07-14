@@ -42,7 +42,7 @@
       </div>
       <div v-else>
         <date-time-venue-editor
-          edit-mode="true"
+          :edit-mode="true"
           v-model="newEntryDraft"
           :venues="venues"
           :mode="mode"

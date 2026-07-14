@@ -5,15 +5,14 @@
       class="text-input venue"
       v-model="searchterm"
       placeholder="Search for a venue"
-      @focusin="showDropdownContent()"
-      @focusout="hideDropdownContent()"
-      @keyup.enter="hitEnter()"
+      @focusin="showDropdownContent"
+      @focusout="hideDropdownContent"
+      @keyup.enter="hitEnter"
     />
     <div class="results-container" v-if="show">
 
       <!-- Existing Venue Results -->
       <div
-        href="#"
         v-for="venue in queryResults"
         :key="venue.id"
         class="venue-result"
@@ -35,80 +34,127 @@
   </div>
 </template>
 
-<script>
-  export default {
-    name: 'VenueSearch',
-    props: ['venues', 'initial_venue_id'],
-    emits: ['selectVenue', 'openNewVenueModal'],
-    data: function () {
-      return {
-        searchterm: '',
-        show: false
-      }
+<script setup>
+  import { ref, computed, watch, onMounted } from 'vue'
+
+  const props = defineProps({
+    venues: {
+      type: Array,
+      default: () => []
     },
-    methods: {
-      showDropdownContent: function () {
-        this.show = true
-      },
-      hideDropdownContent: function () {
-        this.show = false
-      },
-      selectVenue: function (venue) {
-        this.searchterm = venue.name
-        this.hideDropdownContent()
-        this.$emit('selectVenue', venue)
-      },
-      openNewVenueModal: function () {
-        // Hide the search dropdown
-        this.hideDropdownContent()
-        // Clear the search term
-        this.searchterm = ''
-        // Emit event to open the modal
-        this.$emit('openNewVenueModal')
-      },
-      handleNewVenue: function (venue) {
-        this.searchterm = venue.name
-      },
-      hitEnter: function () {
-        if (this.queryResults.length === 1) {
-          this.selectVenue(this.queryResults[0])
-        }
-      },
-      initToVenueId: function () {
-        const venue = this.venues.find(v => v.id === this.initial_venue_id)
-        this.searchterm = (venue && venue.name) || this.searchterm
-      }
+    initial_venue_id: {
+      type: [Number, String],
+      default: null
     },
-    mounted: function () {
-      if (this.initial_venue_id && this.venues) {
-        this.initToVenueId()
-      }
-    },
-    computed: {
-      queryResults: function () {
-        if (this.venues === undefined) {
-          return []
-        } else {
-          return this.venues.filter((venue) => {
-            return venue.name.toLowerCase().includes(this.searchterm.toLowerCase()) ||
-              venue.address.toLowerCase().includes(this.searchterm.toLowerCase())
-          })
-        }
-      }
-    },
-    watch: {
-      initial_venue_id: function (initial_venue_id, old_venue_id) {
-        if (!old_venue_id && initial_venue_id && this.venues && this.venues.length > 0) {
-          this.initToVenueId()
-        }
-      },
-      venues: function (venues, old_venues) {
-        if ((!old_venues || old_venues.length === 0) && venues && venues.length > 0 && this.initial_venue_id) {
-          this.initToVenueId()
-        }
-      }
+    modelValue: {
+      type: [String, Number],  // Allow both
+      default: ''
+    }
+  })
+
+  const emit = defineEmits(['selectVenue', 'openNewVenueModal', 'update:modelValue'])
+
+  const show = ref(false)
+
+  // Helper: resolve ID or name → always returns name
+  const resolveToName = (value) => {
+    if (!value && value !== 0) return ''
+    const strValue = String(value)
+    const venueById = props.venues?.find(v => String(v.id) === strValue)
+    return venueById ? venueById.name : strValue
+  }
+
+  // Initialize with resolved name
+  const searchterm = ref(resolveToName(props.modelValue))
+
+  const showDropdownContent = () => {
+    show.value = true
+  }
+
+  const hideDropdownContent = () => {
+    show.value = false
+  }
+
+  const selectVenue = (venue) => {
+    searchterm.value = venue.name
+    hideDropdownContent()
+    emit('selectVenue', venue)
+  }
+
+  const openNewVenueModal = () => {
+    hideDropdownContent()
+    searchterm.value = ''
+    emit('openNewVenueModal')
+  }
+
+  const handleNewVenue = (venue) => {
+    searchterm.value = venue.name
+  }
+
+  const hitEnter = () => {
+    if (queryResults.value.length === 1) {
+      selectVenue(queryResults.value[0])
     }
   }
+
+  const initToVenueId = () => {
+    const venue = props.venues.find(v => v.id === props.initial_venue_id)
+    if (venue) {
+      searchterm.value = venue.name
+    }
+  }
+
+  const queryResults = computed(() => {
+    if (!props.venues || props.venues.length === 0) {
+      return []
+    }
+    return props.venues.filter((venue) => {
+      return venue.name.toLowerCase().includes(searchterm.value.toLowerCase()) ||
+        venue.address.toLowerCase().includes(searchterm.value.toLowerCase())
+    })
+  })
+
+  onMounted(() => {
+    if (props.initial_venue_id && props.venues?.length > 0) {
+      initToVenueId()
+    }
+  })
+
+  watch(() => props.initial_venue_id, (newId, oldId) => {
+    if (!oldId && newId && props.venues?.length > 0) {
+      initToVenueId()
+    }
+  })
+
+  watch(() => props.venues, (newVenues, oldVenues) => {
+    if ((!oldVenues || oldVenues.length === 0) && newVenues?.length > 0 && props.initial_venue_id) {
+      initToVenueId()
+    }
+    // Also re-resolve current searchterm in case venues just loaded
+    if (newVenues?.length > 0 && searchterm.value) {
+      const resolved = resolveToName(searchterm.value)
+      if (resolved !== searchterm.value) {
+        searchterm.value = resolved
+      }
+    }
+  })
+
+  // Resolve modelValue to name (handles both ID and name being passed)
+  watch(() => props.modelValue, (newVal) => {
+    const resolvedName = resolveToName(newVal)
+    if (resolvedName !== searchterm.value) {
+      searchterm.value = resolvedName
+    }
+  })
+
+  // Sync typing back to parent (always sends name, never ID)
+  watch(searchterm, (newVal) => {
+    emit('update:modelValue', newVal)
+  })
+
+  defineExpose({
+    handleNewVenue
+  })
 </script>
 
 <style scoped>
@@ -157,7 +203,7 @@
   display: block;
   cursor: pointer;
   font-style: italic;
-  border-top: 1px solid #e0e0e0; /* Separator line */
+  border-top: 1px solid #e0e0e0;
   background-color: #fff;
 }
 .add-new-option:hover {
