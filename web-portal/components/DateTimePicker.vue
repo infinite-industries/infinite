@@ -2,8 +2,9 @@
   <div id="cal-container">
     <div class="time-date-input-box">
       <div class="time-date-entry">
-        On <button class="link-button" @click="toggleCalendarModal()">{{ picker }}</button> from
+        On <button id="date-picker" class="link-button" @click="toggleCalendarModal()">{{ picker }}</button> from
         <time-picker
+          id="start-time"
           v-model:hour="start_hour"
           v-model:minute="start_minute"
           v-model:ampm="start_ampm"
@@ -15,6 +16,7 @@
         />
         to
         <time-picker
+          id="end-time"
           v-model:hour="end_hour"
           v-model:minute="end_minute"
           v-model:ampm="end_ampm"

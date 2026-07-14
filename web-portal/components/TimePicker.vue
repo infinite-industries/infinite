@@ -6,7 +6,7 @@
       type="text"
       placeholder="hh"
       maxlength="2"
-      :class="{ invalid: invalidHour }"
+      :class="invalidHour ? 'invalid hour-part' : 'hour-part'"
     />
     <span>:</span>
     <input
@@ -15,7 +15,7 @@
       type="text"
       placeholder="mm"
       maxlength="2"
-      :class="{ invalid: invalidMinute }"
+      :class="invalidMinute ? 'invalid minute-part' : 'minute-part'"
     />
     <select :ref="ampmRef" v-model="ampmLocal">
       <option value="am">AM</option>
