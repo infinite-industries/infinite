@@ -58,7 +58,7 @@
 
 <script setup>
   import { computed, nextTick, ref, watch } from 'vue'
-  import Edit from './vectors/Edit.vue'
+  import Edit from '@/components/vectors/Edit.vue'
   import DateTimePicker from '@/components/DateTimePicker.vue'
   import VenuePicker from '@/components/VenuePicker.vue'
 
@@ -200,95 +200,95 @@
 </script>
 
 <style scoped>
-.editable-form {
-  border: 1px solid black;
-  padding: 10px;
-}
+  .editable-form {
+    border: 1px solid black;
+    padding: 10px;
+  }
 
-.required-field {
-  color: red;
-  font-weight: bold;
-}
+  .required-field {
+    color: red;
+    font-weight: bold;
+  }
 
-.date-time-venue-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-  justify-content: flex-end;
-}
+  .date-time-venue-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    justify-content: flex-end;
+  }
 
-.confirmed-entry {
-  align-items: center;
-  background-color: #f5f5f5;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
-  padding: 0.75rem;
-}
+  .confirmed-entry {
+    align-items: center;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+  }
 
-.confirmed-entry-summary {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 0.5rem;
-}
+  .confirmed-entry-summary {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 
-.summary-text {
-  display: flex;
-  flex-direction: column;
-}
+  .summary-text {
+    display: flex;
+    flex-direction: column;
+  }
 
-.confirmed-entry-actions {
-  display: flex;
-  gap: 0.5rem;
-}
+  .confirmed-entry-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
 
-button {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 0.4rem 0.75rem;
-  text-transform: uppercase;
-  font-size: 14px;
-}
+  button {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0.4rem 0.75rem;
+    text-transform: uppercase;
+    font-size: 14px;
+  }
 
-button.confirm-entry-button {
-  background-color: #4CAF50;
-  color: white;
-}
+  button.confirm-entry-button {
+    background-color: #4CAF50;
+    color: white;
+  }
 
-button.confirm-entry-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
+  button.confirm-entry-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
 
-button.edit-entry-button {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
+  button.edit-entry-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
 
-button.edit-entry-button:hover {
-  transform: scale(1.15);
-}
+  button.edit-entry-button:hover {
+    transform: scale(1.15);
+  }
 
-button.delete-entry-button {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: #dc3545;
-  font-size: 20px;
-  font-weight: 900;
-  line-height: 1;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
+  button.delete-entry-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: #dc3545;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1;
+    transition: color 0.2s ease, transform 0.2s ease;
+  }
 
-button.delete-entry-button:hover {
-  color: #bd2130;
-  transform: scale(1.15);
-}
+  button.delete-entry-button:hover {
+    color: #bd2130;
+    transform: scale(1.15);
+  }
 </style>
