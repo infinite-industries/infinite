@@ -106,37 +106,35 @@
 </script>
 
 <style scoped>
-.datetime-venue-list {
-  width: 100%;
-}
+  .datetime-venue-list {
+    width: 100%;
+  }
 
-button {
-  border-radius: 4px;
-  cursor: pointer;
-  text-transform: uppercase;
-  font-size: 14px;
-}
+  button {
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 14px;
+  }
 
-.add-date-btn {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid #1976d2;
-  background: transparent;
-  color: #1976d2;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  transition: background-color 0.2s, color 0.2s;
-}
+  .add-date-btn {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #1976d2;
+    background: transparent;
+    color: #1976d2;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: background-color 0.2s, color 0.2s;
+  }
 
-.add-date-btn:hover {
-  background-color: #1976d2;
-  color: white;
-}
+  .add-date-btn:hover {
+    background-color: #1976d2;
+    color: white;
+  }
 
-.add-icon {
-  font-size: 1.125rem;
-  line-height: 1;
-}
-
-
+  .add-icon {
+    font-size: 1.125rem;
+    line-height: 1;
+  }
 </style>
