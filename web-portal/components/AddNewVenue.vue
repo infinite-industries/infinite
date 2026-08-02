@@ -1,102 +1,190 @@
 <template>
   <Modal v-model="isModalOpen" title="Add a new venue:">
-    <div class="form-group">
-      <label for="venueName">Venue Name*</label>
-      <input type="text" id="venueName" v-model="new_venue.name" required placeholder="e.g. The Grand Theater">
-    </div>
-
-    <div class="form-group">
-      <label for="venueStreet">Street Address*</label>
-      <input type="text" id="venueStreet" v-model="new_venue.street" required placeholder="e.g. 123 Main St">
-    </div>
-
-    <div class="form-group autocomplete-wrapper">
-      <label for="venueCity">City*</label>
-      <div class="autocomplete-container" ref="cityDropdownContainer">
+    <form id="venueForm" @submit.prevent="submitNewVenue">
+      <div class="form-group">
+        <label for="venueName">
+          Venue Name<span class="sr-only"> (required)</span><span class="required-field">*</span>
+        </label>
         <input
           type="text"
-          id="venueCity"
-          v-model="new_venue.city"
-          @focus="showCityDropdown = true"
-          @input="showCityDropdown = true"
-          @keydown="handleCityKeydown"
+          id="venueName"
+          v-model="new_venue.name"
           required
-          placeholder="Start typing or select..."
-          autocomplete="off"
+          placeholder="e.g. The Grand Theater"
         >
-        <ul
-          v-if="showCityDropdown && filteredCities.length > 0"
-          class="autocomplete-dropdown"
-        >
-          <li
-            v-for="(city, index) in filteredCities"
-            :key="city"
-            :class="{ 'active': index === cityHighlightIndex }"
-            @mousedown.prevent="selectCity(city)"
-            @mouseenter="cityHighlightIndex = index"
-          >
-            {{ city }}
-          </li>
-        </ul>
       </div>
-    </div>
 
-    <div class="form-group autocomplete-wrapper">
-      <label for="venueState">State*</label>
-      <div class="autocomplete-container" ref="stateDropdownContainer">
+      <fieldset class="address-fieldset">
+        <legend class="sr-only">Address Details</legend>
+
+        <div class="form-group">
+          <label for="venueStreet">
+            Street Address<span class="sr-only"> (required)</span><span class="required-field">*</span>
+          </label>
+          <input
+            type="text"
+            id="venueStreet"
+            v-model="new_venue.street"
+            required
+            placeholder="e.g. 123 Main St"
+          >
+        </div>
+
+        <div class="form-group autocomplete-wrapper">
+          <label id="venueCityLabel" for="venueCity">
+            City<span class="sr-only"> (required)</span><span class="required-field">*</span>
+          </label>
+          <div class="autocomplete-container" ref="cityDropdownContainer">
+            <input
+              type="text"
+              id="venueCity"
+              role="combobox"
+              aria-autocomplete="list"
+              :aria-expanded="showCityDropdown"
+              aria-haspopup="listbox"
+              aria-controls="venueCityListbox"
+              :aria-activedescendant="cityActiveDescendantId"
+              v-model="new_venue.city"
+              @focus="showCityDropdown = true"
+              @input="showCityDropdown = true"
+              @keydown="handleCityKeydown"
+              @blur="handleCityBlur"
+              required
+              placeholder="Start typing or select..."
+              autocomplete="off"
+            >
+            <ul
+              v-if="showCityDropdown && filteredCities.length > 0"
+              id="venueCityListbox"
+              class="autocomplete-dropdown"
+              role="listbox"
+              aria-labelledby="venueCityLabel"
+            >
+              <li
+                role="option"
+                v-for="(city, index) in filteredCities"
+                :key="city"
+                :id="`venueCityOption-${index}`"
+                :aria-selected="index === cityHighlightIndex"
+                :class="{ 'active': index === cityHighlightIndex }"
+                @mousedown.prevent="selectCity(city)"
+                @mouseenter="cityHighlightIndex = index"
+              >
+                {{ city }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="form-group autocomplete-wrapper">
+          <label id="venueStateLabel" for="venueState">
+            State<span class="sr-only"> (required)</span><span class="required-field">*</span>
+          </label>
+          <div class="autocomplete-container" ref="stateDropdownContainer">
+            <input
+              type="text"
+              id="venueState"
+              role="combobox"
+              aria-autocomplete="list"
+              :aria-expanded="showStateDropdown"
+              aria-haspopup="listbox"
+              aria-controls="venueStateListbox"
+              :aria-activedescendant="stateActiveDescendantId"
+              v-model="new_venue.state"
+              @focus="showStateDropdown = true"
+              @input="showStateDropdown = true"
+              @keydown="handleStateKeydown"
+              @blur="handleStateBlur"
+              required
+              placeholder="Start typing or select..."
+              autocomplete="off"
+            >
+            <ul
+              v-if="showStateDropdown && filteredStates.length > 0"
+              id="venueStateListbox"
+              class="autocomplete-dropdown"
+              role="listbox"
+              aria-labelledby="venueStateLabel"
+            >
+              <li
+                role="option"
+                v-for="(state, index) in filteredStates"
+                :key="state"
+                :id="`venueStateOption-${index}`"
+                :aria-selected="index === stateHighlightIndex"
+                :class="{ 'active': index === stateHighlightIndex }"
+                @mousedown.prevent="selectState(state)"
+                @mouseenter="stateHighlightIndex = index"
+              >
+                {{ state }}
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="venueZip">
+            Zip Code<span class="sr-only"> (required)</span><span class="required-field">*</span>
+          </label>
+          <input
+            type="text"
+            id="venueZip"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            v-model="new_venue.zip"
+            required
+            placeholder="e.g. 40501"
+          >
+        </div>
+      </fieldset>
+
+      <div class="form-group">
+        <label for="venueNeighborhood">Neighborhood</label>
         <input
           type="text"
-          id="venueState"
-          v-model="new_venue.state"
-          @focus="showStateDropdown = true"
-          @input="showStateDropdown = true"
-          @keydown="handleStateKeydown"
-          required
-          placeholder="Start typing or select..."
-          autocomplete="off"
+          id="venueNeighborhood"
+          v-model="new_venue.neighborhood"
+          placeholder="Optional"
         >
-        <ul
-          v-if="showStateDropdown && filteredStates.length > 0"
-          class="autocomplete-dropdown"
-        >
-          <li
-            v-for="(state, index) in filteredStates"
-            :key="state"
-            :class="{ 'active': index === stateHighlightIndex }"
-            @mousedown.prevent="selectState(state)"
-            @mouseenter="stateHighlightIndex = index"
-          >
-            {{ state }}
-          </li>
-        </ul>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="venueZip">Zip Code*</label>
-      <input type="text" id="venueZip" v-model="new_venue.zip" required placeholder="e.g. 40501">
-    </div>
+      <div class="form-group">
+        <label for="venueMapLink">Google Maps Link</label>
+        <input
+          type="url"
+          id="venueMapLink"
+          v-model="new_venue.g_map_link"
+          placeholder="https://maps.google.com/..."
+        >
+      </div>
+    </form>
 
-    <div class="form-group">
-      <label for="venueNeighborhood">Neighborhood</label>
-      <input type="text" id="venueNeighborhood" v-model="new_venue.neighborhood" placeholder="Optional">
-    </div>
-
-    <div class="form-group">
-      <label for="venueMapLink">Google Maps Link</label>
-      <input type="url" id="venueMapLink" v-model="new_venue.g_map_link" placeholder="https://maps.google.com/...">
-    </div>
-
-    <!-- template #footer maps to modal-footer (pins to bottom even if form scrolls) -->
     <template #footer>
+      <button type="button" class="btn-text" @click="close">
+        Cancel
+      </button>
       <button
+        type="submit"
+        form="venueForm"
         class="btn-outline"
         :disabled="!venueRequiredFields"
-        @click="submitNewVenue()"
       >
         Add Venue
       </button>
-      <img v-if="showVenueLoadingSpinner" class="loading-spinner" src="~/assets/images/spinner.gif" alt="Loading">
+      <div
+        v-if="showVenueLoadingSpinner"
+        role="status"
+        aria-live="polite"
+        class="loading-status"
+      >
+        <img
+          class="loading-spinner"
+          src="~/assets/images/spinner.gif"
+          alt=""
+          aria-hidden="true"
+        >
+        <span class="sr-only">Saving venue...</span>
+      </div>
     </template>
 
   </Modal>
@@ -150,6 +238,14 @@
   const stateHighlightIndex = ref(-1)
   const stateDropdownContainer = ref(null)
 
+  const cityActiveDescendantId = computed(() =>
+    cityHighlightIndex.value >= 0 ? `venueCityOption-${cityHighlightIndex.value}` : null
+  )
+
+  const stateActiveDescendantId = computed(() =>
+    stateHighlightIndex.value >= 0 ? `venueStateOption-${stateHighlightIndex.value}` : null
+  )
+
   const venueRequiredFields = computed(() => {
     return new_venue.value.name !== '' &&
       new_venue.value.street !== '' &&
@@ -181,6 +277,16 @@
     return suggestedStates.filter(state => state.toLowerCase().includes(query))
   })
 
+  // Helper to ensure active options scroll into view
+  const scrollOptionIntoView = (optionId) => {
+    if (optionId) {
+      const element = document.getElementById(optionId)
+      if (element) {
+        element.scrollIntoView({ block: 'nearest' })
+      }
+    }
+  }
+
   const selectCity = (city) => {
     new_venue.value.city = city
     showCityDropdown.value = false
@@ -200,27 +306,39 @@
     }
 
     switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault()
-        cityHighlightIndex.value = Math.min(
-          cityHighlightIndex.value + 1,
-          filteredCities.value.length - 1
-        )
-        break
-      case 'ArrowUp':
-        e.preventDefault()
-        cityHighlightIndex.value = Math.max(cityHighlightIndex.value - 1, -1)
-        break
-      case 'Enter':
-        e.preventDefault()
-        if (cityHighlightIndex.value >= 0) {
-          selectCity(filteredCities.value[cityHighlightIndex.value])
-        }
-        break
-      case 'Escape':
-        showCityDropdown.value = false
-        cityHighlightIndex.value = -1
-        break
+    case 'ArrowDown':
+      e.preventDefault()
+      cityHighlightIndex.value = Math.min(
+        cityHighlightIndex.value + 1,
+        filteredCities.value.length - 1
+      )
+      scrollOptionIntoView(cityActiveDescendantId.value)
+      break
+    case 'ArrowUp':
+      e.preventDefault()
+      cityHighlightIndex.value = Math.max(cityHighlightIndex.value - 1, -1)
+      scrollOptionIntoView(cityActiveDescendantId.value)
+      break
+    case 'Home':
+      e.preventDefault()
+      cityHighlightIndex.value = 0
+      scrollOptionIntoView(cityActiveDescendantId.value)
+      break
+    case 'End':
+      e.preventDefault()
+      cityHighlightIndex.value = filteredCities.value.length - 1
+      scrollOptionIntoView(cityActiveDescendantId.value)
+      break
+    case 'Enter':
+      e.preventDefault()
+      if (cityHighlightIndex.value >= 0) {
+        selectCity(filteredCities.value[cityHighlightIndex.value])
+      }
+      break
+    case 'Escape':
+      showCityDropdown.value = false
+      cityHighlightIndex.value = -1
+      break
     }
   }
 
@@ -231,28 +349,58 @@
     }
 
     switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault()
-        stateHighlightIndex.value = Math.min(
-          stateHighlightIndex.value + 1,
-          filteredStates.value.length - 1
-        )
-        break
-      case 'ArrowUp':
-        e.preventDefault()
-        stateHighlightIndex.value = Math.max(stateHighlightIndex.value - 1, -1)
-        break
-      case 'Enter':
-        e.preventDefault()
-        if (stateHighlightIndex.value >= 0) {
-          selectState(filteredStates.value[stateHighlightIndex.value])
-        }
-        break
-      case 'Escape':
+    case 'ArrowDown':
+      e.preventDefault()
+      stateHighlightIndex.value = Math.min(
+        stateHighlightIndex.value + 1,
+        filteredStates.value.length - 1
+      )
+      scrollOptionIntoView(stateActiveDescendantId.value)
+      break
+    case 'ArrowUp':
+      e.preventDefault()
+      stateHighlightIndex.value = Math.max(stateHighlightIndex.value - 1, -1)
+      scrollOptionIntoView(stateActiveDescendantId.value)
+      break
+    case 'Home':
+      e.preventDefault()
+      stateHighlightIndex.value = 0
+      scrollOptionIntoView(stateActiveDescendantId.value)
+      break
+    case 'End':
+      e.preventDefault()
+      stateHighlightIndex.value = filteredStates.value.length - 1
+      scrollOptionIntoView(stateActiveDescendantId.value)
+      break
+    case 'Enter':
+      e.preventDefault()
+      if (stateHighlightIndex.value >= 0) {
+        selectState(filteredStates.value[stateHighlightIndex.value])
+      }
+      break
+    case 'Escape':
+      showStateDropdown.value = false
+      stateHighlightIndex.value = -1
+      break
+    }
+  }
+
+  const handleCityBlur = () => {
+    window.setTimeout(() => {
+      if (cityDropdownContainer.value && !cityDropdownContainer.value.contains(document.activeElement)) {
+        showCityDropdown.value = false
+        cityHighlightIndex.value = -1
+      }
+    }, 0)
+  }
+
+  const handleStateBlur = () => {
+    window.setTimeout(() => {
+      if (stateDropdownContainer.value && !stateDropdownContainer.value.contains(document.activeElement)) {
         showStateDropdown.value = false
         stateHighlightIndex.value = -1
-        break
-    }
+      }
+    }, 0)
   }
 
   const handleClickOutside = (e) => {
@@ -293,7 +441,6 @@
 
     $apiService.post('/venues/', payload)
       .then((data) => {
-        // Hide spinner and close modal
         showVenueLoadingSpinner.value = false
         close()
         if (data.status === 'success') {
@@ -312,11 +459,45 @@
 </script>
 
 <style scoped>
+  /* Utility class for screen readers */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Reset default fieldset styles so it doesn't break UI */
+  .address-fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
   button {
     border-radius: 4px;
     cursor: pointer;
     text-transform: uppercase;
     font-size: 14px;
+  }
+
+  .btn-text {
+    background: none;
+    border: none;
+    color: #555;
+    padding: 10px 20px;
+    text-transform: none;
+    font-size: 14px;
+  }
+
+  .btn-text:hover {
+    color: black;
+    text-decoration: underline;
   }
 
   .btn-primary {
@@ -422,8 +603,19 @@
     cursor: not-allowed;
   }
 
+  .loading-status {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 12px;
+  }
+
   .loading-spinner {
     width: 30px;
     height: 30px;
+  }
+
+  .required-field {
+    color: red;
+    font-weight: bold;
   }
 </style>
