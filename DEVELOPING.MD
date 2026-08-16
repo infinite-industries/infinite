@@ -38,7 +38,7 @@ See [`docs/codespaces.md`](./docs/codespaces.md) for detailed instructions on ru
 - Auth0 in prod, but local dev supports hard-coded admin and partner users
 
 ### File Uploads
-- AWS S3 in prod, but local dev writes to `api-server/dist/src/uploads/static/event-images/`.
+- AWS S3 in prod, but local dev writes to `api-server/dist/src/uploads/static/`.
 
 ### API Server
 - [NestJS](https://docs.nestjs.com/): API framework for NodeJS
