@@ -34,7 +34,7 @@ The frontend web application served at [infinite.industries](https://infinite.in
 [DEPLOY.MD](./DEPLOY.MD)
 
 
-### Widget
+### Widget (Unmaintained)
 
 Can be embedded in partner websites and services.
 [Widget Documentation](https://github.com/infinite-industries/infinite/tree/master/widget)
@@ -42,7 +42,7 @@ Can be embedded in partner websites and services.
 ## Current Project Team Members
 
 + [Matthew Gidcomb](https://github.com/MatthewGidcomb)
-+ [Becky Mead](https://github.com/rlmead)
++ [Summer Smith](https://github.com/summasmiff)
 + [Dima Strakovsky](https://github.com/Digi-D)
 + [Jason Swank](https://scalene.net/~jswank)
 + [Zoe Triantafilou](https://github.com/zoe-triantafilou)
@@ -52,8 +52,9 @@ Can be embedded in partner websites and services.
 
 + [Evan Heaton](https://github.com/epheat)
 + [Yevhen Lukin](https://github.com/dix-icomys)
++ [Becky Mead](https://github.com/rlmead)
 
-Please contact us at info@infiniteindustries We will walk you through how to start running various components in your local dev environment.
+Please contact us at [info@infinite.industries](mailto:info@infinite.industries). We will walk you through how to start running various components in your local dev environment.
 
 ## License
 
