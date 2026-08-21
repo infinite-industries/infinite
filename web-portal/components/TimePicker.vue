@@ -9,7 +9,7 @@
       class="hour-part"
       :class="{ invalid: invalidHour }"
     />
-    <span>:</span>
+    <span> : </span>
     <input
       :ref="minRef"
       v-model="minuteLocal"
@@ -20,8 +20,8 @@
       :class="{ invalid: invalidMinute }"
     />
     <select :ref="ampmRef" v-model="ampmLocal">
-      <option value="am">AM</option>
-      <option value="pm">PM</option>
+      <option value="am">&nbsp;AM</option>
+      <option value="pm">&nbsp;PM</option>
     </select>
   </span>
 </template>

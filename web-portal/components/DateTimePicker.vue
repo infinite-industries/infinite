@@ -2,7 +2,7 @@
   <div id="cal-container">
     <div class="time-date-input-box">
       <div class="time-date-entry">
-        On <button id="date-picker" class="link-button" @click="toggleCalendarModal()">{{ picker }}</button> from
+        On <input id="date-picker" class="date-input" type="text" v-model="picker" placeholder="Select date" readonly @click="openCalendarModal" /> from
         <time-picker
           id="start-time"
           v-model:hour="start_hour"
@@ -67,6 +67,9 @@
         default: () => ({})
       }
     },
+    beforeUnmount: function () {
+      document.removeEventListener('mousedown', this.onDocumentClick)
+    },
     emits: ['update:modelValue'],
     data: function () {
       return {
@@ -92,24 +95,23 @@
       setDefaultDateAndTimes: function () {
         const tz = this.event_timezone || this.$config.public.timezoneDefault;
         const currentTime = momenttz.tz(tz);
-        const roundedMinutes = Math.round(currentTime.minutes() / 15) * 15;
-        const startTime = currentTime.clone().minute(roundedMinutes).second(0);
-        const endTime = startTime.clone().add(1, 'hour');
+        const startTime = currentTime.clone().minute(0).second(0);
+        const endTime = startTime.clone().add(1, 'hour').minute(0).second(0);
 
         this.picker = currentTime.format('YYYY-MM-DD');
-        this.start_hour = startTime.format('hh');
+        this.start_hour = '';
         this.start_minute = startTime.format('mm');
         this.start_ampm = startTime.format('a');
-        this.end_hour = endTime.format('hh');
+        this.end_hour = '';
         this.end_minute = endTime.format('mm');
         this.end_ampm = endTime.format('a');
       },
 
       dateChanged: function(newDate) {
         this.picker = newDate;
-        // Let date-picker finish whatever it's doing before we hide it
+        // close the calendar after a date is chosen
         this.$nextTick(() => {
-          this.show_calendar_modal = false;
+          this.closeCalendarModal()
         });
       },
 
@@ -208,7 +210,30 @@
       },
 
       toggleCalendarModal: function () {
-        this.show_calendar_modal = !this.show_calendar_modal
+        if (this.show_calendar_modal) {
+          this.closeCalendarModal()
+        } else {
+          this.openCalendarModal()
+        }
+      },
+
+      openCalendarModal: function () {
+        this.show_calendar_modal = true
+        this.$nextTick(() => {
+          document.addEventListener('mousedown', this.onDocumentClick)
+        })
+      },
+
+      closeCalendarModal: function () {
+        this.show_calendar_modal = false
+        document.removeEventListener('mousedown', this.onDocumentClick)
+      },
+
+      onDocumentClick: function (e) {
+        // if click is outside this component, close the calendar
+        if (!this.$el.contains(e.target)) {
+          this.closeCalendarModal()
+        }
       }
 
     },
@@ -387,5 +412,20 @@
   color: #004499;
   text-decoration: none; /* Removes underline on hover */
 }
+
+  /* Style date input to match TimePicker inputs */
+  .date-input {
+    padding: 2px;
+    outline: 1px solid rgb(187, 187, 187);
+    border-radius: 3px;
+    width: 120px;
+    box-sizing: border-box;
+    background: white;
+    color: inherit;
+  }
+
+  .date-input:focus {
+    outline: 1px solid #6ea8fe;
+  }
 
 </style>

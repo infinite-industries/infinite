@@ -339,6 +339,10 @@
       showCityDropdown.value = false
       cityHighlightIndex.value = -1
       break
+    case 'Tab':
+      showCityDropdown.value = false
+      cityHighlightIndex.value = -1
+      break
     }
   }
 
@@ -379,6 +383,10 @@
       }
       break
     case 'Escape':
+      showStateDropdown.value = false
+      stateHighlightIndex.value = -1
+      break
+    case 'Tab':
       showStateDropdown.value = false
       stateHighlightIndex.value = -1
       break
