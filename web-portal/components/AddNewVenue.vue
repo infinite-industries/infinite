@@ -191,7 +191,7 @@
 </template>
 
 <script setup>
-  import { ref, computed, onMounted, onBeforeUnmount, defineExpose } from 'vue'
+  import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
   import { useStore } from 'vuex'
   import { FETCH_ACTIVE_VENUES } from '../store/venues'
   import Modal from '~/components/Modal.vue'

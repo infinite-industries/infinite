@@ -26,6 +26,7 @@
           min-ref="endMinInput"
           ampm-ref="endAmPm"
         />
+        &nbsp;
         <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
           <option v-for="(tz) in $config.public.timezoneOptions.split(',')" :key="tz">
             {{ tz }}
@@ -95,16 +96,14 @@
       setDefaultDateAndTimes: function () {
         const tz = this.event_timezone || this.$config.public.timezoneDefault;
         const currentTime = momenttz.tz(tz);
-        const startTime = currentTime.clone().minute(0).second(0);
-        const endTime = startTime.clone().add(1, 'hour').minute(0).second(0);
 
         this.picker = currentTime.format('YYYY-MM-DD');
         this.start_hour = '';
-        this.start_minute = startTime.format('mm');
-        this.start_ampm = startTime.format('a');
+        this.start_minute = '00';
+        this.start_ampm = 'pm';
         this.end_hour = '';
-        this.end_minute = endTime.format('mm');
-        this.end_ampm = endTime.format('a');
+        this.end_minute = '00';
+        this.end_ampm = 'pm';
       },
 
       dateChanged: function(newDate) {
