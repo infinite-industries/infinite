@@ -99,7 +99,7 @@ describe('CurrentEvents (e2e)', () => {
   it('can query events/current-verified', async () => {
     console.info(
       'running first test: ' +
-        `http://localhost:${PORT}/${CURRENT_VERSION_URI}/events/current-verified`,
+      `http://localhost:${PORT}/${CURRENT_VERSION_URI}/events/current-verified`,
     );
 
     return server
@@ -437,6 +437,44 @@ describe('CurrentEvents (e2e)', () => {
         const event = response.body.events[0];
         expect(event.venue).toBeDefined();
         expect(event.venue.partners).toEqual([]);
+      });
+  });
+
+  it('can be passed an optional filter param for city and will only return current, verified events in that city', async () => {
+    const dateTimesForEventInFuture1 = getDateTimesInFuture();
+    const dateTimesForEventInFuture2 = getDateTimesInFuture();
+
+    const springfieldVenue = await createVenue(
+      generateVenue(venueModel, { city: 'Springfield' }),
+    );
+    const gothamVenue = await createVenue(
+      generateVenue(venueModel, { city: 'Gotham' }),
+    );
+
+    await createEvent(
+      generateEvent(EventModel, {
+        venue_id: springfieldVenue.id,
+        verified: true,
+      }),
+      dateTimesForEventInFuture1,
+    );
+
+    await createEvent(
+      generateEvent(EventModel, { venue_id: gothamVenue.id, verified: true }),
+      dateTimesForEventInFuture2,
+    );
+
+    return server
+      .get(`/${CURRENT_VERSION_URI}/events/current-verified?city="Springfield"`)
+      .expect(200)
+      .then(async (response) => {
+        expect(response.body.status).toEqual('success');
+        // should only get back 1 of the events
+        expect(response.body.events.length).toEqual(1);
+        // should only have the event in the venue with the queried city
+        expect(response.body.events.map((event) => event.venue.id)).toEqual([
+          springfieldVenue.id,
+        ]);
       });
   });
 
