@@ -83,8 +83,6 @@ describe('CurrentEvents (e2e)', () => {
   }, 30000);
 
   beforeEach(async () => {
-    console.info('preparing for test');
-
     if (datetimeVenueModel) await deleteAllDatetimeVenues();
 
     if (eventModel) await deleteAllEvents();
@@ -465,7 +463,7 @@ describe('CurrentEvents (e2e)', () => {
     );
 
     return server
-      .get(`/${CURRENT_VERSION_URI}/events/current-verified?city="Springfield"`)
+      .get(`/${CURRENT_VERSION_URI}/events/current-verified?city=Springfield`)
       .expect(200)
       .then(async (response) => {
         expect(response.body.status).toEqual('success');
