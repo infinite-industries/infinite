@@ -14,9 +14,6 @@
       <!-- Content -->
       <slot />
     </main>
-    <!-- PopUps and Modals -->
-    <!-- Regular Old Modal -->
-    <ii-modal />
     <!-- iPhone-specific save button to desktop -->
     <!-- <ii-iphone-save-button /> -->
   </div>

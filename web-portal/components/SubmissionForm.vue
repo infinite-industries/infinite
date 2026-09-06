@@ -1,13 +1,8 @@
 <template>
   <div id="form-wrapper">
-
-    <h2 v-if="user_action==='upload'">Submit Your Event:</h2>
-    <h2 v-else>Edit Your Event:</h2>
-
     <i><span class="required-field">*</span> = required field</i>
 
     <v-container>
-
       <!-- Title -->
       <v-row wrap>
         <v-col cols="12" sm="3">
@@ -78,33 +73,20 @@
       </v-row>
 
       <v-row wrap>
-        <v-col cols="12" sm="11">
-          <v-expansion-panels multiple v-model="showDateTimePicker">
-            <v-expansion-panel value="date-time-picker">
-              <v-expansion-panel-text>
-                <date-time-picker v-model="calendar_event.date_times" :mode="user_action" @change="onDateTimeVenueChanged" />
-              </v-expansion-panel-text>
-            </v-expansion-panel>
-          </v-expansion-panels>
+        <v-col cols="12" sm="10" offset-sm="1">
+          <event-date-times-venues-editor
+            v-if="eventCategory !== '' && eventCategory !== 'online-resource'"
+            v-model="calendar_event.date_times"
+            :initial_venue_id="calendar_event.venue_id"
+            :event-category="eventCategory"
+            :mode="user_action"
+            :venues="venues"
+            @change="onDateTimeVenueChanged"
+            @selectVenue="selectVenue"
+            @newVenue="newVenue"
+          />
         </v-col>
       </v-row>
-
-      <!-- Venue -->
-      <v-row wrap>
-        <v-col cols="12" sm="3">
-          <h3 class="form-label">Select a Venue<span class="required-field">*</span>:</h3>
-        </v-col>
-        <v-col cols="12" sm="8">
-          <venue-picker ref="venuePicker" :venues="venues" :initial_venue_id="calendar_event.venue_id" @selectVenue="selectVenue"></venue-picker>
-        </v-col>
-        <v-col cols="0" sm="3"></v-col>
-        <v-col cols="12" sm="8">
-          <p style="margin: 10px 0px 10px 0px; text-align: center;">OR</p>
-        </v-col>
-      </v-row>
-
-      <!-- Add a Venue (collapsible content)-->
-      <add-new-venue @newVenue="newVenue" />
 
       <existing-event-detection-alert
         :duplicate-events-by-start-time="duplicateEventsByStartTime"
@@ -137,38 +119,6 @@
         </v-col>
       </v-row>
 
-      <!-- Event Social Image -->
-      <!-- <v-row wrap>
-        <v-col cols="12" sm="3">
-          <h3 class="form-label">Social Media Image:</h3>
-        </v-col>
-        <v-col cols="12" sm="8">
-          <div v-if="user_action === 'edit' && !socialImageChosen" class="preview-image">
-            <img v-if="calendar_event.social_image" :src="calendar_event.social_image" alt="">
-            <span v-if="!calendar_event.social_image">Not provided</span>
-          </div>
-          <input
-            type="file"
-            accept="image/*"
-            class="form-control"
-            id="event-social-image"
-            name="event_social_image"
-            ref="eventSocialImage"
-            @change="onFileChange('social')"
-          >
-          <v-btn
-            v-if="user_action === 'edit' && socialImageChosen"
-            small
-            @click="onFileClear('social')"
-          >Remove</v-btn>
-        </v-col>
-        <v-col cols="8" offset="3">
-          <em>Image optimized for social media sharing (recommended size 1024X512 under 1MB)</em>
-        </v-col>
-      </v-row>
-
-      <p><br></p> -->
-
       <!-- Admission Fee -->
       <v-row wrap>
         <v-col cols="12" sm="3">
@@ -181,10 +131,10 @@
 
       <!-- Full Event Description -->
       <v-row wrap>
-        <v-col cols="12" sm="11">
-          <h3>Description:</h3>
+        <v-col cols="12" sm="3">
+          <h3 class="form-label">Description:</h3>
         </v-col>
-        <v-col cols="12" sm="11">
+        <v-col cols="12" sm="8">
           <rich-editor id="vue-editor1" v-model="calendar_event.description" @blur="makeSuggestionsBasedOnDescription" />
         </v-col>
       </v-row>
@@ -374,9 +324,6 @@
 
 <script>
   import RichEditor from './RichEditor.vue'
-  import VenuePicker from './VenuePicker.vue'
-  import DateTimePicker from './DateTimePicker.vue'
-  import AddNewVenue from './AddNewVenue.vue'
   import ImageUploadService from '@/services/ImageUploadService'
   import ExistingEventDetectionAlert from '@/components/ExistingEventDetectionAlert.vue'
 
@@ -579,7 +526,6 @@
       },
       newVenue: function (venue) {
         this.calendar_event.venue_id = venue.id
-        this.$refs.venuePicker.handleNewVenue(venue)
         this.doTimeAndLocationExistingEventDetection()
       },
       doTimeAndLocationExistingEventDetection: function() {
@@ -760,10 +706,6 @@
         }
       },
 
-      showDateTimePicker: function () {
-        return this.calendar_event.category !== 'online-resource' ? ['date-time-picker'] : []
-      },
-
       showVerifyButton: function() {
         return this.isNotVerfified && this.isAdminOrPartnerAdmin
       },
@@ -804,9 +746,7 @@
     components: {
       ExistingEventDetectionAlert,
       'rich-editor': RichEditor,
-      'venue-picker': VenuePicker,
-      'add-new-venue': AddNewVenue,
-      'date-time-picker': DateTimePicker,
+
       'existing-event-detection-alert': ExistingEventDetectionAlert
     }
 
