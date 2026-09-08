@@ -758,9 +758,6 @@
 #form-wrapper{
   color: black;
   background-color: white;
-  /* width:90%; */
-  margin-left: auto;
-  margin-right: auto;
   padding: 10px;
   font-family: 'Open Sans', sans-serif;
   font-size: 1.1em;
