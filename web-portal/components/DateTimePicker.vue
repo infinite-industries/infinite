@@ -26,8 +26,7 @@
           min-ref="endMinInput"
           ampm-ref="endAmPm"
         />
-        &nbsp;
-        <select ref="eventTimezone" name="event_timezone" v-model="event_timezone">
+        <select class="timezone-select" ref="eventTimezone" name="event_timezone" v-model="event_timezone">
           <option v-for="(tz) in $config.public.timezoneOptions.split(',')" :key="tz">
             {{ tz }}
           </option>
@@ -345,6 +344,22 @@
     max-width: 720px;
     min-width: 0;
     min-height: 50px;
+  }
+
+  .timezone-select {
+    margin-left: 8px;
+  }
+
+  @media screen and (max-width: 874px) {
+    .time-date-entry > .time-part {
+      display: block;
+      margin-top: 8px;
+    }
+
+    .timezone-select {
+      display: block;
+      margin: 8px 0 0;
+    }
   }
 
   .date-time-picker-actions {
