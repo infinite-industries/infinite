@@ -764,6 +764,18 @@
   border-radius: 10px;
 }
 
+#form-wrapper,
+#form-wrapper .v-container,
+#form-wrapper .v-row,
+#form-wrapper .v-col {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+#form-wrapper input[type="file"] {
+  max-width: 100%;
+}
+
 .nomargin {
   margin: 0px;
 }
