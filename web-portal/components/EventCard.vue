@@ -81,6 +81,7 @@
         this.showCalendars = false
       },
       AddEventToCalendar(calType) {
+        this.$analytics.trackEvent(`add to calendar (card): ${calType}`)
         const event = this.calendar_event && this.calendar_event.venue
           ? this.calendar_event
           : Object.assign({}, this.calendar_event, { venue: this.venue })
