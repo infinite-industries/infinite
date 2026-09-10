@@ -55,7 +55,7 @@
             class="ii-social-button map-event"
             :href="event.venue.g_map_link"
             target="_blank"
-            @click="$analytics.trackEvent('get directions')"
+            @click="$analytics.trackEvent('Get directions')"
           >
             <ii-location-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
             <span>Directions</span>
@@ -80,7 +80,7 @@
                 class="ii-social-button"
                 target="_new"
                 :href="`https://www.facebook.com/sharer/sharer.php?u=${fullEncodedLinkForShare}`"
-                @click="$analytics.trackEvent('share event: Facebook')"
+                @click="$analytics.trackEvent('Share event: Facebook')"
               >
                 <ii-facebook-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
                 <span>Share</span>
@@ -89,7 +89,7 @@
                 class="ii-social-button"
                 target="_new"
                 :href="`https://twitter.com/intent/tweet?text=Check%20out%20this%20event:&url=${fullEncodedLinkForShare}`"
-                @click="$analytics.trackEvent('share event: Twitter/X')"
+                @click="$analytics.trackEvent('Share event: Twitter/X')"
               >
                 <ii-twitter-icon class="ii-social-icon" icon-color="#fff" width="20" height="20" />
                 <span>Tweet</span>
@@ -247,7 +247,7 @@
         this.showShareDropdown = !this.showShareDropdown
       },
       copyLink() {
-        this.$analytics.trackEvent("copy event link")
+        this.$analytics.trackEvent("Copy event link")
         if ("clipboard" in navigator) {
           const link = this.$urlFor(`/events/${this.event.id}`)
           navigator.clipboard.writeText(link).then(() => {
