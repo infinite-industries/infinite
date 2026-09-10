@@ -2,30 +2,34 @@
   <div id="cal-container">
     <div class="time-date-input-box">
       <div class="time-date-entry">
-        On <input id="date-picker" class="date-input" type="text" v-model="picker" placeholder="Select date" readonly @click="openCalendarModal" /> from
-        <time-picker
-          id="start-time"
-          v-model:hour="start_hour"
-          v-model:minute="start_minute"
-          v-model:ampm="start_ampm"
-          :invalidHour="start_hour_invalid"
-          :invalidMinute="start_minute_invalid"
-          hour-ref="startHourInput"
-          min-ref="startMinInput"
-          ampm-ref="startAmPm"
-        />
-        to
-        <time-picker
-          id="end-time"
-          v-model:hour="end_hour"
-          v-model:minute="end_minute"
-          v-model:ampm="end_ampm"
-          :invalidHour="end_hour_invalid"
-          :invalidMinute="end_minute_invalid"
-          hour-ref="endHourInput"
-          min-ref="endMinInput"
-          ampm-ref="endAmPm"
-        />
+        <div class="date-line">
+          On <input id="date-picker" class="date-input" type="text" v-model="picker" placeholder="Select date" readonly @click="openCalendarModal" /> from
+        </div>
+        <div class="time-line">
+          <time-picker
+            id="start-time"
+            v-model:hour="start_hour"
+            v-model:minute="start_minute"
+            v-model:ampm="start_ampm"
+            :invalidHour="start_hour_invalid"
+            :invalidMinute="start_minute_invalid"
+            hour-ref="startHourInput"
+            min-ref="startMinInput"
+            ampm-ref="startAmPm"
+          />
+          <span>to</span>
+          <time-picker
+            id="end-time"
+            v-model:hour="end_hour"
+            v-model:minute="end_minute"
+            v-model:ampm="end_ampm"
+            :invalidHour="end_hour_invalid"
+            :invalidMinute="end_minute_invalid"
+            hour-ref="endHourInput"
+            min-ref="endMinInput"
+            ampm-ref="endAmPm"
+          />
+        </div>
         <select class="timezone-select" ref="eventTimezone" name="event_timezone" v-model="event_timezone">
           <option v-for="(tz) in $config.public.timezoneOptions.split(',')" :key="tz">
             {{ tz }}
@@ -327,6 +331,32 @@
       align-items: stretch;
       gap: 15px;
     }
+
+    .time-date-entry {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: none;
+    }
+
+    .date-line,
+    .time-line {
+      min-height: 0;
+      flex-shrink: 0;
+      max-width: 100%;
+    }
+
+    .time-date-entry > .time-line {
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-top: 0;
+    }
+
+    .time-date-entry > .timezone-select {
+      margin: 0;
+      max-width: 100%;
+    }
   }
 
   .time-date-input-box {
@@ -347,19 +377,28 @@
   }
 
   .timezone-select {
-    margin-left: 8px;
+    display: block;
+    margin: 8px 0 0;
+    padding: 2px;
+    outline: 1px solid rgb(187, 187, 187);
+    border-radius: 3px;
   }
 
-  @media screen and (max-width: 874px) {
-    .time-date-entry > .time-part {
-      display: block;
-      margin-top: 8px;
-    }
+  .date-line {
+    min-height: 28px;
+  }
 
-    .timezone-select {
-      display: block;
-      margin: 8px 0 0;
-    }
+  .time-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 34px;
+    margin-top: 8px;
+  }
+
+  .time-line > .time-part {
+    white-space: nowrap;
   }
 
   .date-time-picker-actions {
