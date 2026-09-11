@@ -276,14 +276,19 @@
   }
 
   button.delete-entry-button {
+    align-items: center;
     background: none;
     border: none;
     padding: 0;
     cursor: pointer;
     color: #dc3545;
+    display: inline-flex;
     font-size: 20px;
     font-weight: 900;
+    justify-content: center;
     line-height: 1;
+    min-height: 44px;
+    min-width: 44px;
     transition: color 0.2s ease, transform 0.2s ease;
   }
 
