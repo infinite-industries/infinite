@@ -43,21 +43,22 @@ context('Event Submission', () => {
 
     // can't select dates in the past
     // advance calendar one month and select the first
+    cy.get('#cal-container #date-picker').click()
     cy.get('#cal-container .flatpickr-next-month').click()
     cy.wait(1000) // wait for calendar animation to complete
     cy.get('#cal-container .flatpickr-day').contains('1').click()
 
-    cy.get('.start-hour').type('9')
-    cy.get('.start-minute').type('00')
-    cy.get('select[name=start_ampm]').select('PM')
+    cy.get('#start-time .hour-part').type('9')
+    cy.get('#start-time .minute-part').type('00')
+    cy.get('#start-time select').select('PM')
 
-    cy.get('.end-hour').type('10')
-    cy.get('.end-minute').type('00')
-    cy.get('select[name=end_ampm]').select('PM')
-    cy.get('.date-time-picker_new-date:not([disabled])').click()
+    cy.get('#end-time .hour-part').type('10')
+    cy.get('#end-time .minute-part').type('00')
+    cy.get('#end-time select').select('PM')
 
     cy.get('.venue').focus()
     cy.get('.results-container > :first-child').click()
+    cy.get('.confirm-entry-button').click()
 
     // selectFile is a custom command; see cypress/support/commands.js
     cy.get('#event-image').selectFile('fixtures/images/event_sample_image.jpg')
