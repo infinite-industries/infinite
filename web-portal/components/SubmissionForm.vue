@@ -17,8 +17,7 @@
         <v-col cols="12" sm="3">
           <h3 class="form-label">Is your event...<span class="required-field">*</span>:</h3>
         </v-col>
-        <v-col cols="12" />
-        <v-col cols="12" sm="4" md="3" offset-sm="1">
+        <v-col cols="12" sm="3" md="3">
           <label class="category-option">
             <input type="radio" v-model="calendar_event.mode" value="in-person">
             <strong>In-person</strong>
@@ -30,7 +29,7 @@
             <strong>Online/On-air</strong>
           </label>
         </v-col>
-        <v-col cols="12" sm="4">
+        <v-col cols="12" sm="3">
           <label class="category-option">
             <input type="radio" v-model="calendar_event.mode" value="hybrid">
             <strong>Hybrid</strong> both in-person and online elements
@@ -40,10 +39,10 @@
 
       <v-row wrap class="event-category">
         <!-- <v-flex xs0 sm3 /> -->
-        <v-col cols="12" sm="11" offset-sm="1">
+        <v-col cols="12" sm="8" offset-sm="3">
           <h3 class="form-label" style="text-align: left">Which of these best describes your event?<span class="required-field">*</span></h3>
         </v-col>
-        <v-col cols="12" sm="11" offset-sm="1">
+        <v-col cols="12" sm="8" offset-sm="3">
           <label class="category-option">
             <input type="radio" v-model="eventCategory" name="eventCategory" value="single-day-event" />
             <strong>Single-day event</strong>, like a music concert or a poetry reading.
@@ -73,7 +72,7 @@
       </v-row>
 
       <v-row wrap>
-        <v-col cols="12" sm="10" offset-sm="1">
+        <v-col cols="12" sm="8" offset-sm="3">
           <event-date-times-venues-editor
             v-if="eventCategory !== '' && eventCategory !== 'online-resource'"
             v-model="calendar_event.date_times"
@@ -758,13 +757,22 @@
 #form-wrapper{
   color: black;
   background-color: white;
-  /* width:90%; */
-  margin-left: auto;
-  margin-right: auto;
   padding: 10px;
   font-family: 'Open Sans', sans-serif;
   font-size: 1.1em;
   border-radius: 10px;
+}
+
+#form-wrapper,
+#form-wrapper .v-container,
+#form-wrapper .v-row,
+#form-wrapper .v-col {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+#form-wrapper input[type="file"] {
+  max-width: 100%;
 }
 
 .nomargin {
@@ -802,6 +810,10 @@
 
 .event-mode .form-label {
   margin-bottom: 0.8em;
+}
+
+.event-mode .category-option {
+  padding-top: 22px;
 }
 
 .event-category {
