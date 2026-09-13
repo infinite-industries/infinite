@@ -2,10 +2,6 @@
 
 Front-end web application for [Infinite Industries](https://infinite.industries).
 
-## Features
-
-- **TODO**: [refer to Project Page] (https://github.com/infinite-industries/infinite/projects/1)
-
 ## Development Environment Setup
 
 ### Dependencies
@@ -36,7 +32,7 @@ This application communicates with an [API server](https://github.com/infinite-i
 2. Install dependencies
 
   ```bash
-  cd web-portal-nuxt
+  cd web-portal
   npm install
   ```
 
