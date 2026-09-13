@@ -34,7 +34,7 @@ async function startApplication(
   appUnderTest.stdout.pipe(logging);
   appUnderTest.stderr.pipe(logging);
 
-  console.info(`waiting on app ${appUnderTest.pid} to finnish loading`);
+  console.info(`waiting on app ${appUnderTest.pid} to finish loading`);
 
   return new Promise((resolve, reject) => {
     appUnderTest.stdout.on('data', (data) => {
@@ -57,7 +57,7 @@ async function startApplication(
       if (logging) {
         logging.close();
       }
-    } catch (ex) {}
+    } catch (ex) { }
   }
 }
 
