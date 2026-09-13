@@ -8,31 +8,8 @@
   import 'flatpickr/dist/themes/dark.css'
 
   export default {
-    emits: ['change'],
-    data: function() {
-      return {
-        config: {
-          inline: true,
-          enableTime: false,
-          minDate: this.allowPast ? null : 'today'
-        }
-      }
-    },
-    components: {
-      flatPickr
-    },
-    computed: {
-      dateValue: {
-        get() {
-          return this.date
-        },
-        set(newDate) {
-          this.$emit('change', newDate)
-        }
-      }
-    },
     props: {
-      date: {
+      modelValue: {
         type: String,
         default: null
       },
@@ -40,15 +17,42 @@
         type: Boolean,
         default: false
       }
-    }
+    },
+    emits: ['update:modelValue'],
+    data: function() {
+      return {
+        config: {
+          enableTime: false,
+          minDate: this.allowPast ? null : 'today'
+        }
+      }
+    },
+    computed: {
+      dateValue: {
+        get() {
+          return this.modelValue
+        },
+        set(newDate) {
+          this.$emit('update:modelValue', newDate)
+        }
+      }
+    },
+    components: {
+      flatPickr
+    },
   }
 </script>
 
 <style scoped>
-/* hide the input box that flatpickr wants to show */
-.flatpickr-input {
-  display: none;
-}
+  .flatpickr-input {
+    padding: 2px;
+    outline: 1px solid rgb(187, 187, 187);
+    border-radius: 3px;
+    width: 120px;
+    box-sizing: border-box;
+    background: white;
+    color: inherit;
+  }
 </style>
 
 <!-- not scoping this because it breaks the selector to hid the arrow -->
