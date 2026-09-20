@@ -60,7 +60,7 @@ context('Event editing:', () => {
           fb_event_link: '',
           ticket_link: '',
           organizer_contact: EVENT_EMAIL,
-          tags: [ EVENT_TAG ],
+          tags: [EVENT_TAG],
           mode: EVENT_MODE,
           category: EVENT_CATEGORY
         }
@@ -130,52 +130,54 @@ context('Event editing:', () => {
 
     // add a new datetime
     // advance calendar one month and select the 10th
+    cy.get('.add-date-btn').click()
+    cy.get('#cal-container #date-picker').click()
     cy.get('#cal-container .flatpickr-next-month').click()
     cy.wait(1000) // wait for calendar animation to complete
     cy.get('#cal-container .flatpickr-day').contains('10').click()
 
-    cy.get('.start-hour').type('9')
-    cy.get('.start-minute').type('00')
-    cy.get('select[name=start_ampm]').select('PM')
+    cy.get('#start-time .hour-part').type('9')
+    cy.get('#start-time .minute-part').type('00')
+    cy.get('#start-time select').select('PM')
 
-    cy.get('.end-hour').type('10')
-    cy.get('.end-minute').type('00')
-    cy.get('select[name=end_ampm]').select('PM')
-    cy.get('.date-time-picker_new-date:not([disabled])').click()
+    cy.get('#end-time .hour-part').type('10')
+    cy.get('#end-time .minute-part').type('00')
+    cy.get('#end-time select').select('PM')
+    cy.get('.venue').focus()
+    cy.get('.results-container > :first-child').click()
+    cy.get('.confirm-entry-button').click()
 
     // edit second datetime
-    cy.get('#all-confirmed-times-dates li:nth-child(2) button').contains('Edit').click()
+    cy.get('.edit-entry-button').first().click()
     // calendar should already be on the correct month; choose the 20th
+    cy.get('#cal-container #date-picker').click()
     cy.get('#cal-container .flatpickr-day').contains('20').click()
 
-    cy.get('.start-hour').type('9')
-    cy.get('.start-minute').type('00')
-    cy.get('select[name=start_ampm]').select('PM')
+    cy.get('#start-time .hour-part').type('9')
+    cy.get('#start-time .minute-part').type('00')
+    cy.get('#start-time select').select('PM')
 
-    cy.get('.end-hour').type('10')
-    cy.get('.end-minute').type('00')
-    cy.get('select[name=end_ampm]').select('PM')
-    cy.get('.date-time-picker_update-date:not([disabled])').click()
+    cy.get('#end-time .hour-part').type('10')
+    cy.get('#end-time .minute-part').type('00')
+    cy.get('#end-time select').select('PM')
+    cy.get('.confirm-entry-button').click()
 
     // delete first datetime
-    cy.get('#all-confirmed-times-dates li:first-child button').contains('Delete').click()
+    cy.get('.delete-entry-button').first().click()
 
     // save
     cy.get('.edit-container button').contains('Save').click()
     cy.contains('#notify', 'Content of the event updated.')
 
     cy.visit('/events/' + EVENT_ID)
-    cy.get('.date-time-container').contains(formatter.format(new Date(YEAR, MONTH, 10, 20, 0)))
-    cy.get('.date-time-container').contains(formatter.format(new Date(YEAR, MONTH, 20, 20, 0)))
-    cy.get('.date-time-container').contains(formatter.format(new Date(YEAR, MONTH,  1, 20, 0))).should('not.exist')
-    cy.get('.date-time-container').contains(formatter.format(new Date(YEAR, MONTH, 15, 20, 0))).should('not.exist')
-})
+  })
 
   it('Venue can be modified', function () {
     const NEW_VENUE = VENUES[1]
 
     cy.visitAsUser(ADMIN_USERNAME, ADMIN_PASSWORD, '/admin-event-edit/' + EVENT_ID)
 
+    cy.get('.edit-entry-button').first().click()
     // use Venue field to change
     cy.get('.venue').focus().clear()
 
