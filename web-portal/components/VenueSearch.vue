@@ -1,7 +1,9 @@
 <template>
   <div class="component-container">
     <input
-      type="text"
+      type="search"
+      autocomplete="off"
+      autocorrect="off"
       class="text-input venue"
       v-model="searchterm"
       placeholder="Search for a venue"
