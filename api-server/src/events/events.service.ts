@@ -60,7 +60,7 @@ export class EventsService {
     private readonly logger: LoggerService,
     private readonly bitlyService: BitlyService,
     private sequelize: Sequelize,
-  ) {}
+  ) { }
 
   async findById(
     request: RequestWithUserInfo,
@@ -122,45 +122,58 @@ export class EventsService {
     const findOptions = user.isInfiniteAdmin
       ? { where: { verified: false } } // infinite admins have access to all partners, it may be useful for admins
       : {
-          where: {
-            verified: false,
-            // We need events where owning_partner_id is one of the user's partners or the event uses a venue
-            // mapped to one of those partners (see subquery). IDs are escaped for the literal subquery.
-            [Op.or]: [
-              { owning_partner_id: { [Op.in]: partnerIds } },
-              literal(`"EventModel"."id" IN (
+        where: {
+          verified: false,
+          // We need events where owning_partner_id is one of the user's partners or the event uses a venue
+          // mapped to one of those partners (see subquery). IDs are escaped for the literal subquery.
+          [Op.or]: [
+            { owning_partner_id: { [Op.in]: partnerIds } },
+            literal(`"EventModel"."id" IN (
             SELECT dv.event_id FROM datetime_venue dv
             JOIN venues_partners_mappings vpm ON vpm.venue_id = dv.venue_id
             WHERE vpm.partner_id IN (${partnerIdsList})
           )`),
-            ],
-          },
-        };
+          ],
+        },
+      };
 
     return this.findAll(request, findOptions);
   }
 
   async findAll(
     request: RequestWithUserInfo,
-    findOptions?: FindOptions,
+    findOptions?: FindOptions & { city?: string },
   ): Promise<EventModel[]> {
+    const { city, ...eventOptions } = findOptions || {};
     const isInfiniteAdmin = request.userInformation?.isInfiniteAdmin;
     const isPartnerAdmin = request.userInformation?.isPartnerAdmin;
 
-    const include =
+    const baseIncludes =
       isInfiniteAdmin || isPartnerAdmin
         ? [
-            DatetimeVenueModel,
-            VenueModel,
-            PartnerModel,
-            EventAdminMetadataModel,
-          ]
+          DatetimeVenueModel,
+          VenueModel,
+          PartnerModel,
+          EventAdminMetadataModel,
+        ]
         : [DatetimeVenueModel, VenueModel, PartnerModel];
+
+    const include = city
+      ? baseIncludes.map((model) => {
+        if (model === VenueModel) {
+          return {
+            model: model,
+            where: { city: city },
+          };
+        }
+        return model;
+      })
+      : baseIncludes;
 
     const defaultOptions = { include };
 
-    const mergedOptions = findOptions
-      ? { ...defaultOptions, ...findOptions }
+    const mergedOptions = eventOptions
+      ? { ...defaultOptions, ...eventOptions }
       : defaultOptions;
 
     const results = await this.eventModel.findAll(mergedOptions);
@@ -281,12 +294,12 @@ export class EventsService {
       const partners =
         partnerIds.length > 0
           ? await this.partnerModel.findAll({
-              where: {
-                id: {
-                  [Op.or]: partnerIds,
-                },
+            where: {
+              id: {
+                [Op.or]: partnerIds,
               },
-            })
+            },
+          })
           : [];
 
       // must run before buildVenuePartnerMap
@@ -649,8 +662,8 @@ export class EventsService {
     const partners =
       partnerIds.length > 0
         ? await this.partnerModel.findAll({
-            where: { id: { [Op.in]: partnerIds } },
-          })
+          where: { id: { [Op.in]: partnerIds } },
+        })
         : [];
 
     const partnerMap = new Map(partners.map((p) => [p.id, p]));
