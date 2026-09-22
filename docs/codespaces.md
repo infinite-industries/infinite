@@ -26,21 +26,6 @@ database, type the following in a terminal:
 just populatedb
 ```
 
-### Making the web ports public
-
-Codespaces makes web services available as they start.  The ports being used
-must be publicly accessible in order to access the servives.
-
-When services start, you will likely be prompted whether you want to make the
-ports public. You do! 
-
-![public-ports](make_public.png)
-
-You can also make ports public after the services start by navigating to the
-*Ports* tab and updating the visibility of the port to "Public". 
-
-![public-ports](codespaces-ports.png)
-
 ### Start the API service
 In a terminal, type:
 
@@ -57,11 +42,28 @@ cd web-portal
 npm run start:dev
 ```
 
+### Making the web ports public
+
+Codespaces makes web services available as they start.  The ports being used
+must be publicly accessible in order to access the servives.
+
+When services start, you will likely be prompted whether you want to make the
+ports public. You do!
+
+![public-ports](make_public.png)
+
+You can also make ports public after the services start by navigating to the
+*Ports* tab and updating the visibility of the port to "Public".
+
+![public-ports](codespaces-ports.png)
+
+![public-ports](make_public-2.png)
+
 ### Accessing the services
 In ports tab, click on web icon to go to the web frontend or API service
 
 ![services](navigate_to_service.png)
 
-Click Continue to access the service 
+Click Continue to access the service
 
 ![services](proceed.png)

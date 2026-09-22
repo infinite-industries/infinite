@@ -2,10 +2,6 @@
 
 Backend API powering [Infinite Industries](https://infinite.industries).
 
-## Features
-
-- **TODO**: [refer to Project Page](https://github.com/infinite-industries/infinite/projects/1)
-
 ## Development Environment Setup
 
 ### Dependencies
@@ -17,28 +13,28 @@ You will need the following tools:
 - [Postgres](https://www.postgresql.org/): 9.4.0 or higher
 - [docker](https://www.docker.com)
 
-### Setup
-
-Set up the env file and add *1nfinite.pem* file to keys directory. Sample files are provided with a `.sample` suffix.
-A core team member can send you the dev secrets via the Infinite Industries Slack.
-
- ```bash
- cp .env.sample .env
- cp keys/1nfinite.pem 1nfinite.pem    
- ```
-
-## Installation
+Install dependencies:
 
 ```bash
+$ cd api-server
 $ npm install
 ```
 
-## running integration tests
+### Setup
 
-- put keys in the keys directory
-- `npm run test:e2e`
+There are sane defaults for all env configuration, including local database connection (see below). The only secondary service strictly required under development is the database; everything else (auth, file storage, etc) falls back on local behavior for convenience.
 
-## Running the app
+If you need to override something, e.g. to test real auth, you can set the appropriate env vars or use an env file. A sample file is provided with a `.sample` suffix.
+
+ ```bash
+ cp .env.sample .env
+ ```
+
+### Set up Database
+
+The [docker-start-local-db.sh](./docker-start-local-db.sh) script will start a Postgres database in a Docker container with default database name and credentials. When started in dev mode, the API server will connect to this DB automatically.
+
+## Running the App
 
 ```bash
 # development
