@@ -60,17 +60,21 @@
 
 <style scoped>
   .date-time-picker-button {
-    display: flex;
+    display: inline-flex;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
     position: relative;
+    vertical-align: middle;
 
     border-radius: 2px;
-    padding: 0 15px;
+    margin: 6px 8px;
+    padding: 0 8px;
 
     min-width: 88px;
-    width: 100%;
+
     text-transform: uppercase;
+
     outline: 0;
 
     font-weight: 500;
@@ -79,7 +83,7 @@
 
     background-color: #9e9e9e;
     color: white;
-}
+  }
 
   .date-time-picker-button:hover {
     background-color:  #bdbdbd;

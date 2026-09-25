@@ -13,6 +13,9 @@
       <!-- Content -->
       <slot />
     </main>
+    <!-- PopUps and Modals -->
+    <!-- Regular Old Modal -->
+    <ii-modal />
     <!-- Phone-specific call-to-action ("submit your event") -->
     <ii-submit />
     <!-- iPhone-specific save button to desktop -->
@@ -24,6 +27,7 @@
   import Toolbar from '../components/Toolbar.vue'
   import Notifications from '../components/Notifications.vue'
   import Submit from '../components/Submit.vue'
+  import Modal from '../components/Modal.vue'
   import SiteNavigation from '../components/SiteNavigation.vue'
 
   export default {
@@ -31,6 +35,7 @@
       'ii-toolbar': Toolbar,
       'ii-site-navigation': SiteNavigation,
       'ii-notifications': Notifications,
+      'ii-modal': Modal,
       'ii-submit': Submit
     },
 
