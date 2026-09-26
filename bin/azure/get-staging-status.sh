@@ -21,5 +21,5 @@ fi
 
 BASE="https://management.azure.com/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Compute/virtualMachines/$VM_NAME"
 
-# Start
-curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Length: 0" "$BASE/start?api-version=$API_VERSION"
+# Status
+curl -H "Authorization: Bearer $TOKEN" "$BASE/instanceView?api-version=$API_VERSION"

@@ -24,7 +24,7 @@ Table of Contents
 Ansible must be installed on the machine that runs these scripts.
 
 Current versions:
-  * ansible-core@2.12.6
+  * ansible-core~=2.15.0
   * python 3.10.4
   
 You will need your public key deployed to the host for ssh access
@@ -44,6 +44,14 @@ decrypt them.  Ask a team member. Then, run:
 
 ```console
 $ echo -n "passphrase" >> .password
+```
+
+**Create a Venv and Install Requirements**
+
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
 ```
 
 ### To Decrypt a File
@@ -191,3 +199,45 @@ $ sudo certbot renew
 ```
 TODOS (Jason):
 * Add SSH key management for users.
+
+## Trouble Shooting
+
+### Key/Pair is Password Protected
+
+If you run `just deploy prod | staging` and see
+
+```
+[ERROR]: Task failed: Failed to connect to the host via ssh: infinite@23.100.45.102: Permission denied (publickey).
+fatal: [23.100.45.102]: UNREACHABLE! => {"changed": false, "msg": "Task failed: Failed to connect to the host via ssh: infinite@23.100.45.102: Permission denied (publickey).", "unreachable": true}
+PLAY RECAP
+```
+
+This probably means that your public/private key pair is password protected. On a mac you can run ssh-add, enter the pw
+to unlock the key pair, then try again.
+
+### Ansible Version missmatch
+
+If you run `just deploy prod | staging` and see
+
+```
+ [WARNING]: Host '23.100.45.102' is using the discovered Python interpreter at '/usr/bin/python3', but future installation of another Python interpreter could cause a different interpreter to be
+  discovered. See https://docs.ansible.com/ansible-core/2.21/reference_appendices/interpreter_discovery.html for more information.
+  [ERROR]: Task failed: Action failed: The following modules failed to execute: ansible.legacy.setup.
+  Task failed: Action failed.
+  <<< caused by >>>
+  The following modules failed to execute: ansible.legacy.setup.
+  +--[ Sub-Event 1 of 1 ]---
+  |
+  | Ansible requires Python 3.9 or newer on the target. Current version: 3.8.10 (default, Mar 18 2025, 20:04:55) [GCC 9.4.0]
+  |
+  +--[ End Sub-Event ]---
+  fatal: [23.100.45.102]: FAILED! => {"ansible_facts": {}, "changed": false, "failed_modules": {"ansible.legacy.setup": {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python3"},
+  "changed": false, "deprecations": [], "exception": "(traceback unavailable)", "failed": true, "msg": "Ansible requires Python 3.9 or newer on the target. Current version: 3.8.10 (default, Mar 18
+  2025, 20:04:55) [GCC 9.4.0]", "warnings": ["Host '23.100.45.102' is using the discovered Python interpreter at '/usr/bin/python3', but future installation of another Python interpreter could cause
+  a different interpreter to be discovered."]}}, "msg": "The following modules failed to execute: ansible.legacy.setup."}
+  PLAY RECAP
+```
+
+Make sure you are running the correct version of ansible as specified in [requirements.txt](./requirements.txt)
+
+New versions of Ansible require higher versions of Python that what is installed on our host

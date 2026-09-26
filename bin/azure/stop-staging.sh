@@ -1,11 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Non-secret values read from config.env
+# The secret value AZURE_START_STOP_CLIENT_SECRET must be set on the environment
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/config.env"
+
 TOKEN=$(curl -s -X POST \
-          "https://login.microsoftonline.com/d9db15e7-0363-4724-8428-230195469d8e/oauth2/v2.0/token" \
-          --data-urlencode "client_id=e2b699b8-367e-4ff4-b0d4-86c7068df10f" \
-          --data-urlencode "client_secret=$ASURE_START_STOP_CLIENT_SECRET" \
+          "https://login.microsoftonline.com/$TENANT_ID/oauth2/v2.0/token" \
+          --data-urlencode "client_id=$CLIENT_ID" \
+          --data-urlencode "client_secret=$AZURE_START_STOP_CLIENT_SECRET" \
           --data-urlencode "scope=https://management.azure.com/.default" \
           --data-urlencode "grant_type=client_credentials" | jq -r .access_token)
 
-BASE="https://management.azure.com/subscriptions/27a2932a-f7b5-48a8-9453-2d296e239296/resourceGroups/STAGING/providers/Microsoft.Compute/virtualMachines/staging-vm-v3"
+if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
+  echo "Failed to obtain Azure access token" >&2
+  exit 1
+fi
 
-#stop
-curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Length: 0" "$BASE/deallocate?api-version=2024-07-01"
+BASE="https://management.azure.com/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Compute/virtualMachines/$VM_NAME"
+
+# Stop (deallocate)
+curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Length: 0" "$BASE/deallocate?api-version=$API_VERSION"
