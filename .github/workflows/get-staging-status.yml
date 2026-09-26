@@ -12,7 +12,7 @@ jobs:
         working-directory: bin/azure
     steps:
       - name: checkout branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: get staging VM status
         env:
           AZURE_START_STOP_CLIENT_SECRET: ${{ secrets.AZURE_START_STOP_CLIENT_SECRET }}
