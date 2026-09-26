@@ -22,4 +22,23 @@ fi
 BASE="https://management.azure.com/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Compute/virtualMachines/$VM_NAME"
 
 # Status
-curl -H "Authorization: Bearer $TOKEN" "$BASE/instanceView?api-version=$API_VERSION"
+RESPONSE=$(curl -s -H "Authorization: Bearer $TOKEN" "$BASE/instanceView?api-version=$API_VERSION")
+
+POWER_STATUS=$(echo "$RESPONSE" | jq -r '.statuses[] | select(.code | startswith("PowerState/")) | .displayStatus')
+
+echo "Staging VM status: $POWER_STATUS"
+echo "$RESPONSE" | jq .
+
+if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
+  {
+    echo "### Staging VM status: $POWER_STATUS"
+    echo
+    echo "<details><summary>Full instanceView JSON</summary>"
+    echo
+    echo '```json'
+    echo "$RESPONSE" | jq .
+    echo '```'
+    echo
+    echo "</details>"
+  } >> "$GITHUB_STEP_SUMMARY"
+fi
