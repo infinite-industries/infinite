@@ -1,0 +1,15 @@
+{
+  "Name": "VM Power Operator",
+  "Description": "Start, stop, and read status of a VM",
+  "Actions": [
+    "Microsoft.Compute/virtualMachines/read",
+    "Microsoft.Compute/virtualMachines/instanceView/read",
+    "Microsoft.Compute/virtualMachines/start/action",
+    "Microsoft.Compute/virtualMachines/powerOff/action",
+    "Microsoft.Compute/virtualMachines/deallocate/action"
+  ],
+  "NotActions": [],
+  "AssignableScopes": [
+    "/subscriptions/27a2932a-f7b5-48a8-9453-2d296e239296/resourceGroups/STAGING/providers/Microsoft.Compute/virtualMachines/staging-vm-v3"
+  ]
+}

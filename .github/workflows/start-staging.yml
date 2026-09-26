@@ -1,0 +1,19 @@
+name: Start Staging VM
+
+on:
+  workflow_dispatch:  # manual trigger only
+
+jobs:
+  start-staging:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: bin/azure
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@v3
+      - name: start staging VM
+        env:
+          AZURE_START_STOP_CLIENT_SECRET: ${{ secrets.AZURE_START_STOP_CLIENT_SECRET }}
+        run: ./start-staging.sh
