@@ -40,8 +40,7 @@ If you have the server and web portal running locally in dev mode for developmen
 
 ## Development Environments
 
-The API server and web portal both have instructions for setting up local development. Note that the API server requires a Postgres database. Except for the database, all external services (e.g. Auth0, AWS S3) fall back to local alternatives in dev mode.
+See [DEVELOPING.MD](./DEVELOPING.MD) and the [API server](./api-server/README.md) and [web portal](./web-portal/README.md) READMEs for more information about setting up a local dev environment.
 
-The repo contains a [devcontainer](https://containers.dev/) configuration, which stands up the database as a sidecar container. This configuration should be compatible with Github Codespaces. The `docs` subdirectory has some documentation for spinning up a Codespace.
+Except for the Postgres database, all external services (e.g. Auth0, AWS S3) fall back to local alternatives in dev mode.
 
-A quickstart script is available: using `/bin/setup.sh` will connect to the Postgres container using Docker, start the /api-server, and start the /web-portal locally.
