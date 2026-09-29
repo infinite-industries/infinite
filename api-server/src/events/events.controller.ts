@@ -55,7 +55,7 @@ export class EventsController {
     private readonly slackNotificationService: SlackNotificationService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   @Get('current-verified')
   @ApiOperation({
@@ -70,18 +70,23 @@ export class EventsController {
   async getAllCurrentVerified(
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string,
+    @Query('city') city: string,
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
+    const filters = [
+      getCommonQueryTermsForEvents(true, tags, category),
+      {
+        '$date_times.end_time$': {
+          [Op.gte]: moment().subtract(2, 'hours').toDate(),
+        },
+      },
+    ];
+
     const findOptions = {
+      // City lives on venue - pass as top-level key so service can query
+      city: city,
       where: {
-        [Op.and]: [
-          getCommonQueryTermsForEvents(true, tags, category),
-          {
-            '$date_times.end_time$': {
-              [Op.gte]: moment().subtract(2, 'hours').toDate(),
-            },
-          },
-        ],
+        [Op.and]: filters,
       },
       order: [literal('date_times.start_time ASC')],
     };
