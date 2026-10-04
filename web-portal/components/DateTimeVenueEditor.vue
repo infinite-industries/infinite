@@ -21,20 +21,19 @@
     <div class="date-time-venue-actions">
       <button
         type="button"
-        class="confirm-entry-button"
-        data-testid="confirm-entry"
-        :disabled="!canConfirmEntry"
-        @click="confirmEntry"
-      >
-        {{ isExistingEntry ? 'Update' : 'Add Date' }}
-      </button>
-      <button
-        v-if="isExistingEntry"
-        type="button"
         class="cancel-entry-button"
         @click="cancelEdit"
       >
         Cancel
+      </button>
+      <button
+        type="button"
+        class="confirm-entry-button"
+        data-testid="confirm-entry"
+        :hidden="!canConfirmEntry"
+        @click="confirmEntry"
+      >
+        {{ isExistingEntry ? 'Update' : 'Confirm' }}
       </button>
     </div>
   </div>
@@ -214,7 +213,7 @@
     display: flex;
     gap: 0.5rem;
     margin-top: 0.75rem;
-    justify-content: flex-end;
+    justify-content: flex-start;
   }
 
   .confirmed-entry {
