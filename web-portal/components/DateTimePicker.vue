@@ -3,7 +3,7 @@
     <div class="time-date-input-box">
       <div class="time-date-entry">
         <div class="date-line">
-          On <input id="date-picker" class="date-input" type="text" v-model="picker" placeholder="Select date" readonly @click="openCalendarModal" /> from
+          On <date-picker id="date-picker" v-model="picker" :allow-past="allowPast" placeholder="Select date" /> from
         </div>
         <div class="time-line">
           <time-picker
@@ -35,9 +35,6 @@
             {{ tz }}
           </option>
         </select>
-        <div v-if="show_calendar_modal" :key="picker || 'empty'">
-          <date-picker :allow-past="allowPast" :date="picker" @change="dateChanged" />
-        </div>
 
         <div v-if="chrono_order_invalid" class="error--text">
           End time for the event must follow the start time. Unless you are a Time Lord, of course...
@@ -109,14 +106,6 @@
         this.end_ampm = 'pm';
       },
 
-      dateChanged: function(newDate) {
-        this.picker = newDate;
-        // close the calendar after a date is chosen
-        this.$nextTick(() => {
-          this.closeCalendarModal()
-        });
-      },
-
       AllowedDates: function (val) {
         // in edit mode, anything goes
         // otherwise, disallow days in the past
@@ -162,7 +151,9 @@
         this.event_timezone = entry.timezone || this.$config.public.timezoneDefault
 
         const start_time = momenttz(entry.start_time).tz(this.event_timezone)
-        this.picker = start_time.format('YYYY-MM-DD')
+        // TODO: no idea why nextTick-ing this is necessary, but without it
+        // some weird rest behavior is winning over this
+        this.$nextTick(() => this.picker = start_time.format('YYYY-MM-DD'))
         this.start_hour = start_time.format('hh')
         this.start_minute = start_time.format('mm')
         this.start_ampm = start_time.format('a')
@@ -210,34 +201,6 @@
         this.end_minute = ''
         this.end_ampm = 'pm'
       },
-
-      toggleCalendarModal: function () {
-        if (this.show_calendar_modal) {
-          this.closeCalendarModal()
-        } else {
-          this.openCalendarModal()
-        }
-      },
-
-      openCalendarModal: function () {
-        this.show_calendar_modal = true
-        this.$nextTick(() => {
-          document.addEventListener('mousedown', this.onDocumentClick)
-        })
-      },
-
-      closeCalendarModal: function () {
-        this.show_calendar_modal = false
-        document.removeEventListener('mousedown', this.onDocumentClick)
-      },
-
-      onDocumentClick: function (e) {
-        // if click is outside this component, close the calendar
-        if (!this.$el.contains(e.target)) {
-          this.closeCalendarModal()
-        }
-      }
-
     },
     computed: {
       allowPast: function() {

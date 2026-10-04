@@ -280,9 +280,9 @@ context('Partner Work Flows', () => {
 
     // Advance calendar one month and select the first day
     cy.get('#cal-container #date-picker').click()
-    cy.get('#cal-container .flatpickr-next-month').click()
+    cy.get('.flatpickr-next-month').click()
     cy.wait(1000) // wait for calendar animation to complete
-    cy.get('#cal-container .flatpickr-day').contains('1').click()
+    cy.get('.flatpickr-day').contains('1').click()
 
     cy.get('#start-time .hour-part').type('9')
     cy.get('#start-time .minute-part').type('00')
