@@ -8,7 +8,7 @@ Table of Contents
  * [Requirements](#requirements)
  * [Before Running](#before-running)
  * [Running](#running)
-    * [Using just](#using-just)
+    * [Scripts](#scripts)
     * [Common Task: Site Status](#common-task-site-status)
     * [Common Task: Restart Services](#common-task-restart-services)
     * [Common Task: Site Deployment](#common-task-site-deployment)
@@ -30,9 +30,6 @@ Current versions:
 You will need your public key deployed to the host for ssh access
 
 You may need to connect to the host once with ssh to make sure it's in your list of known hosts
-
-If you install [casey/just](https://github.com/casey/just), then some tasks
-will be simplified.
 
 ## Before Running
 
@@ -65,50 +62,90 @@ Make sure to never checkin the decrypted file
 *Alternatively:*
 
 ```console
-$ just cache-pass
+$ ./scripts/deploy/cache-pass.sh
 ```
 
 ## Running
 
-### Using `just`
+### Scripts
 
-The task runner [casey/just](https://github.com/casey/just) is used to simplify
-common tasks.  Most of the "recipes" require the environment to be specified:
-our environments are *local*, *staging*, and *production*.  By default, the
-staging environment is used.  For instance, running `deploy status` is the
-equivalent of running `deploy status staging`.
-
+Common tasks are wrapped in small bash scripts in `scripts/deploy/`. They can
+be run from any directory: each script switches to the `ansible/` directory
+before calling ansible. The environment is the first argument (`staging`,
+`prod`, or `local`) and defaults to `staging`. Any further arguments are passed
+straight through to `ansible-playbook` / `ansible`, for example:
 
 ```console
-$ just help
-Available recipes:
-    cache-pass                  # cache the passphrase used to decrypt files
-    deploy env="staging"        # deploy the site. Usage: `just deploy` or `just deploy prod`
-    help                        # you're looking at it!
-    init env="staging"          # initial software install & config for a host.
-    restart env="staging"       # restart services for an environment
-    status env="staging"        # query the status of services for an environment
-    update-images env="staging" # pull the (correct) updated docker image(s)
+$ ./scripts/deploy/deploy.sh prod -e image_version=development
 ```
+
+Every script accepts `-h` to print its usage and exits non-zero on failure.
+
+#### scripts/deploy/deploy.sh
+
+Deploys the latest image to either staging or production. Production images
+are built from the `master` branch, staging images from the `development`
+branch (see `image_version` in `group_vars/*/vars`). Usage:
+
+    ./deploy.sh [staging|prod] [ansible-playbook args...]
+
+#### scripts/deploy/status.sh
+
+Shows the status of the nginx and infinite services on the hosts. Usage:
+
+    ./status.sh [staging|prod] [ansible args...]
+
+#### scripts/deploy/restart.sh
+
+Restarts nginx and the infinite services, then shows their status. Usage:
+
+    ./restart.sh [staging|prod] [ansible args...]
+
+#### scripts/deploy/update-images.sh
+
+Pulls the latest docker images on the hosts without redeploying configuration.
+Usage:
+
+    ./update-images.sh [staging|prod] [ansible args...]
+
+#### scripts/deploy/backup.sh
+
+Runs a database backup on the host and copies it to S3. Usage:
+
+    ./backup.sh [staging|prod] [ansible-playbook args...]
+
+#### scripts/deploy/init.sh
+
+Does the initial software install and configuration for a new host. Usage:
+
+    ./init.sh [staging|prod] [ansible-playbook args...]
+
+#### scripts/deploy/cache-pass.sh
+
+Prompts for the ansible-vault passphrase and saves it to `ansible/.password`.
+Interactive only; in CI, write the passphrase to `.password` or set
+`ANSIBLE_VAULT_PASSWORD_FILE` instead. Usage:
+
+    ./cache-pass.sh
 
 ### Common Task: Site Status
 
 **Check the status of the services in the staging environment.**
 ```console
-$ just status staging
+$ ./scripts/deploy/status.sh staging
 ```
 
 ### Common Task: Restart Services
 
-**Restart services in the production environment environment.**
+**Restart services in the production environment.**
 ```console
-$ just restart prod
+$ ./scripts/deploy/restart.sh prod
 ```
 
 ### Common Task: Site Deployment
 
 ```console
-$ just deploy staging
+$ ./scripts/deploy/deploy.sh staging
 ```
 
 ### Common Task: Make a DB Backup
@@ -119,7 +156,7 @@ are retained on the host: backups are also copied to an S3 bucket
 
 **Backup the database in the production environment.**
 ```console
-$ just backup prod
+$ ./scripts/deploy/backup.sh prod
 ```
 
 **Copy the latest backup from production.**
@@ -152,7 +189,7 @@ $ ansible-vault view secrets
    environment.
 
 2. Do the initial install: `ansible-playbook -l staging base_playbook.yml`
-* alternative: `just init staging`
+* alternative: `./scripts/deploy/init.sh staging`
 
 3. Setup certbot (per these [instructions](https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal).
 
@@ -164,7 +201,7 @@ enter: `staging.infinite.industries,staging-api.infinite.industries` (or `infini
 
 4. Deploy our code: 
 ```console
-$ just deploy staging
+$ ./scripts/deploy/deploy.sh staging
 ```
 
 ### Task: Updating secret information
@@ -204,7 +241,7 @@ TODOS (Jason):
 
 ### Key/Pair is Password Protected
 
-If you run `just deploy prod | staging` and see
+If you run `./scripts/deploy/deploy.sh prod | staging` and see
 
 ```
 [ERROR]: Task failed: Failed to connect to the host via ssh: infinite@23.100.45.102: Permission denied (publickey).
@@ -217,7 +254,7 @@ to unlock the key pair, then try again.
 
 ### Ansible Version missmatch
 
-If you run `just deploy prod | staging` and see
+If you run `./scripts/deploy/deploy.sh prod | staging` and see
 
 ```
  [WARNING]: Host '23.100.45.102' is using the discovered Python interpreter at '/usr/bin/python3', but future installation of another Python interpreter could cause a different interpreter to be
