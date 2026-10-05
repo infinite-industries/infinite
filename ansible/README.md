@@ -45,7 +45,7 @@ $ echo -n "passphrase" >> .password
 ```
 
 Alternatively, export `ANSIBLE_VAULT_PASSWORD="passphrase"`. When it is set,
-the scripts in `scripts/deploy/` read the passphrase from the environment
+the scripts in `bin/deploy/` read the passphrase from the environment
 instead of `.password` (this is how GitHub Actions runs them).
 
 **Create a Venv and Install Requirements**
@@ -67,26 +67,26 @@ Make sure to never checkin the decrypted file
 *Alternatively:*
 
 ```console
-$ ./scripts/deploy/cache-pass.sh
+$ ./bin/deploy/cache-pass.sh
 ```
 
 ## Running
 
 ### Scripts
 
-Common tasks are wrapped in small bash scripts in `scripts/deploy/`. They can
+Common tasks are wrapped in small bash scripts in `bin/deploy/`. They can
 be run from any directory: each script switches to the `ansible/` directory
 before calling ansible. The environment is the first argument (`staging`,
 `prod`, or `local`) and defaults to `staging`. Any further arguments are passed
 straight through to `ansible-playbook` / `ansible`, for example:
 
 ```console
-$ ./scripts/deploy/deploy.sh prod -e image_version=development
+$ ./bin/deploy/deploy.sh prod -e image_version=development
 ```
 
 Every script accepts `-h` to print its usage and exits non-zero on failure.
 
-#### scripts/deploy/deploy.sh
+#### bin/deploy/deploy.sh
 
 Deploys the latest image to either staging or production. Production images
 are built from the `master` branch, staging images from the `development`
@@ -94,52 +94,52 @@ branch (see `image_version` in `group_vars/*/vars`). Usage:
 
     ./deploy.sh [staging|prod] [ansible-playbook args...]
 
-#### scripts/deploy/status.sh
+#### bin/deploy/status.sh
 
 Shows the status of the nginx and infinite services on the hosts. Usage:
 
     ./status.sh [staging|prod] [ansible args...]
 
-#### scripts/deploy/restart.sh
+#### bin/deploy/restart.sh
 
 Restarts nginx and the infinite services, then shows their status. Usage:
 
     ./restart.sh [staging|prod] [ansible args...]
 
-#### scripts/deploy/update-images.sh
+#### bin/deploy/update-images.sh
 
 Pulls the latest docker images on the hosts without redeploying configuration.
 Usage:
 
     ./update-images.sh [staging|prod] [ansible args...]
 
-#### scripts/deploy/backup.sh
+#### bin/deploy/backup.sh
 
 Runs a database backup on the host and copies it to S3. Usage:
 
     ./backup.sh [staging|prod] [ansible-playbook args...]
 
-#### scripts/deploy/init.sh
+#### bin/deploy/init.sh
 
 Does the initial software install and configuration for a new host. Usage:
 
     ./init.sh [staging|prod] [ansible-playbook args...]
 
-#### scripts/deploy/cache-pass.sh
+#### bin/deploy/cache-pass.sh
 
 Prompts for the ansible-vault passphrase and saves it to `ansible/.password`.
 Interactive only; in CI, set `ANSIBLE_VAULT_PASSWORD` instead. Usage:
 
     ./cache-pass.sh
 
-#### scripts/deploy/wait-for-host.sh
+#### bin/deploy/wait-for-host.sh
 
 Waits (up to 5 minutes) until the hosts accept ssh connections, e.g. after
 starting the staging VM. Usage:
 
     ./wait-for-host.sh [staging|prod] [ansible args...]
 
-#### scripts/deploy/vault-pass-from-env.sh
+#### bin/deploy/vault-pass-from-env.sh
 
 Not run directly. When `ANSIBLE_VAULT_PASSWORD` is set, the other scripts point
 ansible at this file, which prints the passphrase from the environment.
@@ -151,10 +151,10 @@ Two manually triggered workflows (Actions tab, "Run workflow") wrap
 
 * **Deploy Staging** (`.github/workflows/deploy-staging.yml`) starts the
   staging VM if it is off (`bin/azure/start-staging.sh`), waits for it to
-  accept ssh (`./scripts/deploy/wait-for-host.sh staging`), then runs
-  `./scripts/deploy/deploy.sh staging`.
+  accept ssh (`./bin/deploy/wait-for-host.sh staging`), then runs
+  `./bin/deploy/deploy.sh staging`.
 * **Deploy Production** (`.github/workflows/deploy-prod.yml`) runs
-  `./scripts/deploy/deploy.sh prod`.
+  `./bin/deploy/deploy.sh prod`.
 
 The branch you pick when running a workflow only selects which version of this
 ansible code runs. The image deployed is still set by `image_version`.
@@ -173,20 +173,20 @@ to start the VM.
 
 **Check the status of the services in the staging environment.**
 ```console
-$ ./scripts/deploy/status.sh staging
+$ ./bin/deploy/status.sh staging
 ```
 
 ### Common Task: Restart Services
 
 **Restart services in the production environment.**
 ```console
-$ ./scripts/deploy/restart.sh prod
+$ ./bin/deploy/restart.sh prod
 ```
 
 ### Common Task: Site Deployment
 
 ```console
-$ ./scripts/deploy/deploy.sh staging
+$ ./bin/deploy/deploy.sh staging
 ```
 
 ### Common Task: Make a DB Backup
@@ -197,7 +197,7 @@ are retained on the host: backups are also copied to an S3 bucket
 
 **Backup the database in the production environment.**
 ```console
-$ ./scripts/deploy/backup.sh prod
+$ ./bin/deploy/backup.sh prod
 ```
 
 **Copy the latest backup from production.**
@@ -230,7 +230,7 @@ $ ansible-vault view secrets
    environment.
 
 2. Do the initial install: `ansible-playbook -l staging base_playbook.yml`
-* alternative: `./scripts/deploy/init.sh staging`
+* alternative: `./bin/deploy/init.sh staging`
 
 3. Setup certbot (per these [instructions](https://certbot.eff.org/instructions?ws=nginx&os=ubuntufocal).
 
@@ -242,7 +242,7 @@ enter: `staging.infinite.industries,staging-api.infinite.industries` (or `infini
 
 4. Deploy our code: 
 ```console
-$ ./scripts/deploy/deploy.sh staging
+$ ./bin/deploy/deploy.sh staging
 ```
 
 ### Task: Updating secret information
@@ -282,7 +282,7 @@ TODOS (Jason):
 
 ### Key/Pair is Password Protected
 
-If you run `./scripts/deploy/deploy.sh prod | staging` and see
+If you run `./bin/deploy/deploy.sh prod | staging` and see
 
 ```
 [ERROR]: Task failed: Failed to connect to the host via ssh: infinite@23.100.45.102: Permission denied (publickey).
@@ -295,7 +295,7 @@ to unlock the key pair, then try again.
 
 ### Ansible Version missmatch
 
-If you run `./scripts/deploy/deploy.sh prod | staging` and see
+If you run `./bin/deploy/deploy.sh prod | staging` and see
 
 ```
  [WARNING]: Host '23.100.45.102' is using the discovered Python interpreter at '/usr/bin/python3', but future installation of another Python interpreter could cause a different interpreter to be

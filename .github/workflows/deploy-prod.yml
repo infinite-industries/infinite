@@ -31,4 +31,4 @@ jobs:
       - name: deploy
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-        run: ./scripts/deploy/deploy.sh prod
+        run: ./bin/deploy/deploy.sh prod

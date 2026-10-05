@@ -36,8 +36,8 @@ jobs:
       - name: wait for ssh
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-        run: ./scripts/deploy/wait-for-host.sh staging
+        run: ./bin/deploy/wait-for-host.sh staging
       - name: deploy
         env:
           ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
-        run: ./scripts/deploy/deploy.sh staging
+        run: ./bin/deploy/deploy.sh staging

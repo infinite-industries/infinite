@@ -1,4 +1,4 @@
-# Sourced by every script in ansible/scripts/deploy. Not meant to be run directly.
+# Sourced by every script in ansible/bin/deploy. Not meant to be run directly.
 #
 # Every script runs from the ansible/ directory regardless of where
 # it was invoked from, so ansible.cfg, the inventory, .password and the
