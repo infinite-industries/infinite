@@ -12,6 +12,11 @@ SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 ANSIBLE_DIR="$(CDPATH= cd -- "$SCRIPT_DIR/../.." && pwd)"
 cd "$ANSIBLE_DIR"
 
+# Overrides vault_password_file in ansible.cfg, so CI never writes .password.
+if [[ -n "${ANSIBLE_VAULT_PASSWORD:-}" ]]; then
+  export ANSIBLE_VAULT_PASSWORD_FILE="$SCRIPT_DIR/vault-pass-from-env.sh"
+fi
+
 log() { printf '[%s] %s\n' "$(basename "$0" .sh)" "$*" >&2; }
 die() { log "error: $*"; exit 1; }
 

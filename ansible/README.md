@@ -9,6 +9,7 @@ Table of Contents
  * [Before Running](#before-running)
  * [Running](#running)
     * [Scripts](#scripts)
+    * [GitHub Actions](#github-actions)
     * [Common Task: Site Status](#common-task-site-status)
     * [Common Task: Restart Services](#common-task-restart-services)
     * [Common Task: Site Deployment](#common-task-site-deployment)
@@ -42,6 +43,10 @@ decrypt them.  Ask a team member. Then, run:
 ```console
 $ echo -n "passphrase" >> .password
 ```
+
+Alternatively, export `ANSIBLE_VAULT_PASSWORD="passphrase"`. When it is set,
+the scripts in `scripts/deploy/` read the passphrase from the environment
+instead of `.password` (this is how GitHub Actions runs them).
 
 **Create a Venv and Install Requirements**
 
@@ -123,10 +128,35 @@ Does the initial software install and configuration for a new host. Usage:
 #### scripts/deploy/cache-pass.sh
 
 Prompts for the ansible-vault passphrase and saves it to `ansible/.password`.
-Interactive only; in CI, write the passphrase to `.password` or set
-`ANSIBLE_VAULT_PASSWORD_FILE` instead. Usage:
+Interactive only; in CI, set `ANSIBLE_VAULT_PASSWORD` instead. Usage:
 
     ./cache-pass.sh
+
+#### scripts/deploy/vault-pass-from-env.sh
+
+Not run directly. When `ANSIBLE_VAULT_PASSWORD` is set, the other scripts point
+ansible at this file, which prints the passphrase from the environment.
+
+### GitHub Actions
+
+Two manually triggered workflows (Actions tab, "Run workflow") wrap
+`deploy.sh`:
+
+* **Deploy Staging** (`.github/workflows/deploy-staging.yml`) runs
+  `./scripts/deploy/deploy.sh staging`. The staging VM may be off; start it
+  first with the "Start Staging VM" workflow.
+* **Deploy Production** (`.github/workflows/deploy-prod.yml`) runs
+  `./scripts/deploy/deploy.sh prod`.
+
+The branch you pick when running a workflow only selects which version of this
+ansible code runs. The image deployed is still set by `image_version`.
+
+Both need these repository secrets:
+
+* `ANSIBLE_VAULT_PASSWORD`: the ansible-vault passphrase.
+* `DEPLOY_SSH_PRIVATE_KEY`: a private key with no passphrase, whose public key
+  is in `~infinite/.ssh/authorized_keys` on the staging and prod hosts. It is
+  loaded into `ssh-agent` and never written to disk.
 
 ### Common Task: Site Status
 

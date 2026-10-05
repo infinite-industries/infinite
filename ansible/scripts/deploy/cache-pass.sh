@@ -11,7 +11,7 @@ case "${1:-}" in
   *) usage >&2; exit 1 ;;
 esac
 
-[[ -t 0 ]] || die "stdin is not a terminal; in CI, write the passphrase to .password or set ANSIBLE_VAULT_PASSWORD_FILE"
+[[ -t 0 ]] || die "stdin is not a terminal; in CI, set ANSIBLE_VAULT_PASSWORD instead"
 
 read -rsp "Ansible Vault Passphrase: " pass
 printf '\n'
