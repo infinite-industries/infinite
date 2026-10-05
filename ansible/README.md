@@ -132,6 +132,13 @@ Interactive only; in CI, set `ANSIBLE_VAULT_PASSWORD` instead. Usage:
 
     ./cache-pass.sh
 
+#### scripts/deploy/wait-for-host.sh
+
+Waits (up to 5 minutes) until the hosts accept ssh connections, e.g. after
+starting the staging VM. Usage:
+
+    ./wait-for-host.sh [staging|prod] [ansible args...]
+
 #### scripts/deploy/vault-pass-from-env.sh
 
 Not run directly. When `ANSIBLE_VAULT_PASSWORD` is set, the other scripts point
@@ -142,9 +149,10 @@ ansible at this file, which prints the passphrase from the environment.
 Two manually triggered workflows (Actions tab, "Run workflow") wrap
 `deploy.sh`:
 
-* **Deploy Staging** (`.github/workflows/deploy-staging.yml`) runs
-  `./scripts/deploy/deploy.sh staging`. The staging VM may be off; start it
-  first with the "Start Staging VM" workflow.
+* **Deploy Staging** (`.github/workflows/deploy-staging.yml`) starts the
+  staging VM if it is off (`bin/azure/start-staging.sh`), waits for it to
+  accept ssh (`./scripts/deploy/wait-for-host.sh staging`), then runs
+  `./scripts/deploy/deploy.sh staging`.
 * **Deploy Production** (`.github/workflows/deploy-prod.yml`) runs
   `./scripts/deploy/deploy.sh prod`.
 
@@ -157,6 +165,9 @@ Both need these repository secrets:
 * `DEPLOY_SSH_PRIVATE_KEY`: a private key with no passphrase, whose public key
   is in `~infinite/.ssh/authorized_keys` on the staging and prod hosts. It is
   loaded into `ssh-agent` and never written to disk.
+
+Deploy Staging also uses the existing `AZURE_START_STOP_CLIENT_SECRET` secret
+to start the VM.
 
 ### Common Task: Site Status
 
