@@ -1,25 +1,20 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+# Starts the staging VM and waits until Azure reports it as running.
+# Safe to run when the VM is already running.
+# shellcheck source=_common.sh
+source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
 
-# Non-secret values read from config.env
-# The secret value AZURE_START_STOP_CLIENT_SECRET must be set on the environment
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/config.env"
+azure_post start
 
-TOKEN=$(curl -s -X POST \
-          "https://login.microsoftonline.com/$TENANT_ID/oauth2/v2.0/token" \
-          --data-urlencode "client_id=$CLIENT_ID" \
-          --data-urlencode "client_secret=$AZURE_START_STOP_CLIENT_SECRET" \
-          --data-urlencode "scope=https://management.azure.com/.default" \
-          --data-urlencode "grant_type=client_credentials" | jq -r .access_token)
+for _ in $(seq 1 60); do
+  POWER_STATUS=$(azure_get instanceView | power_state)
+  echo "Staging VM status: $POWER_STATUS"
+  if [[ "$POWER_STATUS" == "VM running" ]]; then
+    exit 0
+  fi
+  sleep 5
+done
 
-if [[ -z "$TOKEN" || "$TOKEN" == "null" ]]; then
-  echo "Failed to obtain Azure access token" >&2
-  exit 1
-fi
-
-BASE="https://management.azure.com/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Compute/virtualMachines/$VM_NAME"
-
-# Start
-curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Length: 0" "$BASE/start?api-version=$API_VERSION"
+echo "Timed out waiting for staging VM to start" >&2
+exit 1

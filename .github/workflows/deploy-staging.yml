@@ -1,0 +1,43 @@
+name: Deploy Staging
+
+on:
+  workflow_dispatch:  # manual trigger only
+
+concurrency: deploy-staging
+
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ansible
+    steps:
+      - name: checkout branch
+        uses: actions/checkout@v7
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'  # ansible-core 2.15 controller supports 3.9-3.11
+      - name: install ansible
+        run: pip install -r requirements.txt
+      - name: load ssh key into agent
+        env:
+          DEPLOY_SSH_PRIVATE_KEY: ${{ secrets.DEPLOY_SSH_PRIVATE_KEY }}
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add - <<< "$DEPLOY_SSH_PRIVATE_KEY"
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> "$GITHUB_ENV"
+      - name: start staging VM
+        working-directory: bin/azure
+        env:
+          AZURE_START_STOP_CLIENT_SECRET: ${{ secrets.AZURE_START_STOP_CLIENT_SECRET }}
+        run: ./start-staging.sh
+      - name: wait for ssh
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: ./bin/deploy/wait-for-host.sh staging
+      - name: deploy
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: ./bin/deploy/deploy.sh staging
