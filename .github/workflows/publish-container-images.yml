@@ -25,7 +25,7 @@ jobs:
       IMAGE_NAME: infinite-industries/ops
     steps:
       - name: checkout branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: install casey/just
         uses: extractions/setup-just@v1
         with:
@@ -44,7 +44,7 @@ jobs:
       IMAGE_NAME: infinite-industries/api-server
     steps:
       - name: checkout branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: install casey/just
         uses: extractions/setup-just@v1
         with:
@@ -63,7 +63,7 @@ jobs:
       IMAGE_NAME: infinite-industries/web-portal
     steps:
       - name: checkout branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
       - name: install casey/just
         uses: extractions/setup-just@v1
         with:

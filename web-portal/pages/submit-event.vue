@@ -228,11 +228,6 @@
 </script>
 
 <style scoped>
-  .container {
-    width: 95%;
-    max-width: unset;
-  }
-
   .content {
     display: flex
   }

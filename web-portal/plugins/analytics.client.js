@@ -2,6 +2,7 @@ import {
   blockTrackingForMe,
   enableTrackingForMe,
   load,
+  trackEvent,
   trackGoal,
   trackPageview
 } from 'fathom-client'
@@ -50,11 +51,27 @@ class Analytics {
   }
 
   /**
-   * Track a specific event e.g. clicks on a particular button
+   * Track a specific event e.g. clicks on a particulr button, using the
+   * legacy `trackGoal` approach
+   *
+   * @deprecated Fathom does not support this flow for new events
    */
-  trackEvent (goal, value) {
+  trackGoal (goal, value) {
     if (this.siteId) {
       trackGoal(goal, value)
+    }
+  }
+
+  /**
+   * Track a specific event e.g. clicks on a particular button
+   *
+   * @param {string} event - event name to be recorded (human-readable string)
+   * @param {Object} [options]
+   * @param {number} [options._value] - "value" of event in cents
+   */
+  trackEvent (event, options) {
+    if (this.siteId) {
+      trackEvent(event, options)
     }
   }
 
