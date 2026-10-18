@@ -2,3 +2,4 @@
 secrets-staging
 secrets-prod
 .password
+.venv
