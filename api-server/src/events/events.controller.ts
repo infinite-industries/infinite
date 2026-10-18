@@ -67,10 +67,23 @@ export class EventsController {
     description: 'current verified events',
     type: EventsResponse,
   })
+  @ApiQuery({
+    name: 'category',
+    required: false,
+    type: String,
+    description:
+      'Filter events by category: multi-day-event, single-day-event, online-resource, gallery-show, call-for-entry',
+  })
+  @ApiQuery({
+    name: 'city',
+    required: false,
+    type: String,
+    description: 'Filter events by venue city',
+  })
   async getAllCurrentVerified(
     @Query('tags') tags: string[] | string = [],
-    @Query('category') category: string,
-    @Query('city') city: string,
+    @Query('city') city: string | null = null,
+    @Query('category') category: string | null = null,
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
     const filters = [
