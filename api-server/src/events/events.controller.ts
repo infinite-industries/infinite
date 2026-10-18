@@ -55,7 +55,7 @@ export class EventsController {
     private readonly slackNotificationService: SlackNotificationService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   @Get('current-verified')
   @ApiOperation({
@@ -82,8 +82,8 @@ export class EventsController {
   })
   async getAllCurrentVerified(
     @Query('tags') tags: string[] | string = [],
-    @Query('city') city: string | null = null,
     @Query('category') category: string | null = null,
+    @Query('city') city: string | null = null,
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
     const filters = [
@@ -155,7 +155,8 @@ export class EventsController {
     name: 'category',
     required: false,
     type: String,
-    description: 'Filter events by category',
+    description:
+      'Filter events by category: multi-day-event, single-day-event, online-resource, gallery-show, call-for-entry',
   })
   @ApiQuery({
     name: 'owning_partner_id',
