@@ -57,7 +57,7 @@ async function startApplication(
       if (logging) {
         logging.close();
       }
-    } catch (ex) { }
+    } catch (ex) {}
   }
 }
 
