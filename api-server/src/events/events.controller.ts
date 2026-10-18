@@ -74,21 +74,32 @@ export class EventsController {
     description:
       'Filter events by category: multi-day-event, single-day-event, online-resource, gallery-show, call-for-entry',
   })
+  @ApiQuery({
+    name: 'city',
+    required: false,
+    type: String,
+    description: 'Filter events by venue city',
+  })
   async getAllCurrentVerified(
     @Query('tags') tags: string[] | string = [],
     @Query('category') category: string | null = null,
+    @Query('city') city: string | null = null,
     @Req() request: RequestWithUserInfo,
   ): Promise<EventsResponse> {
+    const filters = [
+      getCommonQueryTermsForEvents(true, tags, category),
+      {
+        '$date_times.end_time$': {
+          [Op.gte]: moment().subtract(2, 'hours').toDate(),
+        },
+      },
+    ];
+
     const findOptions = {
+      // City lives on venue - pass as top-level key so service can query
+      city: city,
       where: {
-        [Op.and]: [
-          getCommonQueryTermsForEvents(true, tags, category),
-          {
-            '$date_times.end_time$': {
-              [Op.gte]: moment().subtract(2, 'hours').toDate(),
-            },
-          },
-        ],
+        [Op.and]: filters,
       },
       order: [literal('date_times.start_time ASC')],
     };

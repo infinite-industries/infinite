@@ -142,12 +142,13 @@ export class EventsService {
 
   async findAll(
     request: RequestWithUserInfo,
-    findOptions?: FindOptions,
+    findOptions?: FindOptions & { city?: string },
   ): Promise<EventModel[]> {
+    const { city, ...eventOptions } = findOptions || {};
     const isInfiniteAdmin = request.userInformation?.isInfiniteAdmin;
     const isPartnerAdmin = request.userInformation?.isPartnerAdmin;
 
-    const include =
+    const baseIncludes =
       isInfiniteAdmin || isPartnerAdmin
         ? [
             DatetimeVenueModel,
@@ -157,10 +158,22 @@ export class EventsService {
           ]
         : [DatetimeVenueModel, VenueModel, PartnerModel];
 
+    const include = city
+      ? baseIncludes.map((model) => {
+          if (model === VenueModel) {
+            return {
+              model: model,
+              where: { city: city },
+            };
+          }
+          return model;
+        })
+      : baseIncludes;
+
     const defaultOptions = { include };
 
-    const mergedOptions = findOptions
-      ? { ...defaultOptions, ...findOptions }
+    const mergedOptions = eventOptions
+      ? { ...defaultOptions, ...eventOptions }
       : defaultOptions;
 
     const results = await this.eventModel.findAll(mergedOptions);
