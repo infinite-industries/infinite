@@ -55,7 +55,7 @@ export class EventsController {
     private readonly slackNotificationService: SlackNotificationService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER)
     private readonly logger: LoggerService,
-  ) { }
+  ) {}
 
   @Get('current-verified')
   @ApiOperation({
