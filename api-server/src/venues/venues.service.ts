@@ -99,19 +99,13 @@ export class VenuesService {
   }
 
   async softDelete(id: string): Promise<VenueModel> {
-    await this.venueModel.update(
-      { is_soft_deleted: true },
-      { where: { id } },
-    );
+    await this.venueModel.update({ is_soft_deleted: true }, { where: { id } });
 
     return this.findById(id);
   }
 
   async reactivate(id: string): Promise<VenueModel> {
-    await this.venueModel.update(
-      { is_soft_deleted: false },
-      { where: { id } },
-    );
+    await this.venueModel.update({ is_soft_deleted: false }, { where: { id } });
 
     return this.findById(id);
   }

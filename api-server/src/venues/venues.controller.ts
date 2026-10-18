@@ -73,7 +73,10 @@ export class VenuesController {
 
     return this.venuesService
       .findById(id)
-      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
+      .then(
+        (venue) =>
+          new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }),
+      );
   }
 
   @Get()
@@ -89,15 +92,24 @@ export class VenuesController {
     if (includeDeleted === 'yes') {
       return this.venuesService
         .findAll()
-        .then((venues) => new VenuesResponse({ venues: venues.map(venueModelToVenueDTO) }));
+        .then(
+          (venues) =>
+            new VenuesResponse({ venues: venues.map(venueModelToVenueDTO) }),
+        );
     } else if (includeDeleted === 'only') {
       return this.venuesService
         .findWhereSoftDeleted()
-        .then((venues) => new VenuesResponse({ venues: venues.map(venueModelToVenueDTO) }));
+        .then(
+          (venues) =>
+            new VenuesResponse({ venues: venues.map(venueModelToVenueDTO) }),
+        );
     } else {
       return this.venuesService
         .findWhereNotSoftDeleted()
-        .then((venues) => new VenuesResponse({ venues: venues.map(venueModelToVenueDTO) }));
+        .then(
+          (venues) =>
+            new VenuesResponse({ venues: venues.map(venueModelToVenueDTO) }),
+        );
     }
   }
 
@@ -123,7 +135,10 @@ export class VenuesController {
 
         return venue;
       })
-      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
+      .then(
+        (venue) =>
+          new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }),
+      );
   }
 
   @Post('/get-gps-from-address')

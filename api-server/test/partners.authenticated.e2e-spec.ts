@@ -172,8 +172,12 @@ describe('Partners Authenticated (e2e)', () => {
         .then((response) => {
           expect(response.body.id).toBeDefined();
           expect(response.body.name).toEqual(partnerRequest.name);
-          expect(response.body.light_logo_url).toEqual(partnerRequest.light_logo_url);
-          expect(response.body.dark_logo_url).toEqual(partnerRequest.dark_logo_url);
+          expect(response.body.light_logo_url).toEqual(
+            partnerRequest.light_logo_url,
+          );
+          expect(response.body.dark_logo_url).toEqual(
+            partnerRequest.dark_logo_url,
+          );
           expect(response.body.createdAt).toBeDefined();
           expect(response.body.updatedAt).toBeDefined();
         });
