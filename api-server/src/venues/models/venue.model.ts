@@ -1,4 +1,11 @@
-import { BelongsToMany, Column, IsUUID, Model, PrimaryKey, Table } from 'sequelize-typescript';
+import {
+  BelongsToMany,
+  Column,
+  IsUUID,
+  Model,
+  PrimaryKey,
+  Table,
+} from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Optional, Utils } from 'sequelize';
 import { PartnerModel } from '../../users/models/partner.model';

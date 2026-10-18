@@ -17,4 +17,4 @@ import { PATH_TO_LOCAL_EVENT_IMAGE_UPLOADS } from './uploads.constants';
   providers: [UploadsService],
   exports: [UploadsService],
 })
-export class UploadsModule { }
+export class UploadsModule {}

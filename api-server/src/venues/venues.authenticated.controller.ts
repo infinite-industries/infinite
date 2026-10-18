@@ -48,7 +48,10 @@ export default class VenuesAuthenticatedController {
 
     return this.venuesService
       .softDelete(id)
-      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
+      .then(
+        (venue) =>
+          new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }),
+      );
   }
 
   @Put('/:id/activate')
@@ -66,7 +69,10 @@ export default class VenuesAuthenticatedController {
 
     return this.venuesService
       .reactivate(id)
-      .then((venue) => new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }));
+      .then(
+        (venue) =>
+          new SingleVenueResponse({ venue: venueModelToVenueDTO(venue) }),
+      );
   }
 
   @Put('/:id')
