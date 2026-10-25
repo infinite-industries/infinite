@@ -1,11 +1,9 @@
-FROM node:jod
+FROM node:26.12.1
 
 ARG GOOGLE_ANALYTICS_ID='UA-73795062-1'
 ENV GOOGLE_ANALYTICS_ID=${GOOGLE_ANALYTICS_ID}
 
 ADD ./ /web-portal
-
-RUN npm install -g npm@8.7.0
 
 WORKDIR /web-portal/docker-scripts/proxy-server
 RUN npm install
