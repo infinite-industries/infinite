@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "eslint",
     "precommit": "npm run lint",
-    "test": "vitest",
+    "test": "NODE_OPTIONS=--no-experimental-webstorage vitest",
     "build": "nuxt build",
     "start": "node .output/server/index.mjs",
     "start:preview": "nuxt preview",

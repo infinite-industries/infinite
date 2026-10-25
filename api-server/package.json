@@ -45,7 +45,7 @@
     "axios": "^0.21.1",
     "class-transformer": "^0.3.1",
     "dotenv": "^8.2.0",
-    "jsonwebtoken": "^9.0.0",
+    "jsonwebtoken": "^9.0.3",
     "moment": "~2.29.1",
     "moment-timezone": "~0.5.33",
     "nest-winston": "^1.9.1",

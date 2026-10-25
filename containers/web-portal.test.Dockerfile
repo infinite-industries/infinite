@@ -1,4 +1,4 @@
-FROM node:jod
+FROM node:26.12.1
 
 ADD containers/web-portal.test.docker-scripts /scripts
 RUN chmod +x /scripts/*
