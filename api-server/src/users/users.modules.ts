@@ -10,7 +10,10 @@ import { PartnersController } from './partners.controller';
 import { UploadsModule } from '../uploads/uploads.module';
 
 @Module({
-  imports: [SequelizeModule.forFeature([UserModel, PartnerModel]), UploadsModule],
+  imports: [
+    SequelizeModule.forFeature([UserModel, PartnerModel]),
+    UploadsModule,
+  ],
   controllers: [
     UsersController,
     PartnersAuthenticatedController,
@@ -19,7 +22,7 @@ import { UploadsModule } from '../uploads/uploads.module';
   providers: [UsersService, PartnersService],
   exports: [UsersService, PartnersService],
 })
-export class UsersModules { }
+export class UsersModules {}
 
 // Export models for use in other modules
 export { UserModel, PartnerModel };

@@ -2293,9 +2293,7 @@ describe('Authenticated Events API', () => {
       await associateUserWithPartners(userResponse.body.id, [venuePartner.id]);
 
       return server
-        .put(
-          `/${CURRENT_VERSION_URI}/authenticated/events/verify/${event.id}`,
-        )
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${event.id}`)
         .set('x-access-token', partnerAdminToken)
         .expect(200)
         .then(({ body }) => {
@@ -2337,9 +2335,7 @@ describe('Authenticated Events API', () => {
       await associateUserWithPartners(userResponse.body.id, [userPartner.id]);
 
       return server
-        .put(
-          `/${CURRENT_VERSION_URI}/authenticated/events/verify/${event.id}`,
-        )
+        .put(`/${CURRENT_VERSION_URI}/authenticated/events/verify/${event.id}`)
         .set('x-access-token', partnerAdminToken)
         .expect(403);
     });

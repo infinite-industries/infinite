@@ -1,24 +1,64 @@
 name: API Server Tests
 
+# No trigger-level path filter: the jobs below are required status checks, so the
+# workflow must always run. The `changes` job decides whether the real work runs;
+# skipped jobs count as passing for branch protection.
 on:
   pull_request:
     branches:
       - development
       - master
-    paths:
-      - 'api-server/**'
-      - '.github/workflows/api-tests.yml'
   push:
     branches:
       - development
       - master
-    paths:
-      - 'api-server/**'
-      - '.github/workflows/api-tests.yml'
   workflow_dispatch:  # manual execution through Github UI
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      api: ${{ steps.filter.outputs.api }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            api:
+              - 'api-server/**'
+              - '.github/workflows/api-tests.yml'
+
+  api-lint:
+    name: API Lint & Format
+    needs: changes
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.api == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '26.12.1'
+      - name: Install API Server Dependencies
+        run: npm ci
+        working-directory: './api-server'
+      - name: Check Prettier formatting
+        run: npm run format:check
+        working-directory: './api-server'
+      - name: Run ESLint
+        run: npm run lint:check
+        working-directory: './api-server'
+
   api-e2e-tests:
+    name: API E2E Tests
+    needs: [changes, api-lint]
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.changes.outputs.api == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -26,7 +66,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: '22'
+          node-version: '26.12.1'
       - name: Check Node version
         run: node --version
       - name: Install API Server Dependencies
