@@ -323,11 +323,19 @@ describe('Users (e2e)', () => {
           );
 
           expect(returnedPartner1.name).toEqual(partner1.name);
-          expect(returnedPartner1.light_logo_url).toEqual(partner1.light_logo_url);
-          expect(returnedPartner1.dark_logo_url).toEqual(partner1.dark_logo_url);
+          expect(returnedPartner1.light_logo_url).toEqual(
+            partner1.light_logo_url,
+          );
+          expect(returnedPartner1.dark_logo_url).toEqual(
+            partner1.dark_logo_url,
+          );
           expect(returnedPartner2.name).toEqual(partner2.name);
-          expect(returnedPartner2.light_logo_url).toEqual(partner2.light_logo_url);
-          expect(returnedPartner2.dark_logo_url).toEqual(partner2.dark_logo_url);
+          expect(returnedPartner2.light_logo_url).toEqual(
+            partner2.light_logo_url,
+          );
+          expect(returnedPartner2.dark_logo_url).toEqual(
+            partner2.dark_logo_url,
+          );
         });
     });
 

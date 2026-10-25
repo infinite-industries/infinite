@@ -35,7 +35,7 @@ export class PartnersAuthenticatedController {
   constructor(
     private readonly partnersService: PartnersService,
     private readonly uploadsService: UploadsService,
-  ) { }
+  ) {}
 
   @Post(':id/logo')
   @ApiConsumes('multipart/form-data')
