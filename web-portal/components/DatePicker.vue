@@ -3,15 +3,13 @@
     <!-- attrs (e.g. id, placeholder) belong on the input, not the wrapper -->
     <flat-pickr v-bind="$attrs" readonly="true" v-model="dateValue" :config="config"></flat-pickr>
     <!-- calendar icon makes it clear the date is editable, taps pass through to the input -->
-    <svg class="date-picker__icon" aria-hidden="true" viewBox="0 0 24 24" width="16" height="16">
-      <rect x="3" y="5" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2" />
-      <path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-    </svg>
+    <calendar-icon class="date-picker__icon" aria-hidden="true" icon-color="rgb(110, 110, 110)" width="16" height="16" />
   </span>
 </template>
 
 <script>
   import flatPickr from 'vue-flatpickr-component'
+  import CalendarIcon from '@/components/vectors/Calendar.vue'
   import 'flatpickr/dist/flatpickr.css'
   import 'flatpickr/dist/themes/dark.css'
 
@@ -47,7 +45,8 @@
       }
     },
     components: {
-      flatPickr
+      flatPickr,
+      CalendarIcon
     },
   }
 </script>
@@ -90,7 +89,6 @@
     right: 6px;
     top: 50%;
     transform: translateY(-50%);
-    color: rgb(110, 110, 110);
     pointer-events: none;
   }
 </style>
