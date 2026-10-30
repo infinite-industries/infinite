@@ -3,12 +3,15 @@
     <div class="time-date-input-box">
       <div class="time-date-entry">
         <div class="date-line">
-          On <date-picker id="date-picker" v-model="picker" :allow-past="allowPast" placeholder="Select date" />
+          <span class="time-range-part">
+            <span class="time-range-label">On</span>
+            <date-picker id="date-picker" v-model="picker" :allow-past="allowPast" placeholder="Select date" />
+          </span>
         </div>
         <div class="time-line">
           <!-- keep each label with its time picker so they wrap together on narrow screens -->
           <span class="time-range-part">
-            <span>from</span>
+            <span class="time-range-label">from</span>
             <time-picker
               id="start-time"
               v-model:hour="start_hour"
@@ -22,7 +25,7 @@
             />
           </span>
           <span class="time-range-part">
-            <span>to</span>
+            <span class="time-range-label">to</span>
             <time-picker
               id="end-time"
               v-model:hour="end_hour"
@@ -375,6 +378,13 @@
     align-items: center;
     gap: 8px;
     white-space: nowrap;
+  }
+
+  /* on narrow screens on/from/to stack, so give the labels equal width to line up the date and time pickers */
+  @media screen and (max-width: 874px) {
+    .time-range-label {
+      min-width: 2.5em;
+    }
   }
 
   .date-time-picker-actions {
