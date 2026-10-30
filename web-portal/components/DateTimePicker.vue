@@ -3,32 +3,38 @@
     <div class="time-date-input-box">
       <div class="time-date-entry">
         <div class="date-line">
-          On <date-picker id="date-picker" v-model="picker" :allow-past="allowPast" placeholder="Select date" /> from
+          On <date-picker id="date-picker" v-model="picker" :allow-past="allowPast" placeholder="Select date" />
         </div>
         <div class="time-line">
-          <time-picker
-            id="start-time"
-            v-model:hour="start_hour"
-            v-model:minute="start_minute"
-            v-model:ampm="start_ampm"
-            :invalidHour="start_hour_invalid"
-            :invalidMinute="start_minute_invalid"
-            hour-ref="startHourInput"
-            min-ref="startMinInput"
-            ampm-ref="startAmPm"
-          />
-          <span>to</span>
-          <time-picker
-            id="end-time"
-            v-model:hour="end_hour"
-            v-model:minute="end_minute"
-            v-model:ampm="end_ampm"
-            :invalidHour="end_hour_invalid"
-            :invalidMinute="end_minute_invalid"
-            hour-ref="endHourInput"
-            min-ref="endMinInput"
-            ampm-ref="endAmPm"
-          />
+          <!-- keep each label with its time picker so they wrap together on narrow screens -->
+          <span class="time-range-part">
+            <span>from</span>
+            <time-picker
+              id="start-time"
+              v-model:hour="start_hour"
+              v-model:minute="start_minute"
+              v-model:ampm="start_ampm"
+              :invalidHour="start_hour_invalid"
+              :invalidMinute="start_minute_invalid"
+              hour-ref="startHourInput"
+              min-ref="startMinInput"
+              ampm-ref="startAmPm"
+            />
+          </span>
+          <span class="time-range-part">
+            <span>to</span>
+            <time-picker
+              id="end-time"
+              v-model:hour="end_hour"
+              v-model:minute="end_minute"
+              v-model:ampm="end_ampm"
+              :invalidHour="end_hour_invalid"
+              :invalidMinute="end_minute_invalid"
+              hour-ref="endHourInput"
+              min-ref="endMinInput"
+              ampm-ref="endAmPm"
+            />
+          </span>
         </div>
         <select class="timezone-select" ref="eventTimezone" name="event_timezone" v-model="event_timezone">
           <option v-for="(tz) in $config.public.timezoneOptions.split(',')" :key="tz">
@@ -361,6 +367,13 @@
   }
 
   .time-line > .time-part {
+    white-space: nowrap;
+  }
+
+  .time-range-part {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     white-space: nowrap;
   }
 
