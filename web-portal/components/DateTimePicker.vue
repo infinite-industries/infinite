@@ -429,19 +429,4 @@
   text-decoration: none; /* Removes underline on hover */
 }
 
-  /* Style date input to match TimePicker inputs */
-  .date-input {
-    padding: 2px;
-    outline: 1px solid rgb(187, 187, 187);
-    border-radius: 3px;
-    width: 120px;
-    box-sizing: border-box;
-    background: white;
-    color: inherit;
-  }
-
-  .date-input:focus {
-    outline: 1px solid #6ea8fe;
-  }
-
 </style>

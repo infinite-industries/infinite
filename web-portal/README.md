@@ -70,6 +70,13 @@ This application communicates with an [API server](https://github.com/infinite-i
  npm run dev
  ```
 
+or if you want to be able to reach it over the network from your phone
+
+```bash
+npx nuxt dev --host
+```
+
+
 5. If you have not already done so, start the API server. The API server can also be started prior to the portal server.
 
 6. Point your browser to `http://localhost:7779`
@@ -83,7 +90,7 @@ This application communicates with an [API server](https://github.com/infinite-i
 
 2. Start the Nuxt production server
  ```bash
-npm run start:dev
+npm run start
  ```
 
 ## Running Tests
