@@ -84,7 +84,7 @@
     }
   })
 
-  const emit = defineEmits(['update:modelValue', 'change', 'selectVenue', 'newVenue', 'delete'])
+  const emit = defineEmits(['update:modelValue', 'change', 'selectVenue', 'newVenue', 'delete', 'cancel'])
 
   const dateTimePicker = ref(null)
   const selectedVenueId = ref(props.modelValue?.venue_id ?? props.initialVenueId)
@@ -185,6 +185,7 @@
 
   const cancelEdit = () => {
     resetDraft()
+    emit('cancel')
   }
 
   const handleVenueSelection = (venue) => {

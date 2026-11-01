@@ -48,6 +48,7 @@
           :mode="mode"
           :initial-venue-id="initialVenueId"
           @change="handleNewEntryAdded"
+          @cancel="hideForm"
           @select-venue="venue => emit('selectVenue', venue)"
           @new-venue="venue => emit('newVenue', venue)"
         />
@@ -102,6 +103,10 @@
       newEntryDraft.value = {}
       showAddForm.value = false
     }
+  }
+
+  const hideForm = () => {
+    showAddForm.value = false
   }
 </script>
 
