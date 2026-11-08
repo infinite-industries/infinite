@@ -62,7 +62,7 @@ $ npm run test:cov
 
 ### Running tests in IntelliJ
 
-Go to Run/Run... in the menu. In the menu that pops up, choose "Edit Configurations..." 
+Go to Run/Run... in the menu. In the menu that pops up, choose "Edit Configurations..."
 ![Screenshot from 2026-02-08 14-29-26.png](readme-assets/Screenshot%20from%202026-02-08%2014-29-26.png)
 
 Look for "Edit Configuration templates..." in the lower left hand of the dialog
@@ -77,12 +77,13 @@ Click it and choose Jest, then set "jest options" to
 Finally, go to the spec and press play next to one of the tests:
 ![Screenshot from 2026-02-08 14-27-17.png](readme-assets/Screenshot%20from%202026-02-08%2014-27-17.png)
 
-## Viewing swagger docs
+## Viewing Swagger docs
 
 `[host]/api/`
 
 local: http://localhost:3003/api/
 prod:  https://api.infinite.industries/api/
+staging: https://staging-api.infinite.industries/api
 
 ## Migrations
 
