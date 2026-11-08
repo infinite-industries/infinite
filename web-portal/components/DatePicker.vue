@@ -64,7 +64,7 @@
     -webkit-appearance: none;
     appearance: none;
     padding: 2px 24px 2px 4px;
-    outline: 1px solid rgb(187, 187, 187);
+    border: 1px solid rgb(187, 187, 187);
     border-radius: 3px;
     width: 150px;
     min-height: 28px;
@@ -73,10 +73,6 @@
     color: inherit;
     font: inherit;
     cursor: pointer;
-  }
-
-  .date-picker :deep(.flatpickr-input:focus) {
-    outline: 1px solid #6ea8fe;
   }
 
   /* iOS centers the value of a native date input by default */
