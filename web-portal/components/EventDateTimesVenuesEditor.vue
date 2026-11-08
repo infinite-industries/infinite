@@ -22,7 +22,7 @@
         v-model="newEntryDraft"
         :venues="venues"
         :mode="mode"
-        :initial-venue-id="initialVenueId"
+        :initial-venue-id="previousVenueId"
         @change="handleNewEntryAdded"
         @select-venue="venue => emit('selectVenue', venue)"
         @new-venue="venue => emit('newVenue', venue)"
@@ -46,8 +46,9 @@
           v-model="newEntryDraft"
           :venues="venues"
           :mode="mode"
-          :initial-venue-id="initialVenueId"
+          :initial-venue-id="previousVenueId"
           @change="handleNewEntryAdded"
+          @cancel="hideForm"
           @select-venue="venue => emit('selectVenue', venue)"
           @new-venue="venue => emit('newVenue', venue)"
         />
@@ -103,6 +104,17 @@
       showAddForm.value = false
     }
   }
+
+  const hideForm = () => {
+    showAddForm.value = false
+  }
+
+  // Venue of the most recently confirmed entry; falls back to the
+  // props (initialVenueId) when no entries exist yet.
+  const previousVenueId = computed(() => {
+    const last = localEntries.value.at(-1)
+    return last?.venue_id ?? props.initialVenueId
+  })
 </script>
 
 <style scoped>
