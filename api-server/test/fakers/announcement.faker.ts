@@ -1,6 +1,6 @@
 import { CreateOrUpdateAnnouncementRequest } from '../../src/announcements/dto/create-or-update-announcement-request';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const faker = require('faker');
 
 function generateAnnouncementRequest(): CreateOrUpdateAnnouncementRequest {

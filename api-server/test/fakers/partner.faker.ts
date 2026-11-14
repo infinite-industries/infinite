@@ -1,6 +1,6 @@
 import { CreatePartnerRequest } from '../../src/users/dto/create-partner-request';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const faker = require('faker');
 
 function generatePartnerRequest(): CreatePartnerRequest {

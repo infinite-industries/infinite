@@ -86,7 +86,4 @@ export const EVENT_SUBMIT = 'event-submit';
 export const VENUE_SUBMIT = 'venue-submit';
 
 export type ChannelKey =
-  | typeof TEST
-  | typeof CONTACT
-  | typeof EVENT_SUBMIT
-  | typeof VENUE_SUBMIT;
+  typeof TEST | typeof CONTACT | typeof EVENT_SUBMIT | typeof VENUE_SUBMIT;

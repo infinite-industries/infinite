@@ -15,6 +15,7 @@ import { VERSION_1_URI } from '../utils/versionts';
 import {
   ApiBearerAuth,
   ApiOperation,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -25,7 +26,6 @@ import { EventsService } from './events.service';
 import { UpdateEventRequest } from './dto/update-event-request';
 import { EventModel } from './models/event.model';
 import { mapDateTimesToIso } from '../utils/map-date-times-to-iso';
-import { ApiImplicitParam } from '@nestjs/swagger/dist/decorators/api-implicit-param.decorator';
 import FindByIdParams from '../dto/find-by-id-params';
 import { eventModelToEventDTO } from './dto/eventModelToEventDTO';
 import UpsertEventAdminMetadataRequest from './dto/upsert-event-admin-metadata-request';
@@ -34,8 +34,6 @@ import {
   EventAdminMetadataSingleResponse,
 } from './dto/event-admin-metadata-response';
 import { EventsResponse } from './dto/events-response';
-import { getOptionsForEventsServiceFromEmbedsQueryParam } from '../utils/get-options-for-events-service-from-embeds-query-param';
-import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
 import {
   EVENT_PAGINATION_DEFAULT_PAGE,
   EVENT_PAGINATION_DEFAULT_PAGE_SIZE,
@@ -45,7 +43,6 @@ import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndEx
 import { AuthenticatedUserGuard } from '../authentication/auth-guards/authenticated-user.guard';
 import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
-import { Op, literal } from 'sequelize';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)
@@ -65,7 +62,7 @@ export default class EventsAuthenticatedController {
   @ApiOperation({ summary: 'Get events, both verified and non (admin only)' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiBearerAuth()
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'tags',
     description: 'filter by associated tags',
     example: ['music'],
@@ -73,21 +70,21 @@ export default class EventsAuthenticatedController {
     isArray: true,
     type: String,
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'page',
     description: `the requested page (default ${EVENT_PAGINATION_DEFAULT_PAGE})`,
     example: 1,
     required: false,
     type: Number,
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'pageSize',
     description: `the number of events included per page (default ${EVENT_PAGINATION_DEFAULT_PAGE_SIZE})`,
     example: 20,
     required: false,
     type: Number,
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'dateRange',
     description:
       'Date range for filtering events (ISO 8601 format). Format: startDate/endDate. This will return all events having ' +
@@ -204,7 +201,7 @@ export default class EventsAuthenticatedController {
   @Put(':id')
   @UseGuards(PartnerAdminGuard)
   @ApiOperation({ summary: 'Update fields on an existing event' })
-  @ApiImplicitParam({ name: 'id', type: String })
+  @ApiParam({ name: 'id', type: String })
   updateEvent(
     @Req() request: RequestWithUserInfo,
     @Param() params: FindByIdParams,
@@ -227,7 +224,7 @@ export default class EventsAuthenticatedController {
   @ApiOperation({
     summary: 'Verify the event, making it visible to the public',
   })
-  @ApiImplicitParam({ name: 'id', type: String })
+  @ApiParam({ name: 'id', type: String })
   verifyEvent(
     @Req() request: RequestWithUserInfo,
     @Param() params: FindByIdParams,
@@ -242,7 +239,7 @@ export default class EventsAuthenticatedController {
   @Delete(':id')
   @UseGuards(PartnerAdminGuard)
   @ApiOperation({ summary: 'Delete the event' })
-  @ApiImplicitParam({ name: 'id', type: String })
+  @ApiParam({ name: 'id', type: String })
   deleteEvent(
     @Req() request: RequestWithUserInfo,
     @Param() params: FindByIdParams,
@@ -263,7 +260,7 @@ export default class EventsAuthenticatedController {
   @Put(':id/admin-metadata')
   @UseGuards(PartnerAdminGuard)
   @ApiOperation({ summary: 'Set admin metadata information for an event' })
-  @ApiImplicitParam({ name: 'id', type: String })
+  @ApiParam({ name: 'id', type: String })
   upsertAdminMetadata(
     @Req() request: RequestWithUserInfo,
     @Param() { id }: FindByIdParams,

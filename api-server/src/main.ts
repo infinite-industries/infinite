@@ -12,7 +12,7 @@ import {
 } from './constants';
 import { json, urlencoded } from 'express';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
 
 async function bootstrap() {

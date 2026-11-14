@@ -1,4 +1,4 @@
-import jwt = require('jsonwebtoken');
+import * as jwt from 'jsonwebtoken';
 import { Request } from 'express';
 import { SECRET } from '../constants';
 
@@ -53,5 +53,6 @@ function getUserInformationFromToken(token: string): Promise<UserInformation> {
 }
 
 export function getTokenFromHeader(req: Request) {
-  return req.body.token || req.query.token || req.headers['x-access-token'];
+  // Express 5 leaves req.body undefined when the request has no body
+  return req.body?.token || req.query?.token || req.headers['x-access-token'];
 }

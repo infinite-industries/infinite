@@ -309,9 +309,8 @@ export class EventsService {
       );
 
       // Fetch venue-partner mappings (requires event.venues to be populated first)
-      const venueIdToPartnershipMap = await this.buildVenuePartnerMap(
-        paginatedRows,
-      );
+      const venueIdToPartnershipMap =
+        await this.buildVenuePartnerMap(paginatedRows);
 
       paginatedRows.forEach((event) => {
         // fills in via side effect partners on the associated venues,

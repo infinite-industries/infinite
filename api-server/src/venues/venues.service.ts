@@ -14,7 +14,6 @@ import {
   UpdateVenueRequest,
 } from './dto/create-update-venue-request';
 import { AssociateVenuePartnerRequest } from './dto/associate-venue-partner-request';
-import { FindOptions } from 'sequelize';
 import getSlug from '../utils/get-slug';
 import { GpsService } from './gps.services';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -79,9 +78,8 @@ export class VenuesService {
     id: string,
     updatedValues: UpdateVenueRequest,
   ): Promise<VenueModel> {
-    updatedValues = await this.fillInGPSCoordinatesIfNeededWhenPossible(
-      updatedValues,
-    );
+    updatedValues =
+      await this.fillInGPSCoordinatesIfNeededWhenPossible(updatedValues);
 
     const values = isNotNullOrUndefined(updatedValues.name)
       ? { ...updatedValues, slug: getSlug(updatedValues.name) }

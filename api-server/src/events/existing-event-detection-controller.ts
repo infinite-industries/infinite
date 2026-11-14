@@ -13,7 +13,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import ExistingEventDetectionParameters from './dto/existing-event-detection-parameters';
 import ExistingEventDetectionResults from './dto/existing-event-detection-results';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
 
 @Controller(`${VERSION_1_URI}/events/detect-existing`)
