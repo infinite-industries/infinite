@@ -53,6 +53,5 @@ function getUserInformationFromToken(token: string): Promise<UserInformation> {
 }
 
 export function getTokenFromHeader(req: Request) {
-  // Express 5 leaves req.body undefined when the request has no body
   return req.body?.token || req.query?.token || req.headers['x-access-token'];
 }
