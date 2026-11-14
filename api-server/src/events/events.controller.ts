@@ -29,7 +29,6 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { eventModelToEventDTO } from './dto/eventModelToEventDTO';
 import EventDTO from './dto/eventDTO';
 import { ENV } from '../constants';
-import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
 import { ApiQuery } from '@nestjs/swagger';
 import {
   EVENT_PAGINATION_DEFAULT_PAGE,
@@ -37,14 +36,10 @@ import {
   PaginationDto,
 } from './dto/pagination-dto';
 import { isNullOrUndefined } from '../utils';
-import { VenueModel } from 'src/venues/models/venue.model';
-import { DatetimeVenueModel } from './models/datetime-venue.model';
-import { EventAdminMetadataModel } from './models/event-admin-metadata.model';
-import { PartnerModel } from '../users/models/partner.model';
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
 import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
 
 @Controller(`${VERSION_1_URI}/events`)
@@ -120,7 +115,7 @@ export class EventsController {
     description: 'verified events',
     type: EventsResponse,
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'tags',
     description: 'filter by associated tags',
     example: ['music'],
@@ -128,21 +123,21 @@ export class EventsController {
     isArray: true,
     type: String,
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'page',
     description: `the requested page (default ${EVENT_PAGINATION_DEFAULT_PAGE})`,
     example: 1,
     required: false,
     type: Number,
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'pageSize',
     description: `the number of events included per page (default ${EVENT_PAGINATION_DEFAULT_PAGE_SIZE})`,
     example: 20,
     required: false,
     type: Number,
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'dateRange',
     description:
       'Date range for filtering events (ISO 8601 format). Format: startDate/endDate. This will return all events having ' +

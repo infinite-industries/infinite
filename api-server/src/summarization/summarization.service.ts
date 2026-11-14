@@ -210,7 +210,7 @@ export class SummarizationService {
   private parseMessageText(messageText: string): unknown {
     try {
       return JSON.parse(messageText);
-    } catch (ex) {
+    } catch {
       this.logger.warn(
         `invalid json returned from anthropic: "${messageText}"`,
       );

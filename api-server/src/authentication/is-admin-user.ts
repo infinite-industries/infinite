@@ -6,7 +6,7 @@ async function isAdminUser(req: Request): Promise<boolean> {
     const userInformation: UserInformation = await parseJwt(req);
 
     return userInformation.isInfiniteAdmin;
-  } catch (ex) {
+  } catch {
     return false;
   }
 }
