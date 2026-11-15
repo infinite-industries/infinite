@@ -128,9 +128,13 @@ export class AuthenticationController implements OnModuleInit {
       return { token: results.data.id_token };
     } catch (ex) {
       this.logger.error('error authenticating with auth0: ' + ex);
-      this.logger.error('error data: ' + JSON.stringify(ex.data, null, 4));
+      const errorData = ex.response?.data;
+      this.logger.error('error data: ' + JSON.stringify(errorData, null, 4));
 
-      if (isNotNullOrUndefined(ex.data) && ex.data.error === 'invalid_grant') {
+      if (
+        isNotNullOrUndefined(errorData) &&
+        errorData.error === 'invalid_grant'
+      ) {
         throw new HttpException('invalid username or password', 403);
       }
 
