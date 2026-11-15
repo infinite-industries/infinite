@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { EventModel } from './models/event.model';
-import { Inject, LoggerService } from '@nestjs/common';
+import { Inject, type LoggerService } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { VERSION_1_URI } from '../utils/versionts';
 import getCommonQueryTermsForEvents from '../utils/get-common-query-terms-for-events';
@@ -37,7 +37,7 @@ import {
 } from './dto/pagination-dto';
 import { isNullOrUndefined } from '../utils';
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
-import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
+import type { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();

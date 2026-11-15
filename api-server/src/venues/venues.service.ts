@@ -2,7 +2,7 @@ import {
   ConflictException,
   Inject,
   Injectable,
-  LoggerService,
+  type LoggerService,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';

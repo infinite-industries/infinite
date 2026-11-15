@@ -1,4 +1,4 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Inject, Injectable, type LoggerService } from '@nestjs/common';
 import axios from 'axios';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';

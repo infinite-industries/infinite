@@ -2,7 +2,7 @@ import {
   HttpException,
   Inject,
   Injectable,
-  LoggerService,
+  type LoggerService,
 } from '@nestjs/common';
 import Anthropic from '@anthropic-ai/sdk';
 import { isNullOrUndefined } from '../utils';

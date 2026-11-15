@@ -7,7 +7,7 @@ import {
   Param,
   Query,
   Inject,
-  LoggerService,
+  type LoggerService,
 } from '@nestjs/common';
 import { VenuesService } from './venues.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';

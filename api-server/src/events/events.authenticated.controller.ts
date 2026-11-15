@@ -4,7 +4,7 @@ import {
   Delete,
   Get,
   Inject,
-  LoggerService,
+  type LoggerService,
   Param,
   Put,
   Query,
@@ -42,7 +42,7 @@ import {
 import { validateAndExtractOptionalDateTimeFilters } from './utils/validateAndExtractOptionalDatetimeFilters';
 import { AuthenticatedUserGuard } from '../authentication/auth-guards/authenticated-user.guard';
 import { PartnerAdminGuard } from '../authentication/auth-guards/partner-admin.guard';
-import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
+import type { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller(`${VERSION_1_URI}/authenticated/events`)

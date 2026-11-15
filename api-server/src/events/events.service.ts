@@ -1,7 +1,7 @@
 import {
   Inject,
   Injectable,
-  LoggerService,
+  type LoggerService,
   BadRequestException,
   ForbiddenException,
   NotFoundException,
@@ -38,7 +38,7 @@ import { ensureEmbedQueryStringIsArray } from '../utils/get-options-for-events-s
 import { Nullable } from '../utils/NullableOrUndefinable';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 import { PartnerModel } from '../users/models/partner.model';
-import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
+import type { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 import {
   isOwner,
   removeSensitiveDataForSingleEvent,

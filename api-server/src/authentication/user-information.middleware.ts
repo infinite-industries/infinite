@@ -1,13 +1,13 @@
 import {
   Inject,
   Injectable,
-  LoggerService,
+  type LoggerService,
   NestMiddleware,
 } from '@nestjs/common';
 import { NextFunction, Response } from 'express';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import UsersService from '../users/users.service';
-import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
+import type { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 
 /**
  * User Information Middleware

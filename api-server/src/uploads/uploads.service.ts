@@ -1,4 +1,4 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Inject, Injectable, type LoggerService } from '@nestjs/common';
 import fs from 'fs';
 import { join } from 'path';
 import {
