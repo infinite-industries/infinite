@@ -188,6 +188,60 @@ describe('SubmissionForm component', () => {
     expect(wrapper.vm.isDirty()).toBe(true)
   });
 
+  describe('with a prefilled store event', () => {
+    const prefill = {
+      title: 'Foo',
+      brief_description: 'A short thing',
+      admission_fee: '$5',
+      mode: 'online',
+      organizer_contact: 'a@b.co',
+    }
+
+    beforeEach(() => {
+      const prefilledStore = createStore({
+        state: {},
+        getters: {
+          GetCurrentEvent: () => ({ ...getEmptyCalendarEvent(), ...prefill })
+        }
+      })
+
+      wrapper = shallowMount(SubmissionForm, {
+        propsData: {
+          user_action: 'upload',
+          user_role: 'regular'
+        },
+        global: {
+          plugins: [prefilledStore],
+          renderStubDefaultSlot: true,
+          stubs: {
+            'vue-editor': true
+          },
+          mocks: {
+            $nuxt: {
+              $apiService: { },
+            },
+            $suggestionService: { getBaseTagSet () { return [] } }
+          }
+        }
+      })
+    })
+
+    it('renders the prefilled values', () => {
+      expect(wrapper.vm.calendar_event).toMatchObject(prefill)
+      expect(wrapper.find('.event-mode input[type="radio"][value="online"]').element.checked).toBe(true)
+      expect(wrapper.find('.event-mode input[type="radio"][value="in-person"]').element.checked).toBe(false)
+    })
+
+    it('is not dirty right after a prefilled load', () => {
+      expect(wrapper.vm.isDirty()).toBe(false)
+    })
+
+    it('becomes dirty once the user edits a prefilled field', async () => {
+      await wrapper.find('.event-mode input[type="radio"][value="hybrid"]').setChecked(true)
+      expect(wrapper.vm.isDirty()).toBe(true)
+    })
+  })
+
   // function getFilledOutEvent() {
   //   return {
   //     'id': '',

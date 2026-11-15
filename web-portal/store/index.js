@@ -97,8 +97,8 @@ export const mutations = {
     state.calendar_event = payload
   },
 
-  CREATE_NEW_EVENT: (state) => {
-    state.calendar_event = getEmptyCalendarEvent()
+  CREATE_NEW_EVENT: (state, overrides = {}) => {
+    state.calendar_event = { ...getEmptyCalendarEvent(), ...overrides }
   },
   UPDATE_LOCALIZED_EVENTS: (state, payload) => {
     state.all_local_events = payload
@@ -120,8 +120,9 @@ export const actions = {
   Logout: function (context) {
     context.commit('LOGOUT')
   },
-  CreateNewEvent: function (context) {
-    context.commit('CREATE_NEW_EVENT')
+  // overrides: optional partial event (e.g. prefill from query params)
+  CreateNewEvent: function (context, overrides) {
+    context.commit('CREATE_NEW_EVENT', overrides)
   },
 
   LoadAllLocalEventData: function (context) {
