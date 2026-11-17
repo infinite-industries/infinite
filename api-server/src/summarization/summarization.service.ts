@@ -2,7 +2,7 @@ import {
   HttpException,
   Inject,
   Injectable,
-  LoggerService,
+  type LoggerService,
 } from '@nestjs/common';
 import Anthropic from '@anthropic-ai/sdk';
 import { isNullOrUndefined } from '../utils';
@@ -210,7 +210,7 @@ export class SummarizationService {
   private parseMessageText(messageText: string): unknown {
     try {
       return JSON.parse(messageText);
-    } catch (ex) {
+    } catch {
       this.logger.warn(
         `invalid json returned from anthropic: "${messageText}"`,
       );

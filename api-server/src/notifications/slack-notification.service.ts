@@ -1,4 +1,4 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Inject, Injectable, type LoggerService } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import {
   SLACK_WEBHOOK_CONTACT,
@@ -86,7 +86,4 @@ export const EVENT_SUBMIT = 'event-submit';
 export const VENUE_SUBMIT = 'venue-submit';
 
 export type ChannelKey =
-  | typeof TEST
-  | typeof CONTACT
-  | typeof EVENT_SUBMIT
-  | typeof VENUE_SUBMIT;
+  typeof TEST | typeof CONTACT | typeof EVENT_SUBMIT | typeof VENUE_SUBMIT;

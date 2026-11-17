@@ -3,7 +3,7 @@ import {
   Controller,
   HttpException,
   Inject,
-  LoggerService,
+  type LoggerService,
   OnModuleInit,
   Post,
 } from '@nestjs/common';

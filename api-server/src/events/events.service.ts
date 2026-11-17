@@ -1,7 +1,7 @@
 import {
   Inject,
   Injectable,
-  LoggerService,
+  type LoggerService,
   BadRequestException,
   ForbiddenException,
   NotFoundException,
@@ -38,7 +38,7 @@ import { ensureEmbedQueryStringIsArray } from '../utils/get-options-for-events-s
 import { Nullable } from '../utils/NullableOrUndefinable';
 import isNotNullOrUndefined from '../utils/is-not-null-or-undefined';
 import { PartnerModel } from '../users/models/partner.model';
-import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
+import type { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 import {
   isOwner,
   removeSensitiveDataForSingleEvent,
@@ -309,9 +309,8 @@ export class EventsService {
       );
 
       // Fetch venue-partner mappings (requires event.venues to be populated first)
-      const venueIdToPartnershipMap = await this.buildVenuePartnerMap(
-        paginatedRows,
-      );
+      const venueIdToPartnershipMap =
+        await this.buildVenuePartnerMap(paginatedRows);
 
       paginatedRows.forEach((event) => {
         // fills in via side effect partners on the associated venues,
