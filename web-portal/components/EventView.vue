@@ -121,6 +121,7 @@
           <a
             :href="event.website_link"
             target="_new"
+            @click="$analytics.trackEvent('Click link: Event Website')"
           >
             Event Website
           </a>
@@ -128,17 +129,35 @@
       </div>
       <div v-if="event.fb_event_link && event.fb_event_link !== 'none'" class="row event-fb-link">
         <div class="col s11">
-          <a :href="event.fb_event_link" target="_new">Facebook Event Link</a>
+          <a
+            :href="event.fb_event_link"
+            target="_new"
+            @click="$analytics.trackEvent('Click link: Facebook Event Link')"
+          >
+            Facebook Event Link
+          </a>
         </div>
       </div>
       <div v-if="event.eventbrite_link && event.eventbrite_link !== 'none'" class="row event-eventbrite-link">
         <div class="col s11">
-          <a :href="event.eventbrite_link" target="_new">Eventbrite Link</a>
+          <a
+            :href="event.eventbrite_link"
+            target="_new"
+            @click="$analytics.trackEvent('Click link: Eventbrite Link')"
+          >
+            Eventbrite Link
+          </a>
         </div>
       </div>
       <div v-if="event.ticket_link && event.ticket_link !== 'none'" class="row event-ticket-link">
         <div class="col s11">
-          <a :href="event.ticket_link" target="_new">Buy Tickets</a>
+          <a
+            :href="event.ticket_link"
+            target="_new"
+            @click="$analytics.trackEvent('Click link: Buy Tickets')"
+          >
+            Buy Tickets
+          </a>
         </div>
       </div>
     </div>
