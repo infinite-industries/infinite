@@ -1,13 +1,13 @@
 import {
   Inject,
   Injectable,
-  LoggerService,
+  type LoggerService,
   NestMiddleware,
 } from '@nestjs/common';
 import { NextFunction, Response } from 'express';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import UsersService from '../users/users.service';
-import { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
+import type { RequestWithUserInfo } from '../users/dto/RequestWithUserInfo';
 
 /**
  * User Information Middleware
@@ -31,9 +31,8 @@ export class UserInformationMiddleware implements NestMiddleware {
     try {
       this.logger.debug('running user-information middleware for request');
       // Set userInformation on the request if we successfully parsed it
-      request.userInformation = await this.userService.ensureCurrentUserByName(
-        request,
-      );
+      request.userInformation =
+        await this.userService.ensureCurrentUserByName(request);
     } catch (ex) {
       // We run this for all request authenticated or not, if there was parse
       // error it was already logged and rethrown by ensureCurrentUserByName,

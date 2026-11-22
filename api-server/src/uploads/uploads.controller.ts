@@ -4,7 +4,6 @@ import {
   ParseFilePipe,
   ParseFilePipeBuilder,
   Post,
-  Req,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,7 +13,6 @@ import { EventsResponse } from '../events/dto/events-response';
 import { UploadsResponse } from './dto/UploadsResponse';
 import { UploadsService } from './uploads.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Request } from 'express';
 import EventImageMaxFileSizeValidator from './validators/EventImageMaxFileSizeValidator';
 import EventImageFileTypeValidator from './validators/EventImageFileTypeValidator';
 
@@ -36,7 +34,6 @@ export class UploadsController {
   async uploadEventImage(
     @UploadedFile(getImageUploadValidators())
     file: Express.Multer.File,
-    @Req() request: Request,
   ): Promise<UploadsResponse> {
     const imagePath = await this.uploadsService.saveImage(file);
     return new UploadsResponse({ imagePath });

@@ -2,7 +2,7 @@ import {
   HttpException,
   Inject,
   Injectable,
-  LoggerService,
+  type LoggerService,
 } from '@nestjs/common';
 import { Nullable } from '../utils/NullableOrUndefinable';
 import { GPSCoordinates } from './dto/GetGPSCoordinatesRequest';

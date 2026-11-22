@@ -3,7 +3,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
-  LoggerService,
+  type LoggerService,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserModel } from './models/user.model';

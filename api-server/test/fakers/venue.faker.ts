@@ -4,7 +4,7 @@ import {
   VenueModelConstructorProps,
 } from '../../src/venues/models/venue.model';
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const faker = require('faker');
 
 function generateVenue(

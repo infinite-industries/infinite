@@ -10,7 +10,7 @@ import { AuthenticatedUserGuard } from '../authentication/auth-guards/authentica
 import { UserInfoResp } from './dto/user-info-resp';
 import { PartnerDTO } from './dto/partner-dto';
 import { PartnersListResponse } from './dto/partners-list-response';
-import { RequestWithUserInfo } from './dto/RequestWithUserInfo';
+import type { RequestWithUserInfo } from './dto/RequestWithUserInfo';
 
 @Controller(`${VERSION_1_URI}/users`)
 @ApiTags('users')

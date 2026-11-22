@@ -23,10 +23,10 @@ export const {
   POSTGRES_DB,
   POSTGRES_USER,
   POSTGRES_PW,
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
 } = require(__dirname + '/db_constants.js');
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 require('dotenv').config();
 
 // === Top Level Service (name, ports env, etc..) ===

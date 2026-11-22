@@ -19,7 +19,7 @@ export function mapDateTimesToIso<T extends CreateEventRequest>(
       };
 
       return new t(convertedEvent);
-    } catch (ex) {
+    } catch {
       throw new HttpException('could not parse date formats', 400);
     }
   }
